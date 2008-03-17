@@ -37,7 +37,7 @@ contains(portaudio, YES) {
   }
 }
 
-#SUBDIRS += Tests
+SUBDIRS += Examples
 SUBDIRS += Applications
 
 CONFIG += ordered
