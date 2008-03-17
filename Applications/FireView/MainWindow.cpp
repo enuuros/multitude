@@ -1,0 +1,142 @@
+/* COPYRIGHT
+ *
+ * This file is part of Applications/FireView.
+ *
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ *
+ * See file "Applications/FireView.hpp" for authors and more details.
+ *
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
+ */
+
+#include "MainWindow.hpp"
+
+#include "CamView.hpp"
+
+#include <QMenu>
+#include <QMenuBar>
+#include <QVBoxLayout>
+
+#include <Radiant/Video1394.hpp>
+
+#include <Radiant/Trace.hpp>
+
+#include <QCoreApplication>
+#include <QTimer>
+
+#include <assert.h>
+
+namespace FireView {
+
+  MainWindow::MainWindow(Radiant::FrameRate rate, 
+                         float customFps, int triggerSource, int triggerMode)
+    : m_mdi(0),
+      m_rate(rate),
+      m_customFps(customFps),
+      m_triggerSource(triggerSource),
+      m_triggerMode(triggerMode)
+  {
+    QMenuBar * bar = new QMenuBar(this);
+    QMenu * menu = new QMenu("&File", this);
+    menu->addAction("E&xit", QCoreApplication::instance(), SLOT(quit()),
+                    Qt::CTRL | Qt::Key_Q);
+
+    bar->addMenu(menu);
+    
+    setMenuBar(bar);
+  }
+  
+  MainWindow::~MainWindow()
+  {
+    Radiant::trace("MainWindow::~MainWindow");
+    
+    for(std::set<QWidget *>::iterator it = m_displays.begin();
+        it != m_displays.end(); it++) {
+      delete (*it);
+    }
+  }
+
+  bool MainWindow::init()
+  {
+    resize(400, 300);
+
+    // m_mdi = new QMdiArea(this);
+
+    // setCentralWidget(m_mdi);
+    // setCentralWidget(this);
+
+    checkCameras();
+
+    QTimer * timer = new QTimer(this);
+
+    connect(timer, SIGNAL(timeout()), this, SLOT(checkCameras()));
+
+    timer->start(2000);
+    
+    return true;
+  }
+
+  void MainWindow::checkCameras()
+  {
+    std::vector<Radiant::Video1394::CameraInfo> infos;
+
+    Radiant::Video1394::queryCameras( & infos);
+
+    for(unsigned i = 0; i < infos.size(); i++) {
+      u_int64_t euid = infos[i].m_euid64;
+      
+      if(m_cameras.find(euid) == m_cameras.end()) {
+
+	qDebug("Adding camera %d %llx",
+	       (int) m_cameras.size() + 1, (long long) euid);
+
+	QWidget * base = new QWidget();
+
+	int loc = m_cameras.size() * 30;
+	base->move(loc % 800 + 30, loc % 300 + 30);
+	base->resize(640, 480);
+
+	QMenuBar * mb = new QMenuBar(base);
+	QMenu * menu = new QMenu(mb);
+	CamView * cv = new CamView(base);
+
+	menu->addAction("Parameters...", cv, SLOT(openParams()));
+	menu->addAction("Show averages", cv, SLOT(showAverages()));
+	menu->addAction("1/2\" -> 1/3\"", cv,
+			SLOT(toggleHalfInchToThirdInch()));
+	menu->addAction("Update Screen", cv, SLOT(updateScreen()));
+	menu->setTitle("Configuration");
+	mb->addMenu(menu);
+	
+	QVBoxLayout * layout = new QVBoxLayout(base);
+
+	layout->setSpacing(0);
+#if QT_VERSION >= 0x040300
+	layout->setContentsMargins(0, 0, 0, 0);
+#endif
+	layout->addWidget(mb);
+	layout->addWidget(cv, 100);
+	
+	if(cv->start(euid, m_rate, m_customFps,
+		     m_triggerSource, m_triggerMode)) {
+
+	  base->raise();
+	  base->show();
+          m_displays.insert(base);
+	}
+	else
+	  delete base;
+
+	m_cameras.insert(euid);
+      }
+    }
+  }
+
+
+
+
+}

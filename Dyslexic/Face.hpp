@@ -1,0 +1,45 @@
+#ifndef DYSLEXIC_FACE_HPP
+#define DYSLEXIC_FACE_HPP
+
+#include "Size.hpp"
+#include <Nimble/Vector2.hpp>
+
+struct FT_GlyphSlotRec_;
+
+namespace Dyslexic
+{
+
+  class Face
+  {
+    public:
+      Face(const char * fontFilePath);
+      virtual ~Face();
+
+      FT_FaceRec_ ** freetype() const { return m_ftFace; }
+
+      Nimble::Vector2 kernAdvance(unsigned int index1, unsigned int index2);
+
+      FT_GlyphSlotRec_ * glyph(unsigned int index, signed int flags);
+    
+      int numGlyphs() const { return m_numGlyphs; }
+  
+      const Size & size(int size, int res);
+
+      int error() const { return m_error; }
+
+      std::string fontFilePath() const { return m_fontFilePath; }
+
+    private:
+      FT_FaceRec_ ** m_ftFace;
+      Size m_size;
+      int m_numGlyphs;
+
+      int * m_encodingList;
+      bool m_hasKerningTable;
+      int m_error;
+      std::string m_fontFilePath;
+  };
+
+}
+
+#endif

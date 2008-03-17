@@ -1,0 +1,185 @@
+/* COPYRIGHT
+ *
+ * This file is part of Diva.
+ *
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ *
+ * See file "Diva.hpp" for authors and more details.
+ *
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
+ */
+
+#ifndef DIVA_MUTEX_HPP
+#define DIVA_MUTEX_HPP
+
+#include <Radiant/Config.hpp>
+#include <pthread.h>
+
+namespace Radiant {
+
+#ifdef DIVA_HAVE_PTHREAD
+
+  /** Mutex class. The mutex must be initialized explicitly. */
+  class Mutex
+  {
+  public:
+    ///
+    Mutex();
+
+    ///
+    virtual ~Mutex();
+  
+    /** Initialize the mutex. 
+   
+    Setting all values to false gives usually the best performance.
+
+    The boolean arguments refer to POSIX-functionality with the same
+    name. Not all features work on all platforms how-ever: My Linux
+    box does not know anything about inheriting priorities. 
+
+    Recursion should work on all platforms. */
+    bool init(bool shared = false, 
+	      bool prio_inherit = true,
+	      bool recursive = true);
+  
+    /// Close the mutex.
+    bool close();
+
+    /** Locks the mutex. Blocks until mutex is available. */
+    bool lock(); 
+
+    /// Lock the mutex, optionally blocking.
+    bool lock(bool block);
+
+    /** Tries to lock the mutex. Does not block. */
+    bool tryLock();
+
+    /// Unlocks the mutex.
+    bool unlock();
+
+    /// Self test.
+    static void test();
+
+    pthread_mutex_t & pthreadMutex() { return m_mutex; }
+
+  protected:
+    /// Disabled
+    Mutex(const Mutex &foo)
+    { (void) foo; } 
+    /// Disabled
+    Mutex &operator = (const Mutex &);
+
+    pthread_mutex_t m_mutex;
+    bool            m_active;
+  };
+
+#else
+
+#include <stdio.h>
+
+  /** Dummy implementation of a mutex. */
+
+  class Mutex
+  {
+  public:
+    Mutex() { puts("Mutex # Dummy mutex in use"); }
+    ~Mutex() {}
+    bool init(bool, bool, bool) { return true; }
+    bool close() { return true; }
+    bool lock() { return true; }
+    bool lock(bool) { return true; }
+    bool tryLock() { return true; }
+    bool unlock() { return true; }
+    static void test() {}
+  };
+
+#endif
+
+  /// Mutex that initializes automatically.
+  class MutexAuto : public Mutex
+  {
+  public:
+    /// Calls init.
+    MutexAuto(bool shared = false, 
+	      bool prio_inherit = true,
+	      bool recursive = true) 
+    { init(shared, prio_inherit, recursive); }
+    ~MutexAuto() {}
+  };
+
+
+#ifdef __linux__ 
+
+  typedef MutexAuto MutexStatic;
+
+#else
+
+  /// Mutex class to be used as "static" variable
+
+  /** Under Linux, this class is simply typedef to MutexAuto. On other
+      platforms (OSX, Windows) there is some trouble initializing
+      mutexes as static variables. For these cases there is an
+      implementation that initializes when the mutex is first
+      used. This can be problematic, if the mutex is accessed from two
+      threads at exactly the same time for the first time. */
+  class MutexStatic : public Mutex
+  {
+  public:
+    MutexStatic() {}
+    
+    bool lock() { if(!m_active) init(); return Mutex::lock(); }
+    bool lock(bool b) { if(!m_active) init(); return Mutex::lock(b); }
+    bool tryLock() { if(!m_active) init(); return Mutex::tryLock(); }
+  };
+#endif
+
+  /** A guard class. This class is used to automatically lock and unlock
+      a mutex within some function.*/
+
+  class Guard
+  {
+  public:
+    /// Locks the mutex
+    Guard(Mutex * mutex) : m_mutex(mutex) { m_mutex->lock(); }
+    
+    /// Unlocks the mutex
+    ~Guard() { m_mutex->unlock(); }
+
+  protected:
+    Mutex * m_mutex;
+
+    /// Disabled
+    Guard(const Guard &) {}
+    /// Disabled
+    Guard & operator = (const Guard &) { return * this; }
+  };
+
+  /** A guard class that only release a locked mutex. This class is
+      used to automatically unlock a mutex within some function.*/
+
+  class ReleaseGuard
+  {
+  public:
+    /// Locks the mutex
+    ReleaseGuard(Mutex * mutex) : m_mutex(mutex) { }
+    
+    /// Unlocks the mutex
+    ~ReleaseGuard() { m_mutex->unlock(); }
+
+  protected:
+    Mutex * m_mutex;
+
+    /// Disabled
+    ReleaseGuard(const Guard &) {}
+    /// Disabled
+    ReleaseGuard & operator = (const ReleaseGuard &) { return * this; }
+  };
+
+}
+
+
+#endif

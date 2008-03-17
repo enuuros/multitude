@@ -1,0 +1,219 @@
+/* COPYRIGHT
+ *
+ * This file is part of ConfigReader.
+ *
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ *
+ * See file "ConfigReader.hpp" for authors and more details.
+ *
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
+ */
+
+#ifndef NIMBLE_KEYSTONE_HPP
+#define NIMBLE_KEYSTONE_HPP
+
+#include <Nimble/Rect.hpp>
+#include <Nimble/LensCorrection.hpp>
+
+#include <Nimble/Matrix3.hpp>
+
+#include <vector>
+
+namespace Nimble {
+
+  /** Keystone class for transforming between different (skewed) 2D
+      coordinate systems, while taking account possible radial (camera
+      lens) distortion.
+      
+      Conceptually the keystone correction works in following
+      fashion. In practice the linear operations are accumulated to a
+      single matrix multiplication.
+
+      <OL>
+      
+      <LI> We fix the camera lens correction using object of type
+      Nimble::LensCorrection. This is simple third-order polynomial
+      radial mapping. In the future we can offer a customizeable
+      approach so that you can for example set a custom object to do
+      the lens correction.
+
+      <LI> We transform the coordinates from camera coordinates to
+      normalized coordinates in range [0,1]. This transformation is
+      based on knowledge of the four corners that represent the area
+      to be tracked.
+      
+      <LI> Then we apply extension matrix within the [0,1] space
+      (more about that later)
+
+      <LI> Then we multiply the coordinates with the display area
+      (visible pixels) and translate them to desired position in the
+      screen.
+
+      </OL>
+
+      The extension matrix would not be necessary if you could set the
+      corner points of the tracking area freely. In practice it is
+      often necessary to limit the camera area so that it does not
+      match the desired output area exactly (there might be noise at
+      the edges etc). To overcome this limitation one can use an
+      extension matrix that that adjusts the area more easily. To
+      define the extension matrix, you pass observed and desired
+      display coordinates to the applyCorrection function (@see
+      applyCorrection).
+
+      @author Tommi Ilmonen
+  */
+  class KeyStone
+  {
+  public:
+    KeyStone();
+
+    /// Set vertices, and other paramters.
+    void setVertices(const char * str, 
+		     int w, int h,
+		     int dpyw, int dpyh,
+		     int dpyx, int dpyy);
+
+    /// Set vertices, and other paramters.
+    void setVertices(const Nimble::Vector2 * vertices, 
+		     int w, int h,
+		     int dpyw, int dpyh,
+		     int dpyx, int dpyy);
+    
+    /// Sets the output (display) geometry
+    void setOutputGeometry(unsigned w, unsigned h, int x, int y);
+
+    /// Sets one vertex without updating matrices.
+    void setVertex(int index, float x, float y)
+    { m_vertices[index].make(x, y); }
+
+    /// Updates the proection matrix
+    void calculateMatrix();
+
+    /// Project a vector from camera coordinates to the display coordinates
+    /** This function applies the lens correction and projection
+	matrix on the coordinates. */
+    Nimble::Vector2 project(const Nimble::Vector2 &) const;
+    Nimble::Vector2 project01(const Nimble::Vector2 &) const;
+    /// Applies a 3x3 correction marix on a 2D vector.
+    static Nimble::Vector2 project(const Nimble::Matrix3 & m,
+				   const Nimble::Vector2 & v)
+    {
+      Nimble::Vector3 p = m * v;
+      return Nimble::Vector2(p.x / p.z, p.y / p.z);
+    }
+
+    Nimble::Vector2 projectInverse(const Nimble::Vector2 &) const;
+
+    /// Returns a corner point in camera coordinates
+    const Nimble::Vector2 & original(int i) const { return m_originals[i]; }
+    /// Returns the center point of the camer acoordinates
+    Nimble::Vector2 originalCenter() const
+    {
+      return 0.25f * (m_originals[0] + m_originals[1] +
+		      m_originals[2] + m_originals[3]);
+    }
+
+    /// Moves the colost corner point
+    void moveCorner(const Nimble::Vector2 &);
+
+    /// Flips the corner points horizontally.
+    void flipHorizontal();
+    /// Flips the corner points vertically.
+    void flipVertical();
+
+    /// Rotates the keystone corners
+    void rotate(int turns = 1);
+
+    /// Information on which pixels are inside the camera area
+    /** Each item (2D vector) contains values for the first pixel
+	inside the camera area and width of the camera area, per
+	scanline. */
+    const std::vector<Nimble::Vector2i> & limits() const { return m_limits; }
+
+    /// Number of pixels that this keystone camera area contains
+    int containedPixelCount() const { return m_containedPixelCount; }
+
+    /// The width of the output display area
+    int dpyWidth()  const { return m_dpyWidth; }
+    /// The height of the output display area
+    int dpyHeight() const { return m_dpyHeight; }
+
+    /// The x offset to the origin of the output display area
+    int dpyX()  const { return m_dpyX; }
+    /// The y offset to the origin of the output display area
+    int dpyY()  const { return m_dpyY; }
+    
+    /// The output area of the screen
+    /** This function basically returns the information you would
+	get from dpyWidth, dpyheight, dpyX and dpyY. */
+    Nimble::Rect outputBounds();
+    /// Test the keystone correction routines
+    static void testCorrection();
+
+    /// Reference to the lens correction
+    LensCorrection & lensCorrection() { return m_lensCorrection; }
+    
+    /// Adjusts the lens correction
+    void setLensParam(int i, float v);
+    /// Applies correction, based on four screen-space coordinate pairs.
+    /** 
+	@param targets The desired target coordinates.
+	@param targets The observed coordinates.
+     */
+    void calibrateOutput(const Nimble::Vector2 * targets,
+			 const Nimble::Vector2 * real);
+    /// Returns the extension (fine-tuning) matrix
+    const Nimble::Matrix3 & outputExtension() const { return m_matrixExtension;}
+    /// Sets the extension (fine-tuning) matrix
+    /** By default the extension matrix is set to identity. */
+    void setOutputExtension(const Nimble::Matrix3 & m);
+
+  protected:
+
+    void updateLimits();
+
+    /// Calculates the projection matrix.
+    /** See Paul Heckbert's master's thesis, pages 19-21. Often you
+        need to invert this. */
+    static Nimble::Matrix3 projectionMatrix(const Nimble::Vector2 * vertices);
+
+    LensCorrection  m_lensCorrection;
+
+    /// Normalized vertices (from 0 to 1)
+    Nimble::Vector2 m_vertices[4];
+    /// Original vertices (in camera coordinates)
+    Nimble::Vector2 m_originals[4];
+    /// Convert from camera coordinates to [0,1]-space
+    Nimble::Matrix3 m_matrix;
+    /// Convert from camera coordinates to output (screen) coordinates
+    Nimble::Matrix3 m_matrixOut;
+    /// Fix small discrepancies between ideal output and real output
+    Nimble::Matrix3 m_matrixExtension;
+
+    // Camera width/height
+    int            m_width;
+    int            m_height;
+    
+    // Display area width/height
+    int            m_dpyWidth;
+    int            m_dpyHeight;
+
+    // Display area offset
+    int            m_dpyX;
+    int            m_dpyY;
+
+    // Storage of the pixels to traverse when doing image processing
+    std::vector<Nimble::Vector2i> m_limits;
+    // Total number of pixels to traverse.
+    int            m_containedPixelCount;
+  };
+  
+}
+
+
+#endif

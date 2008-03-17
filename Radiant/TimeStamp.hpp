@@ -1,0 +1,114 @@
+/* COPYRIGHT
+ *
+ * This file is part of Diva.
+ *
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ *
+ * See file "Diva.hpp" for authors and more details.
+ *
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
+ */
+
+#ifndef DIVA_TIMESTAMP_HPP
+#define DIVA_TIMESTAMP_HPP
+
+#include <stdint.h>
+
+#include <sys/time.h>
+#include <time.h>
+
+namespace Radiant {
+ 
+  /* A time-stamp has 40 bits for the seconds and 24 bits for
+     fractions of a second. The seconds are as they come from the UNIX
+     clock: 1.1.1970 the counter was zero. */
+
+  /// @todo remove suffix from create* functions
+  class TimeStamp
+  {
+  public:
+    typedef int64_t type;
+    
+    enum {
+      FRACTIONS_PER_SECOND = 0x1000000
+    };
+
+    static type ticksPerSecond() { return FRACTIONS_PER_SECOND; }
+    static type ticksPerMinute() { return 1006632960; }
+    static type ticksPerHour()   { return 60397977600ll; }
+    static type ticksPerDay()    { return 1449551462400ll; }
+
+
+    TimeStamp(type val = 0) : m_val(val) {}
+    ~TimeStamp() {}
+
+    type & value() { return m_val; }
+    const type & value() const { return m_val; }
+
+    void setSecondsD(double s)
+    { m_val = (type) (s * FRACTIONS_PER_SECOND); }
+
+    void setSecondsI(type s)
+    { m_val = (s * FRACTIONS_PER_SECOND); }
+
+    static TimeStamp createSecondsD(double s)
+    { return (type) (s * FRACTIONS_PER_SECOND); }
+
+    static TimeStamp createSecondsI(type s)
+    { return (s << 24); }
+
+    static TimeStamp createHoursD(double hours)
+    { return (type) (hours * ticksPerHour()); }
+
+    static TimeStamp createDaysD(double days)
+    { return (type) (days * ticksPerDay()); }
+
+    static TimeStamp createDHMS(int days, int hours, int minutes, int seconds)
+    { 
+      type tmp = ((type) seconds) << 24;
+      tmp += ticksPerMinute() * (type) minutes;
+      tmp += ticksPerHour() * (type) hours;
+      return tmp + ticksPerDay() * (type) days;
+    }
+
+    int64_t days() const { return m_val / ticksPerDay(); }
+    double  daysD() const { return m_val / (double) ticksPerDay(); }
+    int64_t seconds() const { return m_val >> 24; }
+    int32_t fractions() const { return m_val >> 24; }
+    double secondsD()  const { return m_val / (double) FRACTIONS_PER_SECOND; }
+    double subSecondsD() const 
+    { return (m_val & 0xFFFFFF) / (double) FRACTIONS_PER_SECOND; }
+    int64_t subSecondsI() const 
+    { return m_val & 0xFFFFFF; }
+    double subSecondsUS() const { return 1000000.0 * subSecondsD(); }
+
+    double secsTo(const TimeStamp & that)
+    { return (that.m_val - m_val) / (double) FRACTIONS_PER_SECOND; }
+    double usecsTo(const TimeStamp & that)
+    { return (that.m_val - m_val) * 1000000.0/(double) FRACTIONS_PER_SECOND; }
+
+    inline operator type & () { return m_val; }
+    inline operator const type & () const { return m_val; }
+
+    static type getTime()
+    {
+      struct timeval tv;
+      gettimeofday(& tv, 0);
+      int64_t tmp = tv.tv_sec;
+      tmp <<= 24;
+      tmp |= (int64_t) (tv.tv_usec * (FRACTIONS_PER_SECOND * 0.000001));
+      return tmp;
+    }
+
+  protected:
+    type m_val;
+  };
+
+}
+
+#endif
+
