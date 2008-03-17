@@ -1,9 +1,14 @@
 include(../../multitude.pri)
 include(../Applications.pri)
 
-HEADERS += CamView.hpp MainWindow.hpp ParamView.hpp
+HEADERS += CamView.hpp 
+HEADERS += MainWindow.hpp 
+HEADERS += ParamView.hpp
 
-SOURCES += CamView.cpp MainWindow.cpp ParamView.cpp Main.cpp
+SOURCES += CamView.cpp 
+SOURCES += MainWindow.cpp 
+SOURCES += ParamView.cpp 
+SOURCES += Main.cpp
 
 TARGET = FireView
 
