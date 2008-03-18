@@ -1,10 +1,10 @@
-SOURCES += Main.cpp
+include(../Examples.pri)
 
-INCLUDEPATH += ../../
+SOURCES += Main.cpp
 
 TARGET = ImageExample
 
-LIBS += -L../../lib -lLuminous
-
 CONFIG += link_pkgconfig
 PKGCONFIG += GraphicsMagick++ sdl
+
+LIBS += -lValueIO -lRadiant
