@@ -13,37 +13,37 @@
  * 
  */
 
-#ifndef DIVA_CONFIG_H
-#define DIVA_CONFIG_H
+#ifndef RADIANT_CONFIG_H
+#define RADIANT_CONFIG_H
 
 #include <Radiant/Endian.hpp>
 
 // Version number:
-#define DIVA_VERSION_MAJOR 0
-#define DIVA_VERSION_MINOR 2
-#define DIVA_VERSION_SUBMINOR 10
+#define RADIANT_VERSION_MAJOR 0
+#define RADIANT_VERSION_MINOR 2
+#define RADIANT_VERSION_SUBMINOR 10
 
-// Is our DIVA sample float or double:
-#define DIVA_SAMPLE_IS_FLOAT 1
+// Is our RADIANT sample float or double:
+#define RADIANT_SAMPLE_IS_FLOAT 1
 
-#if DIVA_SAMPLE_IS_FLOAT == 1
-typedef float DIVA_Sample;
-#define DIVA_ASF_SAMPLE DIVA_ASF_FLOAT32
+#if RADIANT_SAMPLE_IS_FLOAT == 1
+typedef float RADIANT_Sample;
+#define RADIANT_ASF_SAMPLE RADIANT_ASF_FLOAT32
 
 #else 
-typedef double DIVA_Sample;
-#define DIVA_ASF_SAMPLE DIVA_ASF_FLOAT64
+typedef double RADIANT_Sample;
+#define RADIANT_ASF_SAMPLE RADIANT_ASF_FLOAT64
 
 #endif
 
-#define DIVA_USE_ALSA_AUDIO 1
-#define DIVA_USE_OSS_AUDIO  1
-#define DIVA_USE_SGI_AUDIO  
+#define RADIANT_USE_ALSA_AUDIO 1
+#define RADIANT_USE_OSS_AUDIO  1
+#define RADIANT_USE_SGI_AUDIO  
 
-#define DIVA_USE_OSS_MIDI  1
-#define DIVA_USE_SGI_MIDI  
+#define RADIANT_USE_OSS_MIDI  1
+#define RADIANT_USE_SGI_MIDI  
 
-#define DIVA_HAVE_PTHREAD 1
-// #define DIVA_HAVE_PWCIOCTL_H @HAVE_PWCIOCTL_H@
+#define RADIANT_HAVE_PTHREAD 1
+// #define RADIANT_HAVE_PWCIOCTL_H @HAVE_PWCIOCTL_H@
 
 #endif

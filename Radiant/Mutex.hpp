@@ -13,15 +13,15 @@
  * 
  */
 
-#ifndef DIVA_MUTEX_HPP
-#define DIVA_MUTEX_HPP
+#ifndef RADIANT_MUTEX_HPP
+#define RADIANT_MUTEX_HPP
 
 #include <Radiant/Config.hpp>
 #include <pthread.h>
 
 namespace Radiant {
 
-#ifdef DIVA_HAVE_PTHREAD
+#ifdef RADIANT_HAVE_PTHREAD
 
   /** Mutex class. The mutex must be initialized explicitly. */
   class Mutex

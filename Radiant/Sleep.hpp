@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_SLEEP_HPP
-#define DIVA_SLEEP_HPP
+#ifndef RADIANT_SLEEP_HPP
+#define RADIANT_SLEEP_HPP
 
 #include <Radiant/Types.hpp>
 
@@ -23,8 +23,8 @@
 #include <time.h>
 
 
-#define DIVA_BILLION 1000000000
-#define DIVA_MILLION 1000000
+#define RADIANT_BILLION 1000000000
+#define RADIANT_MILLION 1000000
 
 namespace Radiant {
 
@@ -41,20 +41,20 @@ namespace Radiant {
   inline void addTimeNs(struct timespec *tspec, long ns)
   {
     tspec->tv_nsec += ns;
-    if(tspec->tv_nsec >= DIVA_BILLION) {
-      long tmp = tspec->tv_nsec / DIVA_BILLION;
+    if(tspec->tv_nsec >= RADIANT_BILLION) {
+      long tmp = tspec->tv_nsec / RADIANT_BILLION;
       tspec->tv_sec += tmp;
-      tspec->tv_nsec = tspec->tv_nsec - tmp * DIVA_BILLION;
+      tspec->tv_nsec = tspec->tv_nsec - tmp * RADIANT_BILLION;
     }
   }
 
   inline void addTimeUs(struct timeval *tspec, long us)
   {
     tspec->tv_usec += us;
-    if(tspec->tv_usec >= DIVA_MILLION) {
-      long tmp = tspec->tv_usec / DIVA_MILLION;
+    if(tspec->tv_usec >= RADIANT_MILLION) {
+      long tmp = tspec->tv_usec / RADIANT_MILLION;
       tspec->tv_sec += tmp;
-      tspec->tv_usec = tspec->tv_usec - tmp * DIVA_MILLION;
+      tspec->tv_usec = tspec->tv_usec - tmp * RADIANT_MILLION;
     }
   }
 
@@ -62,24 +62,24 @@ namespace Radiant {
   {
     tspec->tv_sec  += tspecAdd->tv_sec;
     tspec->tv_usec += tspecAdd->tv_usec;
-    if(tspec->tv_usec >= DIVA_MILLION) {
-      long tmp = tspec->tv_usec / DIVA_MILLION;
+    if(tspec->tv_usec >= RADIANT_MILLION) {
+      long tmp = tspec->tv_usec / RADIANT_MILLION;
       tspec->tv_sec += tmp;
-      tspec->tv_usec = tspec->tv_usec - tmp * DIVA_MILLION;
+      tspec->tv_usec = tspec->tv_usec - tmp * RADIANT_MILLION;
     }
   }
 
   inline long timeDiffNs(const struct timespec *tspecOld,
 			    const struct timespec *tspecNew)
   {
-    return (tspecNew->tv_sec - tspecOld->tv_sec) * DIVA_BILLION +
+    return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_BILLION +
       tspecNew->tv_nsec - tspecOld->tv_nsec;
   }
 
   inline long timeDiffUs(const struct timeval *tspecOld,
 			    const struct timeval *tspecNew)
   {
-    return (tspecNew->tv_sec - tspecOld->tv_sec) * DIVA_MILLION +
+    return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
       tspecNew->tv_usec - tspecOld->tv_usec;
   }
 
@@ -103,7 +103,7 @@ namespace Radiant {
     { 
       struct timespec tspec;
       tspec.tv_sec = 0;
-      tspec.tv_nsec = (long) msecs * DIVA_MILLION;
+      tspec.tv_nsec = (long) msecs * RADIANT_MILLION;
       return nanosleep(&tspec, 0) != -1;
     }
 

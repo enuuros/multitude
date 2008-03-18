@@ -71,18 +71,25 @@ namespace Nimble {
     template <class T>
     inline T Max(T x, T y) { return x > y ? x : y; }
     template <class T>
+    inline T Max(T a, T b, T c) { return Max(a, Max(b,c)); }
+    template <class T>
+    inline T Max(T a, T b, T c, T d) { return Max(Max(a, b), Max(c, d)); }
+
+    template <class T>
     inline T Min(T x, T y) { return x < y ? x : y; }
+    template <class T>
+    inline T Min(T a, T b, T c) { return Min(a, Min(b, c)); }
+    template <class T>
+    inline T Min(T a, T b, T c, T d) { return Min(Min(a, b), Min(c, d)); }
+
     template <class T>
     inline T Abs(T x) { return x > 0 ? x : -x; }
 
-    template <class T>
-    inline T Min(T a, T b, T c) { return Min(a, Min(b, c)); }
 
-    template <class T>
-    inline T Max(T a, T b, T c) { return Max(a, Max(b,c)); }
 
     /// Seeks the maximum value in an vector
-    /** VMax = vector maximum. */
+    /** VMax = vector maximum. 
+     */
     template <class T>
     inline T VMax(const T * vals, int n)
     {

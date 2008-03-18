@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_IODEFS_HPP
-#define DIVA_IODEFS_HPP
+#ifndef RADIANT_IODEFS_HPP
+#define RADIANT_IODEFS_HPP
 
 namespace Radiant {
 

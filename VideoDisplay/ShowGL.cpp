@@ -275,7 +275,7 @@ namespace VideoDisplay {
     m_filename = filename;
     m_dsp = dsp;
 
-    RadiantIO::VideoInputFFMPEG video;
+    Screenplay::VideoInputFFMPEG video;
 
     if(!video.open(filename))
       return false;
@@ -604,7 +604,7 @@ namespace VideoDisplay {
   {
     trace("ShowGL::getThumbnail # %lf", pos);
 
-    RadiantIO::VideoInputFFMPEG video;
+    Screenplay::VideoInputFFMPEG video;
     if(!video.open(m_filename.c_str()))
       return;
 

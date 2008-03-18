@@ -33,6 +33,7 @@ contains(portaudio, YES) {
   SUBDIRS += Resonant
 
   contains(ffmpeg, YES) {
+    SUBDIRS += Screenplay
     SUBDIRS += VideoDisplay
   }
 }

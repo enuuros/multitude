@@ -17,7 +17,7 @@
 
 #include <Radiant/Trace.hpp>
 #include <Radiant/Types.hpp>
-#include <Radiant/VideoFFMPEG.hpp>
+#include "VideoFFMPEG.hpp"
 
 extern "C" {
 #include <ffmpeg/avcodec.h>
@@ -26,7 +26,7 @@ extern "C" {
 #include <strings.h>
 #include <assert.h>
 
-namespace RadiantIO {
+namespace Screenplay {
   
   using namespace Radiant;
 

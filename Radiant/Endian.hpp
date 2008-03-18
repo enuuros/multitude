@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_ENDIAN_H
-#define DIVA_ENDIAN_H
+#ifndef RADIANT_ENDIAN_H
+#define RADIANT_ENDIAN_H
 
 #include <Radiant/Types.hpp>
 
@@ -25,21 +25,21 @@
    WORDS_BIGENDIAN will be defined. Otherwise macro
    WORDS_LITTLEENDIAN will be defined. 
 
-   This file also defines DIVA versions of a few common macros. This
+   This file also defines RADIANT versions of a few common macros. This
    is needed to to bypass VR Juggler (or Performer ?) bugs.
 */
 
 #if defined(__sgi)
 // All SGI is currently big-endian
 #define WORDS_BIGENDIAN 1
-#define DIVA_ntohl(x) x
-#define DIVA_htonl(x) x
+#define RADIANT_ntohl(x) x
+#define RADIANT_htonl(x) x
 
-#define DIVA_IRIX 1
+#define RADIANT_IRIX 1
 
 #elif defined(__linux__) 
 
-#define DIVA_LINUX 1
+#define RADIANT_LINUX 1
 
 // This endian check only works on Linux (?)
 
@@ -47,10 +47,10 @@
 #include <netinet/in.h>
 
 
-#define DIVA_ntohl(x) ntohl(x)
-#define DIVA_htonl(x) htonl(x)
-#define DIVA_ntohs(x) ntohs(x)
-#define DIVA_htons(x) htons(x)
+#define RADIANT_ntohl(x) ntohl(x)
+#define RADIANT_htonl(x) htonl(x)
+#define RADIANT_ntohs(x) ntohs(x)
+#define RADIANT_htons(x) htons(x)
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 
@@ -71,7 +71,7 @@
 
 // OSX
 
-#define DIVA_OSX 1
+#define RADIANT_OSX 1
 
 #include <machine/endian.h>
 
@@ -119,4 +119,4 @@ namespace Radiant {
   
 }
 
-#endif   // DIVA_ENDIAN_H
+#endif   // RADIANT_ENDIAN_H

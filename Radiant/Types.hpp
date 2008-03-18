@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_TYPES_HPP
-#define DIVA_TYPES_HPP
+#ifndef RADIANT_TYPES_HPP
+#define RADIANT_TYPES_HPP
 
 #ifndef WIN32
 

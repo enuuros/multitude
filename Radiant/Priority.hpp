@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_PRIORITY_HPP
-#define DIVA_PRIORITY_HPP
+#ifndef RADIANT_PRIORITY_HPP
+#define RADIANT_PRIORITY_HPP
 
 #include <sched.h>
 

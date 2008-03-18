@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_VIDEO_1394_HPP
-#define DIVA_VIDEO_1394_HPP
+#ifndef RADIANT_VIDEO_1394_HPP
+#define RADIANT_VIDEO_1394_HPP
 
 #include <Radiant/VideoInput.hpp>
 

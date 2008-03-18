@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += BinaryData.hpp
 HEADERS += Color.hpp
@@ -25,7 +24,6 @@ HEADERS += Thread.hpp
 HEADERS += Timer.hpp
 HEADERS += Trace.hpp 
 HEADERS += Video1394.hpp
-HEADERS += VideoFFMPEG.hpp
 HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
@@ -48,19 +46,12 @@ SOURCES += Thread.cpp
 SOURCES += Timer.cpp
 SOURCES += Trace.cpp
 SOURCES += Video1394.cpp
-SOURCES += VideoFFMPEG.cpp
 SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
 TARGET = Radiant
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../ 
-
-DESTDIR = ../lib
-
 LIBS += -lpthread
 
-PKGCONFIG += libdc1394-2 libavutil libavformat libavcodec
+PKGCONFIG += libdc1394-2

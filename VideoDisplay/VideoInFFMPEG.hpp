@@ -19,7 +19,7 @@
 
 #include <VideoDisplay/VideoIn.hpp>
 
-#include <Radiant/VideoFFMPEG.hpp>
+#include <Screenplay/VideoFFMPEG.hpp>
 
 namespace VideoDisplay {
 
@@ -54,7 +54,7 @@ namespace VideoDisplay {
     Radiant::TimeStamp m_syncAccu;
     Radiant::TimeStamp m_syncOffset;
 
-    RadiantIO::VideoInputFFMPEG m_video;
+    Screenplay::VideoInputFFMPEG m_video;
   };
 
 }

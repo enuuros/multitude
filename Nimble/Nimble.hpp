@@ -28,7 +28,7 @@
     \b Copyright: The Nimble library has been developed by Helsinki
     University of Technology, Telecommunications Software and
     Multimedia Laboratory in the Digital Interactive Virtual Acoustics
-    (DIVA, 1999-2005, as part of the Fluid interaction framework). It
+    (RADIANT, 1999-2005, as part of the Fluid interaction framework). It
     has been developed further by Helsinki Institute for Information
     Technology (HIIT, 2006-2007) and MultiTouch Oy (2007).
     

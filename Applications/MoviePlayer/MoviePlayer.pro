@@ -14,3 +14,5 @@ CONFIG += qt
 QT = core gui opengl xml
 
 PKGCONFIG += GraphicsMagick++
+
+LIBS += -lScreenplay -lRadiant -lLuminous -lResonant -lValueIO -lDyslexic

@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_TCP_SERVER_SOCKET_HPP
-#define DIVA_TCP_SERVER_SOCKET_HPP
+#ifndef RADIANT_TCP_SERVER_SOCKET_HPP
+#define RADIANT_TCP_SERVER_SOCKET_HPP
 
 #include <string>
 

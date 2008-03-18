@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_CONDITION_HPP
-#define DIVA_CONDITION_HPP
+#ifndef RADIANT_CONDITION_HPP
+#define RADIANT_CONDITION_HPP
 
 #include <sys/time.h>
 #include <time.h>

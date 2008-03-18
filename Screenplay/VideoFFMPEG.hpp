@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVAIO_VIDEO_FFMPEG_HPP
-#define DIVAIO_VIDEO_FFMPEG_HPP
+#ifndef SCREENPLAY_VIDEO_FFMPEG_HPP
+#define SCREENPLAY_VIDEO_FFMPEG_HPP
 
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/VideoInput.hpp>
@@ -30,7 +30,7 @@ extern "C" {
   struct AVFrame;
 }
 
-namespace RadiantIO {
+namespace Screenplay {
 
   class VideoInputFFMPEG : public Radiant::VideoInput
   {

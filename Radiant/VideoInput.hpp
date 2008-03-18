@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_VIDEO_INPUT_H
-#define DIVA_VIDEO_INPUT_H
+#ifndef RADIANT_VIDEO_INPUT_H
+#define RADIANT_VIDEO_INPUT_H
 
 #include <Radiant/VideoImage.hpp>
 #include <Radiant/IODefs.hpp>

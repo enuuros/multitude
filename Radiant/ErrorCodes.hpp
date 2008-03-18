@@ -12,8 +12,8 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
-#ifndef DIVA_ERROR_ENUMS_HPP
-#define DIVA_ERROR_ENUMS_HPP
+#ifndef RADIANT_ERROR_ENUMS_HPP
+#define RADIANT_ERROR_ENUMS_HPP
 
 namespace Radiant {
 

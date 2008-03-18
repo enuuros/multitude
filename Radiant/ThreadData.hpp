@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_THREAD_DATA_HPP
-#define DIVA_THREAD_DATA_HPP
+#ifndef RADIANT_THREAD_DATA_HPP
+#define RADIANT_THREAD_DATA_HPP
 
 #include <Radiant/Mutex.hpp>
 #include <Radiant/Thread.hpp>

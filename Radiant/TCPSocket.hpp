@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_TCP_SOCKET_HPP
-#define DIVA_TCP_SOCKET_HPP
+#ifndef RADIANT_TCP_SOCKET_HPP
+#define RADIANT_TCP_SOCKET_HPP
 
 #include <Radiant/BinaryStream.hpp>
 

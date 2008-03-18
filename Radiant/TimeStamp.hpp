@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_TIMESTAMP_HPP
-#define DIVA_TIMESTAMP_HPP
+#ifndef RADIANT_TIMESTAMP_HPP
+#define RADIANT_TIMESTAMP_HPP
 
 #include <stdint.h>
 

@@ -15,14 +15,13 @@
 
 #include "VideoWindow.hpp"
 
-#include <Radiant/Trace.hpp>
-#include <Radiant/VideoFFMPEG.hpp>
-
 #include <Luminous/MatrixStep.hpp>
 #include <Luminous/Utils.hpp>
 
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
+
+#include <Screenplay/VideoFFMPEG.hpp>
 
 #include <VideoDisplay/SubTitles.hpp>
 
@@ -88,7 +87,7 @@ void VideoWindow::keyPressEvent(QKeyEvent * e)
 
   if(e->key() == Qt::Key_G) {
     VideoDisplay::VideoIn::toggleDebug();
-    RadiantIO::VideoInputFFMPEG::setDebug(1);
+    Screenplay::VideoInputFFMPEG::setDebug(1);
   }
   else if(e->key() == Qt::Key_F)
     toggleFullScreen();

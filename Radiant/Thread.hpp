@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_THREAD_HPP
-#define DIVA_THREAD_HPP
+#ifndef RADIANT_THREAD_HPP
+#define RADIANT_THREAD_HPP
 
 #define PTHREAD
 

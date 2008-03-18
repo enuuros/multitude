@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef DIVA_VIDEO_IMAGE_HPP
-#define DIVA_VIDEO_IMAGE_HPP
+#ifndef RADIANT_VIDEO_IMAGE_HPP
+#define RADIANT_VIDEO_IMAGE_HPP
 
 namespace Radiant {
 
