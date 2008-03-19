@@ -24,6 +24,32 @@
 namespace Radiant {
 
   /// Condition for threads.
+  /** 
+      Typical use pattern for thread that waits:
+
+      <PRE>
+      mutex.lock();
+
+      while(needMoreData())
+        condition.wait(mutex);
+
+      mutex.unlock();
+      </PRE>
+
+      Typical use pattern for thread that informs its children:
+
+      <PRE>
+      mutex.lock();
+      condition.wakeAll();
+      mutex.unlock();
+      </PRE>
+
+      Or simply:
+
+      <PRE>
+      condition.wakeAll(mutex);
+      </PRE>
+  */
   class Condition
   {
   public:
