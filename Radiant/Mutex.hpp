@@ -70,11 +70,6 @@ namespace Radiant {
     pthread_mutex_t & pthreadMutex() { return m_mutex; }
 
   protected:
-    /// Disabled
-    Mutex(const Mutex &foo)
-    { (void) foo; } 
-    /// Disabled
-    Mutex &operator = (const Mutex &);
 
     pthread_mutex_t m_mutex;
     bool            m_active;

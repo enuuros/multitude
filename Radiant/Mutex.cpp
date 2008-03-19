@@ -175,10 +175,5 @@ namespace Radiant {
     m2.init(true, true);
   }
 
-  Mutex &Mutex::operator = (const Mutex &foo)
-  {
-    (void) foo;
-    return *this;
-  }
 
 }
