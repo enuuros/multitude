@@ -24,6 +24,6 @@ CONFIG -= debug
 
 #MULTI_USUAL_LIBS = $$MULTI_CORE_LIBS -lMultiWidgets -lSDL
 
-#MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
+MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 #MULTI_VIDEO_LIBS = -lResonant -lVideoDisplay $$MULTI_FFMPEG_LIBS -lsndfile
 

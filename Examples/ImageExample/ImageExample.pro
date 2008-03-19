@@ -8,3 +8,5 @@ CONFIG += link_pkgconfig
 PKGCONFIG += GraphicsMagick++ sdl
 
 LIBS += -lValueIO -lRadiant
+
+macx:LIBS += -framework OpenGL

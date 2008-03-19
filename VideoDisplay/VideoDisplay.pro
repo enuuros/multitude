@@ -18,18 +18,22 @@ TARGET = VideoDisplay
 
 DEPENDPATH += ../
 
-BASEPATH = /usr
+#BASEPATH = /usr
 
-macx {
-  BASEPATH = /usr/local
-}
+#macx {
+#  BASEPATH = /usr/local
+#}
 
-INCLUDEPATH += ../ $${BASEPATH}/include/ffmpeg
-INCLUDEPATH += $${BASEPATH}/include/GraphicsMagick
+INCLUDEPATH += ../
+
+# $${BASEPATH}/include/ffmpeg
+#INCLUDEPATH += $${BASEPATH}/include/GraphicsMagick
+
+PKGCONFIG += GraphicsMagick++ libavutil
 
 DEFINES += __STDC_CONSTANT_MACROS 
 
-LIBS += -L../lib -lResonant -lDyslexic -lLuminous -lValueIO  -lRadiant -lGLEW 
+LIBS += -L../lib -lResonant -lScreenplay -lDyslexic -lLuminous -lValueIO  -lRadiant -lGLEW 
 
 DESTDIR = ../lib
 
