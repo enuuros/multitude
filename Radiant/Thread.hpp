@@ -20,6 +20,8 @@
 
 #include <pthread.h>
 
+#include <Patterns/NotCopyable.hpp>
+
 namespace Radiant {
 
   class Mutex;
@@ -31,7 +33,7 @@ namespace Radiant {
       At the moment there is only POSIX-threads -based implementation,
       that works on various UNIX-like systems.
       */
-  class Thread
+  class Thread : public Patterns::NotCopyable
   {
   public:
     /// Thread id type.

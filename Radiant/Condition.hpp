@@ -19,6 +19,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+#include <Patterns/NotCopyable.hpp>
+
 #include <Radiant/Mutex.hpp>
 
 namespace Radiant {
@@ -50,7 +52,7 @@ namespace Radiant {
       condition.wakeAll(mutex);
       </PRE>
   */
-  class Condition
+  class Condition : public Patterns::NotCopyable
   {
   public:
     Condition() 
