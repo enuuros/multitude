@@ -16,7 +16,10 @@
 #ifndef RADIANT_MUTEX_HPP
 #define RADIANT_MUTEX_HPP
 
+#include <Patterns/NotCopyable.hpp>
+
 #include <Radiant/Config.hpp>
+
 #include <pthread.h>
 
 namespace Radiant {
@@ -24,7 +27,7 @@ namespace Radiant {
 #ifdef RADIANT_HAVE_PTHREAD
 
   /** Mutex class. The mutex must be initialized explicitly. */
-  class Mutex
+  class Mutex : public Patterns::NotCopyable
   {
   public:
     ///
