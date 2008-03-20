@@ -32,6 +32,11 @@ namespace Nimble {
     m_matrix.identity();
     m_matrixOut.identity();
     m_matrixExtension.identity();
+
+    setVertices("0 0  640 0  640 480  0 480", 640, 480, 1920, 1080, 0, 0);
+    
+    //calculateMatrix();
+    //updateLimits();
   }
 
   void KeyStone::setVertices(const char * str,

@@ -51,6 +51,10 @@ namespace Nimble {
     void setParams(float a, float b, float c)
     { m_params.make(a, b, c, 1.0f - (a + b + c)); }
 
+    /// Sets all the lens correction paramters
+    void setParams(const float * abc)
+    { setParams(abc[0], abc[1], abc[2]); }
+
     /// Sets a single floating value
     void setParam(int i, float v)
     { 

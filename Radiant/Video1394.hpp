@@ -131,6 +131,9 @@ namespace Radiant {
 
     int m_isoChannel;
 
+    /// Numberof images the user is holding.
+    int m_outside;
+
     bool  m_initialized;
     bool  m_started;
     unsigned  m_fps;

@@ -122,7 +122,8 @@ namespace Radiant {
 
   Video1394::Video1394()
     : m_camera(0),
-      m_frame(0)
+      m_frame(0),
+      m_outside(0)
   {
     m_videodevice = "/dev/video1394";
     m_initialized = false;
@@ -481,6 +482,8 @@ namespace Radiant {
     if(euid != 0)
       trace("Video1394::open # %.8x%.8x (%s)", 
 	     (int) (m_euid >> 32), (int) m_euid, euid);
+
+    m_outside = 0;
 
     const char * fname = "Video1394::initialize";
 
@@ -905,8 +908,7 @@ namespace Radiant {
     if((err = dc1394_capture_dequeue(m_camera,
 				     DC1394_CAPTURE_POLICY_WAIT,
 				     & m_frame))) {
-      error(
-	     "Video1394::captureImage # Unable to capture a frame!");
+      error("Video1394::captureImage # Unable to capture a frame!");
       close();
       return 0;
     }
@@ -921,12 +923,24 @@ namespace Radiant {
 
     // trace("Video1394::captureImage # EXIT");
 
+    m_outside++;
+
+    if(m_outside != 1) {
+      error("Video1394::captureImage # Please release captured " 
+            "frames with doneImage()");
+    }
+
     return & m_image;
   }
 
   void Video1394::doneImage()
   {
+    m_outside--;
+
+    assert(m_outside == 0);
+
     dc1394_capture_enqueue(m_camera, m_frame);
+    
     m_frame = 0;
   }
 

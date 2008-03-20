@@ -72,13 +72,13 @@ namespace Nimble {
   public:
     KeyStone();
 
-    /// Set vertices, and other paramters.
+    /// Set vertices, and other parameters.
     void setVertices(const char * str, 
 		     int w, int h,
 		     int dpyw, int dpyh,
 		     int dpyx, int dpyy);
 
-    /// Set vertices, and other paramters.
+    /// Set vertices, and other parameters.
     void setVertices(const Nimble::Vector2 * vertices, 
 		     int w, int h,
 		     int dpyw, int dpyh,
@@ -143,10 +143,16 @@ namespace Nimble {
     /// The height of the output display area
     int dpyHeight() const { return m_dpyHeight; }
 
+    Nimble::Vector2f dpySize() const
+    { return Nimble::Vector2i(m_dpyWidth, m_dpyHeight); }
+
     /// The x offset to the origin of the output display area
     int dpyX()  const { return m_dpyX; }
     /// The y offset to the origin of the output display area
     int dpyY()  const { return m_dpyY; }
+
+    Nimble::Vector2f dpyOffset() const
+    { return Nimble::Vector2i(m_dpyX, m_dpyY); }
     
     /// The output area of the screen
     /** This function basically returns the information you would
