@@ -17,6 +17,11 @@ namespace Radiant
     setRGBA(r, g, b, a);
   }
 
+  Color::Color(const Nimble::Vector4f & v) 
+  {
+    setRGBA(v.x, v.y, v.z, v.w);
+  }
+
   Color::~Color()
   {}
 
