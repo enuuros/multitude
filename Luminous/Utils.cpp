@@ -486,7 +486,7 @@ namespace Luminous {
     glFilledSoftLine(v1[0], v1[1], v2[0], v2[1], width, blendwidth, color);
   }
 
-  void Utils::glCrossf(float centerx, float centery, float size, float radians)
+  void Utils::glCross(float centerx, float centery, float size, float radians)
   {
     const float   halfSize = size / 2.0f;
     Vector2f      vertices[4] =
@@ -521,6 +521,16 @@ namespace Luminous {
     }
 
     glEnd();
+  }
+
+  void Utils::glCrossf(float centerx, float centery, float size, float radians)
+  {
+    glCross(centerx, centery, size, radians);
+  }
+
+  void Utils::glCross(const float * loc, float size, float radians)
+  {
+    glCross(loc[0], loc[1], size, radians);
   }
 
   void Utils::glSoftArc(float centerx, float centery, float radius,

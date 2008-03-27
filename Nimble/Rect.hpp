@@ -260,6 +260,8 @@ namespace Nimble {
   }
  
   typedef RectT<float> Rect;
+  typedef RectT<float> Rectf;
+  typedef RectT<int> Recti;
 
   /** Multiplies the location vectors with some matrix. */
   /*

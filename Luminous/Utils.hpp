@@ -72,7 +72,9 @@ namespace Luminous {
 				 float width, float edgeWidth,
 				 const float * color);
     /// Draw a cross (X)
+    static void glCross(float centerx, float centery, float size, float radians);
     static void glCrossf(float centerx, float centery, float size, float radians);
+    static void glCross(const float *loc, float size, float radians);
     /// Draw an arc using GL_LINE_STRIP
     static void glArc(float centerx, float centery, float radius,
 		      float fromRadians, float toRadians, int linesegments);

@@ -18,6 +18,8 @@
 
 #include <sched.h>
 
+#include <errno.h>
+
 namespace Radiant {
 
   enum Priority {
