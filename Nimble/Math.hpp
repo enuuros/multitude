@@ -135,6 +135,8 @@ namespace Nimble {
     inline int Round(float x) { return x > 0.0f ? (int) (x + 0.5f) : (int) (x - 0.5f); }
     inline int Round(double x) { return x > 0.0 ? (int) (x + 0.5) : (int) (x - 0.5); }
 
+    inline int Ceil(float x) { return x >= 0.0f ? (int) (x + 0.99999f) : (int) (x); }
+
     /** Clamps (limits) x between low and high. */
     
     /* template <class T>

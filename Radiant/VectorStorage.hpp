@@ -161,6 +161,9 @@ namespace Radiant {
     iterator end()
     { iterator tmp = m_points.begin(); tmp += m_count; return tmp;}
     
+    inline T & operator [] (unsigned i) { return m_points[i]; }
+    inline const T & operator [] (unsigned i) const { return m_points[i]; }
+
     VectorStorage & operator = (const VectorStorage & that)
     {
       m_count = that.m_count;

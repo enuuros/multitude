@@ -58,7 +58,7 @@ going to use that memory.
 
 With most applications this is not visible to the end-user as few
 applications can utilise more than one CPU core effeciently. How-ever,
-with more complex applications one needs to exercise greater care.
+with more CPU-heavy applications one needs to exercise greater care.
 
 BTW: Problems like this are one reason why in the Cell architecture
 the eight parallel processors (SPUs) need to do explicit access to the
