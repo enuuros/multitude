@@ -173,4 +173,13 @@ namespace Nimble {
 
 } // namespace
 
+template <class S, class T>
+inline S &operator<<(S &os, const Nimble::Vector2T<T> &t)
+{
+  os << t.x << ' ' << t.y;
+  return os;
+}
+
+
+
 #endif

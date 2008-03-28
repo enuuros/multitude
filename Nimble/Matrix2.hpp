@@ -32,11 +32,16 @@ namespace Nimble {
     Matrix2T() {}
     Matrix2T(T v11, T v12, T v21, T v22) { m[0].make(v11, v12); m[1].make(v21, v22); }
     Matrix2T(const Matrix2T &that) { m[0] = that.m[0]; m[1] = that.m[1]; }
+    template <class S>
+    Matrix2T(const Vector2T<S> & r1, const Vector2T<S> & r2)
+    { m[0] = r1; m[1] = r2; }
     /// Empty destructor
     /** This method is defined because otherwise so compilers might
 	complain. We expect that a decent compiler knows how to
 	eliminate this function. */
     ~Matrix2T() {}
+
+    void make(T v11, T v12, T v21, T v22) { m[0].make(v11, v12); m[1].make(v21, v22); }
 
     /// Returns a reference to a row
     Nimble::Vector2T<T>&       row(int i)             { return m[i]; }
@@ -59,6 +64,9 @@ namespace Nimble {
 
     /// Transpose this matrix
     void               transpose()            { swap(m[0][1],m[1][0]); }
+    /// Transpose this matrix
+    Matrix2T           transposed() const
+    { return Matrix2T(m[0][0], m[1][0], m[0][1], m[1][1]); }
     /// Set all matrix elements to zero
     void               clear()                { m[0].clear(); m[1].clear(); } 
     /// Create an identity matrix
@@ -67,6 +75,14 @@ namespace Nimble {
     void               rotate(T);
     /// Create a scaling matrix
     void               scale(T s)             { m[0].make(s, 0.0); m[1].make(0.0, s); }
+
+    void               add(T v) { m[0][0]+=v;m[0][1]+=v;m[1][0]+=v;m[1][1]+=v; }
+
+    inline Matrix2T inverse() const;
+
+    inline float det() const { return m[0][0]*m[1][1] - m[0][1] * m[1][0]; }
+
+    inline Matrix2T operator *= (T s) { m[0] *= s; m[1] *= s; return * this; }
 
     /// Returns the number of rows in this matrix type
     static int         rows() { return 2; }
@@ -77,13 +93,13 @@ namespace Nimble {
     static Matrix2T rotation(T r) { T c = Math::Cos(r); T s = Math::Sin(r); return Matrix2T(c, -s, s, c); }
     /// Returns a scaling matrix
     static Matrix2T scaling(T s) { Matrix2T m; m.identity(); m.set(0, 0, s); m.set(1, 1, s); return m; }
-
+    
   private:
     static void swap(T &a, T& b);
     Vector2T<T> m[2];
-  };
+    };
 
-  template <class T>
+    template <class T>
   inline void Matrix2T<T>::swap(T &a, T& b)
   {
     T t = a;
@@ -98,6 +114,32 @@ namespace Nimble {
     T sa = Math::Sin(a);
     m[0].make(ca, -sa);
     m[1].make(sa, ca);
+  }
+
+  template <class T>
+  inline Matrix2T<T> Matrix2T<T>::inverse() const
+  {
+    Matrix2T<T> inv;
+
+    // Code from WidMagic4
+
+    T fDet = det();
+    if (Math::Abs(fDet) > 1.0e-8) {
+        T fInvDet = ((T)1.0)/fDet;
+        inv.data()[0] =  data()[3]*fInvDet;
+        inv.data()[1] = -data()[1]*fInvDet;
+        inv.data()[2] = -data()[2]*fInvDet;
+        inv.data()[3] =  data()[0]*fInvDet;
+    }
+    else
+    {
+        inv.data()[0] = (T)0.0;
+        inv.data()[1] = (T)0.0;
+        inv.data()[2] = (T)0.0;
+        inv.data()[3] = (T)0.0;
+    }
+
+    return inv;
   }
 
   template <class T>
@@ -132,9 +174,38 @@ namespace Nimble {
     return res;
   }
 
+  template <class T>
+  inline Matrix2T<T> operator+(const Matrix2T<T>& m1, const Matrix2T<T>& m2)
+  {
+    return Matrix2T<T>(m1[0] + m2[0], m1[1] + m2[1]);
+  }
+
+  template <class T>
+  inline Matrix2T<T> operator-(const Matrix2T<T>& m1, const Matrix2T<T>& m2)
+  {
+    return Matrix2T<T>(m1[0] - m2[0], m1[1] - m2[1]);
+  }
+
   typedef Matrix2T<float> Matrix2;
 
 }
+
+template <class S, class T>
+inline S &operator<<(S &os, const Nimble::Matrix2T<T> &t)
+{
+  os << t[0].x << ' ' << t[0].y << " ; " << t[1].x << ' ' << t[1].y;
+  return os;
+}
+
+
+template <class T>
+inline Nimble::Matrix2T<T> mulColByRowVector
+(const Nimble::Vector2T<T>& v1, const Nimble::Vector2T<T>& v2)
+{
+  return Nimble::Matrix2T<T>(v1.x * v2.x, v1.y * v2.x,
+                             v1.x * v2.y, v1.y * v2.y);
+}
+
 
 #endif
 
