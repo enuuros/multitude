@@ -4,13 +4,15 @@
 //#include <ft2build.h>
 //#include FT_FREETYPE_H
 
+struct FT_LibraryRec_;
+
+/// Dyslexic is an OpenGL font rendering library
 /**
- * Dyslexic is an OpenGL font rendering library based on FTGL 2.1.2.
+ * Dyslexic is a C++ OpenGL font rendering library based on FTGL
+ * 2.1.2.
  *
  * @author Esa Nuuros
  */
-struct FT_LibraryRec_;
-
 namespace Dyslexic
 {
 
