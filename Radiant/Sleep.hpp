@@ -37,6 +37,7 @@ namespace Radiant {
     TIMING_EARLY
   };
 
+  // POSIX-specific functions:
 
   inline void addTimeNs(struct timespec *tspec, long ns)
   {
@@ -70,14 +71,14 @@ namespace Radiant {
   }
 
   inline long timeDiffNs(const struct timespec *tspecOld,
-			    const struct timespec *tspecNew)
+			 const struct timespec *tspecNew)
   {
     return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_BILLION +
       tspecNew->tv_nsec - tspecOld->tv_nsec;
   }
 
   inline long timeDiffUs(const struct timeval *tspecOld,
-			    const struct timeval *tspecNew)
+			 const struct timeval *tspecNew)
   {
     return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
       tspecNew->tv_usec - tspecOld->tv_usec;

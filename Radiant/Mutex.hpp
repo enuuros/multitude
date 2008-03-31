@@ -116,14 +116,18 @@ namespace Radiant {
 
 #else
 
-  /// Mutex class to be used as "static" variable
+  /// Mutex class to be used as static or global variable
 
   /** Under Linux, this class is simply typedef to MutexAuto. On other
       platforms (OSX, Windows) there is some trouble initializing
-      mutexes as static variables. For these cases there is an
-      implementation that initializes when the mutex is first
-      used. This can be problematic, if the mutex is accessed from two
-      threads at exactly the same time for the first time. */
+      mutexes as static variables as the application/library is
+      loaded. For these cases there is an implementation that
+      initializes when the mutex is first used. 
+
+      This can be problematic, if the mutex is accessed from two
+      threads at exactly the same time for the first time. How-over,
+      the probability of getting errors in that phase are extremely
+      small. */
   class MutexStatic : public Mutex
   {
   public:
@@ -136,9 +140,12 @@ namespace Radiant {
 #endif
 
   /** A guard class. This class is used to automatically lock and unlock
-      a mutex within some function.*/
+      a mutex within some function.
 
-  class Guard
+      @see ReleaseGuard
+  */
+
+  class Guard : public Patterns::NotCopyable
   {
   public:
     /// Locks the mutex
@@ -150,16 +157,15 @@ namespace Radiant {
   protected:
     Mutex * m_mutex;
 
-    /// Disabled
-    Guard(const Guard &) {}
-    /// Disabled
-    Guard & operator = (const Guard &) { return * this; }
   };
 
-  /** A guard class that only release a locked mutex. This class is
-      used to automatically unlock a mutex within some function.*/
+  /** A guard class that only releases a locked mutex. This class is
+      used to automatically unlock a mutex within some function.
 
-  class ReleaseGuard
+      @szee Guard
+  */
+
+  class ReleaseGuard : public Patterns::NotCopyable
   {
   public:
     /// Locks the mutex
@@ -170,11 +176,6 @@ namespace Radiant {
 
   protected:
     Mutex * m_mutex;
-
-    /// Disabled
-    ReleaseGuard(const Guard &) {}
-    /// Disabled
-    ReleaseGuard & operator = (const ReleaseGuard &) { return * this; }
   };
 
 }
