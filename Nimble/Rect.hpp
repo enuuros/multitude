@@ -95,7 +95,8 @@ namespace Nimble {
     inline bool contains(T x, T y) const;
     inline bool contains(const Vector2T<T> &) const;
     inline bool contains(const RectT &b) const;
-  
+    inline T    distance(const RectT &b) const;
+
     inline Vector2T<T> clamp(const Vector2T<T> &) const;
 
     inline void transform(const Matrix3T<T>& m);
@@ -187,6 +188,25 @@ namespace Nimble {
   {
     return ((b.m_low[0] >= m_low[0]) && (b.m_high[0] <= m_high[0]) &&
 	    (b.m_low[1] >= m_low[1]) && (b.m_high[1] <= m_high[1]));
+  }
+
+  template <class T> 
+  inline T RectT<T>::distance(const RectT &b) const
+  {
+    Vector2 mind;
+
+    for(int i = 0; i < 2; i++) {
+
+      if(b.m_high[i] < m_low[i])
+        mind[i] = m_low[i] - b.m_high[i];
+      else if(b.m_low[i] > m_high[i])
+        mind[i] = b.m_low[i] - m_high[i];
+      else
+        mind[i] = 0;
+
+    }
+
+    return mind.maximum();
   }
 
   template <class T> 
