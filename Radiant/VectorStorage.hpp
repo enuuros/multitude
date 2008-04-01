@@ -67,6 +67,7 @@ namespace Radiant {
     VectorStorage() : m_count(0) {}
 
     /// Resets the internal object counter to zero.
+    /** This function does not erase any objects. */
     void reset() { m_count = 0; }
 
     /// Resets the internal object counter to n.
