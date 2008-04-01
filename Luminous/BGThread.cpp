@@ -14,16 +14,19 @@
  */
 
 #include <Luminous/BGThread.hpp>
+
+#include <Radiant/Trace.hpp>
+
+#include <typeinfo>
 #include <cassert>
 
 namespace Luminous
 {
   BGThread::BGThread():
-    m_continue(true),
-    m_keepLoaded(true)
+    m_continue(true)
   {}
-  
-  static void g_deletePred1(Loadable* x)
+/*  
+  static void g_deletePred1(Task * x)
   {
     delete x;
   }
@@ -32,28 +35,38 @@ namespace Luminous
   {
     delete c.second;
   }
-
-
+*/
   BGThread::~BGThread()
   {
     stop();
 
     /// @todo Free resources, should we do this?
-    for_each(m_loaded.begin(), m_loaded.end(), g_deletePred1);    
-    for_each(m_toLoad.begin(), m_toLoad.end(), g_deletePred2);
+    // for_each(m_taskQueue.begin(), m_taskQueue.end(), g_deletePred2);
   }
 
-  void BGThread::startLoading(Loadable* loadable)
+  void BGThread::addTask(Task * task)
   {
-    assert(loadable);
+//    Radiant::trace("BGThread::addTask #");
+    assert(task);
 
     m_mutex.lock();
-    m_toLoad.insert(contained(loadable->priority(), loadable));
+    m_taskQueue.insert(contained(task->priority(), task));
     m_mutex.unlock();
 
     m_wait.wakeAll();
   }
+/*
+  void BGThread::markForDeletion(Task * task)
+  {
+    assert(task);
 
+    m_mutex.lock();
+    task->m_canDelete = true;
+    m_mutex.unlock();
+
+    m_wait.wakeAll();
+  }
+*/
   void BGThread::stop()
   {
     m_continue = false;
@@ -65,29 +78,34 @@ namespace Luminous
     }
   }
 
-  void BGThread::hint(Loadable* ref, Priority p)
+  void BGThread::setPriority(Task * task, Priority p)
   {
     m_mutex.lock();
 
-    container::iterator beg = m_toLoad.find(ref->priority());
-    container::iterator end = m_toLoad.upper_bound(ref->priority());
+    // Find tasks with the given priority
+    container::iterator beg = m_taskQueue.find(task->priority());
+    container::iterator end = m_taskQueue.upper_bound(task->priority());
 
+    // Find the actual requested task
     container::iterator it;
     for(it = beg; it != end; it++) {
-      if(it->second == ref) break;
+      if(it->second == task) break;
     }
-
+    
     if(it != end) {
-      m_toLoad.erase(it);
+      // Move the task in the queue and update its priority
+      m_taskQueue.erase(it);
 
-      ref->m_priority = p;
-      m_toLoad.insert(contained(p, ref));
+      task->m_priority = p;
+      m_taskQueue.insert(contained(p, task));
+    } else {
+      Radiant::error("BGThread::setPriority # requested task was not found");
     }
 
     m_mutex.unlock();
   }
-
-  static bool g_deleteMarkedPred(Loadable* x)
+/*
+  static bool g_deleteMarkedPred(Task * x)
   {
     if(x->canBeDeleted()) {
       delete x;
@@ -96,63 +114,69 @@ namespace Luminous
    
     return false;
   }
+*/
+
+/*
+ * For TimeStamps: use Condition::wait(mutex, timeout)
+ *
+ * compute the next possible runtime from tasks, set as timeout
+ * can't use m_taskQueue.empty() anymore
+*/
 
   void BGThread::childLoop()
   {
     while(m_continue) {
+//      Radiant::trace("BGThread::childLoop # running");
 
-      // Check for files to load
-      Loadable* ref = 0;
+      // Pick a task to run
+      Radiant::TimeStamp toWait;
+      Task * task = pickNextTask(toWait);
 
-      m_mutex.lock();
+      // Run the task
+      if(task) {
+        Radiant::trace("FOO");
+        bool first = (task->state() == Task::WAITING);
 
-      loopLogic();
- 
-      if(!m_toLoad.empty()) {
-        container::iterator it = m_toLoad.begin();
-        
-        ref = it->second;
-        m_toLoad.erase(it);
-      }
-
-      m_mutex.unlock();
-
-      // Load the new file, if available
-      if(ref) {
-
-        if(ref->canBeDeleted()) {
-          //delete ref;
-          //ref = 0;
-        } else {
-          bool first = (ref->state() == Task::INITIALIZED);
-
-          ref->doTask();
-  
-          if(first && ref->state() == Task::PROCESSING) 
-            startedLoading(ref);
-
-          // Did the loading complete?
-          if(ref->state() == Task::DONE) {
-            finishedLoading(ref);
-
-            if(m_keepLoaded) {
-              m_loaded.push_back(ref);
-            }
-          } else {
-            // If we are still loading, push the item to the back of the given
-            // priority so that other items with the same priority will be loaded 
-            // before loading this one again
-            m_mutex.lock();
-            m_toLoad.insert(contained(ref->priority(), ref));
-            m_mutex.unlock();
-          }
+        if(first) {
+          task->initialize();
+          task->m_state = Task::RUNNING;
         }
+
+        task->doTask();
+
+        // Did the task complete?
+        if(task->state() == Task::DONE) {
+//          Radiant::trace("BGThread::childLoop # TASK DONE %s", typeid(*task).name());
+          task->finished();
+        } else {
+          // If we are still running, push the task to the back of the given
+          // priority range so that other tasks with the same priority will be 
+          // executed in round-robin
+          m_mutex.lock();
+          m_taskQueue.insert(contained(task->priority(), task));
+          m_mutex.unlock();
+        }
+      } else if(!m_taskQueue.empty()) {
+        // There was nothing to run, wait until the next task can be run (or we
+        // get interrupted)
+//        Radiant::trace("BGTHREAD: NOTHING TO RUN; WAITING %d MSECS", (int)(toWait.secondsD() * 1000.0));
+//        Radiant::trace("\t%d TASKS IN QUEUE", (int)m_taskQueue.size());
+        m_mutexWait.lock();
+        m_wait.wait(m_mutexWait, (int)(toWait.secondsD() * 1000.0));
+        m_mutexWait.unlock();         
+      } else {
+        Radiant::error("BGThread::childLoop # LOGIC ERROR");
       }
 
-      m_loaded.remove_if(g_deleteMarkedPred);
+      // Remove all tasks marked for deletion
+      //m_mutex.lock();
+      //m_taskQueue.remove_if(g_deleteMarkedPred);
+      //m_mutex.unlock();
 
-      // Wait for new requests to appear:
-      while(m_toLoad.empty() && m_continue) {
+
+      // Wait for new tasks to appear
+      while(m_taskQueue.empty() && m_continue) {
+//        Radiant::trace("BGTHREAD: QUEUE EMPTY; WAITING FOR MORE");
         m_mutexWait.lock();
         m_wait.wait(m_mutexWait);
         m_mutexWait.unlock();
@@ -160,13 +184,37 @@ namespace Luminous
     }
   }
 
-  void BGThread::finishedLoading(Loadable * )
-  {}
+  Task * BGThread::pickNextTask(Radiant::TimeStamp & wait)
+  { 
+//    Radiant::trace("BGThread::pickNextTask #");
+    Radiant::Guard guard(&m_mutex);
 
-  void BGThread::loopLogic()
-  {}
+    if(m_taskQueue.empty()) { 
+      return 0;
+    }
 
-  void BGThread::startedLoading(Loadable *)
-  {}
+    const Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
+
+    assert(!m_taskQueue.empty());
+    wait = m_taskQueue.begin()->second->scheduled() - now;
+
+    for(container::iterator it = m_taskQueue.begin(); it != m_taskQueue.end(); it++) {
+      Task * task = it->second;      
+
+//      Radiant::trace("\tTASK SCHEDULED %s; NOW %s", task->scheduled().asString().c_str(), now.asString().c_str());
+
+      // Should the task be run now?
+      if(task->scheduled() <= now) {
+        wait = 0;
+        m_taskQueue.erase(it);
+        return task;
+      } else {
+        Radiant::TimeStamp next = task->scheduled() - now;
+        wait = std::min(wait, next);
+      }
+    }
+
+    return 0;
+  }
 
 }

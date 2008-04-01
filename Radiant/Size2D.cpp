@@ -1,13 +1,10 @@
 #include "Size2D.hpp"
-#include "Trace.hpp"
 
 namespace Radiant
 {
 
-  Nimble::Vector2i resize(const Nimble::Vector2i & oldSize, const Nimble::Vector2i & newSize, bool keepAspect)
+  Nimble::Vector2i resize(Nimble::Vector2i oldSize, Nimble::Vector2i newSize, bool keepAspect)
   {
-    //trace("Radiant::resize(%d,%d, %d,%d, %s", oldSize.x, oldSize.y, newSize.x, newSize.y, keepAspect ? "yes" : "no");
-
     if(!keepAspect) {
       return newSize;
     } else {
@@ -23,6 +20,17 @@ namespace Radiant
         return Nimble::Vector2i(x, y);
       }
     }
+  }
+
+  Nimble::Vector2i fitToSize(float aspect, Nimble::Vector2i constraint)
+  {
+    int rw = static_cast<int> (constraint.y * aspect);
+    bool useHeight = (rw <= constraint.x);
+
+    if(useHeight) 
+      return Nimble::Vector2i(rw, constraint.y);
+    else 
+      return Nimble::Vector2i(constraint.x, static_cast<int> (constraint.x / aspect));
   }
 
 }

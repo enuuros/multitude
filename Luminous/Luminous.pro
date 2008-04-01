@@ -2,34 +2,35 @@ include(../multitude.pri)
 
 TEMPLATE = lib
 
+
+HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
-HEADERS += GarbageCollector.hpp
-HEADERS += Task.hpp
 HEADERS += DynamicTexture.hpp
 HEADERS += Error.hpp
 HEADERS += FramebufferObject.hpp
+HEADERS += GarbageCollector.hpp
 HEADERS += GlKeyStone.hpp
 HEADERS += GLResource.hpp
 HEADERS += GLResources.hpp
 HEADERS += GLSLProgramObject.hpp
 HEADERS += GLSLShaderObject.hpp
 HEADERS += Image.hpp
-HEADERS += Loadable.hpp
-HEADERS += BGThread.hpp
+HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
+HEADERS += MipmapTask.hpp
 HEADERS += MultiHead.hpp
 HEADERS += PixelFormat.hpp
+HEADERS += Task.hpp
 HEADERS += Texture.hpp
 #HEADERS += TiledMipMapImage.hpp
 HEADERS += Utils.hpp
-#HEADERS += GLThread.hpp
 
-#SOURCES += GLThread.cpp
+SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
-SOURCES += GarbageCollector.cpp
 SOURCES += DynamicTexture.cpp
 SOURCES += Error.cpp
 SOURCES += FramebufferObject.cpp
+SOURCES += GarbageCollector.cpp
 SOURCES += GlKeyStone.cpp
 SOURCES += GLResource.cpp
 SOURCES += GLResources.cpp
@@ -37,12 +38,12 @@ SOURCES += GLSLProgramObject.cpp
 SOURCES += GLSLShaderObject.cpp
 SOURCES += Image.cpp
 SOURCES += JPEG.cpp
-SOURCES += Loadable.cpp
-SOURCES += BGThread.cpp
 SOURCES += Luminous.cpp
+SOURCES += MipmapTask.cpp
 SOURCES += MultiHead.cpp
 SOURCES += PixelFormat.cpp
 SOURCES += PNG.cpp
+SOURCES += Task.cpp
 SOURCES += Texture.cpp
 SOURCES += TGA.cpp
 #SOURCES += TiledMipMapImage.cpp

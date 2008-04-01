@@ -17,9 +17,9 @@
 #define RADIANT_TIMESTAMP_HPP
 
 #include <stdint.h>
-
 #include <sys/time.h>
 #include <time.h>
+#include <string>
 
 namespace Radiant {
  
@@ -102,6 +102,11 @@ namespace Radiant {
       tmp <<= 24;
       tmp |= (int64_t) (tv.tv_usec * (FRACTIONS_PER_SECOND * 0.000001));
       return tmp;
+    }
+
+    std::string asString() const {
+      time_t t = (m_val >> 24);
+      return std::string(ctime(&t));
     }
 
   protected:

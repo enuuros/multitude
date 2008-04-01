@@ -16,55 +16,26 @@
 #ifndef LUMINOUS_DYNAMICTEXTURE_HPP
 #define LUMINOUS_DYNAMICTEXTURE_HPP
 
-#include "Loadable.hpp"
-#include "Texture.hpp"
-#include "GLResource.hpp"
+#include <Luminous/Texture.hpp>
+#include <Luminous/GLResource.hpp>
+#include <Luminous/ImagePyramid.hpp>
+
 #include <Radiant/RefPtr.hpp>
+
 #include <Nimble/Vector2.hpp>
+
 #include <vector>
-#include <Magick++.h>
 
 namespace Luminous
 {
 
-  class TextureLoadable : public Loadable
-  {
-    public:
-      TextureLoadable(const std::string& filename, int maxDimExp = 10, int desiredMipmaps = 1);
-      virtual ~TextureLoadable();
-
-      virtual int numMipmaps() const;
-      Magick::Image mipmap(int n);
-
-      virtual void doTask();
-
-      void getInfoCacheFilename(std::string& cacheFile) const;
-      void getMipmapCacheFilename(int level, std::string& cacheFile)  const;
-
-      int mipmapLevelDim(int level) const;
-
-      bool readInfoCache(int& w, int& h) const;
-      bool writeInfoCache(int w, int h) const;
-
-			Nimble::Vector2i originalSize() const { return m_originalSize; }
-
-    protected:
-      typedef std::vector<Magick::Image> container;
-
-      int m_maxDimExp;
-      int m_desiredMipmaps;
-      container m_mipmaps;		
-
-			Nimble::Vector2i m_originalSize;
-  };
-
   class DynamicTexture : public GLResource
   {
     public:
-      DynamicTexture(TextureLoadable * tl, GLResources * resources = 0);
+      DynamicTexture(GLResources * resources = 0);
       virtual ~DynamicTexture();
 
-      virtual Texture2D* selectMipmap(); 
+      virtual Texture2D * selectMipmap(); 
 
       virtual int mipmapsOnGPU() const;
       virtual int mipmapsOnCPU() const;
@@ -72,14 +43,18 @@ namespace Luminous
       virtual void updateGPUMipmaps();
 
       virtual void hint(const Nimble::Vector2 & size);
+  
+      ImagePyramid * pyramid() { return m_pyramid; }
+      void setPyramid(ImagePyramid * pyramid) { m_pyramid = pyramid; }
 
-      Texture2D* getMipmap(int n);
+      Texture2D * getMipmap(int n);
 
-			Nimble::Vector2i originalSize() const { return m_loadable->originalSize(); }
+      float aspect(int level = 0) const;
 
     protected:
       std::vector<Radiant::RefPtr<Texture2D> > m_mipmaps;
-      TextureLoadable * m_loadable;
+
+      ImagePyramid * m_pyramid; 
 
       Nimble::Vector2i m_desiredSize;
   };

@@ -116,9 +116,10 @@ namespace Luminous
 		   const PixelFormat& srcFormat,
 		   bool buildMipmaps = true);
 
-    static Texture2D* fromImage(Magick::Image& image, bool buildMipmaps = true, GLResources * resources = 0);
-    static Texture2D* fromBytes(GLenum internalFormat, int w, int h,
-				const void* data, 
+    static Texture2D * fromImage(Luminous::Image & img, bool buildMipmaps = true, GLResources * resources = 0);
+    static Texture2D * fromImage(Magick::Image& image, bool buildMipmaps = true, GLResources * resources = 0);
+    static Texture2D * fromBytes(GLenum internalFormat, int w, int h,
+				const void * data, 
 				const PixelFormat& srcFormat,
 				bool buildMipmaps = true, GLResources * resources = 0);
   };

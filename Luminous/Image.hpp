@@ -38,6 +38,8 @@ namespace Luminous
     Image(const Image& img);
     ~Image();
 
+    float aspect() const { return (float)m_width / (float)m_height; }
+
     int width() const { return m_width; }
     int height() const { return m_height; }
 

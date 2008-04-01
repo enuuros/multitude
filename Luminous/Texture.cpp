@@ -172,6 +172,13 @@ namespace Luminous
   }
 
   Texture2D* Texture2D::fromImage
+  (Luminous::Image & image, bool buildMipmaps, GLResources * resources)
+  {
+    return fromBytes(GL_RGBA, image.width(), image.height(), image.bytes(), image.pixelFormat(),
+                     buildMipmaps, resources);
+  }
+
+  Texture2D* Texture2D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)
   {
     Magick::Blob blob;

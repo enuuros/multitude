@@ -46,7 +46,7 @@ namespace Luminous
 
     Radiant::trace("%s (%s)", versionMsg.c_str(), glslMsg.c_str());
 
-    Magick::InitializeMagick(0);
+//    Magick::InitializeMagick(0);
 
     return true;
   }

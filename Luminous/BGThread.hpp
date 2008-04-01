@@ -16,12 +16,15 @@
 #ifndef LUMINOUS_BGTHREAD_HPP
 #define LUMINOUS_BGTHREAD_HPP
 
-#include <Luminous/Loadable.hpp>
-#include <list>
-#include <map>
+//#include <Luminous/Loadable.hpp>
+#include <Luminous/Task.hpp>
+
 #include <Radiant/Thread.hpp>
 #include <Radiant/Mutex.hpp>
 #include <Radiant/Condition.hpp>
+
+#include <list>
+#include <map>
 
 namespace Luminous
 {
@@ -33,42 +36,34 @@ namespace Luminous
     BGThread();
     virtual ~BGThread();
 
-    /// @todo rename to addTask(Task * )
-    /// Adds a task to be executed
-    virtual void startLoading(Loadable* loadable);
+    /// Add a task to be executed
+    virtual void addTask(Task * task);
  
+    /// Queue a task for deletion. The time of deletion is not guaranteed to be
+    /// immediate
+    //virtual void markForDeletion(Task * task);
+
     /// Stop the thread and wait for it to terminate
     virtual void stop();
 
-    /// @todo remove, add eraseTask(Task *)     
-    virtual void setKeepLoaded(bool keep) { m_keepLoaded = keep; }
+    /// Change the priority of a task
+    virtual void setPriority(Task * task, Priority p);
 
-    /// @todo rename to setPriority(Task *, Priority )
-    virtual void hint(Loadable* loadable, Priority p);
-
-    typedef std::multimap<Priority, Loadable* > container;
-    typedef std::pair<Priority, Loadable* > contained;
+    typedef std::multimap<Priority, Task * > container;
+    typedef std::pair<Priority, Task * > contained;
 
   protected:
-    /// @deprecated
-    virtual void loopLogic();
     virtual void childLoop();
 
-    /// @todo implement similar logic in Task
-    /// @deprecated
-    virtual void finishedLoading(Loadable * loadable);
-    /// @deprecated
-    virtual void startedLoading(Loadable * loadable);
+    Task * pickNextTask(Radiant::TimeStamp & wait);
 
     Radiant::MutexAuto m_mutex;
     Radiant::MutexAuto m_mutexWait;
     Radiant::Condition m_wait;
 
-    container m_toLoad;
-    std::list<Loadable*> m_loaded;
+    container m_taskQueue;
     
     bool m_continue;
-    bool m_keepLoaded;
   };
 
 }
