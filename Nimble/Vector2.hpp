@@ -72,7 +72,7 @@ namespace Nimble {
     Vector2T&	clamp           (T low, T high) { x = Math::Clamp(x, low, high); y = Math::Clamp(y, low, high); return * this; }
 
     T           minimum         (void) const { return x < y ? x : y; }
-    T           maximum         (void) const { return x < y ? x : y; }
+    T           maximum         (void) const { return x > y ? x : y; }
     T           sum             (void) const { return x + y; }
     /// Returns a vector with components reordered.
     Vector2T    shuffle         (int i1 = 1, int i2 = 0) const { return Vector2T(get(i1), get(i2)); }
