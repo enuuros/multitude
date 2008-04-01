@@ -34,6 +34,7 @@ namespace Dyslexic
       void render(const wchar_t * str);
 
       void render(const char * str, Nimble::Vector2 loc);
+      void render(const char * str, float scale, Nimble::Vector2 loc);
 
     protected:
       // The actual rendering methods, override these in derived classes
