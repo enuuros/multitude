@@ -123,7 +123,10 @@ namespace ValueIO {
 
   DOMElement * HasValues::writeDom(DOMDocument * doc)
   {
-    // assert(!m_name.isEmpty());
+    if(m_name.empty()) {
+      error("HasValues::writeDom # name not specified, won't serialize (%s)", typeid(*this).name());
+      return 0;
+    }
 
     init();
 
@@ -138,10 +141,10 @@ namespace ValueIO {
       DOMNode * n = ptr.m_io->writeDom(ptr.m_ptr, this, doc);
 
       if(n) {
-	DOMElement * e = doc->createElement(xstr.str());
-	e->appendChild(n);
-	ev->appendChild(e);
-	//trace("HasValues::writeDom # Wrote item \"%s\"", (*it).first.c_str());
+        DOMElement * e = doc->createElement(xstr.str());
+        e->appendChild(n);
+        ev->appendChild(e);
+        //trace("HasValues::writeDom # Wrote item \"%s\"", (*it).first.c_str());
       }
       else 
 	error("HasValues::writeDom # When writing item \"%s\"",
@@ -203,6 +206,7 @@ namespace ValueIO {
 
   bool HasValues::load(const char * filename)
   {
+    try {
     init();
 
     DOMStore in;
@@ -219,12 +223,18 @@ namespace ValueIO {
     trace("HasValues::load # %d", (int) ok);
 
     return ok;
+    } catch(DOMException e) {
+      error("HasValues::load # Xerces excetion: %s", XC(e.getMessage()));
+      return false;
+    }
   }
 
   
   bool HasValues::save(const char * filename)
   {
     const char * fname = "HasValues::save";
+
+    try {
 
     init();
 
@@ -243,6 +253,10 @@ namespace ValueIO {
 	error("%s # Could not serialize to %s", fname, filename);
 
     return ok;
+    } catch(DOMException e) {
+      error("HasValues::save # Xerces exception: %s", XC(e.getMessage()));
+      return false;
+    }
   }
 
   // Dump the contents of the XML element (recursive)
