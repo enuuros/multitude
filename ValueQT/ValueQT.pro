@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += HasValuesQT.hpp
 
@@ -8,14 +7,8 @@ SOURCES += HasValuesQT.cpp
 
 TARGET = ValueQT
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../
-
-DESTDIR = ../lib
-
 CONFIG += qt
 
 QT = core
 
-unix:LIBS += -L../lib -lValueIO -lRadiant -lxerces-c
+unix:LIBS += $$LIB_VALUEIO -lxerces-c

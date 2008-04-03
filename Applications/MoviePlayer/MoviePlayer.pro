@@ -1,4 +1,3 @@
-include(../../multitude.pri)
 include(../Applications.pri)
 
 HEADERS += VideoWindow.hpp
@@ -8,11 +7,11 @@ SOURCES += Main.cpp
 
 TARGET = MoviePlayer
 
-LIBS += -lVideoDisplay
+LIBS += $$LIB_VIDEODISPLAY $$LIB_DYSLEXIC $$LIB_RESONANT
+LIBS += $$LIB_SCREENPLAY $$LIB_RADIANT $$LIB_VALUEIO $$LIB_LUMINOUS
 
 CONFIG += qt
 QT = core gui opengl xml
 
 PKGCONFIG += GraphicsMagick++
 
-LIBS += -lScreenplay -lRadiant -lLuminous -lResonant -lValueIO -lDyslexic

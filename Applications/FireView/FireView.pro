@@ -1,4 +1,3 @@
-include(../../multitude.pri)
 include(../Applications.pri)
 
 HEADERS += CamView.hpp 
@@ -12,7 +11,7 @@ SOURCES += Main.cpp
 
 TARGET = FireView
 
-LIBS += -L../../lib -lRadiant -lLuminous -lValueIO -lRadiant
+LIBS += $$LIB_RADIANT $$LIB_VALUEIO $$LIB_LUMINOUS
 
 CONFIG += qt
 

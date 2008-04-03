@@ -7,12 +7,21 @@ INCLUDEPATH += ../
 
 DESTDIR = ../lib
 
-LIBS += -L../lib
-
 macx {
 
-  contains($$MULTI_MUNDLES,YES) {
+  withbundles = $$(MULTI_BUNDLES)
+
+  contains(withbundles,YES) {
     CONFIG += lib_bundle
+
+    FRAMEWORK_HEADERS.version = Versions
+    FRAMEWORK_HEADERS.files = $$HEADERS
+    FRAMEWORK_HEADERS.path = Bundler
+
+    QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
+
+    message(Creating OSX bundle)
   }
 
 }
+

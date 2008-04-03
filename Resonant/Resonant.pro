@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += Application.hpp 
 HEADERS += AudioFileHandler.hpp
@@ -31,13 +30,7 @@ linux-g++ {
 
 TARGET = Resonant
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../ 
-
-DESTDIR = ../lib
-
-LIBS += -L../lib -lRadiant 
+LIBS += $$LIB_RADIANT
 
 PKGCONFIG += portaudio-2.0 sndfile
 

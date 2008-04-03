@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += AudioTransfer.hpp
 HEADERS += ShowGL.hpp
@@ -16,16 +15,6 @@ SOURCES += VideoInFFMPEG.cpp
 
 TARGET = VideoDisplay
 
-DEPENDPATH += ../
-
-#BASEPATH = /usr
-
-#macx {
-#  BASEPATH = /usr/local
-#}
-
-INCLUDEPATH += ../
-
 # $${BASEPATH}/include/ffmpeg
 #INCLUDEPATH += $${BASEPATH}/include/GraphicsMagick
 
@@ -33,8 +22,7 @@ PKGCONFIG += GraphicsMagick++ libavutil
 
 DEFINES += __STDC_CONSTANT_MACROS 
 
-LIBS += -L../lib -lResonant -lScreenplay -lDyslexic -lLuminous -lValueIO  -lRadiant -lGLEW 
-
-DESTDIR = ../lib
+LIBS += $$LIB_RESONANT $$LIB_SCREENPLAY $$LIB_LUMINOUS $$LIB_VALUEIO 
+LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW 
 
 macx:LIBS += -framework,OpenGL

@@ -27,3 +27,35 @@ CONFIG -= debug
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 #MULTI_VIDEO_LIBS = -lResonant -lVideoDisplay $$MULTI_FFMPEG_LIBS -lsndfile
 
+
+LIB_DYSLEXIC = -lDyslexic
+LIB_LUMINOUS = -lLuminous
+LIB_RADIANT = -lRadiant
+LIB_RESONANT = -lResonant
+LIB_SCREENPLAY = -lScreenplay
+LIB_VALUEIO = -lValueIO
+LIB_VIDEODISPLAY = -lVideoDisplay
+
+MULTI_LIB_FLAG = -L
+
+macx {
+
+  withbundles = $$(MULTI_BUNDLES)
+
+  contains(withbundles,YES) {
+
+    MULTI_LIB_FLAG = -F
+
+    LIB_DYSLEXIC = -framework,Dyslexic
+    LIB_LUMINOUS = -framework,Luminous
+    LIB_RADIANT = -framework,Radiant
+    LIB_RESONANT = -framework,Resonant
+    LIB_SCREENPLAY = -framework,Screenplay
+    LIB_VALUEIO = -framework,ValueIO
+    LIB_VIDEODISPLAY = -framework,VideoDisplay
+
+  }
+
+}
+
+LIBS += $${MULTI_LIB_FLAG}../lib

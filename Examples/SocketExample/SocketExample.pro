@@ -1,7 +1,9 @@
+include(../Examples.pri)
+
 SOURCES += Main.cpp
 
 TARGET = SocketExample
 
 INCLUDEPATH += ../../
-LIBS += -L../../lib -lRadiant 
+LIBS += $$LIB_RADIANT 
 

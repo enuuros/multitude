@@ -7,6 +7,6 @@ TARGET = ImageExample
 CONFIG += link_pkgconfig
 PKGCONFIG += GraphicsMagick++ sdl
 
-LIBS += -lValueIO -lRadiant
+LIBS += $$LIB_RADIANT $$LIB_VALUEIO $$LIB_LUMINOUS
 
 macx:LIBS += -framework OpenGL

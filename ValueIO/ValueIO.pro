@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += Dom.hpp
 HEADERS += HasValues.hpp
@@ -12,11 +11,5 @@ SOURCES += IO.cpp
 
 TARGET = ValueIO
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../
-
-DESTDIR = ../lib
-
-unix:LIBS += -L../lib -lRadiant -lxerces-c
+unix:LIBS += -L../lib $$LIB_RADIANT -lxerces-c
 

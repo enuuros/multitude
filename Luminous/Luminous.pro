@@ -1,7 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
-
+include(../libs.pri)
 
 HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
@@ -51,21 +49,7 @@ SOURCES += Utils.cpp
 
 TARGET = Luminous
 
-DEPENDPATH += ../
-
-linux-g++ {
-  BASEPATH=/usr
-}
-
-macx {
-  BASEPATH=/usr/local
-}
-
-INCLUDEPATH += ../ 
-
-DESTDIR = ../lib
-
-LIBS += -L../lib -lValueIO -lRadiant  -lGLEW -ljpeg -lpng -lxerces-c
+LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c
 
 # macx:LIBS += -lGL -lGLU
 macx:LIBS += -framework,OpenGL

@@ -1,4 +1,9 @@
+include(../multitude.pri)
 
 INCLUDEPATH += ../../
+DEPENDPATH += ../../
 
-LIBS += -L../../lib -lLuminous
+LIBS += $${MULTI_LIB_FLAG}../../lib
+
+
+

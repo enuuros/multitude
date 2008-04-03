@@ -1,6 +1,5 @@
 include(../multitude.pri)
-
-TEMPLATE = lib
+include(../libs.pri)
 
 HEADERS += BBox.hpp
 HEADERS += Charmap.hpp
@@ -34,17 +33,12 @@ SOURCES += Utils.cpp
 
 TARGET = Dyslexic
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../ 
-
-DESTDIR = ../lib
 
 DEFINES += DYSLEXIC_FLIP_Y
 
 PKGCONFIG += freetype2
 
-LIBS += -L../lib -lLuminous -lRadiant -lValueIO
+LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_VALUEIO
 
 macx:LIBS += -framework,OpenGL
 

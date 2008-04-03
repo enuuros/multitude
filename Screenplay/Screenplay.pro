@@ -7,4 +7,4 @@ SOURCES += VideoFFMPEG.cpp
 
 PKGCONFIG += libavutil libavformat libavcodec
 
-LIBS += -lRadiant
+LIBS += $$LIB_RADIANT
