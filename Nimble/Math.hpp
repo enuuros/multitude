@@ -66,6 +66,8 @@ namespace Nimble {
     inline double ATan(double v)  { return atan(v); }
     inline double ATan2(double x, double y)  { return atan2(x, y); }
 
+    inline float Sqrt(int v) { return sqrtf(v); }
+
     // Min & Max inlines:
   
     template <class T>
