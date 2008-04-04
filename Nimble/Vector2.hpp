@@ -40,11 +40,9 @@ namespace Nimble {
     Vector2T	()						                {}
     Vector2T	(T cx, T cy)				                { x = (T)cx;	y = (T)cy; }
     template <class S>		Vector2T(const S * v)	                        { x = v[0]; y = v[1]; }
-    // Vector2T	(double cx, double cy)				                { x = (T)(cx);	y = (T)(cy); }
     template <class S>		Vector2T	(const Vector2T<S>& v)          { x = (T)v.x; y = (T)v.y; }
 
     template <class S>		Vector2T& operator=  (const Vector2T<S>& v)	{ x = (T)v.x; y = (T)v.y; return *this; }
-    // template <class S>		Vector2T& operator=  (const S * v)	        { x = v[0]; y = v[1]; return *this; }
 
     Vector2T&	clear		(void)						{ x = (T)(0); y = (T)(0); return *this; }
     Vector2T&	make		(T cx, T cy)			                { x = cx; y = cy; return *this; }
@@ -59,7 +57,7 @@ namespace Nimble {
     Vector2T&	operator/=	(T s)					        { s = 1.0/s; x = (x*s), y = (y*s); return *this; }
     bool	isOne		(void) const					{ return (x == (T) 1 && y == (T) 1); }
     bool	isZero		(void) const					{ return (x == (T) 0 && y == (T) 0); }
-    double	length		(void) const				        { return sqrt(x*x+y*y); }
+    T    	length		(void) const				        { return Math::Sqrt(x*x+y*y); }
     T      	lengthSqr	(void) const				        { return x*x+y*y; }
     Vector2T&	negate		(void)						{ x=-x; y=-y; return *this; }
     Vector2T&	normalize	(double len = 1.0)				{ double l = length(); if (l!=0.0) *this *= (len/l); return *this; }
@@ -76,6 +74,7 @@ namespace Nimble {
     T           sum             (void) const { return x + y; }
     /// Returns a vector with components reordered.
     Vector2T    shuffle         (int i1 = 1, int i2 = 0) const { return Vector2T(get(i1), get(i2)); }
+    Vector2T    perpendicular   () const { return Vector2T(-y, x); }
 
     T&            get(int i)        { return ((T*)this)[i]; }
     const T&      get(int i) const  { return ((T*)this)[i]; }
