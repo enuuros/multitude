@@ -56,6 +56,8 @@ namespace VideoDisplay {
     const Text * current();
 
     bool readSrt(const char * filename); 
+
+    unsigned size() const { return m_texts.size(); }
     
   protected:
     

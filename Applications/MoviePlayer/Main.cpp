@@ -36,8 +36,10 @@ int main(int argc, char ** argv)
 
   vw->resize(800, 600);
 
+  const char * filename = 0;
+
   for(int i = 1; i < argc; i++) {
-    const char * filename = argv[i];
+    filename = argv[i];
 
     if(!vw->open(filename, 0)) {
       delete vw;
@@ -45,6 +47,13 @@ int main(int argc, char ** argv)
     }
   }
 
+  /*std::string basename = Radiant::FileUtils::baseFilename(filename);
+  
+  basename += ".srt";
+
+  if(Radiant::FileUtils::fileReadable(basename.c_str()))
+    vw->
+  */
   vw->show();
   vw->raise();
 

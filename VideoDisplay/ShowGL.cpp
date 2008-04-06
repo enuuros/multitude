@@ -533,28 +533,45 @@ namespace VideoDisplay {
 
     const SubTitles::Text * sub = m_subTitles.current();
 
+    if(!subtitleFont && sub) {
+      Radiant::error("ShowGL::render # Missing the subtitle font");
+    }
+
     if(subtitleFont && sub) {
+
+      glEnable(GL_BLEND);
+      glEnable(GL_TEXTURE_2D);
+
+      // puts("RENDERING SUBS");
+
       Dyslexic::CPUFont * cpuFont = subtitleFont->cpuFont();
 
       float fontH = cpuFont->lineHeight();
       float subH = fontH * 2.2f;
 
+      int linecount = sub->lineCount();
+      
+      bool below = false;
+      
       if(subTitleSpace <= 0)
         subTitleSpace = bottomright.y;
       else if((subTitleSpace - subH) <  bottomright.y)
         subTitleSpace = bottomright.y;
-      else
-        subTitleSpace = bottomright.y + fontH * 2.2f;
-
+      else {
+        subTitleSpace = bottomright.y + subH;
+	below = true;
+      }
       Nimble::Vector2f loc(topleft.x + fontH, subTitleSpace - fontH * 0.2f);
 
-      if(sub->lineCount() == 1) {	
-        subtitleFont->render(sub->m_lines[0], Nimble::Matrix3::translate2D(loc));
+      if(linecount == 1) {
+	if(below)
+	  loc.y -= fontH;
+        subtitleFont->render(sub->m_lines[0], loc);
       }
-      else if(sub->lineCount() == 2) {
-        subtitleFont->render(sub->m_lines[0], Nimble::Matrix3::translate2D(loc));
+      else if(linecount  == 2) {
+        subtitleFont->render(sub->m_lines[1], loc);
         loc.y -= fontH;
-        subtitleFont->render(sub->m_lines[1], Nimble::Matrix3::translate2D(loc));
+        subtitleFont->render(sub->m_lines[0], loc);
       }
     }
 

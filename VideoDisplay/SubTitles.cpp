@@ -169,11 +169,10 @@ namespace VideoDisplay {
       Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[0]);
       Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[1]);
 
-      /* Radiant::trace("Subtitle chunk %lf -> %lf\n%s\n%s",
-	 tmp.m_begin.secondsD(), tmp.m_end.secondsD(),
-	 tmp.m_lines[0].c_str(), tmp.m_lines[1].c_str());
+      /*Radiant::trace("Subtitle chunk %lf -> %lf\n%s\n%s",
+		      tmp.m_begin.secondsD(), tmp.m_end.secondsD(),
+		      tmp.m_lines[0].c_str(), tmp.m_lines[1].c_str());
       */
-
       m_texts.push_back(tmp);
 
       if(errors > 10)

@@ -64,9 +64,6 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
 
   std::string srtfile = Radiant::FileUtils::baseFilename(filename) + ".srt";
 
-  // VideoDisplay::SubTitles subs;
-  // subs.readSrt(srtfile.c_str());
-
   item->m_show.loadSubTitles(srtfile.c_str());
 
   if(!item->m_show.init(filename, & m_dsp))
@@ -121,7 +118,7 @@ void VideoWindow::mousePressEvent(QMouseEvent * e)
 
   ALL_MOVIES(seekToRelative(rel));
 }
- 
+
 void VideoWindow::mouseReleaseEvent(QMouseEvent *)
 {}
 

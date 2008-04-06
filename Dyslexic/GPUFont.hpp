@@ -26,9 +26,11 @@ namespace Dyslexic
 
       void render(const std::string & str);
       void render(const std::string & str, const Nimble::Matrix3 & transform);
+      void render(const std::string & str, const Nimble::Vector2 & location);
 
       void render(const std::wstring & str);
       void render(const std::wstring & str, const Nimble::Matrix3 & transform);
+      void render(const std::wstring & str, const Nimble::Vector2 & location);
 
       void render(const char * str);
       void render(const wchar_t * str);

@@ -153,6 +153,8 @@ namespace VideoDisplay {
       int histogramPoint(int index) const { return m_histogram[index]; } 
       int histogramIndex() const { return m_updates; }
 
+    bool hasSubTitles() { return m_subTitles.size() != 0; }
+
     protected:
 
       void clearHistogram();
