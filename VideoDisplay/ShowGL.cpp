@@ -416,30 +416,6 @@ namespace VideoDisplay {
     }
   }
 
-  /*
-  bool ShowGL::contextInit()
-  {
-    delete m_blankTex;
-    m_blankTex = new Luminous::Texture2D();
-
-    delete m_yuv2rgb;
-    m_yuv2rgb = new YUVProgram();
-    return m_yuv2rgb->init();
-  }
-
-  bool ShowGL::contextCleanup()
-  {
-    delete m_blankTex;
-    m_blankTex = 0;
-
-    m_yuv2rgb->clear();
-    delete m_yuv2rgb;
-    m_yuv2rgb = 0;
-
-    return true;
-  }
-  */
-
   void ShowGL::update()
   {
     Radiant::TimeStamp targetTime = m_audio ?
@@ -486,16 +462,6 @@ namespace VideoDisplay {
     GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, &yuvkey, resources);
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
  
-    /*YUVProgram * yuv2rgb = dynamic_cast<YUVProgram *>
-      (resources->getResource(this));
-
-    if(!yuv2rgb) {
-      // puts("Creating YUC2RGB");
-      yuv2rgb = new YUVProgram(resources);
-      resources->addResource(this, yuv2rgb);
-    }
-    */
-
     assert(yuv2rgb != 0);
 
     Vector2i s = size();
