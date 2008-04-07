@@ -19,6 +19,8 @@
 #include <Dyslexic/CPUFont.hpp>
 #include <Dyslexic/GPUFont.hpp>
 
+#include <Luminous/GLResources.hpp>
+
 #include <Resonant/DSPNetwork.hpp>
 
 #include <VideoDisplay/ShowGL.hpp>
@@ -65,6 +67,8 @@ protected:
   Radiant::TimeStamp m_lastActivity;
   Dyslexic::CPUFont * m_subCPUFont;
   Dyslexic::GPUFont * m_subGPUFont;
+
+  Luminous::GLResources m_glResources;
 
   bool   m_showProgress;
   bool   m_showSteps;

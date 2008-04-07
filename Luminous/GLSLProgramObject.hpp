@@ -16,7 +16,10 @@
 #ifndef LUMINOUS_GLSLPROGRAMOBJECT_HPP
 #define LUMINOUS_GLSLPROGRAMOBJECT_HPP
 
+#include <Luminous/GLResource.hpp>
 #include <Luminous/GLSLShaderObject.hpp>
+
+#include <Patterns/NotCopyable.hpp>
 
 #include <list>
 #include <string>
@@ -25,10 +28,10 @@
 namespace Luminous 
 {
 
-  class GLSLProgramObject
+  class GLSLProgramObject : public GLResource, public Patterns::NotCopyable
   {
   public:
-    GLSLProgramObject();
+    GLSLProgramObject(GLResources * resources = 0);
     virtual ~GLSLProgramObject();
     
     void addObject(GLSLShaderObject* obj);
@@ -58,10 +61,6 @@ namespace Luminous
     std::list<GLSLShaderObject*> m_shaderObjects;
     GLuint m_handle;
 
-  private:
-    // Disabled
-    GLSLProgramObject(const GLSLProgramObject &) {}
-    GLSLProgramObject & operator = (const GLSLProgramObject &) {return *this;}
   };
 
 }

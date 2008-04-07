@@ -32,14 +32,19 @@ namespace VideoDisplay {
   using Radiant::error;
   using Radiant::trace;
 
-  ShowGL::YUVProgram::YUVProgram()
+  ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
+    : Luminous::GLSLProgramObject(resources),
+      m_blankTex(resources)
   {
     for(uint i = 0; i < PARAM_SIZEOF; i++)
       m_uniforms[i] = -1;
+    init();
   }
 
   ShowGL::YUVProgram::~YUVProgram()
-  {}
+  {
+    clear();
+  }
 
   bool ShowGL::YUVProgram::init()
   {
@@ -60,7 +65,7 @@ namespace VideoDisplay {
     clear();
 
     Luminous::GLSLShaderObject * fragShader =
-      new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER);
+      new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER, resources());
 
     fragShader->setSource(shadersource);
     if(!fragShader->compile()) {
@@ -246,13 +251,11 @@ namespace VideoDisplay {
   /////////////////////////////////////////////////////////////////////////////
 
   ShowGL::ShowGL()
-    : m_yuv2rgb(0),
-    m_video(0),
+    : m_video(0),
     m_frame(0),
     m_dsp(0),
     m_audio(0),
     m_state(PAUSE),
-    m_blankTex(0),
     m_blankReload(false),
     m_useBlank(false)
   {
@@ -409,6 +412,7 @@ namespace VideoDisplay {
     }
   }
 
+  /*
   bool ShowGL::contextInit()
   {
     delete m_blankTex;
@@ -430,6 +434,7 @@ namespace VideoDisplay {
 
     return true;
   }
+  */
 
   void ShowGL::update()
   {
@@ -466,12 +471,22 @@ namespace VideoDisplay {
     m_subTitles.update(m_position);
   }
 
-  void ShowGL::render(Vector2 topleft, Vector2 bottomright,
-      const Nimble::Matrix3f * transform,
-      Dyslexic::GPUFont * subtitleFont,
-      float subTitleSpace)
+  void ShowGL::render(Luminous::GLResources * resources,
+		      Vector2 topleft, Vector2 bottomright,
+		      const Nimble::Matrix3f * transform,
+		      Dyslexic::GPUFont * subtitleFont,
+		      float subTitleSpace)
   {
-    assert(m_yuv2rgb != 0);
+    YUVProgram * yuv2rgb = dynamic_cast<YUVProgram *>
+      (resources->getResource(this));
+
+    if(!yuv2rgb) {
+      puts("Creating YUC2RGB");
+      yuv2rgb = new YUVProgram(resources);
+      resources->addResource(this, yuv2rgb);
+    }
+
+    assert(yuv2rgb != 0);
 
     Vector2i s = size();
 
@@ -484,21 +499,21 @@ namespace VideoDisplay {
 
       // trace("ShowGL::render # %p", m_frame);
 
-      m_yuv2rgb->doTextures(m_count, & m_frame->m_image);
+      yuv2rgb->doTextures(m_count, & m_frame->m_image);
 
-      m_yuv2rgb->bind();
+      yuv2rgb->bind();
     }
     else {
 
       glEnable(GL_TEXTURE_2D);
 
-      if(s.x != 0 && (m_blankTex->width() == 0 || m_blankReload)) {
-        m_blankTex->loadBytes(GL_RGBA, s.x, s.y, 
-            m_blankDisplay.m_planes[0].m_data,
-            Luminous::PixelFormat::rgbaUByte());
+      if(s.x != 0 && (yuv2rgb->blankTex().width() == 0 || m_blankReload)) {
+        yuv2rgb->blankTex().loadBytes(GL_RGBA, s.x, s.y, 
+				      m_blankDisplay.m_planes[0].m_data,
+				      Luminous::PixelFormat::rgbaUByte());
         m_blankReload = false;
       }
-      m_blankTex->bind();
+      yuv2rgb->blankTex().bind();
     }
 
     glBegin(GL_QUADS);
@@ -529,7 +544,7 @@ namespace VideoDisplay {
 
     glEnd();
 
-    m_yuv2rgb->unbind();
+    yuv2rgb->unbind();
 
     const SubTitles::Text * sub = m_subTitles.current();
 

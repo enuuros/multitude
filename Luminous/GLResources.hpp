@@ -49,6 +49,8 @@ namespace Luminous
     bool eraseResource(void * key);
     /// Erase the resources that are no longer required
     void eraseResources(GarbageCollector * collector);
+    /// Erases all resources.
+    void clear();
     /// Tell the resource manager that byte consumption was changed
     /** Individual resource objects should call this function when
       their byte consumption changes. A typical example might be a

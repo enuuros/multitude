@@ -25,8 +25,8 @@ namespace Luminous
 
   GLResources::GLResources()
     : m_deallocationSum(0),
-    m_allocationSum(0),
-    m_consumingBytes(0)
+      m_allocationSum(0),
+      m_consumingBytes(0)
   {}
 
   GLResources::~GLResources()
@@ -93,6 +93,19 @@ namespace Luminous
       void * key = GarbageCollector::getObject(it);
       eraseResource(key);
     }
+  }
+
+  void GLResources::clear()
+  {
+    while(m_resources.size()) {
+      GLResource * res = (*m_resources.begin()).second;
+      delete res;
+      m_resources.erase(m_resources.begin());
+    }
+
+    m_deallocationSum = 0;
+    m_allocationSum = 0;
+    m_consumingBytes = 0;
   }
 
   void GLResources::changeByteConsumption(long deallocated, long allocated)

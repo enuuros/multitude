@@ -22,8 +22,9 @@ using namespace std;
 namespace Luminous
 {
 
-  GLSLProgramObject::GLSLProgramObject():
-    m_isLinked(false)
+  GLSLProgramObject::GLSLProgramObject(GLResources * resources)
+    : GLResource(resources),
+      m_isLinked(false)
   {
     m_handle = glCreateProgram();
   }
@@ -94,8 +95,10 @@ namespace Luminous
     std::list<GLSLShaderObject*>::iterator i;
     for(i = m_shaderObjects.begin(); i != m_shaderObjects.end(); i++) {
       glDetachShader(m_handle, (*i)->m_handle);
-      delete (*i);  
+      delete (*i);
     }
+
+    m_shaderObjects.clear();
   }
 
   const char* GLSLProgramObject::linkerLog()

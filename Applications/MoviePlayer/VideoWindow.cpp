@@ -90,8 +90,11 @@ void VideoWindow::keyPressEvent(QKeyEvent * e)
     toggleFullScreen();
   else if(e->key() == Qt::Key_S)
     m_showSteps = !m_showSteps;
-  else if(e->key() == Qt::Key_Escape)
+  else if(e->key() == Qt::Key_Escape) {
+    makeCurrent();
+    m_glResources.clear();
     QCoreApplication::exit();
+  }
   else if(e->key() == Qt::Key_Space)
     ALL_MOVIES(togglePause());
   else if(e->key() == Qt::Key_Left)
@@ -124,7 +127,7 @@ void VideoWindow::mouseReleaseEvent(QMouseEvent *)
 
 void VideoWindow::initializeGL()
 {
-  ALL_MOVIES(contextInit());
+  // ALL_MOVIES(contextInit());
   const char * ttf = "DejaVuSans.ttf";
   const char * path = ".:/Users/tommi/screenapps/Fonts/";
   std::string filename = Radiant::FileUtils::findFile(ttf, path);
@@ -211,7 +214,8 @@ void VideoWindow::paintGL()
     glTranslatef((index % cols) * itemw, (index / cols) * itemh, 0);
     index++;
 
-    show.render(center - span, center + span, 0, m_subGPUFont, h);
+    show.render(& m_glResources,
+		center - span, center + span, 0, m_subGPUFont, h);
     
     if(!m_showProgress)
       continue;

@@ -18,13 +18,16 @@
 
 #include <GL/glew.h>
 
+#include <Luminous/GLResource.hpp>
+#include <Patterns/NotCopyable.hpp>
+
 namespace Luminous 
 {
   
-  class GLSLShaderObject
+  class GLSLShaderObject : public GLResource, public Patterns::NotCopyable
   {
   public:
-    GLSLShaderObject(GLenum type);
+    GLSLShaderObject(GLenum type, GLResources * resources = 0);
     ~GLSLShaderObject();
 
     bool compile();
@@ -33,14 +36,11 @@ namespace Luminous
     void setSource(const char* code);
 
   protected:
-    // Disabled
-    GLSLShaderObject(const GLSLShaderObject &) {}
-    GLSLShaderObject & operator = (const GLSLShaderObject &) { return * this; }
 
-    char* m_compilerLog;
-    bool m_isCompiled;
+    char*   m_compilerLog;
+    bool    m_isCompiled;
     GLchar* m_shaderSource;
-    GLuint m_handle;
+    GLuint  m_handle;
 
     friend class GLSLProgramObject;
   };

@@ -56,10 +56,10 @@ namespace VideoDisplay {
   {
     public:
 
-      class YUVProgram : public Luminous::GLSLProgramObject
+    class YUVProgram : public Luminous::GLSLProgramObject
     {
       public:
-        YUVProgram();
+        YUVProgram(Luminous::GLResources * resources);
         virtual ~YUVProgram();
 
         bool init();
@@ -71,6 +71,8 @@ namespace VideoDisplay {
         void doTextures(int frame, Radiant::VideoImage *);
 
         Vector2i planeSize(const Radiant::VideoImage *img, uint i);
+
+      Luminous::Texture2D & blankTex() { return m_blankTex; }
 
       protected:
 
@@ -87,6 +89,8 @@ namespace VideoDisplay {
         RefPtr<Luminous::Texture2D> m_texIds[3];
         Vector2i                    m_texSizes[3];
         int m_uniforms[PARAM_SIZEOF];
+
+      Luminous::Texture2D  m_blankTex;
     };
 
       enum State {
@@ -117,9 +121,9 @@ namespace VideoDisplay {
       State state() const { return m_state; }
 
       /// Create OpenGL resources
-      bool contextInit();
+    // bool contextInit();
       /// Free OpenGL resources
-      bool contextCleanup();
+      // bool contextCleanup();
 
       /// Update the video image from reader-thread
       void update();
@@ -133,10 +137,11 @@ namespace VideoDisplay {
 
         @arg ransform The coordinates can be optionally transformed
         with the "transform" matrix. */
-      void render(Vector2 topleft, Vector2 bottomright,
-          const Nimble::Matrix3f * transform = 0,
-          Dyslexic::GPUFont * subtitleFont = 0,
-          float subTitleSpace = 0);
+    void render(Luminous::GLResources * resources,
+		Vector2 topleft, Vector2 bottomright,
+		const Nimble::Matrix3f * transform = 0,
+		Dyslexic::GPUFont * subtitleFont = 0,
+		float subTitleSpace = 0);
 
       /// Pixel size of the video image.
       Nimble::Vector2i size() const;
@@ -160,7 +165,6 @@ namespace VideoDisplay {
       void clearHistogram();
       void getThumbnail(double pos);
 
-      YUVProgram * m_yuv2rgb;
 
       std::string             m_filename;
       VideoIn               * m_video;
@@ -179,7 +183,6 @@ namespace VideoDisplay {
       Radiant::TimeStamp         m_position;
 
       Radiant::VideoImage        m_blankDisplay;
-      Luminous::Texture2D    *m_blankTex;
       bool                    m_blankReload;
       bool                    m_useBlank;
 

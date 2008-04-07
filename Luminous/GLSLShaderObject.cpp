@@ -22,10 +22,11 @@ using namespace std;
 namespace Luminous
 {
 
-  GLSLShaderObject::GLSLShaderObject(GLenum shaderType):
-    m_compilerLog(0),
-    m_isCompiled(false),
-    m_shaderSource(0)
+  GLSLShaderObject::GLSLShaderObject(GLenum shaderType, GLResources * resources)
+    : GLResource(resources),
+      m_compilerLog(0),
+      m_isCompiled(false),
+      m_shaderSource(0)
   {
     m_handle = glCreateShader(shaderType);
   }
