@@ -126,6 +126,8 @@ namespace Radiant {
 	with the given id, then an element will be created withthe
 	default constructor. */
     T                  get(const std::string &id);
+    T                  get(const std::string &id,
+                           const std::string &alternateId);
 
     /// Check if this chunk contains an element with given id
     bool               contains(const std::string &id);

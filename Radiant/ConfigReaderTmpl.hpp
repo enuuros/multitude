@@ -23,11 +23,27 @@ namespace Radiant {
   template <class T>
   T ChunkT<T>::get(const std::string &id)
   {
-    T tmp;
     iterator it = m_variants.find(id);
-    if(it == m_variants.end())
-      return tmp;
+    if(it != m_variants.end())
     return (*it).second;
+
+    return T();
+  }
+
+  template <class T>
+  T ChunkT<T>::get(const std::string &id,
+                   const std::string &alternateId)
+  {
+    iterator it = m_variants.find(id);
+    if(it != m_variants.end())
+      return (*it).second;
+
+    it = m_variants.find(alternateId);
+
+    if(it != m_variants.end())
+      return (*it).second;
+
+    return T();
   }
   
   template <class T>

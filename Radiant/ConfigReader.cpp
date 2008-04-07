@@ -78,7 +78,6 @@ namespace Radiant {
     if(doc) m_doc = doc;
   }
 
-
   Variant::~Variant()
   {}
 

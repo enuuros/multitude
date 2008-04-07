@@ -355,6 +355,13 @@ namespace Luminous {
     glEnd();
   }
 
+  void Utils::glPoint(float * v)
+  {
+    glBegin(GL_POINTS);
+    glVertex2fv(v);
+    glEnd();
+  }
+
 
   void Utils::glLine(float x1, float y1, float x2, float y2)
   {

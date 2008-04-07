@@ -58,6 +58,7 @@ namespace Luminous {
     static void glLineRect(float x1, float y1, float x2, float y2);
     static void glLineRect(const float * corner1, const float *corner2);
     static void glPoint(float x, float y);
+    static void glPoint(float *);
     /// Draw a line segment
     static void glLine(float x1, float y1, float x2, float y2);
     static void glLine(const float * p1, const float * p2);
