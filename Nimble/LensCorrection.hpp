@@ -59,7 +59,7 @@ namespace Nimble {
     void setParam(int i, float v)
     { 
       m_params[i] = v;
-      m_params[3] = 1.0f - (m_params.x + m_params.y + m_params.y);
+      m_params[3] = 1.0f - (m_params.x + m_params.y + m_params.z);
     }
 
     /// Access the correction parameters

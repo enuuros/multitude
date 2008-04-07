@@ -179,9 +179,9 @@ namespace Nimble {
     /** By default the extension matrix is set to identity. */
     void setOutputExtension(const Nimble::Matrix3 & m);
 
-  protected:
-
     void updateLimits();
+
+  protected:
 
     /// Calculates the projection matrix.
     /** See Paul Heckbert's master's thesis, pages 19-21. Often you
