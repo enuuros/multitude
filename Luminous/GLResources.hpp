@@ -83,4 +83,11 @@ namespace Luminous
   };
 }
 
+#define GLRESOURCE_ENSURE(type, name, key, resources)	\
+  type * name = dynamic_cast<type *> (resources->getResource(key));	\
+  if(!name) { \
+    name = new type(resources); \
+    resources->addResource(key, name); \
+  }
+
 #endif

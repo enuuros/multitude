@@ -33,8 +33,7 @@ namespace VideoDisplay {
   using Radiant::trace;
 
   ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
-    : Luminous::GLSLProgramObject(resources),
-      m_blankTex(resources)
+    : Luminous::GLSLProgramObject(resources)
   {
     for(uint i = 0; i < PARAM_SIZEOF; i++)
       m_uniforms[i] = -1;
@@ -84,11 +83,6 @@ namespace VideoDisplay {
   {
     Luminous::GLSLProgramObject::bind();
 
-    for(int i = 0; i < 3; i++) {
-      glActiveTexture(GL_TEXTURE0 + i);
-      glEnable(GL_TEXTURE_2D);
-      m_texIds[i].ptr()->bind();
-    }
 
     static const float yuv2rgb[9] = {
       1.0f,  0.0f,    1.403f,
@@ -105,12 +99,6 @@ namespace VideoDisplay {
   void ShowGL::YUVProgram::unbind()
   {
     Luminous::GLSLProgramObject::unbind();
-
-    for(int i = 0; i < 3; i++) {
-      glActiveTexture(GL_TEXTURE0 + i);
-      glDisable(GL_TEXTURE_2D);
-    }
-    glActiveTexture(GL_TEXTURE0);
   }
 
   bool ShowGL::YUVProgram::link()
@@ -136,23 +124,39 @@ namespace VideoDisplay {
       trace("ShowGL::YUVProgram::link # %s -> %d", params[i], i);
     }
 
-    for(int i = 0; i < 3; i++)
-      m_texIds[i] = new Luminous::Texture2D();
-
-    m_frame = -1;
-
     return ok;
   }
 
   void ShowGL::YUVProgram::clear()
   {
     Luminous::GLSLProgramObject::clear();
-
-    for(int i = 0; i < 3; i++)
-      m_texIds[i].clear();
+  }
+  
+  ShowGL::MyTextures::MyTextures(Luminous::GLResources * resources)
+    : GLResource(resources)
+  {
+    m_frame = -1;
   }
 
-  void ShowGL::YUVProgram::doTextures(int frame, Radiant::VideoImage * img)
+  void ShowGL::MyTextures::bind()
+  {
+    for(int i = 0; i < 3; i++) {
+      glActiveTexture(GL_TEXTURE0 + i);
+      glEnable(GL_TEXTURE_2D);
+      m_texIds[i].bind();
+    }
+  }
+
+  void ShowGL::MyTextures::unbind()
+  {
+    for(int i = 0; i < 3; i++) {
+      glActiveTexture(GL_TEXTURE0 + i);
+      glDisable(GL_TEXTURE_2D);
+    }
+    glActiveTexture(GL_TEXTURE0);
+  }
+
+  void ShowGL::MyTextures::doTextures(int frame, Radiant::VideoImage * img)
   {
     if(m_frame == frame)
       return;
@@ -161,7 +165,7 @@ namespace VideoDisplay {
 
       glActiveTexture(GL_TEXTURE0 + i);
       glEnable(GL_TEXTURE_2D);
-      Luminous::Texture2D * tex = m_texIds[i].ptr();
+      Luminous::Texture2D * tex = & m_texIds[i];
       tex->bind();
 
       Vector2i & ts = m_texSizes[i];
@@ -227,7 +231,7 @@ namespace VideoDisplay {
     m_frame = frame;
   }
 
-  Vector2i ShowGL::YUVProgram::planeSize(const Radiant::VideoImage *img, uint i)
+  Vector2i ShowGL::MyTextures::planeSize(const Radiant::VideoImage *img, uint i)
   {
     Vector2i area(img->m_width, img->m_height);
 
@@ -471,20 +475,26 @@ namespace VideoDisplay {
     m_subTitles.update(m_position);
   }
 
+  int yuvkey = 0;
+
   void ShowGL::render(Luminous::GLResources * resources,
 		      Vector2 topleft, Vector2 bottomright,
 		      const Nimble::Matrix3f * transform,
 		      Dyslexic::GPUFont * subtitleFont,
 		      float subTitleSpace)
   {
-    YUVProgram * yuv2rgb = dynamic_cast<YUVProgram *>
+    GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, &yuvkey, resources);
+    GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
+ 
+    /*YUVProgram * yuv2rgb = dynamic_cast<YUVProgram *>
       (resources->getResource(this));
 
     if(!yuv2rgb) {
-      puts("Creating YUC2RGB");
+      // puts("Creating YUC2RGB");
       yuv2rgb = new YUVProgram(resources);
       resources->addResource(this, yuv2rgb);
     }
+    */
 
     assert(yuv2rgb != 0);
 
@@ -499,21 +509,22 @@ namespace VideoDisplay {
 
       // trace("ShowGL::render # %p", m_frame);
 
-      yuv2rgb->doTextures(m_count, & m_frame->m_image);
-
+      textures->doTextures(m_count, & m_frame->m_image);
+      textures->bind();
       yuv2rgb->bind();
+
     }
     else {
 
       glEnable(GL_TEXTURE_2D);
 
-      if(s.x != 0 && (yuv2rgb->blankTex().width() == 0 || m_blankReload)) {
-        yuv2rgb->blankTex().loadBytes(GL_RGBA, s.x, s.y, 
+      if(s.x != 0 && (textures->blankTex().width() == 0 || m_blankReload)) {
+	textures->blankTex().loadBytes(GL_RGBA, s.x, s.y, 
 				      m_blankDisplay.m_planes[0].m_data,
 				      Luminous::PixelFormat::rgbaUByte());
         m_blankReload = false;
       }
-      yuv2rgb->blankTex().bind();
+      textures->blankTex().bind();
     }
 
     glBegin(GL_QUADS);
@@ -545,6 +556,7 @@ namespace VideoDisplay {
     glEnd();
 
     yuv2rgb->unbind();
+    textures->unbind();
 
     const SubTitles::Text * sub = m_subTitles.current();
 

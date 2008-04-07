@@ -68,11 +68,6 @@ namespace VideoDisplay {
         virtual bool link();
         virtual void clear();
 
-        void doTextures(int frame, Radiant::VideoImage *);
-
-        Vector2i planeSize(const Radiant::VideoImage *img, uint i);
-
-      Luminous::Texture2D & blankTex() { return m_blankTex; }
 
       protected:
 
@@ -84,12 +79,27 @@ namespace VideoDisplay {
           PARAM_SIZEOF
         };
 
-        int m_frame;
-
-        RefPtr<Luminous::Texture2D> m_texIds[3];
-        Vector2i                    m_texSizes[3];
         int m_uniforms[PARAM_SIZEOF];
+    };
 
+    class MyTextures : public Luminous::GLResource
+    {
+    public:
+      MyTextures(Luminous::GLResources * resources);
+
+      virtual void bind();
+      virtual void unbind();
+      void doTextures(int frame, Radiant::VideoImage *);
+      
+      Vector2i planeSize(const Radiant::VideoImage *img, uint i);
+      
+      Luminous::Texture2D & blankTex() { return m_blankTex; }
+
+    protected:
+
+      int m_frame;
+      Luminous::Texture2D  m_texIds[3];
+      Vector2i             m_texSizes[3];
       Luminous::Texture2D  m_blankTex;
     };
 
