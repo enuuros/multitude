@@ -31,6 +31,7 @@ MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 LIB_DYSLEXIC = -lDyslexic
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
+LIB_OPENGL = -lGL
 LIB_RADIANT = -lRadiant
 LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
@@ -50,6 +51,7 @@ macx {
     LIB_DYSLEXIC = -framework,Dyslexic
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble
+    LIB_OPENGL = -framework,OpenGL
     LIB_RADIANT = -framework,Radiant
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay

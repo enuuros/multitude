@@ -37,7 +37,9 @@ DEFINES += DYSLEXIC_FLIP_Y
 
 PKGCONFIG += freetype2
 
-LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_VALUEIO -lGL
+LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_VALUEIO
+
+linux.g++:LIBS += -lGLU
 
 macx:LIBS += -framework,OpenGL
 

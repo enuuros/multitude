@@ -48,10 +48,9 @@ SOURCES += Utils.cpp
 
 TARGET = Luminous
 
-LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c -lGL -lGLU
+LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
 
-# macx:LIBS += -lGL -lGLU
-macx:LIBS += -framework,OpenGL
+linux.g++:LIBS += -lGLU
 
 PKGCONFIG += GraphicsMagick++
 
