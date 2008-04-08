@@ -49,7 +49,7 @@ SOURCES += Utils.cpp
 
 TARGET = Luminous
 
-LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c
+LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c -lGL -lGLU
 
 # macx:LIBS += -lGL -lGLU
 macx:LIBS += -framework,OpenGL

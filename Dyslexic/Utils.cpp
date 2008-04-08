@@ -1,3 +1,18 @@
+/* COPYRIGHT
+ *
+ * This file is part of Dyslexic.
+ *
+ * Copyright: MultiTouch Oy, Finland, http://multitou.ch
+ *
+ * All rights reserved, 2007-2008.
+ *
+ * You may use this file only for purposes for which you have a
+ * specific, written permission from MultiTouch Oy.
+ *
+ * See file "Dyslexic.hpp" for authors and more details.
+ *
+ */
+
 #include "Utils.hpp"
 
 namespace Dyslexic
@@ -6,100 +21,89 @@ namespace Dyslexic
   namespace Utils
   {
 
-    using namespace std;
     using namespace Radiant;
     using namespace StringUtils;
 
-    void breakToLines(const std::wstring & ws, const float width,
+    void breakToLines(const std::wstring & wStr, const float width,
       CPUBitmapFont & bitmapFont, WStringList & lines)
     {
       assert(width > 0.0f);
 
       lines.clear();
 
-      if(ws.empty())
+      if(wStr.empty())
       {
         return;
       }
 
-      // Split the wstring into words
+      // First break the wstring at newlines
 
-      const wchar_t   space = wchar_t(' ');
-      const wchar_t   newLine = wchar_t('\n');
-      wstring   delim;
-      delim = space;
-      StringUtils::WStringList   sub;
-      split(ws, delim, sub);
+      std::wstring       delim;
+      delim = wchar_t('\n');
+      WStringList   wSub;
 
-      // Make the lines
-      int     i = 0, j = 0, n = 0;
-      bool    got = false;
-      WStringList::iterator   it;
-      std::wstring    tmp1, tmp2;
-      BBox    bBox;
-      while(sub.size())
+      split(wStr, delim, wSub);
+
+      // Break the resulting sub-wstrings to fit width
+
+      delim = wchar_t(' ');
+
+      for(WStringList::iterator itSub = wSub.begin(); itSub != wSub.end(); itSub++)
       {
-        // First try to fit it in as separate words
+        // Split the sub-string into words
 
-        n = sub.size();
-        got = false;
-        for(i = n; i >= 1 && !got; i--)
+        WStringList   words;
+        split(* itSub, delim, words);
+
+        // Make the lines
+
+        while(words.size())
         {
-          tmp1.clear();
-          for(j = 0, it = sub.begin(); j < i; j++, it++)
+          // First try to fit it in as separate words
+
+          const int numWords = words.size();
+          bool  got = false;
+          BBox  bBox;
+          for(int i = numWords; i >= 1 && !got; i--)
           {
-            tmp1 += *it;
-          }
-          bitmapFont.bbox((wchar_t *)(tmp1.data()), bBox);
-          if(bBox.width() <= width)
-          {
-            lines.push_back(tmp1);
-            for(j = 0; j < i; j++)
+            std::wstring  ln;
+            WStringList::iterator   itWord = words.begin();
+            for(int j = 0; j < i; j++, itWord++)
             {
-              sub.pop_front();
+              ln += * itWord;
             }
-            got = true;
+            bitmapFont.bbox((wchar_t *)(ln.data()), bBox);
+            if(bBox.width() <= width)
+            {
+              lines.push_back(ln);
+              for(int j = 0; j < i; j++)
+              {
+                words.pop_front();
+              }
+              got = true;
+            }
           }
-        }
 
-        if(got)
-        {
-          continue;
-        }
-
-        // Truncate the (overlong) word to fit in
-
-        tmp2 = sub.front();
-        n = tmp2.length();
-        for(i = n - 1; i >= 1 && !got; i--)
-        {
-          tmp1 = tmp2.substr(0, i + 1);
-          bitmapFont.bbox((wchar_t *)(tmp1.data()), bBox);
-          if(bBox.width() <= width)
+          if(got)
           {
-            lines.push_back(tmp1);
-            sub.pop_front();
-            sub.push_front(tmp2.substr(i + 1));
-            got = true;
+            continue;
           }
-        }
-      }
 
-      // Process newline characters
+          // Truncate the overlong word to fit width
 
-      WStringList::iterator   its;
-      for(its = lines.begin(); its != lines.end(); its++)
-      {
-        if(!its->empty())
-        {
-          int   pos = its->find(newLine);
-          while(pos != int(string::npos))
+          const std::wstring  word = words.front();
+          const int   numChars = word.length();
+          for(int i = numChars - 1; i >= 1 && !got; i--)
           {
-            std::wstring  left = its->substr(0, pos + 1);
-            std::wstring  right = its->substr(pos + 1, its->length() - (pos + 1));
-            lines.insert(its, left);
-            * its = right;
-            pos = its->find(newLine);
+            const std::wstring  ln = word.substr(0, i + 1);
+            bitmapFont.bbox((wchar_t *)(ln.data()), bBox);
+            if(bBox.width() <= width)
+            {
+              lines.push_back(ln);
+              words.pop_front();
+              words.push_front(word.substr(i + 1));
+              got = true;
+            }
           }
         }
       }

@@ -68,8 +68,11 @@ namespace Nimble {
 
     inline float Sqrt(int v) { return sqrtf(v); }
 
+    inline double degToRad(const double degrees) { return (degrees * PI / 180.0); }
+    inline double radToDeg(const double radians) { return (radians * 180.0 / PI); }
+
     // Min & Max inlines:
-  
+
     template <class T>
     inline T Max(T x, T y) { return x > y ? x : y; }
     template <class T>
