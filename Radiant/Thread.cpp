@@ -139,6 +139,18 @@ namespace Radiant {
     return m_state == RUNNING;
   }
 
+  bool Thread::setThreadRealTimePriority(int priority)
+  {
+    sched_param sp;
+    bzero(&sp, sizeof(sp));
+
+    sp.sched_priority = priority;
+    if (pthread_setschedparam(pthread_self(), SCHED_RR, &sp)  == -1)
+      return false;
+
+    return true;
+  }
+
   void Thread::test()
   {
     bool debug = m_threadDebug;

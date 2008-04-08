@@ -183,16 +183,16 @@ namespace VideoDisplay {
       Resonant::DSPNetwork  * m_dsp;
       Resonant::DSPNetwork::Item m_dspItem;
       AudioTransfer         * m_audio;
-      Radiant::TimeStamp         m_frameTime;
+      Radiant::TimeStamp      m_frameTime;
       int                     m_count;
       State                   m_state;
       int                     m_histogram[HISTOGRAM_POINTS];
       uint                    m_updates;
 
-      Radiant::TimeStamp         m_duration;
-      Radiant::TimeStamp         m_position;
+      Radiant::TimeStamp      m_duration;
+      Radiant::TimeStamp      m_position;
 
-      Radiant::VideoImage        m_blankDisplay;
+      Radiant::VideoImage     m_blankDisplay;
       bool                    m_blankReload;
       bool                    m_useBlank;
 

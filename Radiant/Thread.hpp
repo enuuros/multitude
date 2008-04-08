@@ -87,8 +87,12 @@ namespace Radiant {
     /// Returns true if the thread is running.
     bool isRunning();
 
+    /// Sets the real-time priority for the calling thread
+    static bool setThreadRealTimePriority(int priority);
+
     /** Drive some self tests. */
     static void test();
+
 
   protected:
     /// Exits the the calling thread.
