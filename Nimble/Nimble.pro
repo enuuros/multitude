@@ -1,10 +1,23 @@
 include(../multitude.pri)
-include(../libs.pri)
 
+HEADERS += Histogram.hpp 
 HEADERS += KeyStone.hpp 
 HEADERS += LensCorrection.hpp 
+HEADERS += Math.hpp 
+HEADERS += Matrix2.hpp 
+HEADERS += Matrix3.hpp 
+HEADERS += Matrix4.hpp 
+HEADERS += Random.hpp 
+HEADERS += Ramp.hpp 
+HEADERS += Rect.hpp 
+HEADERS += Vector2.hpp 
+HEADERS += Vector3.hpp 
+HEADERS += Vector4.hpp 
 
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
 
 TARGET = Nimble
+
+# Must be at end (Headers for OSX Bundles)
+include(../libs.pri)

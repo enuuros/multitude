@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += Application.hpp 
 HEADERS += AudioFileHandler.hpp
@@ -34,4 +33,4 @@ LIBS += $$LIB_RADIANT -lasound
 
 PKGCONFIG += portaudio-2.0 sndfile
 
-
+include(../libs.pri)

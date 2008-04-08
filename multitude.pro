@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
+SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
 SUBDIRS += ValueIO

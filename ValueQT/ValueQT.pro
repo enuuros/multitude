@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += HasValuesQT.hpp
 
@@ -12,3 +11,5 @@ CONFIG += qt
 QT = core
 
 unix:LIBS += $$LIB_VALUEIO -lxerces-c
+
+include(../libs.pri)

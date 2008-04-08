@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += Dom.hpp
 HEADERS += HasValues.hpp
@@ -13,3 +12,4 @@ TARGET = ValueIO
 
 unix:LIBS += -L../lib $$LIB_RADIANT -lxerces-c
 
+include(../libs.pri)

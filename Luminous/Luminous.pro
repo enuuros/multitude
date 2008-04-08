@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
@@ -55,3 +54,5 @@ LIBS += $$LIB_VALUEIO $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c -lGL -lGLU
 macx:LIBS += -framework,OpenGL
 
 PKGCONFIG += GraphicsMagick++
+
+include(../libs.pri)

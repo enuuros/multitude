@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += AudioTransfer.hpp
 HEADERS += ShowGL.hpp
@@ -26,3 +25,5 @@ LIBS += $$LIB_RESONANT $$LIB_SCREENPLAY $$LIB_LUMINOUS $$LIB_VALUEIO
 LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW -lGL
 
 macx:LIBS += -framework,OpenGL
+
+include(../libs.pri)

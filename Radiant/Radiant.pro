@@ -1,5 +1,6 @@
 include(../multitude.pri)
-include(../libs.pri)
+
+HEADERS += cycle.h
 
 HEADERS += BinaryData.hpp
 HEADERS += Color.hpp
@@ -13,16 +14,22 @@ HEADERS += ImageConversion.hpp
 HEADERS += IODefs.hpp
 HEADERS += Mutex.hpp
 HEADERS += Priority.hpp
+HEADERS += RefObj.hpp
+HEADERS += RefPtr.hpp
+HEADERS += Semaphore.hpp
 HEADERS += SerialPort.hpp
 HEADERS += Size2D.hpp
 HEADERS += Sleep.hpp
+HEADERS += StandardPaths.hpp
 HEADERS += StringUtils.hpp
 HEADERS += TCPServerSocket.hpp
 HEADERS += TCPSocket.hpp
 HEADERS += ThreadData.hpp
 HEADERS += Thread.hpp
 HEADERS += Timer.hpp
+HEADERS += TimeStamp.hpp
 HEADERS += Trace.hpp 
+HEADERS += VectorStorage.hpp
 HEADERS += Video1394.hpp
 HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
@@ -55,3 +62,5 @@ TARGET = Radiant
 LIBS += -lpthread
 
 PKGCONFIG += libdc1394-2
+
+include(../libs.pri)

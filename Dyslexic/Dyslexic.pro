@@ -1,5 +1,4 @@
 include(../multitude.pri)
-include(../libs.pri)
 
 HEADERS += BBox.hpp
 HEADERS += Charmap.hpp
@@ -42,3 +41,4 @@ LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_VALUEIO -lGL
 
 macx:LIBS += -framework,OpenGL
 
+include(../libs.pri)
