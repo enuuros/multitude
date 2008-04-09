@@ -16,8 +16,7 @@ contains(ffmpeg, YES) {
   message(Compiling with FFMPEG support)
 }
 else {
-  message(No FFMPEG support - enable FFMPEG support by setting WITH_FFMPEG to
-YES)
+  message(No FFMPEG support - enable FFMPEG support by setting WITH_FFMPEG to YES)
   ffmpeg = NO
 }
 
@@ -25,8 +24,7 @@ contains(portaudio, YES) {
   message(Compiling with PortAudio v19 support)
 }
 else {
-  message(No PortAudio19 support - enable PortAudio19 support by setting
-WITH_PORTAUDIO19 to YES)
+  message(No PortAudio19 support - enable PortAudio19 support by setting WITH_PORTAUDIO19 to YES)
   portaudio = NO
 }
 
