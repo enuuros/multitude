@@ -31,7 +31,7 @@ TARGET = Resonant
 
 LIBS += $$LIB_RADIANT 
 
-linux.g++:LIBS += -lasound
+linux-g++:LIBS += -lasound
 
 PKGCONFIG += portaudio-2.0 sndfile
 
