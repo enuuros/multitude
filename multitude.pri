@@ -44,6 +44,8 @@ macx {
 
   withbundles = $$(MULTI_BUNDLES)
 
+  LIB_OPENGL = -framework,OpenGL
+
   contains(withbundles,YES) {
 
     MULTI_LIB_FLAG = -F
@@ -51,7 +53,6 @@ macx {
     LIB_DYSLEXIC = -framework,Dyslexic
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble
-    LIB_OPENGL = -framework,OpenGL
     LIB_RADIANT = -framework,Radiant
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay

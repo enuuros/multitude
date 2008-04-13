@@ -17,8 +17,6 @@
 
 #include <Radiant/Trace.hpp>
 
-#include <avcodec.h>
-#include <avformat.h>
 
 #include <vector>
 
