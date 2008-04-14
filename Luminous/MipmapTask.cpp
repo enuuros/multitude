@@ -76,7 +76,8 @@ namespace Luminous
   {
     Radiant::trace("MipmapTask::doTask #");
 
-    /// @todo redo
+    /// @todo rewrite
+
 /* 
     if(first) readImageSize()
 

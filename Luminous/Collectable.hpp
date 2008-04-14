@@ -27,6 +27,8 @@ namespace Luminous
     Collectable(GarbageCollector * collector = 0);
     virtual ~Collectable();
 
+    GarbageCollector * gc() { return m_collector; }
+
   private:
     GarbageCollector * m_collector;
   };

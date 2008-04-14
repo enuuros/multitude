@@ -11,9 +11,6 @@ namespace Luminous
  
   class Task : Patterns::NotCopyable
   {
-    /// @todo add timestamp to control the frequency of running a task (ie. once
-    /// every five seconds)
-
     public:
       Task();
       virtual ~Task();

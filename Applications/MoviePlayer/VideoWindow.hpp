@@ -16,7 +16,7 @@
 #ifndef VIDEO_WINDOW_HPP
 #define VIDEO_WINDOW_HPP
 
-#include <Dyslexic/CPUFont.hpp>
+#include <Dyslexic/CPUFontBase.hpp>
 #include <Dyslexic/GPUFont.hpp>
 
 #include <Luminous/GLResources.hpp>
@@ -65,7 +65,7 @@ protected:
 
   QTimer m_timer;
   Radiant::TimeStamp m_lastActivity;
-  Dyslexic::CPUFont * m_subCPUFont;
+  Dyslexic::CPUFontBase * m_subCPUFont;
   Dyslexic::GPUFont * m_subGPUFont;
 
   Luminous::GLResources m_glResources;

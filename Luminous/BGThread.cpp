@@ -134,7 +134,7 @@ namespace Luminous
 
       // Run the task
       if(task) {
-        Radiant::trace("FOO");
+//        Radiant::trace("FOO");
         bool first = (task->state() == Task::WAITING);
 
         if(first) {
@@ -182,6 +182,9 @@ namespace Luminous
         m_mutexWait.unlock();
       }
     }
+
+    // Down use all the cpu
+    sleep(1);
   }
 
   Task * BGThread::pickNextTask(Radiant::TimeStamp & wait)

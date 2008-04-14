@@ -1,12 +1,13 @@
-#ifndef SIZE2D_HPP
-#define SIZE2D_HPP
+#ifndef RADIANT_SIZE2D_HPP
+#define RADIANT_SIZE2D_HPP
 
 #include <Nimble/Vector2.hpp>
 
-/// @todo combine Size2D+Nimble::BoundingSquare -> rect
-
 namespace Radiant
 {
+
+  /// @todo These two functions are kinda orphaned here. Maybe they should be
+  /// moved somewhere else...
 
   /// Given a size and target size, return a new size optionally preserving the
   /// original aspect ratio

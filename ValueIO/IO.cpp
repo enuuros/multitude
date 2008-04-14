@@ -73,7 +73,10 @@ namespace ValueIO {
 
   DOMNode * IOStdString::writeDom(void * ptr, HasValues *, DOMDocument * doc)
   {
-    const std::string & val = * (std::string *) ptr;
+    const std::string & val = * (std::string *) ptr;    
+
+    Radiant::trace("IOStdString::writeDom # ATTEMPT %s", val.c_str());
+
     XWStr tmp(XMLString::transcode(val.c_str()));
     return doc->createTextNode(tmp.str());
   }

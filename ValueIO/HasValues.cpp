@@ -123,11 +123,6 @@ namespace ValueIO {
 
   DOMElement * HasValues::writeDom(DOMDocument * doc)
   {
-    if(m_name.empty()) {
-      error("HasValues::writeDom # name not specified, won't serialize (%s)", typeid(*this).name());
-      return 0;
-    }
-
     init();
 
     DOMElement * ev = doc->createElement(XWStr("values").str());
@@ -147,9 +142,8 @@ namespace ValueIO {
         //trace("HasValues::writeDom # Wrote item \"%s\"", (*it).first.c_str());
       }
       else 
-	error("HasValues::writeDom # When writing item \"%s\"",
-	      (*it).first.c_str());
-
+        error("HasValues::writeDom # When writing item \"%s\"",
+            (*it).first.c_str());
     }
 
     return ev;
@@ -243,6 +237,7 @@ namespace ValueIO {
     DOMElement * root = out.prepareSave(filename, m_name.c_str());
 
     if(!root) {
+      error("HasValues::save # couldn't create document root");
       return false;
     }
     
@@ -250,7 +245,7 @@ namespace ValueIO {
     bool ok = out.finishSave();
 
     if (!ok)
-	error("%s # Could not serialize to %s", fname, filename);
+      error("%s # Could not serialize to %s", fname, filename);
 
     return ok;
     } catch(DOMException e) {
