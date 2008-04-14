@@ -11,7 +11,7 @@ namespace Dyslexic
 {
 
   CPUBitmapFont::CPUBitmapFont(Luminous::GarbageCollector * gc)
-  : CPUFont(gc)
+  : CPUFontBase(gc)
   {
   }
 
@@ -44,7 +44,7 @@ namespace Dyslexic
   {
     assert(m_face != 0);
 
-    return CPUFont::setFaceSize(size, resolution);
+    return CPUFontBase::setFaceSize(size, resolution);
   }
 
 }

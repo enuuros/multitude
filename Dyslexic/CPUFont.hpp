@@ -1,65 +1,33 @@
 #ifndef DYSLEXIC_CPU_FONT_HPP
 #define DYSLEXIC_CPU_FONT_HPP
 
-#include "BBox.hpp"
-#include "GlyphContainer.hpp"
+#include <Dyslexic/GlyphContainer.hpp>
+#include <Dyslexic/BBox.hpp>
 
 #include <Luminous/Collectable.hpp>
 #include <Luminous/GLResources.hpp>
 
 namespace Dyslexic
 {
-  class GPUFont;
-
-  class CPUFont : public Luminous::Collectable
+  class CPUFont
   {
-  public:
-      CPUFont(Luminous::GarbageCollector * gc = 0);
-      virtual ~CPUFont();
-
-      float advance(const char * str);
-      float advance(const wchar_t * str);
-
-      void detach(GPUFont * gpuFont);
-      
-      const Glyph * getGlyph(unsigned int charCode);
-
-      virtual bool load(const char * fontFilePath);
-
-      int faceSize() const;
-      virtual bool setFaceSize(int size, int resolution);
-
-      float ascender() const;
-      float descender() const;      
-      float lineHeight() const;
-
-      Face * face() { return m_face; }
-      const Size & size() const { return m_size; }
-
-      void bbox(const char * str, BBox & bbox);
-      void bbox(const wchar_t * wstr, BBox & bbox);
-
-      int error() const { return m_error; }
-
-      virtual GPUFont * createGPUFont() = 0;
-      GPUFont * getGPUFont(Luminous::GLResources * resources);
-
-    protected:
-      virtual Glyph * makeGlyph(unsigned int g) = 0;
-
-      Face * m_face;
-      Size m_size;
-      int m_error;
-
-    private:
-      inline bool checkGlyph(unsigned int g);
-      
-      GlyphContainer * m_glyphList;
-      Nimble::Vector2 m_pen;
+    public:
+      virtual ~CPUFont() {}
   
-      std::vector<GPUFont *> m_gpuFonts;
+      virtual float advance(const char * str) = 0;
+      virtual float advance(const wchar_t * str) = 0;
 
-      friend class GPUFont;
+      virtual int faceSize() const = 0;
+      virtual bool setFaceSize(int size, int resolution) = 0;
+
+      virtual float ascender() const = 0;
+      virtual float descender() const = 0;
+      virtual float lineHeight() const = 0;
+
+      virtual void bbox(const char * str, BBox & bbox) = 0;
+      virtual void bbox(const wchar_t * wstr, BBox & bbox) = 0;
+
+      virtual bool load(const char * fontFilePath) = 0;
   };
 
 }

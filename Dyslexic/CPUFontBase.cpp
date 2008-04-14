@@ -1,30 +1,31 @@
-#include "CPUFont.hpp"
-#include "GPUFont.hpp"
+#include "CPUFontBase.hpp"
+#include "GPUFontBase.hpp"
+
 #include <Radiant/Trace.hpp>
 
 namespace Dyslexic
 {
 
-  CPUFont::CPUFont(Luminous::GarbageCollector * gc)
+  CPUFontBase::CPUFontBase(Luminous::GarbageCollector * gc)
     : Collectable(gc),
       m_face(0),
     m_glyphList(0)
   {
   }
 
-  CPUFont::~CPUFont()
+  CPUFontBase::~CPUFontBase()
   {  
     delete m_glyphList;
     delete m_face;
   }
 
-  void CPUFont::detach(GPUFont * gpuFont)
+  void CPUFontBase::detach(GPUFontBase * gpuFont)
   {
     assert(gpuFont->cpuFont() == this);
 
     gpuFont->m_cpuFont = 0;
 
-    for(std::vector<GPUFont *>::iterator it = m_gpuFonts.begin();
+    for(container::iterator it = m_gpuFonts.begin();
 	it != m_gpuFonts.end(); it++) {
       if(*it == gpuFont) { 
         m_gpuFonts.erase(it);
@@ -35,10 +36,10 @@ namespace Dyslexic
     assert(0);
   }
 
-  bool CPUFont::setFaceSize(int size, int resolution)
+  bool CPUFontBase::setFaceSize(int size, int resolution)
   {
     if(!m_face) {
-      Radiant::error("CPUFont::setSize # no font loaded yet!");
+      Radiant::error("CPUFontBase::setSize # no font loaded yet!");
       return false;
     }
 
@@ -54,48 +55,50 @@ namespace Dyslexic
     m_glyphList = new GlyphContainer(m_face);
 
     // Notify all GPUFonts of the size change
-    for(std::vector<GPUFont *>::iterator it = m_gpuFonts.begin();
-	it != m_gpuFonts.end(); it++) {
+    for(container::iterator it = m_gpuFonts.begin();
+        it != m_gpuFonts.end(); it++) {
       (*it)->faceSizeChanged();
     }
 
     return true;
   }
 
-  bool CPUFont::load(const char * fontFilePath)
+  bool CPUFontBase::load(const char * fontFilePath)
   {
     m_face = new Face(fontFilePath);
 
      m_error = m_face->error();
-    if(m_error == 0) {
+     if(m_error == 0) {
       m_glyphList = new GlyphContainer(m_face);
       return true;
     }
 
+    Radiant::error("CPUFontBase::load # loading failed (error code: %d)", m_error);
     return false;
   }
 
-  int CPUFont::faceSize() const
+  int CPUFontBase::faceSize() const
   {
     return m_size.charSize();
   }
 
-  float CPUFont::lineHeight() const
+  float CPUFontBase::lineHeight() const
   {
     return m_size.charSize();
   }
 
-  float CPUFont::ascender() const
+  float CPUFontBase::ascender() const
   {
     return m_size.ascender();
   }
 
-  float CPUFont::descender() const
+  float CPUFontBase::descender() const
   {
     return m_size.descender();
   }
 
-  void CPUFont::bbox(const char * str, BBox & bbox)
+  /// @todo check the bbox calculations, there seems to be some error here
+  void CPUFontBase::bbox(const char * str, BBox & bbox)
   {
     if(str && (*str != '\0')) {
         const unsigned char * c = (unsigned char *)str;
@@ -116,7 +119,7 @@ namespace Dyslexic
     }
   }
 
-  void CPUFont::bbox(const wchar_t * wstr, BBox & bbox)
+  void CPUFontBase::bbox(const wchar_t * wstr, BBox & bbox)
   {
     if(wstr && (*wstr != wchar_t('\0')))
     {
@@ -141,7 +144,7 @@ namespace Dyslexic
     }
   }
 
-  bool CPUFont::checkGlyph(unsigned int characterCode)
+  bool CPUFontBase::checkGlyph(unsigned int characterCode)
   {
     if(m_glyphList->glyph(characterCode) == 0)
     {
@@ -160,7 +163,7 @@ namespace Dyslexic
     return true;
   }
 
-  float CPUFont::advance(const char * str)
+  float CPUFontBase::advance(const char * str)
   {
     const unsigned char * c = (unsigned char *)str;
     float width = 0.f;
@@ -175,7 +178,7 @@ namespace Dyslexic
     return width;
   }
 
-  float CPUFont::advance(const wchar_t * str)
+  float CPUFontBase::advance(const wchar_t * str)
   {
     const wchar_t * c = str;
     float width = 0.f;
@@ -190,15 +193,16 @@ namespace Dyslexic
     return width;
   }
 
-  const Glyph * CPUFont::getGlyph(unsigned int charCode)
+  const Glyph * CPUFontBase::getGlyph(unsigned int charCode)
   {
+    // Guard guard(m_mutex);
     if(checkGlyph(charCode))
       return m_glyphList->glyph(charCode);
     
     return 0;
   }
 
-  GPUFont * CPUFont::getGPUFont(Luminous::GLResources * resources) 
+  GPUFont * CPUFontBase::getGPUFont(Luminous::GLResources * resources) 
   {
     Luminous::GLResource * gf = resources->getResource(this);
 
@@ -208,9 +212,9 @@ namespace Dyslexic
       return font;
     }
 
-    // puts("CPUFont::getGPUFont # New GPU font");
+    // puts("CPUFontBase::getGPUFont # New GPU font");
     
-    GPUFont * font = createGPUFont();
+    GPUFontBase * font = createGPUFont();
     assert(font != 0);
     
     resources->addResource(this, font);

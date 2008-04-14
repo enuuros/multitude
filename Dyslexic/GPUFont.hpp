@@ -3,24 +3,18 @@
 
 #include <Nimble/Matrix3.hpp>
 
-#include <Luminous/GLResource.hpp>
-
 namespace Dyslexic
 {
-
   class CPUFont;
-  class GlyphContainer;
-  class Glyph;
 
-  class GPUFont : public Luminous::GLResource
+  /// Interface for the different font objects that reside on the GPU
+  class GPUFont
   {
     public:
-      GPUFont(CPUFont * font);
-      virtual ~GPUFont();
+      virtual ~GPUFont() {}
 
-      CPUFont * cpuFont() { return m_cpuFont; }
+      virtual CPUFont * cpuFont() = 0;
 
-      // Wrappers for usability, these just call the internalRender() functions
       void render(const char * str, const Nimble::Matrix3 & transform);
       void render(const wchar_t * str, const Nimble::Matrix3 & transform);
 
@@ -40,21 +34,8 @@ namespace Dyslexic
 
     protected:
       // The actual rendering methods, override these in derived classes
-      virtual void internalRender(const char * str, int n, const Nimble::Matrix3 & transform);
-      virtual void internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform);
-
-      CPUFont * m_cpuFont;
-      virtual Glyph * makeGlyph(const Glyph * cpuGlyph) = 0;
-
-      virtual void faceSizeChanged();
-
-    private:
-      inline bool checkGlyph(unsigned int charCode);
-      
-      GlyphContainer * m_glyphList;
-      Nimble::Vector2 m_pen;      
-
-      friend class CPUFont;
+      virtual void internalRender(const char * str, int n, const Nimble::Matrix3 & transform) = 0;
+      virtual void internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform) = 0;
   };
 
 }

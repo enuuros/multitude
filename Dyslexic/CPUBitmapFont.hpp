@@ -8,15 +8,12 @@
 namespace Dyslexic 
 {
   
-  class CPUBitmapFont : public CPUFont
+  class CPUBitmapFont : public CPUFontBase
   {
   public:
     CPUBitmapFont(Luminous::GarbageCollector * gc = 0);
     virtual ~CPUBitmapFont();
 
-    // virtual void render(const char * str);
-    // virtual void render(const wchar_t * str);
-  
     virtual bool setFaceSize(int size, int resolution);  
 
     virtual GPUTextureFont * createGPUFont();

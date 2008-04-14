@@ -2,16 +2,18 @@
 #define DYSLEXIC_GPU_TEXTURE_FONT_HPP
 
 #include <GL/glew.h>
-#include "GPUFont.hpp"
+
+#include <Dyslexic/GPUFontBase.hpp>
+
 #include <vector>
 
 namespace Dyslexic 
 {
 
-  class GPUTextureFont : public GPUFont
+  class GPUTextureFont : public GPUFontBase
   {
   public:
-    GPUTextureFont(CPUFont * cpuFont);
+    GPUTextureFont(CPUFontBase * cpuFont);
     virtual ~GPUTextureFont();
 
   protected:
@@ -25,6 +27,8 @@ namespace Dyslexic
   private:
     inline void calculateTextureSize();
     inline GLuint createTexture();
+
+    void resetGLResources();
    
     GLsizei m_maxTextureSize;
 
@@ -43,6 +47,8 @@ namespace Dyslexic
 
     int m_xOffset;
     int m_yOffset;
+
+    bool m_reset;
   };
 
 }

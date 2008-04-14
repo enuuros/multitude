@@ -37,8 +37,8 @@ namespace Dyslexic
     return in + 4 - (in & 0x3);
   }
 
-  GPUTextureFont::GPUTextureFont(CPUFont * cpuFont)
-  : GPUFont(cpuFont),
+  GPUTextureFont::GPUTextureFont(CPUFontBase * cpuFont)
+  : GPUFontBase(cpuFont),
     m_maxTextureSize(0),
     m_texWidth(0),
     m_texHeight(0),
@@ -46,7 +46,8 @@ namespace Dyslexic
     m_glyphMaxHeight(0),
     m_padding(DEFAULT_PADDING),
     m_xOffset(0),
-    m_yOffset(0)
+    m_yOffset(0),
+    m_reset(false)
   {
       m_remGlyphs = m_numGlyphs = m_cpuFont->face()->numGlyphs();
   }
@@ -145,6 +146,9 @@ namespace Dyslexic
   void GPUTextureFont::internalRender(const char * str, int n,
 				      const Nimble::Matrix3 & m)
   {
+    if(m_reset) 
+      resetGLResources();
+
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
 
     glEnable(GL_BLEND);
@@ -152,7 +156,7 @@ namespace Dyslexic
 
     GPUTextureGlyph::resetActiveTexture();
 
-    GPUFont::internalRender(str, n, m);
+    GPUFontBase::internalRender(str, n, m);
 
     glPopAttrib();
   }
@@ -160,6 +164,9 @@ namespace Dyslexic
   void GPUTextureFont::internalRender(const wchar_t * str, int n,
 				      const Nimble::Matrix3 & m)
   {
+    if(m_reset)
+      resetGLResources();
+
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
 
     glEnable(GL_BLEND);
@@ -167,20 +174,26 @@ namespace Dyslexic
 
     GPUTextureGlyph::resetActiveTexture();
 
-    GPUFont::internalRender(str, n, m);
+    GPUFontBase::internalRender(str, n, m);
 
     glPopAttrib();
   }
 
   void GPUTextureFont::faceSizeChanged()
   {
+    m_reset = true;
+    
+    m_remGlyphs = m_numGlyphs = m_cpuFont->face()->numGlyphs();
+
+    GPUFontBase::faceSizeChanged();
+  }
+
+  void GPUTextureFont::resetGLResources()
+  {
     if(!m_textures.empty()) {
       glDeleteTextures(m_textures.size(), (const GLuint *)&m_textures[0]);
       m_textures.clear();
-      m_remGlyphs = m_numGlyphs = m_cpuFont->face()->numGlyphs();
     }
-
-    GPUFont::faceSizeChanged();
   }
 
 }
