@@ -425,6 +425,8 @@ namespace Luminous {
 			       float width, float edgeWidth,
 			       const float * color)
   {
+    width *= 0.5f;
+
     float r = color[0];
     float g = color[1];
     float b = color[2];
@@ -452,7 +454,6 @@ namespace Luminous {
 
     glBegin(GL_QUAD_STRIP);
 
-    
     glColor4f(r, g, b, a);
     glVertex2fv((begin - up).data());
 
@@ -550,6 +551,9 @@ namespace Luminous {
     float a = color[3];
 
     float delta = (toRadians - fromRadians) / linesegments;
+
+
+    width *= 0.5f;
 
     glBegin(GL_QUAD_STRIP);
 
@@ -679,6 +683,14 @@ namespace Luminous {
 				 int linesegments, const float * color)
   {
     glFilledSoftArc(centerx, centery, radius, 0, Nimble::Math::TWO_PI,
+		    width, blendwidth, linesegments, color);
+  }
+
+  void Utils::glFilledSoftCircle(const float * center, float radius,
+				 float width, float blendwidth,
+				 int linesegments, const float * color)
+  {
+    glFilledSoftArc(center[0], center[1], radius, 0, Nimble::Math::TWO_PI,
 		    width, blendwidth, linesegments, color);
   }
 

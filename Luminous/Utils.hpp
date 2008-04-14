@@ -104,6 +104,9 @@ namespace Luminous {
     static void glFilledSoftCircle(float centerx, float centery, float radius,
 				   float width, float blendwidth,
 				   int linesegments, const float * color);
+    static void glFilledSoftCircle(const float * center, float radius,
+				   float width, float blendwidth,
+				   int linesegments, const float * color);
     /// Draw a circle sector ('pie slice') using GL_LINE_STRIP
     static void glSectorf(float centerx, float centery, float radius,
        float fromRadians, float toRadians, int lineSegments);
