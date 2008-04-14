@@ -36,6 +36,10 @@ exists(/usr/local/include/libavformat) {
   DEFINES += MULTI_FFMPEG_NEW
 }
 
+exists(/opt/local/include/libavformat) {
+  DEFINES += MULTI_FFMPEG_NEW
+}
+
 LIB_DYSLEXIC = -lDyslexic
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
