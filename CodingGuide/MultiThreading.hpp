@@ -1,8 +1,6 @@
 /** Part ofthe coding guide for the Multitude library collection. */
-
-
    
-/*! \mainpage threadingguide Multithreading guide
+/*! \page threadingguide Multithreading Guide
 
 Multithreading poses some caveats that one should take into account,
 when writing code that is to be used in a threaded environment. We
