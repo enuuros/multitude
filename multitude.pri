@@ -28,15 +28,15 @@ MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
 
-exists(/usr/include/libavformat) {
+exists(/usr/include/libavformat/avformat.h) {
   DEFINES += MULTI_FFMPEG_NEW
 }
 
-exists(/usr/local/include/libavformat) {
+exists(/usr/local/include/libavformat/avformat.h) {
   DEFINES += MULTI_FFMPEG_NEW
 }
 
-exists(/opt/local/include/libavformat) {
+exists(/opt/local/include/libavformat/avformat.h) {
   DEFINES += MULTI_FFMPEG_NEW
 }
 
