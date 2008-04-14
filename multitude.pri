@@ -25,8 +25,16 @@ CONFIG -= debug
 #MULTI_USUAL_LIBS = $$MULTI_CORE_LIBS -lMultiWidgets -lSDL
 
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
-#MULTI_VIDEO_LIBS = -lResonant -lVideoDisplay $$MULTI_FFMPEG_LIBS -lsndfile
 
+withbundles = $$(MULTI_BUNDLES)
+
+exists(/usr/include/libavformat) {
+  DEFINES += MULTI_FFMPEG_NEW
+}
+
+exists(/usr/local/include/libavformat) {
+  DEFINES += MULTI_FFMPEG_NEW
+}
 
 LIB_DYSLEXIC = -lDyslexic
 LIB_LUMINOUS = -lLuminous

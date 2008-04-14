@@ -17,7 +17,6 @@
 
 #include <Radiant/Trace.hpp>
 
-
 #include <vector>
 
 namespace VideoDisplay {

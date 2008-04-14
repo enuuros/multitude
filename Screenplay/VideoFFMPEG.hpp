@@ -22,7 +22,20 @@
 #include <string>
 
 extern "C" {
+
+#ifdef MULTI_FFMPEG_NEW
+
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
+
+#else
+
 #include <ffmpeg/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avutil.h>
+
+#endif
 
   struct AVCodec;
   struct AVCodecContext;

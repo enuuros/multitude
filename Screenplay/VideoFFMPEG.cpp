@@ -19,9 +19,6 @@
 #include <Radiant/Types.hpp>
 #include "VideoFFMPEG.hpp"
 
-extern "C" {
-#include <ffmpeg/avcodec.h>
-}
 
 #include <strings.h>
 #include <assert.h>
