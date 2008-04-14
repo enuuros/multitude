@@ -30,8 +30,14 @@ namespace Radiant
     void split(const std::string & s, const std::string & delim,
       StringList & out, bool skipEmpty = true);
     void split(const std::wstring & ws, const std::wstring & delim,
-      WStringList & out);
-
+	       WStringList & out);
+    
+    void utf8ToWString(std::wstring & dest, const std::string & src);
+    void wstringToUtf8(std::string & dest, const std::wstring & src);
+    /// Counts the number of decoded unicode characters in a utf8 string
+    int utf8DecodedLength(const std::string & src);
+    /// Counts the number of encoded utf8 bytes characters in a wide string
+    int utf8EncodedLength(const std::wstring & src);
   }
 
 
