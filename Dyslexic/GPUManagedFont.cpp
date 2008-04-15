@@ -22,12 +22,13 @@ namespace Dyslexic
     float actual = pointSize * s;
     int fontNo = m_cmf->selectFont(actual);
 
-    GPUFontBase * font = getFont(fontNo);
+    GPUFont * gf = getFont(fontNo);
 
     // Amount we need to scale
-    float sfix = actual / m_cmf->getFont(fontNo)->faceSize();
+    const CPUFont * cf = m_cmf->getFont(fontNo);
+    float sfix = actual / cf->faceSize();
 
-    font->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
+    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
   }
 
   void GPUManagedFont::render(const std::wstring & text, int pointSize, const Nimble::Matrix3 & m)

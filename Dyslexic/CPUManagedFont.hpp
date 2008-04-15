@@ -21,10 +21,10 @@ namespace Dyslexic
       uint32_t selectFont(float pointSize);
 
       int fontCount() const { return static_cast<int> (m_fonts.size()); }
-      CPUFont * getFont(int i) { return m_fonts[i]; }
+      CPUFont * getFont(int i);
 
       CPUFont * getMetricFont() { return m_metricFont; }
-  
+
     private:
       typedef std::vector<CPUFont *> container;
   

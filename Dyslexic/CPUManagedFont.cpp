@@ -51,15 +51,21 @@ namespace Dyslexic
     assert(!m_fonts.empty());
 
     int r = static_cast<int> (request);
+    int numFonts = static_cast<int> (m_fonts.size());
 
-    uint32_t i;
-    for(i = 0; i < m_fonts.size(); i++) {
+    for(int i = 0; i < numFonts; i++) {
       int s = m_fonts[i]->faceSize();
 
-      if(s >= r) break;
+      if(s >= r) return i;
     }
 
-    return i;
+    return numFonts - 1;
+  }
+
+  CPUFont * CPUManagedFont::getFont(int i) 
+  {
+    assert(i < (int)m_fonts.size());
+    return m_fonts[i];
   }
 
 }
