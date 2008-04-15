@@ -26,6 +26,7 @@
 namespace Radiant
 {
 
+  /// ColorUtils contains color conversion utilities
   namespace ColorUtils
   {
 

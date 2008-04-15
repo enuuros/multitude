@@ -21,6 +21,7 @@
 namespace Radiant
 {
 
+  /// FileUtils contains functions for platform independent file-handing
   namespace FileUtils
   {
 

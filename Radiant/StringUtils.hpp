@@ -10,6 +10,7 @@
 namespace Radiant
 {
 
+  /// StringUtils is a collection of string manipulation functions
   namespace StringUtils
   {
 
