@@ -10,6 +10,7 @@ namespace Dyslexic
   class CPUManagedFont;
   class GPUWrapperFont;
 
+  /// A font on the CPU that wraps the point size of the font for convenience.
   class CPUWrapperFont : public CPUFont
   {
     public:

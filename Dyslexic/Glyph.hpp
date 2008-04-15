@@ -9,11 +9,8 @@ struct FT_GlyphSlotRec_;
 
 namespace Dyslexic
 {
-  /**
-   * The base class for Glyphs.
-   *
-   * Glyph provides an interface between FreeType glyphs and OpenGL.
-   */
+  /// The base class for Glyphs.
+  /// Glyph provides an interface between FreeType glyphs and our own.
   class Glyph
   {
     public:

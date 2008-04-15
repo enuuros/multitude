@@ -26,6 +26,7 @@ namespace Luminous
 {
   class PixelFormat;
 
+  /// Base class for different textures
   template<GLenum TextureType>
   class TextureT : public GLResource, public Patterns::NotCopyable
   {
@@ -95,6 +96,7 @@ namespace Luminous
     bool m_haveMipmaps;
   };
   
+  /// A 1D texture
   class Texture1D : public TextureT<GL_TEXTURE_1D>
   {
   public:
@@ -104,6 +106,7 @@ namespace Luminous
     static Texture1D* fromBytes(GLenum internalFormat, int w, const void* data, const PixelFormat& srcFormat, bool buildMipmaps = true, GLResources * resources = 0);
   };
 
+  /// A 2D texture
   class Texture2D : public TextureT<GL_TEXTURE_2D>
   {
   public:
@@ -124,9 +127,11 @@ namespace Luminous
 				bool buildMipmaps = true, GLResources * resources = 0);
   };
 
+  /// A 3D texture
   class Texture3D : public TextureT<GL_TEXTURE_3D>
   {};
 	
+  /// A cubemap texture
   class TextureCube : public TextureT<GL_TEXTURE_CUBE_MAP>
   {};
 

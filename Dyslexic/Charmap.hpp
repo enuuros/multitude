@@ -9,6 +9,8 @@ struct FT_FaceRec_;
 namespace Dyslexic
 {
 
+  /// A character map contains the translation from character codes to glyphs
+  /// indices.
   class Charmap
   {
     public:

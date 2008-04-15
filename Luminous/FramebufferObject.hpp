@@ -43,6 +43,7 @@ namespace Luminous
     STENCIL = GL_STENCIL_ATTACHMENT_EXT
   };
 
+  /// An abstraction of an off-screen render target.
   class Renderbuffer
   {
   public:
@@ -60,6 +61,7 @@ namespace Luminous
     friend class Framebuffer;
   };
 
+  /// Abstraction of an off-screen render target that can be used as a texture.
   class Framebuffer
   {
   public:

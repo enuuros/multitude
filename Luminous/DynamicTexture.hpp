@@ -29,6 +29,7 @@
 namespace Luminous
 {
 
+  /// Texture class that handles the management of a pruned mipmap pyramid.
   class DynamicTexture : public GLResource
   {
     public:

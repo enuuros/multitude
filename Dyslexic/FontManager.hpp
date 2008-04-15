@@ -14,38 +14,10 @@
 namespace Dyslexic
 {
 
-/*
-
-class MyWidget
-{
-public:
-
-  MyWidget() 
-  {
-    m_cpuFont = FontManager::instance().getFont("verdana");
-    m_cpuFont->setFaceSize(72);
-  }
-
-  void render(GLResources * glrc)
-  {
-    GPUManagedFont * fg = glrc->getResource(m_cpuFont);
-    if(!fg) {
-      fg = new GPUManagedFont(m_cpuFont, glrc);
-    }
-
-    fg->render("foo", matrix);
-  }
-
-private:
-  CPUWrapperFont * m_cpuFont;
-};
-
+/** FontManager provides high level access to fonts that need to be scaled
+  during runtime. It provides access to managed fonts that internally use
+  glyphs rendered at different point sizes to improve rendered text quality.
 */
-
-
-  /// @todo separate interfaces (CPUFont, GPUFont). Make them plain interfaces
-  /// so managed fonts can implement them
-
   class FontManager : public Patterns::Singleton<FontManager>
   {
     public:

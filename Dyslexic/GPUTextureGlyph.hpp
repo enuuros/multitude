@@ -8,6 +8,7 @@ namespace Dyslexic
 {
   class CPUBitmapGlyph;
 
+  /// A glyph stored in a texture on the GPU
   class GPUTextureGlyph : public Glyph
   {
     public:

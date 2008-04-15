@@ -21,6 +21,7 @@
 
 namespace Luminous {
 
+  /// Helper class for handling the OpenGL matrix stack
   class MatrixStep
   {
   public:

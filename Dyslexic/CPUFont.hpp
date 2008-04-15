@@ -9,6 +9,9 @@
 
 namespace Dyslexic
 {
+
+  /// An abstract base class providing a common interface for all fonts residing
+  /// in CPU memory.
   class CPUFont
   {
     public:

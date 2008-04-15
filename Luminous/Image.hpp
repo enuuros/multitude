@@ -24,6 +24,7 @@
 namespace Luminous
 {
 
+  /// Simple image handling class
   class Image
   {
   public:

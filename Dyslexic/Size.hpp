@@ -7,6 +7,7 @@ struct FT_FaceRec_;
 namespace Dyslexic
 {
 
+  /// Size provides access to the size information in a font.
   class Size
   {
     public:

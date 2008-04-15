@@ -10,6 +10,7 @@ struct FT_GlyphSlotRec_;
 namespace Dyslexic
 {
 
+  /// Face contains information stored in a .tff file.
   class Face
   {
     public:

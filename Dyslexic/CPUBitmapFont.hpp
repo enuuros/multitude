@@ -7,7 +7,8 @@
 
 namespace Dyslexic 
 {
-  
+
+  /// A CPU font class that stores the glyphs as bitmaps.  
   class CPUBitmapFont : public CPUFontBase
   {
   public:

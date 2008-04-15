@@ -13,6 +13,7 @@ namespace Dyslexic
   class GlyphContainer;
   class Glyph;
 
+  /// A base class for different fonts that reside on the GPU
   class GPUFontBase : public GPUFont, public Luminous::GLResource
   {
     public:

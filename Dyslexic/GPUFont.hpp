@@ -7,7 +7,7 @@ namespace Dyslexic
 {
   class CPUFont;
 
-  /// Interface for the different font objects that reside on the GPU
+  /// A common interface for all fonts that reside on the GPU
   class GPUFont
   {
     public:

@@ -6,6 +6,7 @@
 namespace Radiant
 {
 
+  /// Utility class for color
   class Color : public Nimble::Vector4f
   {
     public:

@@ -10,11 +10,11 @@
 namespace Luminous
 {
 
-  /// A simple image pyramid. Used for mipmaps.
+  /// A simple image pyramid used for mipmaps.
   class ImagePyramid
   {
     public:
-      // A single level in the mipmap
+      /// A single level in the mipmap pyramid
       struct MipmapLevel 
       {
         Luminous::Image * image;

@@ -8,7 +8,8 @@
 namespace Luminous
 {
   typedef float Priority;
- 
+
+  /// Task is a base class for tasks that can be executed within BGThread. 
   class Task : Patterns::NotCopyable
   {
     public:

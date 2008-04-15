@@ -10,6 +10,7 @@
 namespace Dyslexic 
 {
 
+  /// A GPU font that uses textures to render the glyphs
   class GPUTextureFont : public GPUFontBase
   {
   public:

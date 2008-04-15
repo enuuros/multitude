@@ -9,8 +9,9 @@
 
 namespace Dyslexic
 {
-  /// @todo Use a fixed point size font to compute the bounding boxes etc. and
-  /// scale the result with the current scale
+  
+  /// A managed font on the CPU that uses multiple fonts internally to provide
+  /// better matches at various different scales.
   class CPUManagedFont : public Luminous::Collectable
   {
     public:

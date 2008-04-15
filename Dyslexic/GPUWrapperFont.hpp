@@ -10,6 +10,7 @@
 namespace Dyslexic
 {
 
+  /// A wrapper class for convenience
   class GPUWrapperFont : public GPUFont, public Luminous::GLResource
   {
     public:

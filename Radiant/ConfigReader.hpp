@@ -112,6 +112,7 @@ namespace Radiant {
       Kontkanen)
   */
 
+  /// @internal
   template <class T>
   class ChunkT {
   public:

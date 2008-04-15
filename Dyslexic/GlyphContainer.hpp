@@ -9,6 +9,7 @@
 namespace Dyslexic
 {
 
+  /// A container class for glyphs.
   class GlyphContainer
   {
     public:

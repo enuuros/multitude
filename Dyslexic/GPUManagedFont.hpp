@@ -13,6 +13,8 @@ namespace Dyslexic
   class CPUManagedFont;
   class GPUFont;
 
+  /// A managed font that contains multiple sizes of a single font residing on
+  /// the GPU
   class GPUManagedFont : public Luminous::GLResource
   {
     public:

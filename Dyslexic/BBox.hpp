@@ -8,6 +8,7 @@ struct FT_GlyphSlotRec_;
 namespace Dyslexic
 {
 
+  /// A bounding box class for glyphs.
   class BBox : public Nimble::Rect
   {
     public:

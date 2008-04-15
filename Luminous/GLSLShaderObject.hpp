@@ -23,7 +23,8 @@
 
 namespace Luminous 
 {
-  
+
+  /// OpenGL shading language shader object  
   class GLSLShaderObject : public GLResource, public Patterns::NotCopyable
   {
   public:

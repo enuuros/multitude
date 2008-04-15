@@ -26,6 +26,8 @@
 /// @todo change to use Radiant::TimeStamp internally
 namespace Radiant
 {
+
+  /// Timer provides a simple method of keeping track of elapsed time.
   class Timer
   {
     public:

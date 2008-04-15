@@ -7,6 +7,7 @@
 namespace Dyslexic
 {
 
+  /// A glyph that is stored as a bitmap on the CPU
   class CPUBitmapGlyph : public Glyph
   {
     public:

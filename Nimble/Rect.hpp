@@ -22,6 +22,7 @@
 
 namespace Nimble {
 
+  /// An axis-aligned rectangle.
   template <class T>
   class RectT
   {

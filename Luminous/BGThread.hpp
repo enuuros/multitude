@@ -16,7 +16,6 @@
 #ifndef LUMINOUS_BGTHREAD_HPP
 #define LUMINOUS_BGTHREAD_HPP
 
-//#include <Luminous/Loadable.hpp>
 #include <Luminous/Task.hpp>
 
 #include <Radiant/Thread.hpp>
@@ -29,6 +28,7 @@
 namespace Luminous
 {
 
+  /// A class used to execute tasks in a separate thread.
   class BGThread : public Radiant::Thread
   {
 
