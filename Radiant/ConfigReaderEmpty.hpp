@@ -4,9 +4,10 @@
 #ifndef CONFIG_READER_EMPTY_HPP
 #define CONFIG_READER_EMPTY_HPP
 
-/** @file RadiantEmpty.hpp Empty declarations of the classes. Use
-    this header to avoid loading the more complex stuff into all of
-    your files. */
+/** @file 
+    Empty declarations of the classes. Use this header to avoid loading the more
+    complex stuff into all of your files.
+*/
 
 namespace Radiant {
 

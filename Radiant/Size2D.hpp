@@ -3,11 +3,11 @@
 
 #include <Nimble/Vector2.hpp>
 
+/// @todo These two functions are kinda orphaned here. Maybe they should be
+/// moved somewhere else...
+
 namespace Radiant
 {
-
-  /// @todo These two functions are kinda orphaned here. Maybe they should be
-  /// moved somewhere else...
 
   /// Given a size and target size, return a new size optionally preserving the
   /// original aspect ratio
@@ -17,7 +17,7 @@ namespace Radiant
   /// aspect ratio that still fits within the constraint
   /// @param aspect aspect ratio that must be maintained
   /// @param constraint size to fit to
-  Nimble::Vector2i fitToSize(float aspect, Nimble::Vector2i constaint);
+  Nimble::Vector2i fitToSize(float aspect, Nimble::Vector2i constraint);
 
 }
 

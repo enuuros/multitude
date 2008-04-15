@@ -62,7 +62,7 @@ namespace Dyslexic
     return m_size;
   }
 
-  FT_GlyphSlot Face::glyph(unsigned int index, FT_Int flags)
+  FT_GlyphSlot Face::glyph(unsigned int index, signed int flags)
   {
     m_error = FT_Load_Glyph(*m_ftFace, index, flags);
     if(m_error)

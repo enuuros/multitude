@@ -19,7 +19,7 @@ namespace Dyslexic
   {
   }
 
-  bool Size::charSize(FT_Face * face, int pointSize, int xRes, int yRes)
+  bool Size::charSize(FT_FaceRec_ ** face, int pointSize, int xRes, int yRes)
   {
 
     if(m_size != pointSize || xRes != m_xRes || yRes != m_yRes) {

@@ -81,7 +81,7 @@ namespace Radiant {
     /// Get audio parameters
     /** @param channels The number of channels in the video sound-track. 
 	@param sample_rate Audio sample rate
-	@parma format The audio sample format
+	@param format The audio sample format
      */
     virtual void getAudioParameters(int * channels, 
 				    int * sample_rate,
@@ -98,7 +98,7 @@ namespace Radiant {
     virtual ImageFormat imageFormat() const = 0;
     /// Returns the total size of one captured image frame in bytes.
     virtual unsigned int size() const = 0;
-
+    
     virtual void setGamma(float);
     /** Sets the shutter time. Larger values lead to longer shutter
 	times. Negative values tell the system to use automatic shutter

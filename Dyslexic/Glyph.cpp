@@ -6,7 +6,7 @@
 namespace Dyslexic
 {
 
-  Glyph::Glyph(FT_GlyphSlot glyph)
+  Glyph::Glyph(FT_GlyphSlotRec_ * glyph)
   : m_error(0)
   {
     if(glyph) {

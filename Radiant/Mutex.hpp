@@ -77,7 +77,7 @@ namespace Radiant {
 
 #else
 
-#include <stdio.h>
+#include <cstdio>
 
   /** Dummy implementation of a mutex. */
 
@@ -162,7 +162,7 @@ namespace Radiant {
   /** A guard class that only releases a locked mutex. This class is
       used to automatically unlock a mutex within some function.
 
-      @szee Guard
+      @see Guard
   */
 
   class ReleaseGuard : public Patterns::NotCopyable

@@ -2,6 +2,7 @@
 #define DYSLEXIC_FACE_HPP
 
 #include "Size.hpp"
+
 #include <Nimble/Vector2.hpp>
 
 struct FT_GlyphSlotRec_;

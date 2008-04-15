@@ -102,18 +102,16 @@ namespace Luminous {
       const Rect & graphicsBounds() const 
       { return m_graphicsBounds; }
 
-      /// Converts a screen-space coordinate to image-space coordinate
 
-      /** @param loc The location vector to convert.
-
-	  @param convOk Optional parameter that is set to true if the
-	  location is inside this area. Otherwise convOk is set to
-	  false.
-
-	  @return The vector in graphics coordinates.
-       */
-      Nimble::Vector2f windowToGraphics
-      (Nimble::Vector2f loc, int windowheight, bool * convOk = 0);
+      /** Converts a screen-space coordinate to image-space coordinate.
+      @param loc The location vector to convert.
+      @param windowheight height of the window
+	    @param convOk Optional parameter that is set to true if the
+      location is inside this area. Otherwise convOk is set to
+      false.
+      @return The vector in graphics coordinates.
+      */
+      Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool * convOk = 0);
 
       int active() const { return m_active; }
 
@@ -176,17 +174,17 @@ namespace Luminous {
       /// Size of the window on the computer display
       const Vector2i & size() const { return m_size; }
 
-      /// Convert a coordinate from screen to graphics coordinates
-      /** This class traverses through all the areas to find an area
-	  that would include given location. It is entirely possible
-	  none of the areas contains the given coordinate, as there
-	  can be gaps between areas (due to keystoning, for example).
+      /** Convert a coordinate from screen to graphics coordinates.
+        This class traverses through all the areas to find an area
+        that would include given location. It is entirely possible
+        none of the areas contains the given coordinate, as there
+        can be gaps between areas (due to keystoning, for example).
 	  
-	  @param loc The location in screen coordinates.
+        @param loc The location in screen coordinates.
 
-	  @param convok If this value is non-null, then it is set to
-	  true or false depending on whether the conversion could be
-	  carried out.
+        @param convOk If this value is non-null, then it is set to
+        true or false depending on whether the conversion could be
+        carried out.
       */
       Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool * convOk=0);
 

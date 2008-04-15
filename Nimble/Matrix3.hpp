@@ -94,9 +94,10 @@ namespace Nimble {
     static int         columns() { return 3; }
     /// Inserts the argument matrix into the top-left corner of this matrix
     void               insert(const Matrix2T<T>& m);
-    /// Calculates the inverse of this matrix
-    /** @param ok Returns the success value of the inversion operation
-	@return the inverted matrix */
+    /** Calculates the inverse of this matrix.
+      @param ok Returns the success value of the inversion operation
+      @param tolerance if determinant smaller than tolerance, abort
+      @return the inverted matrix */
     Matrix3T<T>        inverse(bool * ok = 0, T tolerance = 1.0e-8) const;
 
     /// Create a matrix that performs 2D translation

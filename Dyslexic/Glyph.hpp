@@ -17,7 +17,6 @@ namespace Dyslexic
   class Glyph
   {
     public:
-      //Glyph(FT_GlyphSlot glyph);
       Glyph(FT_GlyphSlotRec_ * glyph);
       virtual ~Glyph();
 

@@ -123,14 +123,14 @@ namespace Nimble {
       return v;
     }
 
-    /// Checks if two (floating point) numbers are close to each other
-    /** This function is usually used to check if two floating-point
-	numbers are close to each other.
+    /** Checks if two (floating point) numbers are close to each other.
+      This function is usually used to check if two floating-point
+      numbers are close to each other.
 
-	@param a The first value to compare. 
-	@param b The second value to compare. 
-	@paramt limit The maximum difference between the values.
-     */
+      @param a The first value to compare. 
+      @param b The second value to compare. 
+      @param limit The maximum difference between the values.
+      */
     template <class T>
     bool IsClose(const T & a, const T & b, const T & limit)
     {

@@ -166,11 +166,10 @@ namespace Nimble {
     
     /// Adjusts the lens correction
     void setLensParam(int i, float v);
-    /// Applies correction, based on four screen-space coordinate pairs.
-    /** 
-	@param targets The desired target coordinates.
-	@param targets The observed coordinates.
-     */
+    /** Applies correction, based on four screen-space coordinate pairs.
+      @param targets The desired target coordinates.
+      @param real The observed coordinates.
+      */
     void calibrateOutput(const Nimble::Vector2 * targets,
 			 const Nimble::Vector2 * real);
     /// Returns the extension (fine-tuning) matrix

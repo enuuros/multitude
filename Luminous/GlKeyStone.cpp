@@ -149,7 +149,7 @@ namespace Luminous {
     return p;
   }
     
-  Vector4 GlKeyStone::projectCorrected(const Matrix4 & m, Vector2 v)
+  Vector4 GlKeyStone::projectCorrected(const Nimble::Matrix4 & m, Nimble::Vector2 v)
   {
     Vector4 tmp(v.x, v.y, 0.0, 1.0);
     Vector4 p = m * tmp;
