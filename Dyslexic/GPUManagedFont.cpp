@@ -4,6 +4,8 @@
 
 #include <Nimble/Math.hpp>
 
+//#include <Radiant/Trace.hpp>
+
 namespace Dyslexic
 {
 
@@ -17,33 +19,20 @@ namespace Dyslexic
 
   void GPUManagedFont::render(const std::string & text, int pointSize, const Nimble::Matrix3 & m)
   {
-    float s = extractScale(m);
+    GPUFont * gf;
+    float sfix;
 
-    float actual = pointSize * s;
-    int fontNo = m_cmf->selectFont(actual);
-
-    GPUFont * gf = getFont(fontNo);
-
-    // Amount we need to scale
-    const CPUFont * cf = m_cmf->getFont(fontNo);
-    float sfix = actual / cf->faceSize();
-
+    computeRenderParams(m, pointSize, &gf, &sfix);
     gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
   }
 
   void GPUManagedFont::render(const std::wstring & text, int pointSize, const Nimble::Matrix3 & m)
   {
-    float s = extractScale(m);
-
-    float actual = pointSize * s;
-    int fontNo = m_cmf->selectFont(actual);
-
-    GPUFontBase * font = getFont(fontNo);
-
-    // Amount we need to scale
-    float sfix = actual / m_cmf->getFont(fontNo)->faceSize();
-
-    font->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
+    GPUFont * gf;
+    float sfix;
+    
+    computeRenderParams(m, pointSize, &gf, &sfix);
+    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
   }
 
   float GPUManagedFont::extractScale(const Nimble::Matrix3 & m)
@@ -68,6 +57,22 @@ namespace Dyslexic
     }
 
     return font;
+  }
+
+  void GPUManagedFont::computeRenderParams(const Nimble::Matrix3 & m, int pts, GPUFont ** gf, float * scale)
+  {
+    float s = extractScale(m);
+
+    float actual = pts * s;
+    int fontNo = m_cmf->selectFont(actual);
+
+    *gf = getFont(fontNo);
+
+    // Amount we need to scale
+    const CPUFont * cf = (*gf)->cpuFont();
+    *scale = actual / (cf->faceSize() * s);
+
+//    Radiant::trace("GPUManagedFont::render # (scale %f, font pts %d, actual %f); (used pts %d, scale fix %f, result %f)", s, pts, actual, cf->faceSize(), *scale, s * *scale * (float)cf->faceSize());
   }
 
 }
