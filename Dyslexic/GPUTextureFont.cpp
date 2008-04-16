@@ -37,6 +37,7 @@ namespace Dyslexic
     return in + 4 - (in & 0x3);
   }
 
+  /// @todo make the class use Luminous::Texture2D internally
   GPUTextureFont::GPUTextureFont(CPUFontBase * cpuFont)
   : GPUFontBase(cpuFont),
     m_maxTextureSize(0),
@@ -82,11 +83,11 @@ namespace Dyslexic
       }
 
       GPUTextureGlyph * tempGlyph = 
-	new GPUTextureGlyph(bmGlyph, m_textures.back(), m_xOffset, m_yOffset,
-			    m_texWidth, m_texHeight);               
+        new GPUTextureGlyph(bmGlyph, m_textures.back(), m_xOffset, m_yOffset,
+            m_texWidth, m_texHeight);               
       m_xOffset += 
-	static_cast<int>(tempGlyph->bbox().high().x -
-			 tempGlyph->bbox().low().x + m_padding);
+        static_cast<int>(tempGlyph->bbox().high().x -
+            tempGlyph->bbox().low().x + m_padding);
       --m_remGlyphs;
       return tempGlyph;            
     }    

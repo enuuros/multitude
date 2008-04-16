@@ -28,6 +28,7 @@ namespace Dyslexic
       GLuint m_textureId;
 
       // Attempt to minimize texture changes
+      /// @todo this is not thread-safe
       static GLuint s_activeTexture;
   };
 
