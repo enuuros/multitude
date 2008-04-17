@@ -616,9 +616,9 @@ namespace Luminous {
       float a1 = fromRadians + i * delta;
       float a2 = fromRadians + (i + 1) * delta;
       float sa1 = sinf(a1);
-      float ca1 = cosf(a1);
+      float ca1 = - cosf(a1);
       float sa2 = sinf(a2);
-      float ca2 = cosf(a2);
+      float ca2 = - cosf(a2);
 
       glBegin(GL_QUAD_STRIP);
       
@@ -644,6 +644,16 @@ namespace Luminous {
     }    
 
   }
+
+  void Utils::glFilledSoftArc(const float * center, float radius,
+                              float fromRadians, float toRadians,
+                              float width, float blendwidth,
+                              int linesegments, const float * color)
+  {
+    glFilledSoftArc(center[0], center[1], radius, fromRadians, toRadians, 
+                    width, blendwidth, linesegments, color);
+  }
+
 
   void Utils::glCircle(float centerx, float centery, float radius,
     int linesegments)

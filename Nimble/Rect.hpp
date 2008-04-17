@@ -194,7 +194,7 @@ namespace Nimble {
   template <class T> 
   inline T RectT<T>::distance(const RectT &b) const
   {
-    Vector2 mind;
+    Vector2T<T> mind;
 
     for(int i = 0; i < 2; i++) {
 

@@ -160,9 +160,12 @@ namespace Nimble {
     return is;
   }
 
-  inline Vector2T<int> Round(const Vector2T<float>  & that)
-  {
-    return Vector2T<int>(Math::Round(that.x), Math::Round(that.y));
+  namespace Math {
+
+    inline Vector2T<int> Round(const Vector2T<float>  & that)
+    {
+      return Vector2T<int>(Math::Round(that.x), Math::Round(that.y));
+    }
   }
 
   typedef Vector2T<float>  Vector2;
@@ -171,6 +174,8 @@ namespace Nimble {
   typedef Vector2T<double> Vector2d;
 
 } // namespace
+
+
 
 template <class S, class T>
 inline S &operator<<(S &os, const Nimble::Vector2T<T> &t)

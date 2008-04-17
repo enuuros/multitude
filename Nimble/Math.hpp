@@ -174,7 +174,12 @@ namespace Nimble {
       return a * d - b * c;
     }
 
-    
+
+    template <class T>
+    inline T Average(const T & a, const T & b)
+    {
+      return (a + b) * 0.5f;
+    }
 
   }
 

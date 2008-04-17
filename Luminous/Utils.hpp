@@ -86,8 +86,12 @@ namespace Luminous {
 			  float fromRadians, float toRadians, float width,
 			  int linesegments, const float * color);
     static void glFilledSoftArc(float centerx, float centery, float radius,
-				float fromRadians, float toRadians, float width,
-				float blendwidth,
+				float fromRadians, float toRadians,
+                                float width, float blendwidth,
+				int linesegments, const float * color);
+    static void glFilledSoftArc(const float * center, float radius,
+				float fromRadians, float toRadians,
+                                float width, float blendwidth,
 				int linesegments, const float * color);
     /// Draw a circle using GL_LINE_STRIP, uses glArc
     static void glCircle(float centerx, float centery, float radius,
