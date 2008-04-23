@@ -65,6 +65,8 @@ namespace Luminous
       ChannelType type() const { return m_type; }
       int bytesPerPixel() const;
 
+    static PixelFormat rgbUByte()
+    { return PixelFormat(LAYOUT_RGB, TYPE_UBYTE); }
     static PixelFormat rgbaUByte()
     { return PixelFormat(LAYOUT_RGBA, TYPE_UBYTE); }
     static PixelFormat alphaUByte()

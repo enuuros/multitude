@@ -35,7 +35,7 @@ namespace Luminous
     m_data(0)
   {}
 
-  Image::Image(const Image& img) 
+  Image::Image(const Image& img)
   : m_width(0),
     m_height(0),
     m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
@@ -50,6 +50,29 @@ namespace Luminous
   Image::~Image()
   {
     clear();
+  }
+
+  void Image::flipVertical()
+  {
+    int linesize = m_width * m_pixelFormat.numChannels();
+
+    int n = m_height / 2;
+
+    for(int y = 0; y < n; y++) {
+      uint8_t * l1 = line(y);
+      uint8_t * l2 = line(m_height - y - 1);
+
+      uint8_t * sentinel = l1 + linesize;
+
+      while(l1 < sentinel) {
+        uint8_t tmp = *l1;
+        *l1 = *l2;
+        *l2 = tmp;
+        
+        l1++;
+        l2++;
+      };
+    }
   }
 
   Image& Image::operator = (const Image& img) 

@@ -44,6 +44,10 @@ namespace Luminous
     int width() const { return m_width; }
     int height() const { return m_height; }
 
+    int lineSize() { return m_width * m_pixelFormat.numChannels(); }
+
+    unsigned char* line(unsigned y) { return &m_data[y * lineSize()]; }
+
     unsigned char* bytes() { return &m_data[0]; }
     const unsigned char* bytes() const { return &m_data[0]; }
 
@@ -61,6 +65,8 @@ namespace Luminous
     bool empty() const { return (m_data == 0); }
 
     void scale(int width, int height, bool keepAspectRatio, Image& dest) const;
+
+    void flipVertical();
 
     Image & operator = (const Image& img);
 
