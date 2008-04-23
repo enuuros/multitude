@@ -21,3 +21,6 @@ TARGET = Nimble
 
 # Must be at end (Headers for OSX Bundles)
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALLS = target

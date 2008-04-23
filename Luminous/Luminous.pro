@@ -55,3 +55,6 @@ linux-g++:LIBS += -lGL -lGLU
 PKGCONFIG += GraphicsMagick++
 
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALLS = target

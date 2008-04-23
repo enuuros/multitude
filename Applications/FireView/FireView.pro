@@ -18,3 +18,6 @@ CONFIG += qt
 QT = core gui opengl xml
 
 PKGCONFIG += GraphicsMagick++
+
+target.path = $$PREFIX/bin
+INSTALLS += target

@@ -1,5 +1,6 @@
 # This file is to be included by all project files of qmake.
 # Use this to setup global build options & variables.
+include(prefix.pri)
 
 CONFIG -= qt
 CONFIG += link_pkgconfig
@@ -9,7 +10,7 @@ CONFIG += release
 CONFIG -= debug
 
 # Uncomment for debug build
-#CONFIG += debug
+CONFIG += debug
 
 #MULTI_CORE_LIBS = -lNimble -lDyslexic -lLuminous -lMultiTouch -lMultiStateDisplay -lRadiant -lValueIO -lxerces-c -lGLEW -lGraphicsMagick
 
@@ -76,3 +77,4 @@ macx {
 }
 
 LIBS += $${MULTI_LIB_FLAG}../lib
+

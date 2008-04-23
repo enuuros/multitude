@@ -36,3 +36,6 @@ linux-g++:LIBS += -lasound
 PKGCONFIG += portaudio-2.0 sndfile
 
 include(../libs.pri)
+
+target = $$PREFIX/lib
+INSTALL = target

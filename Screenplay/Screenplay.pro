@@ -9,3 +9,6 @@ PKGCONFIG += libavutil libavformat libavcodec
 LIBS += $$LIB_RADIANT
 
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALL = target

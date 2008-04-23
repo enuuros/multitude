@@ -46,7 +46,7 @@ namespace Luminous
 
   void BGThread::addTask(Task * task)
   {
-//    Radiant::trace("BGThread::addTask #");
+    Radiant::trace("BGThread::addTask #");
     assert(task);
 
     m_mutex.lock();
@@ -164,8 +164,6 @@ namespace Luminous
         m_mutexWait.lock();
         m_wait.wait(m_mutexWait, (int)(toWait.secondsD() * 1000.0));
         m_mutexWait.unlock();         
-      } else {
-        Radiant::error("BGThread::childLoop # LOGIC ERROR");
       }
 
       // Remove all tasks marked for deletion

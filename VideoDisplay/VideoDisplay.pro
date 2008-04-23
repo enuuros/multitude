@@ -25,3 +25,6 @@ LIBS += $$LIB_RESONANT $$LIB_SCREENPLAY $$LIB_LUMINOUS $$LIB_VALUEIO
 LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW $$LIB_OPENGL
 
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALLS = target

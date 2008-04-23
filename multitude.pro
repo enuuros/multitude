@@ -41,3 +41,13 @@ SUBDIRS += Examples
 SUBDIRS += Applications
 
 CONFIG += ordered
+
+# This is here just to provide the message about the installation directory to
+# the user. See multitude.pri for the actual logic.
+isEmpty(PREFIX) {
+  include(prefix.pri)
+  message("Installation directory not set, using $$PREFIX")
+} else {
+  message("Installation directory set to $$PREFIX")
+}
+

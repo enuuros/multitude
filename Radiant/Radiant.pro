@@ -34,7 +34,10 @@ HEADERS += Video1394.hpp
 HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
+HEADERS += ResourceLocator.hpp
+HEADERS += SystemUtils.hpp
 
+SOURCES += ResourceLocator.cpp
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
@@ -57,6 +60,8 @@ SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
+unix:SOURCES += SystemUtilsLinux.cpp
+
 TARGET = Radiant
 
 LIBS += -lpthread
@@ -64,3 +69,6 @@ LIBS += -lpthread
 PKGCONFIG += libdc1394-2
 
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALLS = target

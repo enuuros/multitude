@@ -116,6 +116,8 @@ namespace Radiant
       for(StringList::iterator it = pathList.begin(); it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
 
+        trace("TRYING %s", fullPath.c_str());
+
         if(fileReadable(fullPath.c_str()))
           return fullPath;
       }

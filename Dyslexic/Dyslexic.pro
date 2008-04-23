@@ -56,3 +56,6 @@ linux-g++:LIBS += -lGL -lGLU
 macx:LIBS += -framework,OpenGL
 
 include(../libs.pri)
+
+target.path = $$PREFIX/lib
+INSTALLS = target

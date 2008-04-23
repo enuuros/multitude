@@ -63,6 +63,9 @@ namespace CodingGuide {
       /* To access members, we write usually one-liners. */
       const Nimble::Vector2f & location() { return m_location; }
       const Nimble::Vector2f & velocity() { return m_velocity; }
+
+      /** If you expose a typedef in the API, use class-like naming convention */
+      typedef std::list<Nimble::Vector2> VectorList;
       
     protected:
       /* Member variables begin with "m_". */
