@@ -26,5 +26,4 @@ LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW $$LIB_OPENGL
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALLS = target
+include(../lib_inst.pri)

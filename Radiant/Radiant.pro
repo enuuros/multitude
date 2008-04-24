@@ -70,5 +70,4 @@ PKGCONFIG += libdc1394-2
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALLS = target
+include(../lib_inst.pri)

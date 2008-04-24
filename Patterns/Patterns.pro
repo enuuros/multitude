@@ -11,5 +11,4 @@ TARGET = Patterns
 # Must be at end (Headers for OSX Bundles)
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALLS = target
+include(../lib_inst.pri)

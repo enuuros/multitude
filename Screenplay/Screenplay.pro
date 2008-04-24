@@ -10,5 +10,4 @@ LIBS += $$LIB_RADIANT
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALL = target
+include(../lib_inst.pri)

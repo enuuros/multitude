@@ -14,5 +14,4 @@ unix:LIBS += $$LIB_VALUEIO -lxerces-c
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALLS = target
+include(../lib_inst.pri)

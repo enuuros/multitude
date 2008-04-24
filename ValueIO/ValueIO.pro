@@ -14,5 +14,4 @@ unix:LIBS += -L../lib $$LIB_RADIANT -lxerces-c
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALL = target
+include(../lib_inst.pri)

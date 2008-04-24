@@ -57,5 +57,5 @@ macx:LIBS += -framework,OpenGL
 
 include(../libs.pri)
 
-target.path = $$PREFIX/lib
-INSTALLS = target
+include(../lib_inst.pri)
+
