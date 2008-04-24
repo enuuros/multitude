@@ -90,6 +90,7 @@ namespace Radiant
     closedir(dir);
   }
 
+  ///  @todo DT_DIR seems to incorrectly match also to symbolic links under linux
   bool Directory::applyFilters(const struct dirent * dent) {
     bool ok = true;
 
