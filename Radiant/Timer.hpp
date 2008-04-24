@@ -16,14 +16,8 @@
 #ifndef RADIANT_TIMER_HPP
 #define RADIANT_TIMER_HPP
 
-#if defined(WIN32)
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>
-#else
-# include <sys/time.h>
-#endif
+#include <Radiant/TimeStamp.hpp>
 
-/// @todo change to use Radiant::TimeStamp internally
 namespace Radiant
 {
 
@@ -33,18 +27,13 @@ namespace Radiant
     public:
       Timer();
 
+      /// Start the timer. Marks the current time as zero time.      
       void start();
+      /// Return the number of seconds since the last call to start().
       float elapsed() const;
 
     protected:
-#if defined(WIN32)
-      LARGE_INTEGER performanceFrequency;
-      double performanceReciprocal;
-
-      LARGE_INTEGER startTime;
-#else
-      struct timeval startTime;
-#endif
+      TimeStamp m_started;
   };
 }
 

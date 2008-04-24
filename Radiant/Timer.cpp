@@ -17,50 +17,23 @@
 
 namespace Radiant
 {
-#if defined(WIN32)
   Timer::Timer()
   {
-    QueryPerformanceFrequency(&performanceFrequency);
-    performanceReciprocal = 1.0f / (double)performanceFrequency.QuadPart;
-
     start();
   }
 
   void Timer::start()
   {
-    QueryPerformanceCounter(&startTime);
+    m_started = TimeStamp::getTime();
   }
 
   float Timer::elapsed() const 
   {
-    LARGE_INTEGER endTime;
-
-    QueryPerformanceCounter(&endTime);
-    float t = (float)((double)(endTime.QuadPart - startTime.QuadPart) * 
-		      performanceReciprocal);
-    return t;
+    TimeStamp now = TimeStamp::getTime();
+    TimeStamp t = now - m_started;
+  
+    return static_cast<float> (t.secondsD());
   }
-#else
-  Timer::Timer() 
-  {
-    start();
-  }
-
-  void Timer::start()
-  {
-    gettimeofday(&startTime, 0);
-  }
-
-  float Timer::elapsed() const 
-  {
-    struct timeval endTime;
-
-    gettimeofday(&endTime, 0);
-    float t =  ((endTime.tv_sec + endTime.tv_usec * 1.0e-6)
-        - (startTime.tv_sec + startTime.tv_usec * 1.0e-6));
-    return t;
-  }
-#endif
 
 }
 
