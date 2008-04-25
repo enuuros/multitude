@@ -108,7 +108,7 @@ namespace Luminous
     } else {
       cerr << "Image::writeJPG # JPEG format only supports "
 	"GRAYSCALE or RGB images" << endl;
-      jpeg_destroy_compress(&cinfo);   
+      jpeg_destroy_compress(&cinfo);
       return false;
     }
 
