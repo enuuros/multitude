@@ -95,8 +95,7 @@ namespace Nimble {
   typedef Vector4T<float>  Vector4; 
   typedef Vector4T<float>  Vector4f;
   typedef Vector4T<double> Vector4d;
-
-
+  typedef Vector4T<int>    Vector4i;
 
 } // namespace
 

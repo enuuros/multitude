@@ -20,6 +20,7 @@
 #include <Nimble/LensCorrection.hpp>
 
 #include <Nimble/Matrix3.hpp>
+#include <Nimble/Vector4.hpp>
 
 #include <vector>
 
@@ -134,6 +135,10 @@ namespace Nimble {
 	inside the camera area and width of the camera area, per
 	scanline. */
     const std::vector<Nimble::Vector2i> & limits() const { return m_limits; }
+    const std::vector<Nimble::Vector2i> & extraLimits() const
+    { return m_extraLimits; }
+
+    void addExtra(int index, float v);
 
     /// Number of pixels that this keystone camera area contains
     int containedPixelCount() const { return m_containedPixelCount; }
@@ -178,9 +183,14 @@ namespace Nimble {
     /** By default the extension matrix is set to identity. */
     void setOutputExtension(const Nimble::Matrix3 & m);
 
+    const Nimble::Vector4f & extraBorders() const { return m_extra; }
+
     void updateLimits();
 
   protected:
+
+    void updateLimits(std::vector<Nimble::Vector2i> & limits, 
+                      const Vector2 * offsets = 0);
 
     /// Calculates the projection matrix.
     /** See Paul Heckbert's master's thesis, pages 19-21. Often you
@@ -212,8 +222,11 @@ namespace Nimble {
     int            m_dpyX;
     int            m_dpyY;
 
+    Nimble::Vector4f m_extra;
+
     // Storage of the pixels to traverse when doing image processing
     std::vector<Nimble::Vector2i> m_limits;
+    std::vector<Nimble::Vector2i> m_extraLimits;
     // Total number of pixels to traverse.
     int            m_containedPixelCount;
   };
