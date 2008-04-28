@@ -10,7 +10,7 @@
  * License (LGPL), version 2.1. The LGPL conditions can be found in 
  * file "LGPL.txt" that is distributed with this source package or obtained 
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_TIMER_HPP
