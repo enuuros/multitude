@@ -7,7 +7,7 @@ SUBDIRS += ValueIO
 SUBDIRS += ValueQT
 SUBDIRS += Luminous
 SUBDIRS += Dyslexic
-SUBDIRS += Documents
+#SUBDIRS += Documents
 
 # Get these from environment variables
 ffmpeg = $$(WITH_FFMPEG)

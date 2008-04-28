@@ -1,9 +1,31 @@
 include(../multitude.pri)
 
-TEMPLATE = subdirs
+TEMPLATE = lib
+TARGET = Dummy
 
-docs.path = $$PREFIX/doc/multitude
-docs.files = 
-docs.extra = doxygen multitude.dox; install -m 644 -p html/* $$PREFIX/doc/multitude
+# Doxygen file to use
+DOX = multitude.dox
 
-INSTALLS += docs
+###############################################################################
+#                                   TOOLS
+###############################################################################
+
+# Compiler for doxygen
+dox_builder.name = doxygen
+dox_builder.input = DOX
+dox_builder.output = .dummy
+dox_builder.commands = doxygen ${QMAKE_FILE_IN}
+dox_builder.CONFIG += target_predeps
+dox_builder.variable_out =
+dox_builder.clean = .dummy
+QMAKE_EXTRA_COMPILERS += dox_builder
+
+###############################################################################
+#                                 INSTALL
+###############################################################################
+
+doxs.path = $$PREFIX/share/doc/multitude/api
+doxs.files = doxygen/html
+doxs.CONFIG += no_check_exist
+
+INSTALLS += doxs
