@@ -98,8 +98,8 @@ namespace Radiant {
     va_end(args);
 
     int * fail = 0;
-    *fail = 123456;
     assert(0);
+    *fail = 123456;
     exit(1);
   }
 

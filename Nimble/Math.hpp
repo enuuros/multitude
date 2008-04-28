@@ -141,6 +141,8 @@ namespace Nimble {
     inline int Round(double x) { return x > 0.0 ? (int) (x + 0.5) : (int) (x - 0.5); }
 
     inline int Ceil(float x) { return x >= 0.0f ? (int) (x + 0.99999f) : (int) (x); }
+    inline int Floor(float x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999f); }
+    inline int Floor(double x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999); }
 
     /** Clamps (limits) x between low and high. */
     

@@ -687,6 +687,7 @@ namespace Radiant {
        /* On Linux, only allocate channel, no bandwidth. This way you
 	  can get more cameras into a single FW bus. */
        (m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC)
+       //(m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
 #else
        // On Others, allocate both channels and bandwidth.
        (m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
