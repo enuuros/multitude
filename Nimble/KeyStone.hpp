@@ -119,8 +119,20 @@ namespace Nimble {
 		      m_originals[2] + m_originals[3]);
     }
 
-    /// Moves the colost corner point
-    void moveCorner(const Nimble::Vector2 &);
+    /// Moves the closest corner point
+    void moveCorner(Nimble::Vector2);
+
+    int closestCorner(Nimble::Vector2) const;
+
+    Nimble::Vector2 topLeft() const
+    { return m_originals[closestCorner(Nimble::Vector2(0,0))]; }
+    Nimble::Vector2 topRight() const
+    { return m_originals[closestCorner(Nimble::Vector2(m_width, 0))]; }
+
+    Nimble::Vector2 bottomLeft() const
+    { return m_originals[closestCorner(Nimble::Vector2(0, m_height))]; }
+    Nimble::Vector2 bottomRight() const
+    { return m_originals[closestCorner(Nimble::Vector2(m_width, m_height))]; }
 
     /// Flips the corner points horizontally.
     void flipHorizontal();
@@ -184,13 +196,19 @@ namespace Nimble {
     void setOutputExtension(const Nimble::Matrix3 & m);
 
     const Nimble::Vector4f & extraBorders() const { return m_extra; }
+    void setExtraBorders(const Nimble::Vector4f & borders)
+    { m_extra = borders; updateLimits(); }
 
     void updateLimits();
 
+    int version() { return m_version; }
+
   protected:
 
+    void updated() { m_version++; }
+
     void updateLimits(std::vector<Nimble::Vector2i> & limits, 
-                      const Vector2 * offsets = 0);
+                      const Vector4 * offsets = 0);
 
     /// Calculates the projection matrix.
     /** See Paul Heckbert's master's thesis, pages 19-21. Often you
@@ -229,6 +247,7 @@ namespace Nimble {
     std::vector<Nimble::Vector2i> m_extraLimits;
     // Total number of pixels to traverse.
     int            m_containedPixelCount;
+    int            m_version;
   };
   
 }

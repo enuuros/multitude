@@ -27,8 +27,9 @@ namespace Nimble {
       m_dpyHeight(768),
       m_dpyX(0),
       m_dpyY(0),
-      m_extra(20, 0, 0, 0),
-      m_containedPixelCount(m_width * m_height)
+      m_extra(0, 0, 0, 0),
+      m_containedPixelCount(m_width * m_height),
+      m_version(0)
   { 
     m_matrix.identity();
     m_matrixOut.identity();
@@ -140,6 +141,8 @@ namespace Nimble {
     tmp[1][2] = m_dpyY;
     
     m_matrixOut = tmp * m_matrixExtension * m_matrix;
+
+    updated();
   }
 
   Nimble::Vector2 KeyStone::project(const Nimble::Vector2 & v) const
@@ -162,7 +165,16 @@ namespace Nimble {
     return project(m, v);
   }
   
-  void  KeyStone::moveCorner(const Nimble::Vector2 & loc)
+  void  KeyStone::moveCorner(Nimble::Vector2 loc)
+  {
+    int index = closestCorner(loc);
+    m_originals[index] = loc;
+
+    calculateMatrix();
+    updateLimits();    
+  }
+
+  int KeyStone::closestCorner(Nimble::Vector2 loc) const
   {
     float best = (m_originals[0] - loc).length();
     int index = 0;
@@ -175,10 +187,7 @@ namespace Nimble {
       }
     }
 
-    m_originals[index] = loc;
-
-    calculateMatrix();
-    updateLimits();    
+    return index;
   }
 
 
@@ -270,16 +279,21 @@ namespace Nimble {
     for(i = 0; i < 4; i++) {
       tnorm[i] = project(backToNorm, targets[i]);
       rnorm[i] = project(backToNorm, real[i]);
-      printf("KeyStone::calibrateOutput # target = [%f %f] vs real = [%f %f]\n",
+      /*
+      printf("KeyStone::calibrateOutput # target = [%f %f] vs "
+             "real = [%f %f]\n",
 	     tnorm[i].x, tnorm[i].y, rnorm[i].x, rnorm[i].y);
+      */
     }
     
     Nimble::Matrix3 realToNormalized = projectionMatrix(rnorm).inverse();
     Nimble::Matrix3 normalizedToTarget = projectionMatrix(tnorm);
 
-    m_matrixExtension = m_matrixExtension * normalizedToTarget * realToNormalized;
+    m_matrixExtension =
+      m_matrixExtension * normalizedToTarget * realToNormalized;
 
     calculateMatrix();
+
   }
 
   void KeyStone::setOutputExtension(const Nimble::Matrix3 & m)
@@ -292,25 +306,44 @@ namespace Nimble {
   {
     updateLimits(m_limits);
 
-    Vector2 offsets[4] = {
-      Vector2( m_extra[0], m_extra[2]), // left
-      Vector2( m_extra[0],-m_extra[3]), // left
-      Vector2(-m_extra[1], m_extra[2]), // right
-      Vector2(-m_extra[1],-m_extra[3])//, // right
-      //Vector2(0, m_extra[2]), // top
-      //Vector2(0,-m_extra[3])  // bottom
-    };
+    Vector2 tl = topLeft();
+    Vector2 tr = topRight();
 
-    updateLimits(m_extraLimits, offsets);    
+    Vector2 bl = bottomLeft();
+    Vector2 br = bottomRight();
+
+    float ksw = (tr.x - tl.x + br.x - bl.x) * 0.5f;
+    float ksh = (bl.y - tl.y + br.y - tr.y) * 0.5f;
+
+    /*
+    std::cout << tl << " # " << tr << " # " << bl << " # " << br << std::endl;
+    
+    printf("tl = [%.1f %.1f] ksw = %f, ksh = %f\n", tl.x, tl.y, ksw, ksh);
+    */
+    Vector4 scaledExtra(m_extra[0] / ksw, m_extra[1] / ksw,
+                        m_extra[2] / ksh, m_extra[3] / ksh);
+
+    updateLimits(m_extraLimits, & scaledExtra);
   }
 
   void KeyStone::updateLimits(std::vector<Nimble::Vector2i> & limits, 
-                              const Vector2 * offsets)
+                              const Vector4 * offsets)
   {
     limits.resize(m_height);
 
     Rect bounds(0, 0, 1, 1);
-    
+
+    if(offsets) {
+      /*
+      printf("KeyStone::updateLimits # offsets: %f %f %f %f\n",
+             (*offsets)[0], (*offsets)[1], (*offsets)[2], (*offsets)[3]);
+      */
+      bounds.low().x -= (*offsets)[0];
+      bounds.low().y -= (*offsets)[2];
+      bounds.high().x += (*offsets)[1];
+      bounds.high().y += (*offsets)[3];
+    }
+
     int count = 0;
 
     for(int y = 0; y < m_height; y++) {
@@ -322,24 +355,10 @@ namespace Nimble {
 
       for(int x = 0; x < m_width; x++) {
         
-        bool in;
-
-        if(!offsets) {
-          Vector2 v1 = m_lensCorrection.correct(Vector2(x, y));
-          v1 = project(m_matrix, v1);
-          
-          in = bounds.contains(v1);
-        }
-        else {
-
-          in = false;
-
-          for(int i = 0; i < 4 && !in; i++) {
-            Vector2 v1 = m_lensCorrection.correct(Vector2(x, y) + offsets[i]);
-            v1 = project(m_matrix, v1);
-            in = in || bounds.contains(v1);
-          }
-        }
+        Vector2 v1 = m_lensCorrection.correct(Vector2(x, y));
+        v1 = project(m_matrix, v1);
+        
+        bool in = bounds.contains(v1);
 
 	if(!in) {
 	  if(inside) {
@@ -370,6 +389,8 @@ namespace Nimble {
     
     if(!offsets)
       m_containedPixelCount = count;
+
+    updated();
   }
 
   /** Calculates the projection matrix. See Paul Heckbert's master's
