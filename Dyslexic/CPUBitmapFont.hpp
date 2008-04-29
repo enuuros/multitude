@@ -15,7 +15,7 @@ namespace Dyslexic
     CPUBitmapFont(Luminous::GarbageCollector * gc = 0);
     virtual ~CPUBitmapFont();
 
-    virtual bool setFaceSize(int size, int resolution);  
+    virtual bool setFaceSize(int size, int resolution = DYSLEXIC_DEFAULT_RESOLUTION);
 
     virtual GPUTextureFont * createGPUFont();
 

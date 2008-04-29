@@ -2,8 +2,6 @@
 
 #include <Radiant/Trace.hpp>
 
-#define DEFAULT_RESOLUTION 72
-
 #define METRIC_FONT_POINT_SIZE 64
 
 namespace Dyslexic
@@ -29,7 +27,7 @@ namespace Dyslexic
 
       ok = font->load(m_file.c_str());
       assert(ok);
-      ok = font->setFaceSize(g_faceSizes[i], DEFAULT_RESOLUTION);
+      ok = font->setFaceSize(g_faceSizes[i]);
       assert(ok);
       m_fonts.push_back(font);
     }
@@ -38,7 +36,7 @@ namespace Dyslexic
     CPUBitmapFont * bf = new CPUBitmapFont(Collectable::gc());
     ok = bf->load(m_file.c_str());
     assert(ok);
-    ok = bf->setFaceSize(METRIC_FONT_POINT_SIZE, DEFAULT_RESOLUTION);
+    ok = bf->setFaceSize(METRIC_FONT_POINT_SIZE);
     assert(ok);
 
     m_metricFont = bf;

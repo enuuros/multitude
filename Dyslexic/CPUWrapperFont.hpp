@@ -21,7 +21,7 @@ namespace Dyslexic
       float advance(const wchar_t * str);      
     
       int faceSize() const        { return m_pointSize; }
-      bool setFaceSize(int size, int )  { m_pointSize = size; return true; }
+      bool setFaceSize(int size, int = DYSLEXIC_DEFAULT_RESOLUTION)  { m_pointSize = size; return true; }
 
       float ascender() const;
       float descender() const;

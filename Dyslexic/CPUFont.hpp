@@ -7,6 +7,8 @@
 #include <Luminous/Collectable.hpp>
 #include <Luminous/GLResources.hpp>
 
+#define DYSLEXIC_DEFAULT_RESOLUTION 72
+
 namespace Dyslexic
 {
 
@@ -21,7 +23,7 @@ namespace Dyslexic
       virtual float advance(const wchar_t * str) = 0;
 
       virtual int faceSize() const = 0;
-      virtual bool setFaceSize(int size, int resolution) = 0;
+      virtual bool setFaceSize(int size, int resolution = DYSLEXIC_DEFAULT_RESOLUTION) = 0;
 
       virtual float ascender() const = 0;
       virtual float descender() const = 0;
