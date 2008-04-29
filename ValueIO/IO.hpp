@@ -75,6 +75,8 @@ namespace ValueIO {
 
     virtual void setVector2(void * ptr, const Nimble::Vector2 & v);
     virtual Nimble::Vector2 getVector2(void * ptr);
+
+    virtual void setString(void * ptr, const std::string & str);
   };
   
   class IOStdString : public IO
@@ -83,6 +85,8 @@ namespace ValueIO {
     virtual ~IOStdString() {}
     virtual bool readDom(void * ptr, HasValues *, DOMNode * e, DOMElement *);
     virtual DOMNode * writeDom(void *, HasValues *, DOMDocument *);
+
+    virtual void setString(void * ptr, const std::string & str) { (*(std::string*)ptr) = str; }
     
     static IOStdString instance;
   };

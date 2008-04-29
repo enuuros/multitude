@@ -53,6 +53,11 @@ namespace ValueIO {
       Radiant::error("IO::getVector2 # conversion not available");
       return Nimble::Vector2(0.f, 0.f);
     }
+    
+    void IO::setString(void *, const std::string & )
+    {
+      Radiant::error("IO::setString # conversion not available");
+    }
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////

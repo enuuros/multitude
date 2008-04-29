@@ -118,6 +118,8 @@ namespace ValueIO {
       void  setVector2(const Nimble::Vector2f & v) { m_io->setVector2(m_ptr,v);}
       /// Ses the pointer value to 4D vector v
       void  setVector4(const Nimble::Vector4f & v) { m_io->setVector4(m_ptr,v);}
+
+      void setString(const std::string & str) { m_io->setString(m_ptr, str); }
     };
 
     typedef std::map<std::string, Ptr> container;
