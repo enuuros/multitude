@@ -237,6 +237,8 @@ void VideoWindow::paintGL()
     if(m_showSteps) {
       glBegin(GL_LINE_STRIP);
 
+      float sscale = (float) itemw / VideoDisplay::ShowGL::HISTOGRAM_POINTS;
+
       for(int i = 0; i < VideoDisplay::ShowGL::HISTOGRAM_POINTS; i++) {
 	int delta =
 	  (show.histogramIndex() + VideoDisplay::ShowGL::HISTOGRAM_POINTS-i) %
@@ -247,7 +249,7 @@ void VideoWindow::paintGL()
       
 	glColor4f(a, 0, 0, a * mainAlpha);
 	
-	glVertex2f(i * 2, itemh - 1 - show.histogramPoint(i) * 35 * 0.5f);
+	glVertex2f(i * sscale, itemh - 1 - show.histogramPoint(i) * 35 * 0.5f);
       }
       
       glEnd();
