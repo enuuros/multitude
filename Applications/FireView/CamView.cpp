@@ -87,7 +87,7 @@ namespace FireView {
 
   void CamView::InputThread::childLoop()
   {
-    using Radiant::yesNo;
+    using Radiant::StringUtils::yesNo;
     
     bool ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, m_fps);
     

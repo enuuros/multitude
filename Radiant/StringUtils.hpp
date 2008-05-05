@@ -39,17 +39,16 @@ namespace Radiant
     int utf8DecodedLength(const std::string & src);
     /// Counts the number of encoded utf8 bytes characters in a wide string
     int utf8EncodedLength(const std::wstring & src);
+
+    template<class T>
+      std::string stringify(T x) {
+        std::ostringstream os;
+        os << x;
+        return os.str();
+      }
+
+    const char * yesNo(bool yes);
   }
-
-
-  template<class T>
-  std::string stringify(T x) {
-    std::ostringstream os;
-    os << x;
-    return os.str();
-  }
-
-  const char * yesNo(bool yes);
 }
 
 #endif
