@@ -545,8 +545,7 @@ namespace Radiant {
     }
 
     if(m_euid != 0 && !foundCorrect) {
-      error("%s # Could not find the camera with euid = %llx",
-	    (long long) m_euid);
+      error("%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
       return false;
     }
 
