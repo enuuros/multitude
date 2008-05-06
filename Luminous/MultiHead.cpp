@@ -102,7 +102,7 @@ namespace Luminous {
   {
     assert((m_size.x > 0.01f) && (m_size.y > 0.01f));
 
-    // Nimble::Vector2f orig = loc;
+    Nimble::Vector2f orig = loc;
 
     loc.x -= m_location.x;
     loc.y -= (windowheight - m_size.y - m_location.y);
@@ -125,11 +125,10 @@ namespace Luminous {
     loc += m_graphicsLocation;
 
     
-    
-    /*
+    /// @todo commenting this breaks things on single display machines (where's the bug?)    
     trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)",
     orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
-    */
+
     return loc;
   }
 
