@@ -10,6 +10,7 @@ HEADERS += ConfigReader.hpp
 HEADERS += ConfigReaderTmpl.hpp
 HEADERS += Directory.hpp
 HEADERS += FileUtils.hpp
+HEADERS += FixedStr.hpp
 HEADERS += ImageConversion.hpp
 HEADERS += IODefs.hpp
 HEADERS += Mutex.hpp
