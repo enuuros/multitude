@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
+SUBDIRS += Notable
 SUBDIRS += ValueIO
 SUBDIRS += ValueQT
 SUBDIRS += Luminous
