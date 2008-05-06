@@ -828,7 +828,8 @@ namespace Luminous {
   void Utils::glFilledRoundedRectfv(const Vector2 & low, const Vector2 & high,
     const float cornerRadius, const int cornerLineSegments)
   {
-    glFilledRoundedRectf(low.x, low.y, high.x, high.y, cornerRadius, cornerLineSegments);
+    glFilledRoundedRectf(low.x, low.y, high.x, high.y, 
+			 cornerRadius, cornerLineSegments);
   }
 
   void Utils::glUsualBlend()

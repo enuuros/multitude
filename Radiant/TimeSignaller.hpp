@@ -19,8 +19,8 @@
 #include <Radiant/Timer.hpp>
 #include <Radiant/Trace.hpp>
 
-#include <csignal>
-#include <ctime>
+#include <signal.h>
+#include <time.h>
 
 namespace Radiant
 {

@@ -28,7 +28,7 @@ HEADERS += TCPSocket.hpp
 HEADERS += ThreadData.hpp
 HEADERS += Thread.hpp
 HEADERS += Timer.hpp
-HEADERS += TimeSignaller.hpp
+linux:HEADERS += TimeSignaller.hpp
 HEADERS += TimeStamp.hpp
 HEADERS += Trace.hpp 
 HEADERS += VectorStorage.hpp
@@ -56,7 +56,7 @@ SOURCES += TCPServerSocket.cpp
 SOURCES += TCPSocket.cpp
 SOURCES += Thread.cpp
 SOURCES += Timer.cpp
-SOURCES += TimeSignaller.cpp
+linux:SOURCES += TimeSignaller.cpp
 SOURCES += Trace.cpp
 SOURCES += Video1394.cpp
 SOURCES += VideoImage.cpp
@@ -67,7 +67,7 @@ unix:SOURCES += SystemUtilsLinux.cpp
 
 TARGET = Radiant
 
-LIBS += -lpthread -lrt
+linux:LIBS += -lpthread -lrt
 
 PKGCONFIG += libdc1394-2
 

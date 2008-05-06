@@ -47,7 +47,7 @@ namespace VideoDisplay {
 
   bool ShowGL::YUVProgram::init()
   {
-    static const char * shadersource = 
+    /*static const char * shadersource = 
       "uniform sampler2D ytex;\n"
       "uniform sampler2D utex;\n"
       "uniform sampler2D vtex;\n"
@@ -57,6 +57,22 @@ namespace VideoDisplay {
       "  vec4 ucolor = texture2D(utex, gl_TexCoord[0].st);\n"
       "  vec4 vcolor = texture2D(vtex, gl_TexCoord[0].st);\n"
       "  vec3 yuv = vec3(ycolor.r, ucolor.r - 0.5, vcolor.r - 0.5);\n"
+      "  gl_FragColor.rgb = zm * yuv;\n"
+      "  gl_FragColor.a = gl_Color.a;\n"
+      "}\n";
+    */
+    static const char * shadersource = 
+      "uniform sampler2D ytex;\n"
+      "uniform sampler2D utex;\n"
+      "uniform sampler2D vtex;\n"
+      "uniform vec2 offset;\n"
+      "uniform mat3 zm;\n"
+      "void main (void) {\n"
+      "  vec4 ycolor = texture2D(ytex, gl_TexCoord[0].st + offset);\n"
+      "  ycolor = texture2D(ytex, gl_TexCoord[0].st - offset);\n"
+      "  vec4 ucolor = texture2D(utex, gl_TexCoord[0].st);\n"
+      "  vec4 vcolor = texture2D(vtex, gl_TexCoord[0].st);\n"
+      "  vec3 yuv = vec3(ycolor.r * 0.25, ucolor.r - 0.5, vcolor.r - 0.5);\n"
       "  gl_FragColor.rgb = zm * yuv;\n"
       "  gl_FragColor.a = gl_Color.a;\n"
       "}\n";
@@ -451,7 +467,8 @@ namespace VideoDisplay {
     m_subTitles.update(m_position);
   }
 
-  int yuvkey = 0;
+  static int yuvkey = 0;
+  static int yuvkeyaa = 0;
 
   void ShowGL::render(Luminous::GLResources * resources,
 		      Vector2 topleft, Vector2 bottomright,
