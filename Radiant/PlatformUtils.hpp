@@ -1,12 +1,12 @@
-#ifndef RADIANT_SYSTEM_UTILS_HPP
-#define RADIANT_SYSTEM_UTILS_HPP
+#ifndef RADIANT_PLATFORM_UTILS_HPP
+#define RADIANT_PLATFORM_UTILS_HPP
 
 #include <string>
 
 namespace Radiant 
 {
 
-  namespace SystemUtils
+  namespace PlatformUtils
   {
     /// Return absolute path to the executable that was used to launch the
     /// process
@@ -14,6 +14,9 @@ namespace Radiant
 
     /// Return absolute path to the user's home directory
     std::string getUserHomePath();
+
+    /// Open a dynamic library, return 0 if failed
+    void * openPlugin(const char * path);
   }
 
 }

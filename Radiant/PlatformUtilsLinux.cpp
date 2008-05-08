@@ -1,10 +1,12 @@
-#include "SystemUtils.hpp"
+#include "PlatformUtils.hpp"
 #include "Trace.hpp"
+
+#include <dlfcn.h>
 
 namespace Radiant
 {
 
-  namespace SystemUtils
+  namespace PlatformUtils
   {
 
     std::string getExecutablePath() 
@@ -15,7 +17,7 @@ namespace Radiant
       len = readlink("/proc/self/exe", buf, 512);
 
       if(len == -1) {
-        error("SystemUtils::getExecutablePath # readlink() failed");
+        error("PlatformUtils::getExecutablePath # readlink() failed");
         return std::string("");
       }
 
@@ -25,6 +27,11 @@ namespace Radiant
     std::string getUserHomePath()
     {
       return std::string(getenv("HOME"));  
+    }
+
+    void * openPlugin(const char * path)
+    {
+      return dlopen(path, RTLD_NOW | RTLD_GLOBAL);
     }
 
   }

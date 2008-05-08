@@ -1,7 +1,7 @@
 #include <Radiant/ResourceLocator.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/FileUtils.hpp>
-#include <Radiant/SystemUtils.hpp>
+#include <Radiant/PlatformUtils.hpp>
 
 #include <sstream>
 
