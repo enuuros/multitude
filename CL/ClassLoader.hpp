@@ -20,9 +20,9 @@ namespace CL
 
         BaseType * instantiate(const KeyType & key)
         {
-          typename ObjectFactoryMap::const_iterator it = factoryMap().find(key);
+          typename ObjectFactoryMap::const_iterator it = m_factories.find(key);
 
-          if(it != factoryMap().end()) {
+          if(it != m_factories.end()) {
             return (it->second)();
           }
 
@@ -35,7 +35,7 @@ namespace CL
           if(!fp) 
             fp = ObjectFactory<BaseType>::newInstance;
 
-          factoryMap().insert(typename ObjectFactoryMap::value_type(key, fp));
+          m_factories.insert(typename ObjectFactoryMap::value_type(key, fp));
         }
 
         template<typename SubType>
@@ -47,18 +47,13 @@ namespace CL
             registerFactory(key, fp);
           }
 
-        ObjectFactoryMap & factoryMap()
-        {
-          return factories;
-        }
-
         bool isRegistered(const KeyType & key)
         {
-          return factoryMap().end() != factoryMap().find(key);
+          return m_factories.end() != m_factories.find(key);
         }
 
       private:
-        ObjectFactoryMap factories;
+        ObjectFactoryMap m_factories;
     };
 
 }
