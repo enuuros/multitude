@@ -67,7 +67,7 @@ unix:SOURCES += PlatformUtilsLinux.cpp
 
 TARGET = Radiant
 
-linux-g++:LIBS += -lpthread -lrt
+linux-g++:LIBS += -lpthread -lrt -ldl
 
 PKGCONFIG += libdc1394-2
 

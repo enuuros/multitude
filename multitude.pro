@@ -42,6 +42,9 @@ contains(portaudio, YES) {
 SUBDIRS += Examples
 SUBDIRS += Applications
 
+unix:SUBDIRS += CL
+unix:SUBDIRS += CL/plugin/plugin.pro
+
 CONFIG += ordered
 
 # This is here just to provide the message about the installation directory to
