@@ -7,10 +7,8 @@ HEADERS += ClassLoader.hpp
 
 SOURCES += Test.cpp
 
-false : {
-  SOURCES += plugin/PluginBase.cpp
-  SOURCES += plugin/PluginSub.cpp
-}
+HEADERS += plugin/PluginBase.hpp
+SOURCES += plugin/PluginBase.cpp
 
 LIBS += $$LIB_RADIANT
 
