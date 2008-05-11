@@ -428,7 +428,7 @@ namespace Radiant {
       }
     }
 
-    return true;
+    return c->size() > 0;
   }
 
   bool writeConfig(Config *config, const char *filename)
