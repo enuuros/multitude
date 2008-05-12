@@ -4,7 +4,7 @@
 namespace CL
 {
 
-  template<typename BaseType, typename SubType = BaseType>
+  template<typename BaseType, typename SubType=BaseType>
     struct ObjectFactory
     {
       static BaseType * newInstance() { return new SubType; }

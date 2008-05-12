@@ -7,7 +7,7 @@ extern "C" {
 
   void registerClasses(CL::ClassLoader<PluginBase> & loader)
   {
-    loader.registerFactory("base");
+//    loader.registerFactory("base");
     loader.registerSubType<PluginSub>("sub");
   }
 

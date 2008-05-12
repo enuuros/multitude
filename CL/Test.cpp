@@ -10,6 +10,7 @@ class LocalType : public PluginBase
 {
 public:
   void foo() const { std::cout << "LocalType::foo #" << std::endl; }
+  void bar() {}
 };
 
 int main(int , char ** )

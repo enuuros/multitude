@@ -7,6 +7,7 @@ class PluginSub : public PluginBase
 {
 public:
   void foo() const;
+  void bar() {}
 };
 
 #endif

@@ -29,7 +29,7 @@ namespace CL
           Radiant::error("ClassLoader::instantiate # key '%s' is not registered", key.c_str());
           return 0;
         }
-
+/*
         void registerFactory(const KeyType & key, FactoryType fp = 0)
         {
           if(!fp) 
@@ -37,14 +37,16 @@ namespace CL
 
           m_factories.insert(typename ObjectFactoryMap::value_type(key, fp));
         }
-
+*/
         template<typename SubType>
           void registerSubType(const KeyType & key, FactoryType fp = 0)
           {
             if(!fp)
               fp = ObjectFactory<BaseType, SubType>::newInstance;
 
-            registerFactory(key, fp);
+          m_factories.insert(typename ObjectFactoryMap::value_type(key, fp));
+
+//            registerFactory(key, fp);
           }
 
         bool isRegistered(const KeyType & key)

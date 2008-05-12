@@ -6,6 +6,8 @@ class PluginBase
 public:
   virtual ~PluginBase() {}
   virtual void foo() const;
+
+  virtual void bar() = 0;
 };
 
 #endif
