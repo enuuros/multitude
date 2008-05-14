@@ -276,6 +276,7 @@ namespace VideoDisplay {
     m_dsp(0),
     m_audio(0),
     m_state(PAUSE),
+    m_updates(0),
     m_blankReload(false),
     m_useBlank(false)
   {
