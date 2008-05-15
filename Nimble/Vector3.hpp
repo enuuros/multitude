@@ -99,6 +99,7 @@ namespace Nimble {
   };
 
   typedef Vector3T<float> Vector3;
+  typedef Vector3T<int> Vector3i;
   typedef Vector3T<float> Vector3f;
   typedef Vector3T<double> Vector3d;
 
