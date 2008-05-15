@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
+SUBDIRS += Valuable
 unix:SUBDIRS += Notable
 SUBDIRS += ValueIO
 SUBDIRS += ValueQT
