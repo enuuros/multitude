@@ -12,7 +12,7 @@ CONFIG -= debug
 # Uncomment for debug build
 #CONFIG += debug
 
-#MULTI_CORE_LIBS = -lNimble -lDyslexic -lLuminous -lMultiTouch -lMultiStateDisplay -lRadiant -lValueIO -lxerces-c -lGLEW -lGraphicsMagick
+#MULTI_CORE_LIBS = -lNimble -lDyslexic -lLuminous -lMultiTouch -lMultiStateDisplay -lNotable -lRadiant -lValueIO -lxerces-c -lGLEW -lGraphicsMagick
 
 #macx {
 #  MULTI_CORE_LIBS += -Wl,-framework,Cocoa -framework,OpenGL
@@ -44,6 +44,7 @@ exists(/opt/local/include/libavformat/avformat.h) {
 LIB_DYSLEXIC = -lDyslexic
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
+LIB_NOTABLE = -lNotable
 LIB_OPENGL = -lGL
 LIB_RADIANT = -lRadiant
 LIB_RESONANT = -lResonant
@@ -66,6 +67,7 @@ macx {
     LIB_DYSLEXIC = -framework,Dyslexic
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble
+    LIB_NOTABLE = -framework,Notable
     LIB_RADIANT = -framework,Radiant
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay

@@ -488,10 +488,12 @@ namespace Notable
 
     for(SubscriberListIterator it = m_subscriberDispatch->begin(); it != m_subscriberDispatch->end(); it++)
     {
+trace("iteration");
       if(it->isSubscribed(notifier->getClassID()))
       {
         m_dispatcher->dispatchToOne(notifier, it->m_subscriber);
       }
+trace("A");
     }
 
     m_dispatching = wasDispatching;

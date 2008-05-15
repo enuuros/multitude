@@ -124,7 +124,6 @@ namespace Luminous {
     loc.scale(m_graphicsSize);
     loc += m_graphicsLocation;
 
-    
     /// @todo commenting this breaks things on single display machines (where's the bug?)    
     trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)",
     orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");

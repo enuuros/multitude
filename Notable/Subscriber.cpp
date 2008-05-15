@@ -139,6 +139,8 @@ namespace Notable
   {
     trace("Subscriber::subscribe");
 
+trace("subscriptionsubscriptionsubscriptionsubscriptionsubscription = %d", subscription);
+
     theDispatcher->subscribe(this, subscription);
   }
 
