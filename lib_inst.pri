@@ -1,6 +1,11 @@
-target.path = $$PREFIX/lib
 
-includes.path = $$PREFIX/include/$$TARGET
-includes.files = $$HEADERS
+linux-g++ {
 
-INSTALLS += target includes
+ target.path = $$PREFIX/lib
+
+ includes.path = $$PREFIX/include/$$TARGET
+ includes.files = $$HEADERS
+
+ INSTALLS += target includes
+}
+

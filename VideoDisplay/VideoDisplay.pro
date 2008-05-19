@@ -24,6 +24,7 @@ DEFINES += __STDC_CONSTANT_MACROS
 LIBS += $$LIB_RESONANT $$LIB_SCREENPLAY $$LIB_LUMINOUS $$LIB_VALUEIO 
 LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW $$LIB_OPENGL
 
-include(../libs.pri)
+macx:LIBS += -framework,OpenGL
 
+include(../libs.pri)
 include(../lib_inst.pri)

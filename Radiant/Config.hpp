@@ -36,13 +36,6 @@ typedef double RADIANT_Sample;
 
 #endif
 
-#define RADIANT_USE_ALSA_AUDIO 1
-#define RADIANT_USE_OSS_AUDIO  1
-#define RADIANT_USE_SGI_AUDIO  
-
-#define RADIANT_USE_OSS_MIDI  1
-#define RADIANT_USE_SGI_MIDI  
-
 #define RADIANT_HAVE_PTHREAD 1
 // #define RADIANT_HAVE_PWCIOCTL_H @HAVE_PWCIOCTL_H@
 

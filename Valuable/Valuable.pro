@@ -20,8 +20,6 @@ TARGET = Valuable
 
 unix:LIBS += $$LIB_RADIANT -lxerces-c
 
-macx:LIBS += -framework
-
 include(../libs.pri)
 include(../lib_inst.pri)
 

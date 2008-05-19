@@ -82,9 +82,9 @@ namespace Nimble {
     m_width = w;
     m_height = h;
 
-
     setOutputGeometry(dpyw, dpyh, dpyx, dpyy);
 
+    /*
     for(i = 0; i < 4; i++) {
 
       Vector2 vtmp1(vertices[i]);
@@ -93,7 +93,7 @@ namespace Nimble {
       printf("[%.6f %.6f] => [%.6f %.6f]\n", 
 	     vtmp1.x, vtmp1.y, vtmp2.x, vtmp2.y);
     }
-
+    */
     // printf("KeyStone::setVertices # DONE");
 
   }
