@@ -1,4 +1,4 @@
-TARGET = OSXCompilation
+TARGET = ExternalCompilation
 
 SOURCES += Main.cpp
 
