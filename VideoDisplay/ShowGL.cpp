@@ -47,7 +47,7 @@ namespace VideoDisplay {
 
   bool ShowGL::YUVProgram::init()
   {
-    /*static const char * shadersource = 
+    static const char * shadersource = 
       "uniform sampler2D ytex;\n"
       "uniform sampler2D utex;\n"
       "uniform sampler2D vtex;\n"
@@ -60,7 +60,7 @@ namespace VideoDisplay {
       "  gl_FragColor.rgb = zm * yuv;\n"
       "  gl_FragColor.a = gl_Color.a;\n"
       "}\n";
-    */
+    /*
     static const char * shadersource = 
       "uniform sampler2D ytex;\n"
       "uniform sampler2D utex;\n"
@@ -76,7 +76,7 @@ namespace VideoDisplay {
       "  gl_FragColor.rgb = zm * yuv;\n"
       "  gl_FragColor.a = gl_Color.a;\n"
       "}\n";
-
+    */
     clear();
 
     Luminous::GLSLShaderObject * fragShader =
