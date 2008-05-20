@@ -8,7 +8,7 @@
 
 namespace Radiant {
 
-  /** Template class fixed-capacity strings. */
+  /** Template class for fixed-capacity strings. */
 
   template <int N>
   class FixedStrT
@@ -16,6 +16,8 @@ namespace Radiant {
   public:
 
     FixedStrT() { m_buf[0] = '\0'; }
+    FixedStrT(float v, int digits = 1)
+    { writeFloats( & v, 1, digits); }
     FixedStrT(Nimble::Vector2 v, int digits = 1)
     { writeFloats(v.data(), 2, digits); }
     FixedStrT(Nimble::Vector3 v, int digits = 1)

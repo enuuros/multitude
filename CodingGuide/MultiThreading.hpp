@@ -58,9 +58,30 @@ With most applications this is not visible to the end-user as few
 applications can utilise more than one CPU core effeciently. How-ever,
 with more CPU-heavy applications one needs to exercise greater care.
 
+A practical example when there are performance problems like this is
+when one wants to use a quad-core Intel CPUs. The Intel Core Quad
+architecture is fact two dual-core CPUs side-by-side. When an
+application needs more than two cores its performance usually drops
+dramatically. 
+
+A real-world example is found in the MoviePlayer application (that is
+part of Multitude). When decoding a simple test video (motion jpeg,
+640x480 resolution, wav audio) on a Intel Q6600 quad-core CPU the
+application takes about 9% of one CPU core. In theory we should be
+able to decode about 40 video streams like this with this CPU. In
+practice the CPU has serious trouble with more than 15 simultaneous
+videos (disk-access bottlenecks were eliminated by decoding the same
+source file many times). When using AMD Phenom 9600 the situation is
+very different. In this CPU all four cores are tightly
+coupled. Decoding one identical video stream takes about 14% of one
+CPU core, but still the machnine can decode up to 30 video streams
+without too much trouble. For heavy multithreaded applications the AMD
+Phenom architecture is superior.
+
 BTW: Problems like this are one reason why in the Cell architecture
 the eight parallel processors (SPUs) need to do explicit access to the
-main memory with DMA. That way page access problems go away.
-
+main memory with DMA. That way page access problems usually go
+away. This is heavy for the programmer, but then again one does not
+need to guess what is going on with the memory access.
 
 */

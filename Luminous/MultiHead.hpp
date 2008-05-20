@@ -29,6 +29,7 @@
 namespace Luminous {
 
   using Nimble::Rect;
+  using Nimble::Vector2f;
   using Nimble::Vector2i;
   using Nimble::Vector4f;
   using Radiant::RefPtr;
@@ -91,9 +92,20 @@ namespace Luminous {
       const Vector2i & size() const { return m_size; }
 
       /// The offset of the graphics inside the area (virtual pixels)
-      const Vector2i & graphicsLocation() const { return m_graphicsLocation; }
+      const Vector2f graphicsLocation(bool withseams = true) const
+      { 
+        return withseams ? 
+          m_graphicsLocation - Nimble::Vector2f(m_seams[0], m_seams[3]) :
+          m_graphicsLocation;
+      }
       /// The size of the graphics inside this area (virtual pixels)
-      const Vector2i & graphicsSize() const { return m_graphicsSize; }
+      const Vector2f graphicsSize(bool withseams = true) const
+      {
+        return withseams ? 
+          m_graphicsSize + Nimble::Vector2f(m_seams[0] + m_seams[1],
+                                           m_seams[2] + m_seams[3]) :
+          m_graphicsSize;
+      }
 
       /// The bounds of the graphics
       /** In principle this method only combines the information you
@@ -125,8 +137,8 @@ namespace Luminous {
       GlKeyStone m_keyStone;
       Vector2i   m_location;
       Vector2i   m_size;
-      Vector2i   m_graphicsLocation;
-      Vector2i   m_graphicsSize;
+      Vector2f   m_graphicsLocation;
+      Vector2f   m_graphicsSize;
       Vector4f   m_seams;
       int        m_active;
       std::string m_comment;

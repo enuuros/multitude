@@ -379,8 +379,8 @@ namespace Luminous {
 
   int MultiHead::width()
   {
-    int left = 1000000;
-    int right = -1000000;
+    float left = 1000000;
+    float right = -1000000;
     
     int n = areaCount();
     
@@ -390,34 +390,34 @@ namespace Luminous {
       if(!a.active())
         continue;
 
-      int wleft  = a.graphicsLocation().x;
-      int wright = wleft + a.graphicsSize().x;
+      float wleft  = a.graphicsLocation().x;
+      float wright = wleft + a.graphicsSize().x;
 
       left  = Nimble::Math::Min(left,  wleft);
       right = Nimble::Math::Max(right, wright);
     }
 
-    return right - left;
+    return (int) (right - left);
   }
 
   int MultiHead::height()
   {
-    int top = 1000000;
-    int bottom = -1000000;
+    float top = 1000000;
+    float bottom = -1000000;
 
     int n = areaCount();
     
     for(int i = 0; i < n; i++) {
       Area & a = area(i);
 
-      int wtop = a.graphicsLocation().y;
-      int wbot = wtop + a.graphicsSize().y;
+      float wtop = a.graphicsLocation().y;
+      float wbot = wtop + a.graphicsSize().y;
       
       top = Nimble::Math::Min(top, wtop);
       bottom = Nimble::Math::Max(bottom, wbot);
     }
     
-    return bottom - top;
+    return (int) (bottom - top);
   }
 
   DOMElement * MultiHead::writeDom(DOMDocument * doc)
