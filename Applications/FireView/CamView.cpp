@@ -85,6 +85,18 @@ namespace FireView {
     waitEnd();
   }
 
+  static const char * modeName(dc1394feature_mode_t mode)
+  {
+    if(mode == DC1394_FEATURE_MODE_MANUAL)
+      return "manual";
+    else if(mode == DC1394_FEATURE_MODE_AUTO)
+      return "auto";
+    else if(mode == DC1394_FEATURE_MODE_ONE_PUSH_AUTO)
+      return "one-push-auto";
+
+    return "unknown";
+  }
+  
   void CamView::InputThread::childLoop()
   {
     using Radiant::StringUtils::yesNo;
@@ -109,8 +121,12 @@ namespace FireView {
       for(uint i = 0; i < features.size(); i++) {
 	dc1394feature_info_t & info = features[i];
 
+        if(!info.available)
+          continue;
+
 	printf(" Feature %u = %s: \n"
-	       "  Capabilities:\n   absolute = %s\n   readout = %s\n"
+	       "  Capabilities:\n"
+               "   absolute = %s\n   readout = %s\n"
 	       "   on-off = %s\n   polarity = %s\n"
 	       "  On = %s\n",
 	       i, Radiant::Video1394::featureName(info.id),
@@ -119,21 +135,25 @@ namespace FireView {
 	       yesNo(info.on_off_capable),
 	       yesNo(info.polarity_capable),
 	       yesNo(info.is_on));
-	printf("  Mode = %d \n", (int) info.current_mode);
-	printf("  Value = %u in [%u %u]\n",
+	printf("  Mode = %s in [", modeName(info.current_mode));
+        for(uint j = 0; j < info.modes.num; j++)
+          printf(" %s ", modeName(info.modes.modes[j]));
+        printf("]\n");
+        printf("  Value = %u in [%u %u]\n",
 	       info.value, info.min, info.max);
 	printf("  Abs value = %f in [%f %f]\n",
 	       info.abs_value, info.abs_min, info.abs_max);
-	printf("  Trigger mode = %d in [", (int) info.trigger_mode);
-	for(uint j = 0; j < info.trigger_modes.num; j++) {
+	/*printf("  Trigger mode = %d in [", (int) info.trigger_mode);
+	for(uint j = 0; j < info.trigger_modes.num && 
+              j < DC1394_TRIGGER_MODE_NUM; j++) {
 	  printf(" %d ", (int) info.trigger_modes.modes[j]);
-	}
+        }
 	printf("]\n");
 	printf("  Trigger source = %d in [", (int) info.trigger_source);
 	for(uint j = 0; j < info.trigger_sources.num; j++) {
 	  printf(" %d ", (int) info.trigger_sources.sources[j]);
-	}
-	printf("]\n");
+          }
+          printf("]\n");*/
       }
       fflush(0);
     }
@@ -253,7 +273,7 @@ namespace FireView {
 
 
     qDebug("CamView::InputThread::childLoop # camid = %llx # EXIT (%.2f fps, %d frames)",
-	   m_video.cameraInfo().m_euid64, fps, (int) m_frameCount);
+	   (long long) m_video.cameraInfo().m_euid64, fps, (int) m_frameCount);
 
     m_video.stop();
     m_video.close();
