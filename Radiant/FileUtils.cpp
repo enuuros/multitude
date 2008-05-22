@@ -48,6 +48,18 @@ namespace Radiant
       return true;
     }
 
+    bool fileAppendable(const char* filename)
+    {
+      if(!fileReadable(filename))
+	return false;
+
+      FILE * f = fopen(filename, "r+");
+      if(!f)
+        return false;
+      fclose(f);
+      return true;
+    }
+
     bool renameFile(const char * from, const char * to)
     {
       int ok = rename(from, to);
@@ -113,7 +125,8 @@ namespace Radiant
       if(pathList.size() == 1)
         split(paths, ":", pathList, true);
 
-      for(StringList::iterator it = pathList.begin(); it != pathList.end(); it++) {
+      for(StringList::iterator it = pathList.begin();
+	  it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
 
         trace("FileUtils::findFile # TRYING %s", fullPath.c_str());
@@ -123,6 +136,26 @@ namespace Radiant
       }
 
       return string("");
+    }
+
+    string findOverWritable(const string & filename, const string & paths)
+    {
+      StringList pathList;
+      split(paths, ";", pathList, true);
+      if(pathList.size() == 1)
+        split(paths, ":", pathList, true);
+
+      for(StringList::iterator it = pathList.begin();
+	  it != pathList.end(); it++) {
+        string fullPath = (*it) + string("/") + filename;
+
+        trace("FileUtils::findFile # TRYING %s", fullPath.c_str());
+
+        if(fileAppendable(fullPath.c_str()))
+          return fullPath;
+      }
+
+      return filename;
     }
 
   }

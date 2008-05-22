@@ -46,13 +46,19 @@ namespace Radiant
 #endif
   }
 
-    std::string ResourceLocator::locate(const std::string & path) const
+  std::string ResourceLocator::locate(const std::string & file) const
   {
-    std::string r = FileUtils::findFile(path, m_paths);
+    std::string r = FileUtils::findFile(file, m_paths);
 
     trace("ResourceLocator::locate # using %s", r.c_str());
 
     return r;
+  }
+
+  std::string ResourceLocator::locateOverWriteable(const std::string & file)
+    const
+  {
+    return FileUtils::findOverWritable(file, m_paths);
   }
 
 }

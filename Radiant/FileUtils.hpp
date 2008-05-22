@@ -33,6 +33,14 @@ namespace Radiant
     char* loadTextFile(const char* filename);
     /// Check if a given file is readable
     bool fileReadable(const char* filename);
+    /// Check if the user can append to a given file
+    /** This function is useful if you want to overwrite a file, and
+	want to check beforehand, that it is possible. 
+	
+	@return Returns true if the file exists and can be written
+	to. Otherwise returns false.
+    */
+    bool fileAppendable(const char* filename);
 
     /// Rename a file
     bool renameFile(const char * from, const char * to);
@@ -50,7 +58,12 @@ namespace Radiant
      * separated by colon or semicolon in typical Windows or UNIX fashion
      * (/usr/foo:/home/user/foo etc.).
      */
-    std::string findFile(const std::string & filename, const std::string & paths);
+    std::string findFile(const std::string & filename,
+			 const std::string & paths);
+    /** Tries to find a file that could be over-written. If such
+	cannot be found, then returns filename. */
+    std::string findOverWritable(const std::string & filename,
+				 const std::string & paths);
 
   }
 }

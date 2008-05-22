@@ -25,6 +25,7 @@ namespace Radiant
 
       /// Locate a file
       std::string locate(const std::string & file) const;
+      std::string locateOverWriteable(const std::string & file) const;
 
     private:
       std::string m_paths;
