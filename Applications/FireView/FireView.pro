@@ -13,6 +13,8 @@ TARGET = FireView
 
 LIBS += $$LIB_RADIANT $$LIB_VALUEIO $$LIB_LUMINOUS
 
+CONFIG += debug
+
 CONFIG += qt
 
 QT = core gui opengl xml

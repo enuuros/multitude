@@ -26,6 +26,8 @@
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Trace.hpp>
 
+#include <QAction>
+#include <QCoreApplication>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
@@ -38,7 +40,9 @@ namespace FireView {
   CamView::InputThread::InputThread()
     : m_state(UNINITIALIZED),
       m_continue(false),
-      m_frameCount(0)
+      m_frameCount(0),
+      m_lastCheckFrame(0),
+      m_lastCheckFps(0)
   {
   }
 
@@ -65,6 +69,10 @@ namespace FireView {
     m_state = STARTING;
     m_continue = true;
     m_frameCount = 0;
+
+    m_lastCheckTime = Radiant::TimeStamp::getTime();
+    m_lastCheckFrame = 0;
+    m_lastCheckFps = 0;
 
     if(!run())
       return false;
@@ -159,10 +167,10 @@ namespace FireView {
     }
 
     dc1394trigger_source_t trig = m_triggerSource > 0 ?
-      (dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
+      (dc1394trigger_source_t)m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
 
     if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-      error("Cannot have custom FPS combined with anything but SW trigger (%d)",
+      error("Cannot have custom FPS with anything but SW trigger (%d)",
 	    (int) trig);
 
     if(m_customFps > 0.0f || m_triggerSource > 0) {
@@ -229,6 +237,8 @@ namespace FireView {
 
     trace("Capturing video");
 
+    m_lastCheckTime = Radiant::TimeStamp::getTime();
+
     while(m_continue) {
 
       // printf("<"); fflush(0);
@@ -260,6 +270,20 @@ namespace FireView {
 	  m_autoSend[i] = false;
 	}
       }
+
+      Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
+
+      double dt = Radiant::TimeStamp(now - m_lastCheckTime).secondsD();
+
+      if(dt > 3.0f) {
+        int frames = m_frameCount - m_lastCheckFrame;
+        m_lastCheckFps = frames / dt;
+        m_lastCheckFrame = m_frameCount;
+        m_lastCheckTime = now;
+
+        qDebug("FPS = %f", m_lastCheckFps);
+      }
+
       // printf(">"); fflush(0);
       // qDebug("CamView::InputThread::childLoop # Frame");
     }
@@ -304,7 +328,7 @@ namespace FireView {
     bzero(m_averages, sizeof(m_averages));
     setFocusPolicy(Qt::ClickFocus);
 
-    setAttribute(Qt::WA_DeleteOnClose, true);
+    // setAttribute(Qt::WA_DeleteOnClose, true);
 
     QTimer * t = new QTimer(this);
 
@@ -318,7 +342,8 @@ namespace FireView {
     m_thread.stop();
   }
   
-  bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps, float customFps,
+  bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
+                      float customFps,
 		      int triggerSource, int triggerMode)
   {
     Radiant::Video1394::CameraInfo info;
@@ -417,7 +442,7 @@ namespace FireView {
   {
     // qDebug("CamView::hideEvent");
     QGLWidget::hideEvent(event);
-    close();
+    // close();
   }
 
   void CamView::closeEvent ( QCloseEvent * event )

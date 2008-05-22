@@ -110,6 +110,13 @@ namespace FireView {
 			SLOT(toggleHalfInchToThirdInch()));
 	menu->addAction("Update Screen", cv, SLOT(updateScreen()));
 	menu->setTitle("Configuration");
+
+        QAction * q = new QAction("Quit", base);
+        q->setShortcut(tr("Ctrl+Q"));
+        connect(q, SIGNAL(triggered()),
+                QCoreApplication::instance(), SLOT(quit()));
+        menu->addAction(q);
+
 	mb->addMenu(menu);
 	
 	QVBoxLayout * layout = new QVBoxLayout(base);

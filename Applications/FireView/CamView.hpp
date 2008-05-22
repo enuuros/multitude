@@ -22,6 +22,7 @@
 
 #include <Radiant/Mutex.hpp>
 #include <Radiant/Thread.hpp>
+#include <Radiant/TimeStamp.hpp>
 #include <Radiant/Video1394.hpp>
 
 #include <QGLWidget>
@@ -117,6 +118,10 @@ namespace FireView {
       volatile State m_state;
       volatile bool  m_continue;
       volatile int   m_frameCount;
+
+      Radiant::TimeStamp m_lastCheckTime;
+      int                m_lastCheckFrame;
+      float              m_lastCheckFps;
     };
 
     class Analysis
