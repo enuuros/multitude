@@ -281,7 +281,7 @@ namespace FireView {
         m_lastCheckFrame = m_frameCount;
         m_lastCheckTime = now;
 
-        qDebug("FPS = %f", m_lastCheckFps);
+        // qDebug("FPS = %f", m_lastCheckFps);
       }
 
       // printf(">"); fflush(0);
@@ -570,7 +570,6 @@ namespace FireView {
 
       QPainter foo( & m_foo);
       QString tmp;
-      QFont fnt = font();
     
       for(int i = 0; i < AREA_COUNT && m_showAverages; i++) {
       
@@ -595,6 +594,14 @@ namespace FireView {
                    warningtext);
       }
     }
+
+    glColor3f(1, 1, 1);
+
+    char state[64];
+    sprintf(state, "%.4f FPS %d frames", m_thread.m_lastCheckFps,
+            m_thread.m_frameCount);
+
+    renderText(5, 18, state);
 
     if(!m_text.isEmpty()) {
       glEnable(GL_TEXTURE_2D);
