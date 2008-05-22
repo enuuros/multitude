@@ -42,9 +42,9 @@ exists(/opt/local/include/libavformat/avformat.h) {
 }
 
 LIB_DYSLEXIC = -lDyslexic
+LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
-LIB_NOTABLE = -lNotable
 LIB_OPENGL = -lGL
 LIB_RADIANT = -lRadiant
 LIB_RESONANT = -lResonant
@@ -65,9 +65,9 @@ macx {
     MULTI_LIB_FLAG = -F
 
     LIB_DYSLEXIC = -framework,Dyslexic
+    LIB_FLUFFY = -framework,Fluffy
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble
-    LIB_NOTABLE = -framework,Notable
     LIB_RADIANT = -framework,Radiant
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay

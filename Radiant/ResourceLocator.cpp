@@ -1,4 +1,6 @@
 #include <Radiant/ResourceLocator.hpp>
+
+#include <Radiant/Endian.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/PlatformUtils.hpp>
@@ -32,7 +34,19 @@ namespace Radiant
     }
   }
 
-  std::string ResourceLocator::locate(const std::string & path) const
+  void ResourceLocator::addModuleDataPath(const std::string & module,
+					  bool front)
+  {
+    addPath(PlatformUtils::getModuleGlobalDataPath(module.c_str(),
+						   false), front);
+#ifdef RADIANT_OSX
+
+#elif defined(RADIANT_LINUX)
+
+#endif
+  }
+
+    std::string ResourceLocator::locate(const std::string & path) const
   {
     std::string r = FileUtils::findFile(path, m_paths);
 

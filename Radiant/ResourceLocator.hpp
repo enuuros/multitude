@@ -20,6 +20,8 @@ namespace Radiant
 	front of the list, otherwise it is put at the end of the
 	list.  */
     void addPath(const std::string & path, bool front = false);
+    void addModuleDataPath(const std::string & module,
+			   bool front = false);
 
       /// Locate a file
       std::string locate(const std::string & file) const;

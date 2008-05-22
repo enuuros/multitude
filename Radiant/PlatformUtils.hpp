@@ -17,8 +17,8 @@ namespace Radiant
 
     /** Return path to the global data directory of the given
 	module. */
-    std::string getModuleGlobalPath(const char * module, bool isapplication);
-    std::string getModuleUserPath(const char * module, bool isappliction);
+    std::string getModuleGlobalDataPath(const char * module, bool isapplication);
+    std::string getModuleUserDataPath(const char * module, bool isappliction);
 
     /// Open a dynamic library, return 0 if failed
     void * openPlugin(const char * path);
