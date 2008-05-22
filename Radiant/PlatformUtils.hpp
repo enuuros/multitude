@@ -15,6 +15,11 @@ namespace Radiant
     /// Return absolute path to the user's home directory
     std::string getUserHomePath();
 
+    /** Return path to the global data directory of the given
+	module. */
+    std::string getModuleGlobalPath(const char * module, bool isapplication);
+    std::string getModuleUserPath(const char * module, bool isappliction);
+
     /// Open a dynamic library, return 0 if failed
     void * openPlugin(const char * path);
   }

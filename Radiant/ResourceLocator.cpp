@@ -14,13 +14,20 @@ namespace Radiant
   ResourceLocator::~ResourceLocator()
   {}
 
-  void ResourceLocator::addPath(const std::string & path)
+  void ResourceLocator::addPath(const std::string & path, bool front)
   {
-    if(m_paths.empty()) 
+    if(path.size() == 0)
+      ;
+    else if(m_paths.empty()) 
       m_paths = path;
     else {
       std::ostringstream os;
-      os << m_paths << ":" << path;
+
+      if(front)
+	os << path << ":" << m_paths;
+      else
+	os << m_paths << ":" << path;
+
       m_paths = os.str();
     }
   }

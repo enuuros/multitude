@@ -71,11 +71,15 @@ SOURCES += WatchDog.cpp
 #linux-g++:HEADERS += TimeSignaller.hpp
 #linux-g++:SOURCES += TimeSignaller.cpp
 
-unix:SOURCES += PlatformUtilsLinux.cpp
+linux-g++:SOURCES += PlatformUtilsLinux.cpp
+
+macx:SOURCES += PlatformUtilsOSX.cpp
 
 TARGET = Radiant
 
 linux-g++:LIBS += -lpthread -lrt -ldl
+
+macx:LIBS += -framework,CoreFoundation
 
 PKGCONFIG += libdc1394-2
 

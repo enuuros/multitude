@@ -15,8 +15,11 @@ namespace Radiant
       ResourceLocator();
       ~ResourceLocator();
 
-      // Add a path to the list to search though
-      void addPath(const std::string & path);
+    /// Add a path to the list to search though
+    /** @param front If front is true, then the new path is put to the
+	front of the list, otherwise it is put at the end of the
+	list.  */
+    void addPath(const std::string & path, bool front = false);
 
       /// Locate a file
       std::string locate(const std::string & file) const;

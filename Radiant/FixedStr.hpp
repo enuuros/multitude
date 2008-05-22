@@ -54,6 +54,7 @@ namespace Radiant {
     operator char * () { return m_buf; }
 
     int length() { return strlen(m_buf); }
+    static inline int capacity() { return N; }
 
     FixedStrT & operator = (const char * str)
     { 
