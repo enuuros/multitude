@@ -33,7 +33,7 @@
 namespace Luminous
 {
 
-  bool initLuminous();
+  EXPORT bool initLuminous();
 
 }
 

@@ -21,7 +21,7 @@
 namespace Luminous
 {
 
-  class PixelFormat
+  class EXPORT PixelFormat
   {
     public:
 

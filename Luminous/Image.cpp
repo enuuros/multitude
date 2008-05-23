@@ -22,6 +22,11 @@
 #include <cassert>
 #include <cmath>
 
+#ifdef WIN32
+#include <strings.h>	// strcasecmp()
+#include <WinPort.h>	// uint8_t
+#endif
+
 using namespace std;
 using namespace Radiant;
 

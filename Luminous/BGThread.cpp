@@ -20,6 +20,10 @@
 #include <typeinfo>
 #include <cassert>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Luminous
 {
   BGThread::BGThread():

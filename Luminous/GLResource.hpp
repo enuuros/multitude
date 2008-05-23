@@ -108,7 +108,7 @@ namespace Luminous
       };
      </PRE>
   */
-  class GLResource
+  class EXPORT GLResource
   {
   public:
     GLResource(GLResources * resources = 0);

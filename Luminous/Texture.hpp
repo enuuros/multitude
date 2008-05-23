@@ -22,13 +22,21 @@
 #include "GLResource.hpp"
 #include <Patterns/NotCopyable.hpp>
 
+// JJK
+// template won't generate code until it's intantiated, so at least in
+// Windows you cannot separate implementation in a cpp file. So, WIN32
+// version uses a non-template version of Texture classes. Looks a bit
+// messy, though.
+
 namespace Luminous
 {
   class PixelFormat;
 
   /// Base class for different textures
+#ifndef WIN32
   template<GLenum TextureType>
-  class TextureT : public GLResource, public Patterns::NotCopyable
+#endif
+  class EXPORT TextureT : public GLResource, public Patterns::NotCopyable
   {
     friend class Framebuffer;
 
@@ -66,7 +74,7 @@ namespace Luminous
 
     int width() const { return m_width; }
     int height() const { return m_height; }
-    
+ 
     void setWidth(int w) { m_width = w; }
     void setHeight(int h) { m_height = h; }
 
@@ -94,23 +102,40 @@ namespace Luminous
     int m_height;
     PixelFormat m_pf;
     bool m_haveMipmaps;
+#ifdef WIN32
+	int TextureType;
+#endif
   };
   
   /// A 1D texture
+#ifndef WIN32
   class Texture1D : public TextureT<GL_TEXTURE_1D>
   {
   public:
     Texture1D(GLResources * resources = 0) : TextureT<GL_TEXTURE_1D> (resources) {}
+#else
+  class EXPORT Texture1D : public TextureT
+  {
+  public:
+	  Texture1D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_1D; }
+#endif
 
     static Texture1D* fromImage(Magick::Image & image, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture1D* fromBytes(GLenum internalFormat, int w, const void* data, const PixelFormat& srcFormat, bool buildMipmaps = true, GLResources * resources = 0);
   };
 
   /// A 2D texture
+#ifndef WIN32
   class Texture2D : public TextureT<GL_TEXTURE_2D>
   {
   public:
     Texture2D(GLResources * resources = 0) : TextureT<GL_TEXTURE_2D>(resources) {}
+#else
+  class EXPORT Texture2D : public TextureT
+  {
+  public:
+    Texture2D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_2D; }
+#endif
 
     bool loadImage(Luminous::Image & image, bool buildMipmaps = true);
     bool loadImage(Magick::Image & image, bool buildMipmaps = true);
@@ -118,7 +143,6 @@ namespace Luminous
 		   const void* data, 
 		   const PixelFormat& srcFormat,
 		   bool buildMipmaps = true);
-
     static Texture2D * fromImage(Luminous::Image & img, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromImage(Magick::Image& image, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromBytes(GLenum internalFormat, int w, int h,
@@ -127,6 +151,7 @@ namespace Luminous
 				bool buildMipmaps = true, GLResources * resources = 0);
   };
 
+#ifndef WIN32
   /// A 3D texture
   class Texture3D : public TextureT<GL_TEXTURE_3D>
   {};
@@ -134,6 +159,22 @@ namespace Luminous
   /// A cubemap texture
   class TextureCube : public TextureT<GL_TEXTURE_CUBE_MAP>
   {};
+
+#else
+  /// A 3D texture
+  class EXPORT Texture3D : public TextureT
+  {
+  public:
+	  Texture3D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_3D; }
+  };
+	
+  /// A cubemap texture
+  class EXPORT TextureCube : public TextureT
+  {
+  public:
+	  TextureCube(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_CUBE_MAP; }
+  };
+#endif
 
 }
 

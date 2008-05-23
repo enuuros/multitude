@@ -21,7 +21,7 @@ namespace Luminous
   class GarbageCollector;
 
   /// A utility class to make the work of GarbageCollector easier.
-  class Collectable
+  class EXPORT Collectable
   {
   public:
     Collectable(GarbageCollector * collector = 0);

@@ -31,7 +31,7 @@ namespace Luminous
       allocation/deallocation sums. This information is handy when you
       want to make sure that you do not push too many texture pixels
       to the GPU during one frame etc. */
-  class GLResources
+  class EXPORT GLResources
   {
   public:
 

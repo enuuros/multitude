@@ -119,11 +119,12 @@ namespace Luminous
 				 PixelFormat::TYPE_UBYTE), buildMipmaps);
   }
 
+  
   bool Texture2D::loadBytes(GLenum internalFormat, int w, int h,
 			    const void * data, 
 			    const PixelFormat& srcFormat,
 			    bool buildMipmaps)
-  {
+ {
     // Check dimensionsq
     if(!GL_ARB_texture_non_power_of_two) {
       bool isPowerOfTwo1 = !((w - 1) & w);

@@ -73,7 +73,7 @@ namespace Luminous
   protected:
 
     void sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const;
-    float computeWeight(int x, int y, float x1, float y2, float x2, float y2) const;
+    float computeWeight(int x, int y, float x1, float y1, float x2, float y2) const;
   
     bool readPNG(FILE* file);
     bool writePNG(FILE* file);

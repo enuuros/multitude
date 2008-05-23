@@ -57,3 +57,16 @@ PKGCONFIG += GraphicsMagick++
 include(../libs.pri)
 
 include(../lib_inst.pri)
+
+win32 {
+	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_MAGICK $$INC_LIBPNG $$INC_ZLIB $$INC_LIBJPEG  
+	INCLUDEPATH += $$INC_XERCES $$INC_PTHREADS
+	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_GLEW $$LNK_JPEG $$LNK_MAGICK $$LNK_XERCES
+	LIBPATH += $$LNK_PNG 
+	LIBS += $$LIB_WINPORT $$LIB_VALUEIO 
+	LIBS += $$LIB_PTHREADS $$LIB_OPENGL $$LIB_GLU $$LIB_GLEW $$LIB_JPEG $$LIB_MAGICK $$LIB_XERCES
+	LIBS += $$LIB_PNG
+	LIBS -= -lGLEW -ljpeg -lpng -lxerces-c -lGL
+	QMAKE_CXXFLAGS += -Zc:wchar_t	# treat wchar_t as a builtin type
+	QMAKE_CXXFLAGS *= -wd4251		# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+}
