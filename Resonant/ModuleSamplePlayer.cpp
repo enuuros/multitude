@@ -21,6 +21,10 @@
 
 #include <assert.h>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Resonant {
 
   ModuleSamplePlayer::Sample::Sample()

@@ -22,6 +22,10 @@
 #include <algorithm>
 #include <typeinfo>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Resonant {
 
   using namespace Radiant;

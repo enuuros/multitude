@@ -21,7 +21,7 @@ namespace Resonant {
   class ControlData;
   class Application;
 
-  class Module
+  class EXPORT Module
   {
   public:
 

@@ -20,6 +20,10 @@
 #include <assert.h>
 #include <strings.h>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 #define FRAMES_PER_BUFFER 128
 
 namespace Resonant {

@@ -38,3 +38,10 @@ PKGCONFIG += portaudio-2.0 sndfile
 include(../libs.pri)
 
 include(../lib_inst.pri)
+
+win32 {
+	INCLUDEPATH += $$INC_LIBSNDFILE $$INC_PORTAUDIO $$INC_WINPORT $$INC_PTHREADS $$INC_MAGICK
+	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_LIBSNDFILE $$LNK_PORTAUDIO
+	LIBS += $$LIB_PTHREADS $$LIB_WINPORT $$LIB_SNDFILE $$LIB_PORTAUDIO
+	QMAKE_CXXFLAGS *= -wd4251		# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+}
