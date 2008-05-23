@@ -23,13 +23,13 @@ namespace Radiant {
   
   /* Global functions for output to console/file. */
 
-  extern void setAppName(const char *name);
+  extern EXPORT void setAppName(const char *name);
 
-  extern void trace(const char *msg, ...);
+  extern EXPORT void trace(const char *msg, ...);
 
-  extern void error(const char *msg, ...);
+  extern EXPORT void error(const char *msg, ...);
 
-  extern void fatal(const char *msg, ...);
+  extern EXPORT void fatal(const char *msg, ...);
 
 }
 

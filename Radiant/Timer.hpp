@@ -22,7 +22,7 @@ namespace Radiant
 {
 
   /// Timer provides a simple method of keeping track of elapsed time.
-  class Timer
+  class EXPORT Timer
   {
     public:
       Timer();

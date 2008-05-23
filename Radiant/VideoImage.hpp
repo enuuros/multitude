@@ -73,13 +73,13 @@ namespace Radiant {
       An image is composed of planes that contain the actual image
       data.
   */
-  class VideoImage
+  class EXPORT VideoImage
   {
   public:
     VideoImage(ImageFormat fmt = IMAGE_UNKNOWN, int w = 0, int h = 0) 
       : m_format(fmt), m_width(w), m_height(h) {}
 
-    class Plane {
+    class EXPORT Plane {
     public:
       Plane() : m_data(0), m_linesize(0), m_type(PLANE_UNKNOWN) {}
 

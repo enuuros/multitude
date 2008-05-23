@@ -24,6 +24,11 @@
 #include <iostream>
 #include <cassert>
 
+#ifdef WIN32
+#include <process.h>
+#include <WinPort.h>
+#endif
+
 namespace Radiant {
 
   enum {

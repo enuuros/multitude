@@ -7,7 +7,7 @@ namespace Radiant
 {
 
   /// Utility class for color
-  class Color : public Nimble::Vector4f
+  class EXPORT Color : public Nimble::Vector4f
   {
     public:
       Color();

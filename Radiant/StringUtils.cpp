@@ -1,5 +1,9 @@
 #include "StringUtils.hpp"
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Radiant
 {
 

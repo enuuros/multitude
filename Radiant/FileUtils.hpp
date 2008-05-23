@@ -26,13 +26,13 @@ namespace Radiant
   {
 
     /// Get the size of a file
-    unsigned long getFileLen(std::ifstream& file);
+    EXPORT unsigned long getFileLen(std::ifstream& file);
     /** Load a text file. The contens of the file are returned as a
      * zero-terminated string. 
      */ 
-    char* loadTextFile(const char* filename);
+    EXPORT char* loadTextFile(const char* filename);
     /// Check if a given file is readable
-    bool fileReadable(const char* filename);
+    EXPORT bool fileReadable(const char* filename);
     /// Check if the user can append to a given file
     /** This function is useful if you want to overwrite a file, and
 	want to check beforehand, that it is possible. 
@@ -43,22 +43,22 @@ namespace Radiant
     bool fileAppendable(const char* filename);
 
     /// Rename a file
-    bool renameFile(const char * from, const char * to);
+    EXPORT bool renameFile(const char * from, const char * to);
 
     /// Extract path
-    std::string path(const std::string & filepath);
+    EXPORT std::string path(const std::string & filepath);
     /// Extract filename
-    std::string filename(const std::string & filepath);
+    EXPORT std::string filename(const std::string & filepath);
     /// Extract filename without suffix
-    std::string baseFilename(const std::string & filepath);
+    EXPORT std::string baseFilename(const std::string & filepath);
     /// Extract suffix
-    std::string suffix(const std::string & filepath);
+    EXPORT std::string suffix(const std::string & filepath);
 
     /** Find a file given a list of paths to search. The directory names are
      * separated by colon or semicolon in typical Windows or UNIX fashion
      * (/usr/foo:/home/user/foo etc.).
      */
-    std::string findFile(const std::string & filename,
+    EXPORT std::string findFile(const std::string & filename, const std::string & paths);
 			 const std::string & paths);
     /** Tries to find a file that could be over-written. If such
 	cannot be found, then returns filename. */

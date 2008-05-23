@@ -17,6 +17,7 @@
 
 #include "TCPSocket.hpp"
 
+#ifndef WIN32
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -24,6 +25,10 @@
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#else
+#include <winsock2.h>
+#include <WinPort.h>
+#endif
 
 namespace Radiant {
 
@@ -88,7 +93,11 @@ namespace Radiant {
     if(m_fd < 0)
       return false;
 
+#ifndef WIN32
     ::close(m_fd);
+#else
+	 ::closesocket((SOCKET)m_fd);
+#endif
 
     m_fd = -1;
 
@@ -100,12 +109,27 @@ namespace Radiant {
     if(m_fd < 0)
       return false;
 
+#ifndef WIN32
     struct pollfd pfd;
     bzero( & pfd, sizeof(pfd));
     pfd.fd = m_fd;
     pfd.events = POLLIN;
     poll(&pfd, 1, waitMicroSeconds / 1000);
     return pfd.revents & POLLIN;
+#else
+	// -- emulate using select()
+	struct timeval timeout;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = waitMicroSeconds;
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(m_fd, &readfds);
+	int status = select(m_fd, &readfds, 0,0, &timeout);
+	if (status < 0)
+		return false;
+	char data;
+	return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
+#endif
   }
 
   TCPSocket * TCPServerSocket::accept()

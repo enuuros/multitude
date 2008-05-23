@@ -25,7 +25,7 @@ namespace Radiant {
   /// A server TCP socket for accepting incoming connections
   /** A serer socket */
 
-  class TCPServerSocket
+  class EXPORT TCPServerSocket
   {
   public:
     TCPServerSocket();

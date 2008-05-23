@@ -26,7 +26,7 @@ namespace Radiant {
 
       New format conversion functions will be written as needed. */
 
-  class ImageConversion
+  class EXPORT ImageConversion
   {
   public:
     /// Convert from a random format to another random format

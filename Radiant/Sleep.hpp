@@ -22,6 +22,10 @@
 #include <sys/time.h>
 #include <time.h>
 
+#ifdef WIN32
+#include <WinPort.h>		// for sleep() and nanosleep()
+#include <pthread.h>		// for struct timespec
+#endif
 
 #define RADIANT_BILLION 1000000000
 #define RADIANT_MILLION 1000000
@@ -125,7 +129,7 @@ namespace Radiant {
   /// Synchronized sleeping.
   /** This class can be used to time the execution of a thread. For
       example if you want a thread not to execute too often.*/
-  class SleepSync
+  class EXPORT SleepSync
   {
   public:
     /// The constructor resets the timing.

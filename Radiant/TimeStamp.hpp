@@ -28,7 +28,7 @@ namespace Radiant {
      clock: 1.1.1970 the counter was zero. */
 
   /// @todo remove suffix from create* functions
-  class TimeStamp
+  class EXPORT TimeStamp
   {
   public:
     typedef int64_t type;

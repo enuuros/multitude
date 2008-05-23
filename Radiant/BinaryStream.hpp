@@ -23,7 +23,7 @@
 namespace Radiant {
 
   /// Abstract base class for binary streams
-  class BinaryStream
+  class EXPORT BinaryStream
   {
   public:
     BinaryStream() {}

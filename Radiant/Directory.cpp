@@ -61,7 +61,11 @@ namespace Radiant
   /// @todo should we expose permissions?
   bool Directory::mkdir(const char * dirname)
   {
+#ifndef WIN32
     return (::mkdir(dirname, S_IRWXU) == 0);
+#else
+    return (::mkdir(dirname) == 0);
+#endif
   }
 
   void Directory::openDir()

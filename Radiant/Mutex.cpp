@@ -21,6 +21,7 @@
 #include <iostream>
 
 // Trick for Linux
+#ifndef WIN32
 #ifndef PTHREAD_MUTEX_RECURSIVE
 extern "C" {
   extern int pthread_mutexattr_setkind_np __P ((pthread_mutexattr_t *__attr,
@@ -28,6 +29,7 @@ extern "C" {
 }
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #define pthread_mutexattr_settype(x,y) pthread_mutexattr_setkind_np(x,y)
+#endif
 #endif
 
 namespace Radiant {
