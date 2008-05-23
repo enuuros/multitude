@@ -148,7 +148,7 @@ namespace VideoDisplay {
 	continue;
       }
       
-      std::string t1 = list.front();
+	  std::string t1 = list.front();
       std::string t2 = list.back();
 
       Text tmp;
@@ -178,7 +178,6 @@ namespace VideoDisplay {
       if(errors > 10)
 	return false;
     }
-
     return m_texts.size() != 0 && errors < 10;
   }
 

@@ -52,7 +52,7 @@ namespace VideoDisplay {
 
   class AudioTransfer;
 
-  class ShowGL
+  class EXPORT ShowGL
   {
     public:
 
