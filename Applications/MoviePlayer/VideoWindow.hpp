@@ -16,6 +16,10 @@
 #ifndef VIDEO_WINDOW_HPP
 #define VIDEO_WINDOW_HPP
 
+#ifdef WIN32
+#define _WINSOCKAPI_	// timeval struct redefinition
+#endif
+
 #include <Dyslexic/CPUFontBase.hpp>
 #include <Dyslexic/GPUFont.hpp>
 
