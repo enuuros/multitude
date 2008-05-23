@@ -37,15 +37,12 @@ namespace Radiant
   void ResourceLocator::addModuleDataPath(const std::string & module,
 					  bool front)
   {
-    addPath(PlatformUtils::getModuleGlobalDataPath(module.c_str(),
-						   false), front);
-    addPath(PlatformUtils::getModuleUserDataPath(module.c_str(),
-                                                 false), front);
-#ifdef RADIANT_OSX
+    std::string p1 =
+      PlatformUtils::getModuleGlobalDataPath(module.c_str(), false);
+    std::string p2 = 
+      PlatformUtils::getModuleUserDataPath(module.c_str(), false);
 
-#elif defined(RADIANT_LINUX)
-
-#endif
+    addPath(p1 + ":" + p2, front);
   }
 
   std::string ResourceLocator::locate(const std::string & file) const
