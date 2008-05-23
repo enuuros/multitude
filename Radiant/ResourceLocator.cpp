@@ -39,6 +39,8 @@ namespace Radiant
   {
     addPath(PlatformUtils::getModuleGlobalDataPath(module.c_str(),
 						   false), front);
+    addPath(PlatformUtils::getModuleUserDataPath(module.c_str(),
+                                                 false), front);
 #ifdef RADIANT_OSX
 
 #elif defined(RADIANT_LINUX)
