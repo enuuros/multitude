@@ -16,6 +16,12 @@
 #ifndef FIREVIEW_CAMVIEW_HPP
 #define FIREVIEW_CAMVIEW_HPP
 
+#ifdef WIN32
+#include <WinPort.h>
+#include <Radiant/Video1394cmu.hpp>
+#define _WINSOCKAPI_	// timeval struct redefinition
+#endif
+
 #include <Luminous/Texture.hpp>
 
 #include <Nimble/Rect.hpp>

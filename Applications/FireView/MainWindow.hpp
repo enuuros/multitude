@@ -22,6 +22,10 @@
 
 #include <set>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 class QMdiArea;
 
 namespace FireView {

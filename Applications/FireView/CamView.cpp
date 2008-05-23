@@ -73,7 +73,6 @@ namespace FireView {
     m_lastCheckTime = Radiant::TimeStamp::getTime();
     m_lastCheckFrame = 0;
     m_lastCheckFps = 0;
-
     if(!run())
       return false;
     
@@ -104,7 +103,6 @@ namespace FireView {
 
     return "unknown";
   }
-  
   void CamView::InputThread::childLoop()
   {
     using Radiant::StringUtils::yesNo;
@@ -115,23 +113,23 @@ namespace FireView {
       m_state = FAILED;
       return;
     }
-    
+
     if(m_verbose) {
       // Try to print some information
       std::vector<dc1394feature_info_t> features;
       m_video.getFeatures( & features);
 
+#ifndef WIN32
       dc1394camera_t * cam = m_video.dc1394Camera();
-
       printf("Preparing camera %llx %s %s\n",
 	     (long long) cam->guid, cam->vendor, cam->model);
+#endif
 
       for(uint i = 0; i < features.size(); i++) {
 	dc1394feature_info_t & info = features[i];
 
         if(!info.available)
           continue;
-
 	printf(" Feature %u = %s: \n"
 	       "  Capabilities:\n"
                "   absolute = %s\n   readout = %s\n"
@@ -152,25 +150,24 @@ namespace FireView {
 	printf("  Abs value = %f in [%f %f]\n",
 	       info.abs_value, info.abs_min, info.abs_max);
 	/*printf("  Trigger mode = %d in [", (int) info.trigger_mode);
-	for(uint j = 0; j < info.trigger_modes.num && 
-              j < DC1394_TRIGGER_MODE_NUM; j++) {
+	for(uint j = 0; j < info.trigger_modes.num; j++) {
 	  printf(" %d ", (int) info.trigger_modes.modes[j]);
-        }
+	}
 	printf("]\n");
 	printf("  Trigger source = %d in [", (int) info.trigger_source);
 	for(uint j = 0; j < info.trigger_sources.num; j++) {
 	  printf(" %d ", (int) info.trigger_sources.sources[j]);
-          }
-          printf("]\n");*/
+	}
+	printf("]\n");*/
       }
       fflush(0);
     }
 
     dc1394trigger_source_t trig = m_triggerSource > 0 ?
-      (dc1394trigger_source_t)m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
+      (dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
 
     if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-      error("Cannot have custom FPS with anything but SW trigger (%d)",
+      error("Cannot have custom FPS combined with anything but SW trigger (%d)",
 	    (int) trig);
 
     if(m_customFps > 0.0f || m_triggerSource > 0) {
@@ -228,7 +225,13 @@ namespace FireView {
       error("Could not start video capture");
       return;
     }
-    
+
+#ifdef WIN32
+	const Radiant::VideoImage * initialGrab = m_video.captureImage();
+	m_frame.allocateMemory(*initialGrab);
+	m_video.doneImage();
+#endif
+
     m_state = RUNNING;
 
     Radiant::TimeStamp starttime(Radiant::TimeStamp::getTime());
@@ -238,7 +241,6 @@ namespace FireView {
     trace("Capturing video");
 
     m_lastCheckTime = Radiant::TimeStamp::getTime();
-
     while(m_continue) {
 
       // printf("<"); fflush(0);
@@ -250,16 +252,26 @@ namespace FireView {
 
       const Radiant::VideoImage * img = m_video.captureImage();
 
+#ifdef WIN32
+	  if (img == 0)
+	  {
+		  m_continue = false;
+		  m_frameCount = m_frameCount;
+		  break;
+	  }
+#endif
+
       // qDebug("CamView::InputThread::childLoop # Captured");
 
       Radiant::Guard g( & m_mutex);
 
-      m_frame.allocateMemory(*img);
-      m_frame.copyData(*img);
-      m_frameCount++;
-      
+#ifndef WIN32
+	  m_frame.allocateMemory(*img);
+#endif
+	  m_frame.copyData(*img);
+	  m_frameCount++;
       m_video.doneImage();
-      
+     
       for(unsigned i = 0; i < m_features.size(); i++) {
 	if(m_featureSend[i]) {
 	  m_video.setFeature1394Raw(m_features[i].id, m_features[i].value);
@@ -343,7 +355,7 @@ namespace FireView {
   }
   
   bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
-                      float customFps,
+						float customFps,
 		      int triggerSource, int triggerMode)
   {
     Radiant::Video1394::CameraInfo info;
@@ -463,7 +475,7 @@ namespace FireView {
   void CamView::paintGL()
   {
     using Luminous::PixelFormat;
-    
+
     if(!m_tex)
       m_tex = new Luminous::Texture2D;
 
@@ -474,12 +486,11 @@ namespace FireView {
       
       if((m_tex->width()  != frame.width()) ||
 	 (m_tex->height() != frame.height())) {
-	m_tex->loadBytes(GL_LUMINANCE, frame.width(), frame.height(), 
+		m_tex->loadBytes(GL_LUMINANCE, frame.width(), frame.height(), 
 			 frame.m_planes[0].m_data,
 			 PixelFormat(PixelFormat::LAYOUT_LUMINANCE,
 				     PixelFormat::TYPE_UBYTE),
 			 false);
-
       }
       else {
 	m_tex->bind();
@@ -570,6 +581,7 @@ namespace FireView {
 
       QPainter foo( & m_foo);
       QString tmp;
+      // QFont fnt = font();
     
       for(int i = 0; i < AREA_COUNT && m_showAverages; i++) {
       
@@ -594,7 +606,6 @@ namespace FireView {
                    warningtext);
       }
     }
-
     glColor3f(1, 1, 1);
 
     char state[64];
