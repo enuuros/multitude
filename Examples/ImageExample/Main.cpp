@@ -1,4 +1,8 @@
+#ifndef WIN32
 #include <SDL/SDL.h>
+#else
+#include <SDL.h>
+#endif
 #include <Luminous/Luminous.hpp>
 #include <Luminous/Texture.hpp>
 
