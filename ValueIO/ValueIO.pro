@@ -15,3 +15,9 @@ unix:LIBS += -L../lib $$LIB_RADIANT -lxerces-c
 include(../libs.pri)
 
 include(../lib_inst.pri)
+
+win32 {
+	INCLUDEPATH += $$INC_XERCES $$INC_WINPORT
+	QMAKE_CXXFLAGS += -Zc:wchar_t		# treat wchar_t as a builtin type
+	CONFIG += staticlib
+}

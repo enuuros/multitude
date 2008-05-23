@@ -25,6 +25,12 @@
 #include <map>
 #include <vector>
 
+#ifdef WIN32
+#include <WinPort.h>
+#pragma warning( disable: 4251 )
+// see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+#endif
+
 namespace ValueIO {
 
   class Value;
@@ -79,7 +85,7 @@ namespace ValueIO {
       obj.save("example.xml");
       </PRE>
   */
-  class HasValues
+  class EXPORT HasValues
   {    
   public:
 
@@ -192,8 +198,10 @@ namespace ValueIO {
     { addValueInternal(id, &v, & IOVectorFloat32::instance4); }
     void addValue(const char * id, Nimble::Vector2i & v)
     { addValueInternal(id, &v, & IOVectorInt32::instance2); }
+#ifndef WIN32	// JJK: IOVectorUInt8::instance4 not found
     void addValue(const char * id, Nimble::Vector4ub& v)
     { addValueInternal(id, &v, & IOVectorUInt8::instance4); }
+#endif
     void addValue(const char * id, std::vector<Nimble::Vector2> & v)
     { addValueInternal(id, &v, & IOStdVectorVectorFloat32::instance2); }
     

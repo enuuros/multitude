@@ -1,4 +1,4 @@
-/* COPYRIGHT
+ /* COPYRIGHT
  *
  * This file is part of ValueIO.
  *
@@ -19,6 +19,10 @@
 #include <xercesc/dom/DOM.hpp>
 
 #include <string>
+
+#ifdef WIN32
+#include <WinPort.h>
+#endif
 
 namespace ValueIO {
 
