@@ -52,7 +52,7 @@ namespace Radiant {
       condition.wakeAll(mutex);
       </PRE>
   */
-  class EXPORT Condition : public Patterns::NotCopyable
+  class MTEXPORT Condition : public Patterns::NotCopyable
   {
   public:
     Condition() 

@@ -17,19 +17,21 @@
 #ifndef RADIANT_TRACE_HPP
 #define RADIANT_TRACE_HPP
 
+#include <Radiant/Export.hpp>
+
 #define FNAME static const char * fname = __FUNCTION__ 
 
 namespace Radiant {
   
   /* Global functions for output to console/file. */
 
-  extern EXPORT void setAppName(const char *name);
+  extern MTEXPORT void setAppName(const char *name);
 
-  extern EXPORT void trace(const char *msg, ...);
+  extern MTEXPORT void trace(const char *msg, ...);
 
-  extern EXPORT void error(const char *msg, ...);
+  extern MTEXPORT void error(const char *msg, ...);
 
-  extern EXPORT void fatal(const char *msg, ...);
+  extern MTEXPORT void fatal(const char *msg, ...);
 
 }
 

@@ -27,7 +27,7 @@ namespace Radiant {
 #ifdef RADIANT_HAVE_PTHREAD
 
   /** Mutex class. The mutex must be initialized explicitly. */
-  class EXPORT Mutex : public Patterns::NotCopyable
+  class MTEXPORT Mutex : public Patterns::NotCopyable
   {
   public:
     ///
@@ -98,7 +98,7 @@ namespace Radiant {
 #endif
 
   /// Mutex that initializes automatically.
-  class EXPORT MutexAuto : public Mutex
+  class MTEXPORT MutexAuto : public Mutex
   {
   public:
     /// Calls init.

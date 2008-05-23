@@ -85,7 +85,7 @@ namespace ValueIO {
       obj.save("example.xml");
       </PRE>
   */
-  class EXPORT HasValues
+  class MTEXPORT HasValues
   {    
   public:
 

@@ -18,6 +18,8 @@
 
 #include <fstream>
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant
 {
 
@@ -26,13 +28,13 @@ namespace Radiant
   {
 
     /// Get the size of a file
-    EXPORT unsigned long getFileLen(std::ifstream& file);
+    MTEXPORT unsigned long getFileLen(std::ifstream& file);
     /** Load a text file. The contens of the file are returned as a
      * zero-terminated string. 
      */ 
-    EXPORT char* loadTextFile(const char* filename);
+    MTEXPORT char* loadTextFile(const char* filename);
     /// Check if a given file is readable
-    EXPORT bool fileReadable(const char* filename);
+    MTEXPORT bool fileReadable(const char* filename);
     /// Check if the user can append to a given file
     /** This function is useful if you want to overwrite a file, and
 	want to check beforehand, that it is possible. 
@@ -43,23 +45,23 @@ namespace Radiant
     bool fileAppendable(const char* filename);
 
     /// Rename a file
-    EXPORT bool renameFile(const char * from, const char * to);
+    MTEXPORT bool renameFile(const char * from, const char * to);
 
     /// Extract path
-    EXPORT std::string path(const std::string & filepath);
+    MTEXPORT std::string path(const std::string & filepath);
     /// Extract filename
-    EXPORT std::string filename(const std::string & filepath);
+    MTEXPORT std::string filename(const std::string & filepath);
     /// Extract filename without suffix
-    EXPORT std::string baseFilename(const std::string & filepath);
+    MTEXPORT std::string baseFilename(const std::string & filepath);
     /// Extract suffix
-    EXPORT std::string suffix(const std::string & filepath);
+    MTEXPORT std::string suffix(const std::string & filepath);
 
     /** Find a file given a list of paths to search. The directory names are
      * separated by colon or semicolon in typical Windows or UNIX fashion
      * (/usr/foo:/home/user/foo etc.).
      */
-    EXPORT std::string findFile(const std::string & filename, const std::string & paths);
-			 const std::string & paths);
+    MTEXPORT std::string findFile(const std::string & filename, const std::string & paths);
+    // const std::string & paths);
     /** Tries to find a file that could be over-written. If such
 	cannot be found, then returns filename. */
     std::string findOverWritable(const std::string & filename,

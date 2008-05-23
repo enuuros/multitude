@@ -66,6 +66,8 @@ namespace FireView {
     void locate();
     void triggerAnalysis();
     void updateScreen();
+    void toggleFiltering()
+    { m_filtering = !m_filtering; }
 
   protected:
     
@@ -144,6 +146,7 @@ namespace FireView {
     };
 
     int m_texFrame;
+    bool m_filtering;
 
     Luminous::Texture2D * m_tex;
 

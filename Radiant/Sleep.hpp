@@ -16,6 +16,7 @@
 #ifndef RADIANT_SLEEP_HPP
 #define RADIANT_SLEEP_HPP
 
+#include <Radiant/Export.hpp>
 #include <Radiant/Types.hpp>
 
 #include <unistd.h>
@@ -129,7 +130,7 @@ namespace Radiant {
   /// Synchronized sleeping.
   /** This class can be used to time the execution of a thread. For
       example if you want a thread not to execute too often.*/
-  class EXPORT SleepSync
+  class MTEXPORT SleepSync
   {
   public:
     /// The constructor resets the timing.

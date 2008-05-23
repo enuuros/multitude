@@ -26,7 +26,7 @@ namespace Radiant {
 
   /// A client TCP socket for connecting to remote hosts
   /** @author Tommi Ilmonen*/
-  class EXPORT TCPSocket : public Radiant::BinaryStream
+  class MTEXPORT TCPSocket : public Radiant::BinaryStream
   {
   public:
     TCPSocket();

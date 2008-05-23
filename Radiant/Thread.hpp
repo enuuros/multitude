@@ -33,7 +33,7 @@ namespace Radiant {
       At the moment there is only POSIX-threads -based implementation,
       that works on various UNIX-like systems.
       */
-  class EXPORT Thread : public Patterns::NotCopyable
+  class MTEXPORT Thread : public Patterns::NotCopyable
   {
   public:
     /// Thread id type.

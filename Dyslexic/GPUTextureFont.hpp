@@ -11,7 +11,7 @@ namespace Dyslexic
 {
 
   /// A GPU font that uses textures to render the glyphs
-  class EXPORT GPUTextureFont : public GPUFontBase
+  class MTEXPORT GPUTextureFont : public GPUFontBase
   {
   public:
     GPUTextureFont(CPUFontBase * cpuFont);

@@ -16,6 +16,8 @@
 #ifndef RADIANT_IMAGE_CONVERSION_HPP
 #define RADIANT_IMAGE_CONVERSION_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant {
 
   class VideoImage;
@@ -26,7 +28,7 @@ namespace Radiant {
 
       New format conversion functions will be written as needed. */
 
-  class EXPORT ImageConversion
+  class MTEXPORT ImageConversion
   {
   public:
     /// Convert from a random format to another random format

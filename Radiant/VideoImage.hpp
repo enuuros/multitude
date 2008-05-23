@@ -16,6 +16,8 @@
 #ifndef RADIANT_VIDEO_IMAGE_HPP
 #define RADIANT_VIDEO_IMAGE_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant {
 
   /// Enumeration of different video image formats
@@ -73,13 +75,13 @@ namespace Radiant {
       An image is composed of planes that contain the actual image
       data.
   */
-  class EXPORT VideoImage
+  class MTEXPORT VideoImage
   {
   public:
     VideoImage(ImageFormat fmt = IMAGE_UNKNOWN, int w = 0, int h = 0) 
       : m_format(fmt), m_width(w), m_height(h) {}
 
-    class EXPORT Plane {
+    class MTEXPORT Plane {
     public:
       Plane() : m_data(0), m_linesize(0), m_type(PLANE_UNKNOWN) {}
 

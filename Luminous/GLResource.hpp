@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_GLRESOURCE_HPP
 #define LUMINOUS_GLRESOURCE_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Luminous
 {
   class GLResources;
@@ -108,7 +110,7 @@ namespace Luminous
       };
      </PRE>
   */
-  class EXPORT GLResource
+  class MTEXPORT GLResource
   {
   public:
     GLResource(GLResources * resources = 0);

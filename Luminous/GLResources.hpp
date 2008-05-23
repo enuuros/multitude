@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_GLRESOURCES_HPP
 #define LUMINOUS_GLRESOURCES_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <map>
 
 namespace Luminous
@@ -31,7 +33,7 @@ namespace Luminous
       allocation/deallocation sums. This information is handy when you
       want to make sure that you do not push too many texture pixels
       to the GPU during one frame etc. */
-  class EXPORT GLResources
+  class MTEXPORT GLResources
   {
   public:
 

@@ -42,8 +42,8 @@ namespace Radiant {
     WITH_AUDIO = 0x2
   };
 
-  EXPORT float asFloat(FrameRate);
-  EXPORT FrameRate closestFrameRate(float fps);
+  MTEXPORT float asFloat(FrameRate);
+  MTEXPORT FrameRate closestFrameRate(float fps);
 
   /// Base class for video input classes. 
 
@@ -53,7 +53,7 @@ namespace Radiant {
       @authors Tommi Ilmonen and Juha Laitinen
   */
 
-  class EXPORT VideoInput
+  class MTEXPORT VideoInput
   {
   public:
 

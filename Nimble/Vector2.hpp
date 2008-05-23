@@ -19,6 +19,8 @@
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/Export.hpp>
+
 namespace Nimble {
 
   /** Two-dimensional vector class for 2D mathematics.

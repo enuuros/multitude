@@ -19,11 +19,13 @@
 #define RADIANT_BINARY_STREAM_HPP
 
 
+#include <Radiant/Export.hpp>
+
 
 namespace Radiant {
 
   /// Abstract base class for binary streams
-  class EXPORT BinaryStream
+  class MTEXPORT BinaryStream
   {
   public:
     BinaryStream() {}

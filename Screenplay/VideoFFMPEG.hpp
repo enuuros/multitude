@@ -45,7 +45,7 @@ extern "C" {
 
 namespace Screenplay {
 
-  class EXPORT VideoInputFFMPEG : public Radiant::VideoInput
+  class MTEXPORT VideoInputFFMPEG : public Radiant::VideoInput
   {
   public:
 

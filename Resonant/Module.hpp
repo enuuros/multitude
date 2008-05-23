@@ -16,12 +16,14 @@
 #ifndef RESONANT_MODULE_HPP
 #define RESONANT_MODULE_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Resonant {
 
   class ControlData;
   class Application;
 
-  class EXPORT Module
+  class MTEXPORT Module
   {
   public:
 

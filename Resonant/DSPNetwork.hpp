@@ -42,7 +42,7 @@ namespace Resonant {
       trouble...
   */
 
-  class EXPORT DSPNetwork : public AudioLoop
+  class MTEXPORT DSPNetwork : public AudioLoop
   {
   public:
 
@@ -71,7 +71,7 @@ namespace Resonant {
       int     m_size;
     };
     
-    class EXPORT Connection
+    class MTEXPORT Connection
     {
     public:
       Connection() : m_channel(0),m_buf(0) { m_moduleId[0] = '\0'; }
@@ -98,7 +98,7 @@ namespace Resonant {
       Buf        *m_buf;
     };
 
-    class EXPORT NewConnection
+    class MTEXPORT NewConnection
     {
     public:
       NewConnection() : m_sourceChannel(0), m_targetChannel(0) {}
@@ -109,7 +109,7 @@ namespace Resonant {
       int         m_targetChannel;
     };
 
-    class EXPORT Item
+    class MTEXPORT Item
     {
     public:
       Item();

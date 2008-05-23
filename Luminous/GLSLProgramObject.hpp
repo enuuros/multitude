@@ -29,7 +29,7 @@ namespace Luminous
 {
 
   /// OpenGL shading language program object
-  class EXPORT GLSLProgramObject : public GLResource, public Patterns::NotCopyable
+  class MTEXPORT GLSLProgramObject : public GLResource, public Patterns::NotCopyable
   {
   public:
     GLSLProgramObject(GLResources * resources = 0);

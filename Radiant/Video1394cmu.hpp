@@ -35,7 +35,7 @@ namespace Radiant {
 
       For more information on libdc1394, see:
       http://www-2.cs.cmu.edu/~iwan/1394/ */
-class EXPORT Video1394 : public VideoInput
+class MTEXPORT Video1394 : public VideoInput
 {
 public:
   

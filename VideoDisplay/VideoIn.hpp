@@ -30,7 +30,7 @@
 
 namespace VideoDisplay {
 
-  class EXPORT VideoIn : public Radiant::Thread
+  class MTEXPORT VideoIn : public Radiant::Thread
   {
   public:
 

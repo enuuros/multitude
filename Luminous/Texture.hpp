@@ -36,7 +36,7 @@ namespace Luminous
 #ifndef WIN32
   template<GLenum TextureType>
 #endif
-  class EXPORT TextureT : public GLResource, public Patterns::NotCopyable
+  class MTEXPORT TextureT : public GLResource, public Patterns::NotCopyable
   {
     friend class Framebuffer;
 
@@ -114,7 +114,7 @@ namespace Luminous
   public:
     Texture1D(GLResources * resources = 0) : TextureT<GL_TEXTURE_1D> (resources) {}
 #else
-  class EXPORT Texture1D : public TextureT
+  class MTEXPORT Texture1D : public TextureT
   {
   public:
 	  Texture1D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_1D; }
@@ -131,7 +131,7 @@ namespace Luminous
   public:
     Texture2D(GLResources * resources = 0) : TextureT<GL_TEXTURE_2D>(resources) {}
 #else
-  class EXPORT Texture2D : public TextureT
+  class MTEXPORT Texture2D : public TextureT
   {
   public:
     Texture2D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_2D; }
@@ -162,14 +162,14 @@ namespace Luminous
 
 #else
   /// A 3D texture
-  class EXPORT Texture3D : public TextureT
+  class MTEXPORT Texture3D : public TextureT
   {
   public:
 	  Texture3D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_3D; }
   };
 	
   /// A cubemap texture
-  class EXPORT TextureCube : public TextureT
+  class MTEXPORT TextureCube : public TextureT
   {
   public:
 	  TextureCube(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_CUBE_MAP; }

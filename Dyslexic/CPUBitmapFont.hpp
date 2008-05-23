@@ -9,7 +9,7 @@ namespace Dyslexic
 {
 
   /// A CPU font class that stores the glyphs as bitmaps.  
-  class EXPORT CPUBitmapFont : public CPUFontBase
+  class MTEXPORT CPUBitmapFont : public CPUFontBase
   {
   public:
     CPUBitmapFont(Luminous::GarbageCollector * gc = 0);

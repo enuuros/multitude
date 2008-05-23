@@ -16,6 +16,8 @@
 #ifndef RADIANT_TIMESTAMP_HPP
 #define RADIANT_TIMESTAMP_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <stdint.h>
 #include <sys/time.h>
 #include <time.h>
@@ -28,7 +30,7 @@ namespace Radiant {
      clock: 1.1.1970 the counter was zero. */
 
   /// @todo remove suffix from create* functions
-  class EXPORT TimeStamp
+  class MTEXPORT TimeStamp
   {
   public:
     typedef int64_t type;

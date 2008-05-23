@@ -104,6 +104,7 @@ namespace FireView {
 	QMenu * menu = new QMenu(mb);
 	CamView * cv = new CamView(base);
 
+	menu->addAction("OpenGL Image Filtering", cv, SLOT(toggleFiltering()));
 	menu->addAction("Parameters...", cv, SLOT(openParams()));
 	menu->addAction("Show averages", cv, SLOT(showAverages()));
 	menu->addAction("1/2\" -> 1/3\"", cv,

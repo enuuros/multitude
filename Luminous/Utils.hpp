@@ -28,7 +28,7 @@ namespace Luminous {
   /// OpenGL utility functions
   /** This class has functions for drawing various simple primitives -
       circles, lines, textured rectangles, etc.*/
-  class EXPORT Utils 
+  class MTEXPORT Utils 
   {
   public:
 

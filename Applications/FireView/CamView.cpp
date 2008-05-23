@@ -376,6 +376,8 @@ namespace FireView {
     ((QWidget *) parent())->setWindowTitle(title);
 
     m_texFrame = -1;
+    m_filtering = false;
+
     ok = m_thread.start(euid64, fps, customFps, triggerSource,  triggerMode);
 
     if(ok) {
@@ -551,8 +553,15 @@ namespace FireView {
 
       m_imageScale = imw / m_tex->width();
       
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      if(m_filtering) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      }
+      else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      }
+
       Luminous::Utils::glTexRect(0, 0, imw, imh);
     }
 

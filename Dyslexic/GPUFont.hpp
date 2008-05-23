@@ -8,7 +8,7 @@ namespace Dyslexic
   class CPUFont;
 
   /// A common interface for all fonts that reside on the GPU
-  class EXPORT GPUFont
+  class MTEXPORT GPUFont
   {
     public:
       virtual ~GPUFont() {}

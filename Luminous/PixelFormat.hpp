@@ -18,10 +18,12 @@
 
 #include <GL/glew.h>
 
+#include <Radiant/Export.hpp>
+
 namespace Luminous
 {
 
-  class EXPORT PixelFormat
+  class MTEXPORT PixelFormat
   {
     public:
 

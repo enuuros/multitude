@@ -16,6 +16,8 @@
 #ifndef RADIANT_TCP_SERVER_SOCKET_HPP
 #define RADIANT_TCP_SERVER_SOCKET_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <string>
 
 namespace Radiant {
@@ -25,7 +27,7 @@ namespace Radiant {
   /// A server TCP socket for accepting incoming connections
   /** A serer socket */
 
-  class EXPORT TCPServerSocket
+  class MTEXPORT TCPServerSocket
   {
   public:
     TCPServerSocket();

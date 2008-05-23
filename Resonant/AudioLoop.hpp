@@ -16,13 +16,15 @@
 #ifndef RESONANT_AUDIO_LOOP_HPP
 #define RESONANT_AUDIO_LOOP_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <portaudio.h>
 
 namespace Resonant {
 
   /** A simple audio IO class that uses PortAudio to handle the real work. */
   
-  class EXPORT AudioLoop
+  class MTEXPORT AudioLoop
   {
   public:
     AudioLoop();

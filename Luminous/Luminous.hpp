@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_LUMINOUS_HPP
 #define LUMINOUS_LUMINOUS_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <GL/glew.h>
 
 /// Luminous library is a collection of C++ classes for computer graphics, using OpenGL.
@@ -33,7 +35,7 @@
 namespace Luminous
 {
 
-  EXPORT bool initLuminous();
+  MTEXPORT bool initLuminous();
 
 }
 
