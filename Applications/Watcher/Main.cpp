@@ -13,6 +13,9 @@
  * 
  */
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
 
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Video1394.hpp>
