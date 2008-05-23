@@ -25,3 +25,9 @@ macx {
 
 }
 
+DEFINES += EXPORT=""
+
+win32 {
+	DEFINES += EXPORT=__declspec(dllexport)
+	include(./Win32/WinPort.pri)
+}
