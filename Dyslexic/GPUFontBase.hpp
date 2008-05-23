@@ -14,7 +14,7 @@ namespace Dyslexic
   class Glyph;
 
   /// A base class for different fonts that reside on the GPU
-  class GPUFontBase : public GPUFont, public Luminous::GLResource
+  class EXPORT GPUFontBase : public GPUFont, public Luminous::GLResource
   {
     public:
       GPUFontBase(CPUFontBase * font);

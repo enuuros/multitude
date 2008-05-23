@@ -42,7 +42,7 @@ namespace Dyslexic
       delim = wchar_t('\n');
       WStringList   wSub;
 
-      split(wStr, delim, wSub);
+	  split(wStr, delim, wSub);
 
       // Break the resulting sub-wstrings to fit width
 
@@ -108,6 +108,37 @@ namespace Dyslexic
         }
       }
     }
+
+#ifdef WIN32
+	    void split(const std::wstring & ws, const std::wstring & delim,
+        WStringList & out)
+    {
+      out.clear();
+
+      if(ws.empty())
+      {
+        return;
+      }
+
+      // Find first a delimiter
+      std::wstring  wscopy(ws);
+      size_t        pos = wscopy.find_first_of(delim);
+
+      // Loop until no delimiters left
+      while(pos != wscopy.npos)
+      {
+        out.push_back(wscopy.substr(0, pos + 1));
+        wscopy.erase(0, pos + 1);
+        pos = wscopy.find_first_of(delim);
+      }
+
+      // Push remainder of wstring onto list
+      if(!wscopy.empty())
+      {
+        out.push_back(wscopy);
+      }
+    }
+#endif
   }
 
 }

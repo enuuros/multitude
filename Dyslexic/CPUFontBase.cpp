@@ -3,6 +3,10 @@
 
 #include <Radiant/Trace.hpp>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Dyslexic
 {
 
@@ -123,7 +127,12 @@ namespace Dyslexic
   {
     if(wstr && (*wstr != wchar_t('\0')))
     {
-      const unsigned wchar_t *   wc = (unsigned wchar_t *)wstr;
+#ifndef WIN32
+      const unsigned wchar_t *   wc = (const unsigned wchar_t *)wstr;
+#else
+      const wchar_t *   wc = (const wchar_t *)wstr;
+#endif
+
       float   advance = 0.f;
       if(checkGlyph(*wc))
       {

@@ -1,6 +1,7 @@
 #include "FontManager.hpp"
 
 #include "CPUManagedFont.hpp"
+#include <map>
 
 namespace Dyslexic
 {
@@ -13,7 +14,7 @@ namespace Dyslexic
 
   CPUWrapperFont * FontManager::getFont(const std::string & name)
   {
-    container::iterator it = m_managedFonts.find(name);
+	container::iterator it = m_managedFonts.find(name);
 
     CPUManagedFont * mfont = 0;
 

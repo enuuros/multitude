@@ -59,3 +59,10 @@ include(../libs.pri)
 
 include(../lib_inst.pri)
 
+win32 {
+	SOURCES -= FontManager.cpp
+	INCLUDEPATH += $$INC_GLEW $$INC_FREETYPE_A $$INC_FREETYPE_B $$INC_WINPORT
+	LIBPATH += $$LNK_MULTITUDE $$LNK_FREETYPE 
+	LIBS += $$LIB_FREETYPE $$LIB_OPENGL
+	QMAKE_CXXFLAGS *= -wd4251	# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+}

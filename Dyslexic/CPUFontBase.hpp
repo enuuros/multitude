@@ -11,7 +11,7 @@ namespace Dyslexic
   class GPUFont;
 
   /// A base class for all CPU fonts.
-  class CPUFontBase : public CPUFont, public Luminous::Collectable
+  class EXPORT CPUFontBase : public CPUFont, public Luminous::Collectable
   {
     public:
       CPUFontBase(Luminous::GarbageCollector * gc = 0);
