@@ -91,14 +91,24 @@ namespace Luminous {
       /// The pixel size of the area on the window
       const Vector2i & size() const { return m_size; }
 
-      /// The offset of the graphics inside the area (virtual pixels)
+      /** The offset of the graphics inside the area (virtual pixels).
+
+          This method can return 1) the location, including any seam
+          pixels (this is the area that is visible) or 2) the nominal
+          graphics location.
+      */
       const Vector2f graphicsLocation(bool withseams = true) const
       { 
         return withseams ? 
           m_graphicsLocation - Nimble::Vector2f(m_seams[0], m_seams[3]) :
           m_graphicsLocation;
       }
-      /// The size of the graphics inside this area (virtual pixels)
+      /** The size of the graphics inside this area (virtual pixels).
+
+          This method can return 1) the size, including any seam
+          pixels (this is the area that is visible) or 2) the nominal
+          graphics size.
+      */
       const Vector2f graphicsSize(bool withseams = true) const
       {
         return withseams ? 
@@ -123,7 +133,8 @@ namespace Luminous {
       false.
       @return The vector in graphics coordinates.
       */
-      Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool * convOk = 0);
+      Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, 
+                                        int windowheight, bool * convOk = 0);
 
       int active() const { return m_active; }
 

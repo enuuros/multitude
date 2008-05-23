@@ -3,6 +3,8 @@
 
 #include <dlfcn.h>
 
+#include <assert.h>
+
 namespace Radiant
 {
 
