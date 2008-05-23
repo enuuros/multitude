@@ -23,6 +23,10 @@
 #include <strings.h>
 #include <assert.h>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Screenplay {
   
   using namespace Radiant;
