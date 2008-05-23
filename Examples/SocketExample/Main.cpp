@@ -16,6 +16,10 @@
 #include <Radiant/TCPServerSocket.hpp>
 #include <Radiant/TCPSocket.hpp>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 using namespace Radiant;
 
 const char * appname = 0;
@@ -107,10 +111,18 @@ int main(int argc, char ** argv)
       printf("%s # Unknown argument \"%s\"\n", appname, argv[i]);
   }
 
+#ifdef WIN32
+  WinPort::initSockets();
+#endif
+
   if(isclient)
     runClient(host, port, message);
   else
     runServer(host, port, withBlocking);
+
+#ifdef WIN32
+  WinPort::exitSockets();
+#endif
 
   return 0;
 }
