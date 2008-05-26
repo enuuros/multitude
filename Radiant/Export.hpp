@@ -25,14 +25,14 @@
 #endif
 
 // Define MTAPI for DLL builds
-#ifdef FOXDLL
-  #ifdef FOXDLL_EXPORTS
+#ifdef MULTIDLL
+  #ifdef MULTIDLL_EXPORTS
     #define MTAPI MTEXPORT
   #else
     #define MTAPI MTIMPORT
-  #endif // FOXDLL_EXPORTS
+  #endif // MULTIDLL_EXPORTS
 #else
   #define MTAPI
-#endif // FOXDLL
+#endif // MULTIDLL
 
 #endif
