@@ -13,7 +13,7 @@ namespace Valuable
     m_transit(transit)
   {
     if(parent)
-      parent->addValue(this);
+      parent->addValue(name, this);
   }
 
   ValueObject::~ValueObject()

@@ -41,6 +41,7 @@ namespace Valuable
       }
   };
 
+  typedef ValueFloatT<float> ValueFloat;
 }
 
 #undef STD_OP

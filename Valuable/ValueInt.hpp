@@ -53,6 +53,8 @@ namespace Valuable
       }
   };
 
+  typedef ValueIntT<int> ValueInt;
+
 }
 
 #undef STD_OP

@@ -21,7 +21,7 @@ namespace Valuable
       HasValues() : ValueObject() {}
       HasValues(HasValues * parent, const std::string & name, bool transit);
 
-      bool addValue(ValueObject * const value);
+      bool addValue(const std::string & name, ValueObject * const value);
       ValueObject * getValue(const std::string & name);
       void removeValue(ValueObject * const value);      
 

@@ -49,6 +49,7 @@ namespace Valuable
       T m_value;
   };
 
+  typedef ValueStringT<std::string> ValueString;  
 }
 
 #undef STD_OP

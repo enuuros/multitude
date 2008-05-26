@@ -23,11 +23,11 @@ namespace Valuable
     return it == m_children.end() ? 0 : it->second;
   }
 
-  bool HasValues::addValue(ValueObject * const value)
+  bool HasValues::addValue(const std::string & cname, ValueObject * const value)
   {
-    // Check children
-    const std::string & cname = value->name();
+//    Radiant::trace("HasValues::addValue # adding %s", cname.c_str());
 
+    // Check children
     if(m_children.find(cname) != m_children.end()) {
       Radiant::error("HasValues::addValue # can not add child '%s' as '%s' already has a child with the same name.", cname.c_str(), m_name.c_str());
       return false;
@@ -39,6 +39,9 @@ namespace Valuable
       Radiant::error("HasValues::addValue # '%s' already has a parent '%s'. Unlinking it to set new parent.", cname.c_str(), parent->name().c_str());
       value->removeParent();  
     }
+  
+    // Change the value name
+    value->setName(cname);
 
     m_children[value->name()] = value;
     value->m_parent  = this;
@@ -110,6 +113,7 @@ namespace Valuable
     DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder(DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
     DOMDocument * doc = parser->parseURI(filename);
+    if(!doc) return false;
 
     bool r = deserializeXML(doc->getDocumentElement(), cl);
 
@@ -153,24 +157,29 @@ namespace Valuable
     // Children
     DOMNodeList * list = element->getChildNodes();
 
-
     for(XMLSize_t i = 0; i < list->getLength(); i++) {
       DOMElement * ce = dynamic_cast<DOMElement *> (list->item(i));
       if(!ce) continue;
 
       // Get the value matching the element tag
       nameVal = XMLString::transcode(ce->getTagName());
+
+//      Radiant::trace("DEBUG: tag %s", nameVal);
+
       ValueObject * vo = getValue(nameVal);
-      XMLString::release(&nameVal);
 
       // If the value exists, just deserialize it. Otherwise, pass the element
       // to readElement()
-      if(vo) 
+      if(vo)
         vo->deserializeXML(ce, cl);
-      else 
-        readElement(ce, cl);
-    }
+      else if(!readElement(ce, cl)) {
+        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'", nameVal);
+        XMLString::release(&nameVal);
+        return false;
+      }
 
+      XMLString::release(&nameVal);
+    }
 
     return true;
   }
@@ -192,34 +201,36 @@ namespace Valuable
     Radiant::trace("}");
   }
 
-  bool HasValues::readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl)
+  bool HasValues::readElement(xercesc::DOMElement * , CL::ClassLoader<ValueObject> & )
   {
+/*
     char * nameVal = XMLString::transcode(ce->getTagName());
     XMLCh * typeAttr = XMLString::transcode("type");
 
-    // Get 'type' attribute
-    const XMLCh * typeVal = ce->getAttribute(typeAttr);
-    if(!typeVal) {
+    // Get the 'type' attribute
+    if(!ce->hasAttribute(typeAttr)) {
       Radiant::error("HasValues::readElement # no type attribute on element '%s'", nameVal);
       XMLString::release(&nameVal);
       XMLString::release(&typeAttr);
       return false;
     }
 
+    const XMLCh * typeVal = ce->getAttribute(typeAttr);
+
     // Instantiate from type
     char * myType = XMLString::transcode(typeVal);
     ValueObject * vo = cl.instantiate(myType);
     XMLString::release(&myType);
 
-    // Set name
-    vo->setName(nameVal);
-    XMLString::release(&nameVal);
-
-    addValue(vo);
+    // Add as child & recurse
+    addValue(nameVal, vo);
     vo->deserializeXML(ce, cl);
 
+    XMLString::release(&nameVal);
     XMLString::release(&typeAttr);
 
+    return true;
+*/
     return false;
   }
 

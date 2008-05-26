@@ -51,6 +51,7 @@ LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
 LIB_VALUEIO = -lValueIO
 LIB_VIDEODISPLAY = -lVideoDisplay
+LIB_VALUABLE = -lValuable
 
 MULTI_LIB_FLAG = -L
 

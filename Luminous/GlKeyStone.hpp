@@ -19,24 +19,24 @@
 
 #include <Nimble/Matrix4.hpp>
 
-#include <ValueIO/HasValues.hpp>
+#include <Valuable/HasValues.hpp>
+#include <Valuable/ValueInt.hpp>
+#include <Valuable/ValueVector.hpp>
 
 namespace Luminous {
 
-  XERCES_CPP_NAMESPACE_USE;
-
   /** Class for doing key-stone correction when rendering 2D OpenGL
       graphics. */
-  class GlKeyStone : public ValueIO::HasValues
+  class GlKeyStone : public Valuable::HasValues
   {
   public:
     GlKeyStone();
     virtual ~GlKeyStone();
 
-    virtual bool readDom(DOMElement * elem);
+    virtual bool deserializeXML(xercesc::DOMElement * e, CL::ClassLoader<Valuable::ValueObject> & cl);
 
-    void setVertex(int index, float x, float y)
-    { m_vertices[index].make(x, y); }
+    void setVertex(int index, float x, float y) 
+    { m_vertices[index] = Nimble::Vector2f(x, y); }
 
     bool moveVertex(Nimble::Vector2 loc);
     void selectVertex(Nimble::Vector2 loc);
@@ -47,8 +47,8 @@ namespace Luminous {
     { m_vertices[m_lastMove] += move; calculateMatrix(); }
 
     int lastMove() const { return m_lastMove; }
-    Nimble::Vector2 lastMoveVertex() const { return m_vertices[m_lastMove]; }
-    int rotations() const { return m_rotations; }
+    Nimble::Vector2f lastMoveVertex() const { return m_vertices[m_lastMove].asVector(); }
+    int rotations() const { return m_rotations.asInt(); }
 
     void rotateVertices();
 
@@ -70,10 +70,11 @@ namespace Luminous {
     Nimble::Vector2 closest(Nimble::Vector2 v) const;
 
   protected:
-    Nimble::Vector2 m_vertices[4];
+//    Valuable::ValueVector2f m_vertices[4];
+    Valuable::ValueVector2f m_vertices[4];    
     Nimble::Matrix4 m_matrix;
     int     m_lastMove;
-    int     m_rotations;
+    Valuable::ValueInt m_rotations;
   };
 
 }
