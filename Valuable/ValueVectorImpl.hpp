@@ -42,8 +42,6 @@ namespace Valuable
 
     XMLString::release(&myContent);
 
-    Radiant::trace("DEBUG: READ XML %s", asString().c_str());    
-
     return true;
   }
 
