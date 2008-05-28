@@ -1,10 +1,10 @@
 /* COPYRIGHT
  *
- * This file is part of VideoDisplay.
+ * This file is part of Valueable.
  *
  * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
- * See file "VideoDisplay.hpp" for authors and more details.
+ * See file "Valueable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
  * License (LGPL), version 2.1. The LGPL conditions can be found in 
