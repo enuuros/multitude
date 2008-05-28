@@ -15,9 +15,12 @@
 
 #include "ModuleSamplePlayer.hpp"
 
+#include "ControlData.hpp"
+
 #include <Nimble/Math.hpp>
 
 #include <Radiant/FileUtils.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <assert.h>
 
@@ -26,6 +29,8 @@
 #endif
 
 namespace Resonant {
+
+  using namespace Radiant;
 
   ModuleSamplePlayer::Sample::Sample()
   {
@@ -89,8 +94,13 @@ namespace Resonant {
     }
 
     m_position += avail;
+    bool ok = (int) avail == n;
 
-    return (int) avail == n;
+    if(!ok) {
+      m_sample = 0;
+    }
+
+    return ok;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -122,16 +132,50 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleSamplePlayer::control(const char *, ControlData *)
-  {}
+  void ModuleSamplePlayer::control(const char * id, ControlData * data)
+  {
+    const int bufsize = 256;
+    char buf[bufsize];
+
+    if(strcmp(id, "playsample") == 0) {
+      int voiceind = findFreeVoice();
+
+      if(voiceind < 0) {
+        error("ModuleSamplePlayer::control # Out of polyphony");
+        return;
+      }
+
+      bool ok = data->readString(buf, bufsize);
+
+      if(!ok) {
+        error("ModuleSamplePlayer::control # Could not get sample name ");
+        return;
+      }
+
+      SampleVoice & voice = m_voices[voiceind];
+      
+      int sampleind = findSample(buf);
+
+      if(sampleind < 0) {
+        error("ModuleSamplePlayer::control # No sample \"%s\"", buf);
+        return;
+      }
+
+      voice.init(m_samples[sampleind].ptr());
+    }
+    else
+      error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
+  }
 
   void ModuleSamplePlayer::process(float ** , float ** out, int n)
   {
     uint i;
 
+    // First zero the outputs
     for(i = 0; i < m_channels; i++)
       bzero(out[i], n * 4);
 
+    // Then fill the outputs with audio
     for(i = 0; i < m_voices.size(); ) {
       if(!m_voices[i].synthesize(out, n))
 	dropVoice(i);
@@ -151,6 +195,24 @@ namespace Resonant {
     m_sampleList.push_back(sv);
 
     return true;
+  }
+
+  int ModuleSamplePlayer::findFreeVoice()
+  {
+    for(unsigned i = 0; i < m_voices.size(); i++)
+      if(!m_voices[i].isActive())
+        return i;
+
+    return -1;
+  }
+
+  int ModuleSamplePlayer::findSample(const char * name)
+  {
+    for(unsigned i = 0; i < m_samples.size(); i++)
+      if(m_samples[i].ptr()->name() == name)
+        return i;
+
+    return -1;
   }
 
   void ModuleSamplePlayer::loadSamples()

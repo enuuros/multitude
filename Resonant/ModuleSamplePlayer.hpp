@@ -53,6 +53,8 @@ namespace Resonant {
 
       const SF_INFO & info() const { return m_info; }
 
+      const std::string & name() const { return m_name; }
+
     protected:
       SF_INFO m_info;
 
@@ -68,6 +70,14 @@ namespace Resonant {
       
       bool synthesize(float ** out, int n);
       
+      inline void init(Sample * sample)
+      {
+        m_sample = sample;
+        m_position = 0;
+      }
+
+      bool isActive() { return m_sample != 0; }
+
     protected:
       Sample * m_sample;
       unsigned m_position;
@@ -81,6 +91,9 @@ namespace Resonant {
     virtual void process(float ** in, float ** out, int n);
 
     bool addSample(const char * filename, const char * name);
+
+    int findFreeVoice();
+    int findSample(const char * );
 
     void loadSamples();
     
