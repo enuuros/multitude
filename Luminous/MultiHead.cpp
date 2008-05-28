@@ -129,7 +129,8 @@ namespace Luminous {
   void MultiHead::Area::updateBBox()
   {
     m_graphicsBounds.set
-      (m_graphicsLocation.asVector(), m_graphicsLocation.asVector() + m_graphicsSize.asVector());
+      (m_graphicsLocation.asVector(),
+       m_graphicsLocation.asVector() + m_graphicsSize.asVector());
     m_graphicsBounds.low().x  -= m_seams[0];
     m_graphicsBounds.high().x += m_seams[1];
     m_graphicsBounds.low().y  -= m_seams[2];
@@ -242,7 +243,8 @@ namespace Luminous {
 
   MultiHead::MultiHead()
   : HasValues(0, "MultiHead", false),
-    m_widthcm(this, "widthcm", false, 100.f)
+    m_widthcm(this, "widthcm", false, 100.f),
+    m_edited(false)
   {}
 
   MultiHead::~MultiHead()
@@ -403,11 +405,16 @@ namespace Luminous {
     return (int) (bottom - top);
   }
 
-  bool MultiHead::deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::deserializeXML(xercesc::DOMElement * element,
+                                 CL::ClassLoader<ValueObject> & cl)
   {
     m_windows.clear();
 
-    return HasValues::deserializeXML(element, cl);
+    bool ok = HasValues::deserializeXML(element, cl);
+
+    m_edited = false;
+
+    return ok;
   }
 
   bool MultiHead::readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl)

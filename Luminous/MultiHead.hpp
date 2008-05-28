@@ -264,12 +264,15 @@ namespace Luminous {
       
       void addWindow(Window * w) { m_windows.push_back(w); }
 
+    void setEdited(bool edited) { m_edited = edited; }
+    bool isEdited() const { return m_edited; }
+
     protected:
       virtual bool readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl);
 
       std::vector<RefPtr<Window> > m_windows;
       Valuable::ValueFloat m_widthcm;
-
+    bool m_edited;
   };
 
 }

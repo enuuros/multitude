@@ -33,7 +33,10 @@ namespace Luminous {
     GlKeyStone();
     virtual ~GlKeyStone();
 
-    virtual bool deserializeXML(xercesc::DOMElement * e, CL::ClassLoader<Valuable::ValueObject> & cl);
+    virtual const char * const type() const { return "glkeystone"; }
+
+    virtual bool deserializeXML(xercesc::DOMElement * e,
+                                CL::ClassLoader<Valuable::ValueObject> & cl);
 
     void setVertex(int index, float x, float y) 
     { m_vertices[index] = Nimble::Vector2f(x, y); }
@@ -47,7 +50,9 @@ namespace Luminous {
     { m_vertices[m_lastMove] += move; calculateMatrix(); }
 
     int lastMove() const { return m_lastMove; }
-    Nimble::Vector2f lastMoveVertex() const { return m_vertices[m_lastMove].asVector(); }
+    Nimble::Vector2f lastMoveVertex() const
+    { return m_vertices[m_lastMove].asVector(); }
+
     int rotations() const { return m_rotations.asInt(); }
 
     void rotateVertices();
