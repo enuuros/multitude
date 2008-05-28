@@ -42,7 +42,7 @@ namespace Radiant
 	@return Returns true if the file exists and can be written
 	to. Otherwise returns false.
     */
-    bool fileAppendable(const char* filename);
+    MTEXPORT bool fileAppendable(const char* filename);
 
     /// Rename a file
     MTEXPORT bool renameFile(const char * from, const char * to);
@@ -61,11 +61,11 @@ namespace Radiant
      * (/usr/foo:/home/user/foo etc.).
      */
     MTEXPORT std::string findFile(const std::string & filename, const std::string & paths);
-    // const std::string & paths);
+
     /** Tries to find a file that could be over-written. If such
 	cannot be found, then returns filename. */
-    std::string findOverWritable(const std::string & filename,
-				 const std::string & paths);
+    MTEXPORT std::string findOverWritable(const std::string & filename,
+                                          const std::string & paths);
 
   }
 }

@@ -29,14 +29,18 @@ namespace Valuable
 
     // Check children
     if(m_children.find(cname) != m_children.end()) {
-      Radiant::error("HasValues::addValue # can not add child '%s' as '%s' already has a child with the same name.", cname.c_str(), m_name.c_str());
+      Radiant::error("HasValues::addValue # can not add child '%s' as '%s' "
+                     "already has a child with the same name.",
+                     cname.c_str(), m_name.c_str());
       return false;
     }
 
     // Unlink parent if necessary
     HasValues * parent = value->parent();
     if(parent) {
-      Radiant::error("HasValues::addValue # '%s' already has a parent '%s'. Unlinking it to set new parent.", cname.c_str(), parent->name().c_str());
+      Radiant::error("HasValues::addValue # '%s' already has a parent '%s'. "
+                     "Unlinking it to set new parent.",
+                     cname.c_str(), parent->name().c_str());
       value->removeParent();  
     }
   
@@ -55,7 +59,8 @@ namespace Valuable
   
     container::iterator it = m_children.find(cname);
     if(it == m_children.end()) {
-      Radiant::error("HasValues::removeValue # '%s' is not a child of '%s'.", cname.c_str(), m_name.c_str());
+      Radiant::error("HasValues::removeValue # '%s' is not a child of '%s'.", 
+                     cname.c_str(), m_name.c_str());
       return;
     }
 
@@ -110,7 +115,8 @@ namespace Valuable
     DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
 
     // Create a parser
-    DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder(DOMImplementationLS::MODE_SYNCHRONOUS, 0);
+    DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder
+      (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
     DOMDocument * doc = parser->parseURI(filename);
     if(!doc) return false;
@@ -147,7 +153,8 @@ namespace Valuable
     return elem;
   }
 
-  bool HasValues::deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl)
+  bool HasValues::deserializeXML(xercesc::DOMElement * element,
+                                 CL::ClassLoader<ValueObject> & cl)
   {
     // Name
     char * nameVal = XMLString::transcode(element->getTagName());
@@ -173,7 +180,8 @@ namespace Valuable
       if(vo)
         vo->deserializeXML(ce, cl);
       else if(!readElement(ce, cl)) {
-        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'", nameVal);
+        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'",
+                       nameVal);
         XMLString::release(&nameVal);
         return false;
       }
