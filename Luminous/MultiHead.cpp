@@ -451,6 +451,7 @@ namespace Luminous {
       return false;
     }
 
+    XMLString::release(&myType);
     XMLString::release(&nameVal);
     XMLString::release(&typeAttr);
     
