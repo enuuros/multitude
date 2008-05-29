@@ -84,7 +84,7 @@ namespace Valuable
 
   void ValueObject::emitDelete()
   {
-    Radiant::trace("ValueObject::emitDelete");
+    //Radiant::trace("ValueObject::emitDelete");
     ChangeMap::addDelete(this);
   }
 

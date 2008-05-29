@@ -7,8 +7,6 @@ HEADERS += ValueInt.hpp
 HEADERS += ValueNumeric.hpp
 HEADERS += ValueObject.hpp
 HEADERS += Valuable.hpp
-HEADERS += ValueVector2.hpp
-HEADERS += ValueVector4.hpp
 HEADERS += ValueVector.hpp
 HEADERS += ValueVectorImpl.hpp
 
