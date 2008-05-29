@@ -231,6 +231,12 @@ namespace Luminous {
       MultiHead();
       virtual ~MultiHead();
 
+    /// The number of areas
+    unsigned areaCount();
+    /// Access the areas
+    /** This method traverses all the windows to find the area with
+	given index. */
+    Area & area(unsigned i, Window ** winptr = 0);
       /// Create 1 window with 1 area.
       void makeSingle(int x, int y, int w, int h);
       /// Create 1 window with 2 areas horizontally side by side.
@@ -245,13 +251,10 @@ namespace Luminous {
       /// Access one of the windows
       Window & window(unsigned i) { return * m_windows[i].ptr(); }
 
-      /// The number of areas
-      unsigned areaCount();
-      /// Access on of the areas
-      /** This method traverses all the windows to find the area with
-        given index. */
-      Area & area(unsigned i, Window ** winptr = 0);
 
+    Nimble::Vector2i size()
+    { return Nimble::Vector2i(width(), height()); }
+    
       float seam();
       void setSeam(float seam);
 
