@@ -17,6 +17,8 @@
 
 #include <Nimble/Vector4.hpp>
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant
 {
 

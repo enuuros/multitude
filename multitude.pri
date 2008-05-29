@@ -72,6 +72,7 @@ macx {
     LIB_RADIANT = -framework,Radiant
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay
+    LIB_VALUABLE = -framework,Valuable
     LIB_VALUEIO = -framework,ValueIO
     LIB_VIDEODISPLAY = -framework,VideoDisplay
 
