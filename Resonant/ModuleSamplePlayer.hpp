@@ -16,7 +16,10 @@
 #ifndef RESONANT_MODULE_SAMPLE_PLAYER_HPP
 #define RESONANT_MODULE_SAMPLE_PLAYER_HPP
 
+#include <Radiant/FixedStr.hpp>
 #include <Radiant/RefPtr.hpp>
+#include <Radiant/Thread.hpp>
+#include <Radiant/Condition.hpp>
 
 #include <Resonant/Module.hpp>
 
@@ -66,21 +69,91 @@ namespace Resonant {
     class SampleVoice
     {
     public:
-      SampleVoice(Sample * s = 0) : m_sample(s), m_position(0) {}
+      SampleVoice(Sample * s = 0)
+	: m_state(INACTIVE),m_gain(1), m_sample(s), m_position(0)
+      {}
       
       bool synthesize(float ** out, int n);
       
-      inline void init(Sample * sample)
-      {
-        m_sample = sample;
-        m_position = 0;
-      }
+      void init(Sample * sample, ControlData * data);
 
-      bool isActive() { return m_sample != 0; }
+      bool isActive() { return m_state != INACTIVE; }
+
+      void loadFailed() { m_state = INACTIVE; }
+
+      void setSample(Sample * s);
 
     protected:
+      enum State {
+	INACTIVE,
+	WAITING_FOR_SAMPLE,
+	PLAYING
+      };
+      
+      State m_state;
+
+      float m_gain;
+
       Sample * m_sample;
       unsigned m_position;
+    };
+
+    class LoadItem
+    {
+    public:
+      enum { WAITING_COUNT = 64 };
+
+      LoadItem();
+
+      void init(const char * filename, SampleVoice * waiting)
+      {
+        bzero(m_waiting, sizeof(m_waiting));
+	m_waiting[0] = waiting;
+	m_name = filename;
+	m_free = false;
+      }
+
+      inline bool addWaiting(SampleVoice * voice)
+      {
+	for(int i = 0; i < WAITING_COUNT; i++) {
+	  if(m_waiting[i] == 0) {
+	    m_waiting[i] = voice;
+	    return true;
+	  }
+	}
+
+	return false;
+      }
+
+      bool m_free;
+      Radiant::FixedStrT<256> m_name;
+
+      SampleVoice * m_waiting[WAITING_COUNT];
+    };
+
+    class BGLoader : public Radiant::Thread
+    {
+    public:
+
+      BGLoader(ModuleSamplePlayer * host);
+      ~BGLoader();
+      
+      bool addLoadable(const char * filename, SampleVoice * waiting);
+
+    protected:
+
+      virtual void childLoop();
+
+      enum { BINS = 256};
+
+      Radiant::Condition m_cond;
+      Radiant::MutexAuto m_mutex;
+
+      LoadItem m_loads[BINS];
+
+      ModuleSamplePlayer * m_host;
+
+      volatile bool m_continue;
     };
 
     ModuleSamplePlayer(Application *);
@@ -97,6 +170,8 @@ namespace Resonant {
 
     void loadSamples();
     
+    bool addSample(Sample * s);
+
   protected:
     
     void dropVoice(unsigned index);
@@ -106,8 +181,7 @@ namespace Resonant {
     std::vector<Radiant::RefPtr<Sample> > m_samples;
 
     std::vector<SampleVoice> m_voices;
-
-
+    
     unsigned m_channels;
     unsigned m_active;
   };

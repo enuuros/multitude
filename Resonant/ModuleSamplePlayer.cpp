@@ -80,27 +80,156 @@ namespace Resonant {
 
   bool ModuleSamplePlayer::SampleVoice::synthesize(float ** out, int n)
   {
+    if(m_state != PLAYING)
+      return m_state == WAITING_FOR_SAMPLE;
+
     unsigned avail = m_sample->data().size() - m_position;
 
     if((int) avail > n)
       avail = n;
 
     float * b1 = out[0];
-    
+    float gain = m_gain;
+
     const float * src = m_sample->buf(m_position);
 
     for(unsigned i = 0; i < avail; i++) {
-      *b1++ = *src++;
+      *b1++ += *src++ * gain;
     }
 
     m_position += avail;
-    bool ok = (int) avail == n;
+    bool more = (int) avail == n;
 
-    if(!ok) {
+    if(!more) {
       m_sample = 0;
+      m_state = INACTIVE;
     }
 
-    return ok;
+    return more;
+  }
+
+  void ModuleSamplePlayer::SampleVoice::init
+  (Sample * sample, ControlData * data)
+  {
+    m_sample = sample;
+    m_position = 0;
+    bool ok = true;
+
+    float gain = data->readFloat32( & ok);
+
+    if(ok)
+      m_gain = gain;
+    else
+      m_gain = 1.0f;
+
+    m_state = sample ? PLAYING : WAITING_FOR_SAMPLE;
+  }
+
+  void ModuleSamplePlayer::SampleVoice::setSample(Sample * s)
+  {
+    assert(m_state == WAITING_FOR_SAMPLE);
+    m_sample = s;
+    m_state = PLAYING;
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  ModuleSamplePlayer::LoadItem::LoadItem()
+    : m_free(true)
+  {
+    bzero(m_waiting, sizeof(m_waiting));
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  ModuleSamplePlayer::BGLoader::BGLoader(ModuleSamplePlayer * host)
+    : m_host(host)
+  {
+    m_continue = true;
+    run();
+  }
+
+  ModuleSamplePlayer::BGLoader::~BGLoader()
+  {
+    if(isRunning()) {
+      m_continue = false;
+      m_cond.wakeOne(m_mutex);
+      waitEnd();
+    }
+  }
+
+  bool ModuleSamplePlayer::BGLoader::addLoadable(const char * filename,
+						 SampleVoice * waiting)
+  {
+    for(int i = 0; i < BINS; i++) {
+      if(m_loads[i].m_name == filename) {
+	return m_loads[i].addWaiting(waiting);
+      }
+    }
+
+    for(int i = 0; i < BINS; i++) {
+      if(m_loads[i].m_free) {
+	m_loads[i].m_free = false;
+	m_loads[i].m_name = filename;
+	return true;
+      }
+    }
+    
+    m_cond.wakeOne(m_mutex);
+
+    return false;
+  }
+
+  void ModuleSamplePlayer::BGLoader::childLoop()
+  {
+    while(m_continue) {
+      for(int i = 0; i < BINS; i++) {
+	LoadItem & it = m_loads[i];
+	
+	if(!it.m_free) {
+	  Sample * s = new Sample();
+
+	  bool good = true;
+
+	  if(!s->load(it.m_name.str(), it.m_name.str())) {
+	    good = false;
+	  }
+	  else if(!m_host->addSample(s)) {
+	    good = false;
+	  }
+
+	  if(!good) {
+	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not load "
+		  "\"%s\"", it.m_name.str());
+	    delete s;
+	    for(int j = 0; j < LoadItem::WAITING_COUNT; i++) {
+	      SampleVoice * voice = it.m_waiting[i];
+	      if(!voice)
+		break;
+	      voice->loadFailed();
+	    }
+	  }
+	  else {
+	    for(int j = 0; j < LoadItem::WAITING_COUNT; i++) {
+	      SampleVoice * voice = it.m_waiting[i];
+	      if(!voice)
+		break;
+	      voice->setSample(s);
+	    }
+	  }
+	  
+	  it.m_free = true;
+	}
+      }
+
+      m_mutex.lock();
+      m_cond.wait(m_mutex);
+      m_mutex.unlock();
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -161,7 +290,7 @@ namespace Resonant {
         return;
       }
 
-      voice.init(m_samples[sampleind].ptr());
+      voice.init(m_samples[sampleind].ptr(), data);
     }
     else
       error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
@@ -208,9 +337,13 @@ namespace Resonant {
 
   int ModuleSamplePlayer::findSample(const char * name)
   {
-    for(unsigned i = 0; i < m_samples.size(); i++)
-      if(m_samples[i].ptr()->name() == name)
-        return i;
+    for(unsigned i = 0; i < m_samples.size(); i++) {
+      Sample * s = m_samples[i].ptr();
+
+      if(s)
+	if(s->name() == name)
+	  return i;
+    }
 
     return -1;
   }
@@ -225,6 +358,18 @@ namespace Resonant {
       if(s->load((*it).m_filename.c_str(), (*it).m_name.c_str()))
 	m_samples.push_back(s);
     }
+  }
+
+  bool ModuleSamplePlayer::addSample(Sample * s)
+  {
+    for(unsigned i = 0; i < m_samples.size(); i++) {
+      if(!m_samples[i].ptr()) {
+	m_samples[i] = s;
+	return true;
+      }
+    }
+
+    return false;
   }
     
   void ModuleSamplePlayer::dropVoice(unsigned i)
