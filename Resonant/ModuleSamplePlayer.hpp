@@ -184,6 +184,8 @@ namespace Resonant {
     
     unsigned m_channels;
     unsigned m_active;
+
+    BGLoader m_loader;
   };
 
 }

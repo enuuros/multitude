@@ -16,9 +16,11 @@
 #ifndef RESONANT_CONTROL_DATA_HPP
 #define RESONANT_CONTROL_DATA_HPP
 
-#include <stdint.h>
+#include <Radiant/BinaryData.hpp>
 
-#include <vector>
+//#include <stdint.h>
+
+//#include <vector>
 
 namespace Resonant {
 
@@ -60,6 +62,7 @@ namespace Resonant {
       so you must do that in our own code.
       
   */
+  /*
   class ControlData
   {
   public:
@@ -71,11 +74,8 @@ namespace Resonant {
     /// Writes a 32-bit integer to the data buffer
     void writeInt32(int32_t v);
     /// Writes a 64-bit time-stamp to the data buffer
-    /** The timestamp uses Radiant::TimeStamp internal structure (40+24
-	bit fixed-point value).*/
     void writeTimeStamp(int64_t v);
     /// Write a null-terminated string to the buffer
-    /** */
     void writeString(const char *);
 
     /// Reads a 32-bit floating point number from the data buffer
@@ -115,7 +115,10 @@ namespace Resonant {
     unsigned m_total;
     std::vector<char> m_buf;
   };
-
+*/
+  
+  class ControlData : public Radiant::BinaryData
+  {};
 }
 
 #endif

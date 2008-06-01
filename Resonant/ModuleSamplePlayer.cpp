@@ -58,13 +58,13 @@ namespace Resonant {
     m_data.resize(m_info.channels * m_info.frames);
     bzero( & m_data[0], m_data.size() * sizeof(float));
     
-    uint block = 10000;
+    uint block = 1000;
 
     unsigned pos = 0;
 
     while(pos < m_info.frames) {
       uint get = Nimble::Math::Min((uint) (m_info.frames - pos), block);
-      uint n = pos * m_info.channels;
+      uint n = get * m_info.channels;
       sf_read_float(sndf, & m_data[n], n);
 
       pos += get;
@@ -80,8 +80,12 @@ namespace Resonant {
 
   bool ModuleSamplePlayer::SampleVoice::synthesize(float ** out, int n)
   {
-    if(m_state != PLAYING)
+    if(m_state != PLAYING) {
+      printf(":"); fflush(0);
       return m_state == WAITING_FOR_SAMPLE;
+    }
+    
+    printf("+"); fflush(0);
 
     unsigned avail = m_sample->data().size() - m_position;
 
@@ -95,6 +99,7 @@ namespace Resonant {
 
     for(unsigned i = 0; i < avail; i++) {
       *b1++ += *src++ * gain;
+      
     }
 
     m_position += avail;
@@ -105,7 +110,7 @@ namespace Resonant {
       m_state = INACTIVE;
     }
 
-    return more;
+    return more != 0;
   }
 
   void ModuleSamplePlayer::SampleVoice::init
@@ -142,7 +147,6 @@ namespace Resonant {
     bzero(m_waiting, sizeof(m_waiting));
   }
 
-
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
@@ -165,6 +169,8 @@ namespace Resonant {
   bool ModuleSamplePlayer::BGLoader::addLoadable(const char * filename,
 						 SampleVoice * waiting)
   {
+    trace("ModuleSamplePlayer::BGLoader::addLoadable # %s", filename);
+
     for(int i = 0; i < BINS; i++) {
       if(m_loads[i].m_name == filename) {
 	return m_loads[i].addWaiting(waiting);
@@ -175,11 +181,11 @@ namespace Resonant {
       if(m_loads[i].m_free) {
 	m_loads[i].m_free = false;
 	m_loads[i].m_name = filename;
-	return true;
+	break;
       }
     }
     
-    m_cond.wakeOne(m_mutex);
+    m_cond.wakeAll(m_mutex);
 
     return false;
   }
@@ -187,24 +193,32 @@ namespace Resonant {
   void ModuleSamplePlayer::BGLoader::childLoop()
   {
     while(m_continue) {
+
+      trace("ModuleSamplePlayer::BGLoader::childLoop # once");
+
       for(int i = 0; i < BINS; i++) {
 	LoadItem & it = m_loads[i];
 	
 	if(!it.m_free) {
+
+	  trace("ModuleSamplePlayer::BGLoader::childLoop # Something");
+
 	  Sample * s = new Sample();
 
 	  bool good = true;
 
 	  if(!s->load(it.m_name.str(), it.m_name.str())) {
+	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not load "
+		  "\"%s\"", it.m_name.str());
 	    good = false;
 	  }
 	  else if(!m_host->addSample(s)) {
+	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not add "
+		  "\"%s\"", it.m_name.str());
 	    good = false;
 	  }
 
 	  if(!good) {
-	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not load "
-		  "\"%s\"", it.m_name.str());
 	    delete s;
 	    for(int j = 0; j < LoadItem::WAITING_COUNT; i++) {
 	      SampleVoice * voice = it.m_waiting[i];
@@ -214,6 +228,9 @@ namespace Resonant {
 	    }
 	  }
 	  else {
+	    trace("ModuleSamplePlayer::BGLoader::childLoop # Loaded "
+		  "\"%s\"", it.m_name.str());
+
 	    for(int j = 0; j < LoadItem::WAITING_COUNT; i++) {
 	      SampleVoice * voice = it.m_waiting[i];
 	      if(!voice)
@@ -238,8 +255,12 @@ namespace Resonant {
   ModuleSamplePlayer::ModuleSamplePlayer(Application * a)
     : Module(a),
       m_channels(1),
-      m_active(0)
-  {}
+      m_active(0),
+      m_loader(this)
+  {
+    m_voices.resize(256);
+    m_samples.resize(2048);
+  }
 
   ModuleSamplePlayer::~ModuleSamplePlayer()
   {}
@@ -286,11 +307,19 @@ namespace Resonant {
       int sampleind = findSample(buf);
 
       if(sampleind < 0) {
-        error("ModuleSamplePlayer::control # No sample \"%s\"", buf);
-        return;
+        trace("ModuleSamplePlayer::control # No sample \"%s\"", buf);
+	
+	m_loader.addLoadable(buf, & voice);
+
+        // return;
       }
 
-      voice.init(m_samples[sampleind].ptr(), data);
+      voice.init(sampleind >= 0 ? 
+		 m_samples[sampleind].ptr() : 0, data);
+      m_active++;
+      assert(voiceind < (int) m_active);
+
+      trace("ModuleSamplePlayer::control # Started sample %s", buf);
     }
     else
       error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
@@ -298,6 +327,8 @@ namespace Resonant {
 
   void ModuleSamplePlayer::process(float ** , float ** out, int n)
   {
+    printf("."); fflush(0);
+
     uint i;
 
     // First zero the outputs
@@ -305,7 +336,7 @@ namespace Resonant {
       bzero(out[i], n * 4);
 
     // Then fill the outputs with audio
-    for(i = 0; i < m_voices.size(); ) {
+    for(i = 0; i < m_active; ) {
       if(!m_voices[i].synthesize(out, n))
 	dropVoice(i);
       else
@@ -367,6 +398,8 @@ namespace Resonant {
 	m_samples[i] = s;
 	return true;
       }
+      trace("ModuleSamplePlayer::addSample # m_samples[%u] = %p",
+	    i, m_samples[i].ptr());
     }
 
     return false;
@@ -374,6 +407,7 @@ namespace Resonant {
     
   void ModuleSamplePlayer::dropVoice(unsigned i)
   {
+    trace("ModuleSamplePlayer::dropVoice # %d", i);
     assert((uint) i < m_active);
     m_active--;
     for( ; i < m_active; i++) {

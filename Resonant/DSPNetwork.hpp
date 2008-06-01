@@ -143,12 +143,14 @@ namespace Resonant {
     DSPNetwork();
     virtual ~DSPNetwork();
 
-    bool start(const char * device);
+    bool start(const char * device = 0);
 
     int outChannels() { return outParameters().channelCount; }
 
     void addModule(Item &);
     void markDone(Item &);
+
+    void send(ControlData & control);
 
   protected:
 
@@ -159,8 +161,11 @@ namespace Resonant {
     
     void doCycle(int);
 
+    void checkNewControl();
     void checkNewItems();
     void checkDoneItems();
+    void deliverControl(const char * moduleid, const char * commandid, 
+			ControlData &);
 
     bool uncompile(Item &);
     bool compile(Item &);
@@ -181,7 +186,10 @@ namespace Resonant {
     ModuleOutCollect *m_collect;
 
     ControlData m_controlData;
-    
+    ControlData m_incoming;
+    ControlData m_incopy;
+    Radiant::MutexAuto m_inMutex;
+
     char        m_devName[128];
     bool        m_continue;
     long        m_frames;

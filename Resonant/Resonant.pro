@@ -14,7 +14,7 @@ HEADERS += ModuleSamplePlayer.hpp
 SOURCES += Application.cpp
 SOURCES += AudioFileHandler.cpp
 SOURCES += AudioLoop.cpp
-SOURCES += ControlData.cpp
+# SOURCES += ControlData.cpp
 SOURCES += DSPNetwork.cpp
 SOURCES += Module.cpp
 SOURCES += ModuleFilePlay.cpp
@@ -38,6 +38,8 @@ PKGCONFIG += portaudio-2.0 sndfile
 include(../libs.pri)
 
 include(../lib_inst.pri)
+
+CONFIG += debug
 
 win32 {
 	INCLUDEPATH += $$INC_LIBSNDFILE $$INC_PORTAUDIO $$INC_WINPORT $$INC_PTHREADS $$INC_MAGICK

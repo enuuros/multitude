@@ -17,6 +17,7 @@
 
 #include "ModuleOutCollect.hpp"
 
+#include <Radiant/FixedStr.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <algorithm>
@@ -100,8 +101,6 @@ namespace Resonant {
     // m_continue = true;
     
     return startReadWrite(44100, 2);
-
-    return true;
   }
 
 
@@ -126,6 +125,12 @@ namespace Resonant {
       error("DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
   }
 
+  void DSPNetwork::send(ControlData & control)
+  {
+    Radiant::Guard g( & m_inMutex);
+    m_incoming.append(control);
+  }
+
   int DSPNetwork::callback(const void *in, void *out,
 			   unsigned long framesPerBuffer,
 			   const PaStreamCallbackTimeInfo* time,
@@ -143,6 +148,7 @@ namespace Resonant {
     const float * res = m_collect->interleaved();
     assert(res != 0);
     memcpy(out, res, 4 * framesPerBuffer * outParameters().channelCount);
+
     return paContinue;
   }
   
@@ -151,6 +157,7 @@ namespace Resonant {
     const int cycle = framesPerBuffer;
 
     checkNewItems();
+    checkNewControl();
 
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Item & item = (*it);
@@ -164,6 +171,46 @@ namespace Resonant {
     // const float * res = m_collect->interleaved();
 
     // m_device.writeInterleaved(res, cycle);
+  }
+
+  void DSPNetwork::checkNewControl()
+  {
+    {
+      Radiant::Guard g( & m_inMutex);
+      m_incopy = m_incoming;
+      m_incoming.rewind(); 
+    }
+
+    int sentinel = m_incopy.pos();
+
+    m_incopy.rewind();
+
+    char buf[512];
+    
+    FixedStrT<512> id;
+
+    while(m_incopy.pos() < sentinel) {
+      buf[0] = 0;
+      
+      if(!m_incopy.readString(buf, 512)) {
+	error("DSPNetwork::checkNewControl # Could not read string");
+	continue;
+      }
+
+      const char * slash = strchr(buf, '/');
+      const char * command;
+
+      if(!slash) {
+	id = buf;
+	command = 0;
+      }
+      else {
+	id.copyn(buf, slash - buf);
+	command = slash + 1;
+      }
+      
+      deliverControl(id, command, m_incopy);
+    }
   }
 
   void DSPNetwork::checkNewItems()
@@ -200,6 +247,12 @@ namespace Resonant {
 	int outchans = 2; // hardware output channels
 	const char * id = itptr->m_module->id();
 	if(mchans) {
+
+	  /* Add mappings for the new module, so that it is
+	     heard. Realistically, this behavior should be overridable
+	     as needed, now one cannot really make too clever DSP
+	     networks.
+	   */
 	  Item * oi = findItem(m_collect->id());
 	  
 	  if(!oi)
@@ -209,13 +262,13 @@ namespace Resonant {
 	  for(int i = 0; i < outchans; i++) {
 	    Connection conn;
 	    conn.setModuleId(id);
-	    conn.m_channel = i;
+	    conn.m_channel = i % mchans;
 	    oi->m_inputs.push_back(conn);
 
 	    m_controlData.rewind();
-	    m_controlData.writeString(id);
-	    m_controlData.writeInt32(i);
-	    m_controlData.writeInt32(i % outchans);
+	    m_controlData.writeString(id); // Source id
+	    m_controlData.writeInt32(i % mchans);// Source module output channel
+	    m_controlData.writeInt32(i % outchans); // Target channels
 	    m_controlData.rewind();
 	    m_collect->control("newmapping", & m_controlData);
 	  }
@@ -255,6 +308,21 @@ namespace Resonant {
 
     m_doneCount = 0;
   }
+  
+  void DSPNetwork::deliverControl(const char * moduleid,
+				  const char * commandid, 
+				  ControlData & data)
+  {
+    for(iterator it = m_items.begin(); it != m_items.end(); it++) {
+      Module * m = (*it).m_module;
+      if(strcmp(m->id(), moduleid) == 0) {
+	m->control(commandid, & data);
+	return;
+      }
+    } 
+    error("DSPNetwork::deliverControl # No module \"%s\"", moduleid);
+  }
+
 
   bool DSPNetwork::uncompile(Item & item)
   {
@@ -311,7 +379,7 @@ namespace Resonant {
 
   bool DSPNetwork::compile(Item & item, int location)
   {
-    int i;
+    int i = 0;
     int ins = item.m_inputs.size();
     int outs = ins;
     
@@ -322,9 +390,13 @@ namespace Resonant {
     for(conit = item.m_connections.begin(); conit != item.m_connections.end();
         conit++) {
       NewConnection & nc = *conit;
-      if(strcmp(nc.m_targetId, item.m_module->id()) == 0)
+      if(strcmp(nc.m_targetId, item.m_module->id()) == 0) {
         item.m_inputs.push_back(Connection(nc.m_sourceId,
 					   nc.m_sourceChannel));
+	trace("Item[%d].m_inputs[%d] = [%d,%d]", location, i,
+	      nc.m_sourceId, nc.m_sourceChannel);
+      }
+      i++;
     }
 
     item.m_module->prepare(ins, outs);
@@ -341,12 +413,14 @@ namespace Resonant {
       Connection & conn = item.m_inputs[i];
       float * ptr = findOutput(conn.m_moduleId, conn.m_channel);
       item.m_ins[i] = ptr;
+      trace("Item[%d].m_ins[%d] = %p", location, i, ptr);
     }
 
     for(i = 0; i < outs; i++) {
       if(item.m_outs[i] == 0) {
 	Buf & b = findFreeBuf(location);
 	item.m_outs[i] = b.m_data;
+	trace("Item[%d].m_outs[%d] = %p", location, i, b.m_data);
       }
     }
 

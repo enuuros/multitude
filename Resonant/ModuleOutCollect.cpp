@@ -68,6 +68,8 @@ namespace Resonant {
     }
     else if(strcmp(address, "newmapping") == 0) {
       m_map.push_back(tmp);
+      Radiant::trace("ModuleOutCollect::control # newmapping %s %d -> %d",
+		     tmp.sourceId, tmp.from, tmp.to);
     }
     else if(strcmp(address, "removemapping") == 0) {
       std::vector<Move>::iterator it =
