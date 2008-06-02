@@ -333,7 +333,7 @@ namespace VideoDisplay {
   }
 
   bool ShowGL::open(const char * filename, Resonant::DSPNetwork  * dsp,
-      Radiant::TimeStamp pos)
+		    Radiant::TimeStamp pos)
   {
     m_filename = filename;
     m_dsp = dsp;
@@ -353,7 +353,10 @@ namespace VideoDisplay {
 
     AudioTransfer * au = new AudioTransfer(0, m_video);
 
-    au->setId("showgl-audiotransfer");
+    char buf[128];
+    sprintf(buf, "showgl-audiotransfer-%p", this);
+
+    au->setId(buf);
 
     m_dspItem = Resonant::DSPNetwork::Item();
     m_dspItem.m_module = au;
@@ -469,7 +472,7 @@ namespace VideoDisplay {
   }
 
   static int yuvkey = 0;
-  static int yuvkeyaa = 0;
+  // static int yuvkeyaa = 0;
 
   void ShowGL::render(Luminous::GLResources * resources,
 		      Vector2 topleft, Vector2 bottomright,

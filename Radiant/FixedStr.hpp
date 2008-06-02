@@ -62,6 +62,15 @@ namespace Radiant {
       }
     }
     
+    inline void copyn(const char * ptr, int n)
+    {
+      if(n+1 >= N)
+	return;
+
+      memcpy(m_buf, ptr, n);
+      m_buf[n] = 0;
+    }
+
     const char * str() const { return m_buf; }
 
     operator const char * () const { return m_buf; }

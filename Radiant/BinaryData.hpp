@@ -89,6 +89,8 @@ namespace Radiant {
     /// Writes a 2D 32-bit floating point vector to the data buffer
     void writeVector2Float32(Nimble::Vector2f);
 
+    void append(const BinaryData & that);
+
     /// Reads a 32-bit floating point number from the data buffer
     float readFloat32(bool * ok = 0);
     /// Reads a 32-bit integer from the data buffer
@@ -114,6 +116,11 @@ namespace Radiant {
 
     bool write(Radiant::BinaryStream *);
     bool read(Radiant::BinaryStream *);
+
+    inline const char * data() const { return & m_buf[0]; }
+
+    inline BinaryData & operator = (const BinaryData & that)
+    { rewind(); append(that); return * this;}
 
   protected:
 

@@ -113,6 +113,11 @@ namespace Radiant {
     getRef<float>() = v[1];
   }
 
+  void BinaryData::append(const BinaryData & that)
+  {
+    ensure(that.pos());
+    memcpy(getPtr<char>(that.pos()), that.data(), that.pos());
+  }
 
   float BinaryData::readFloat32(bool * ok)
   {

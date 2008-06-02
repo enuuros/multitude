@@ -203,7 +203,8 @@ namespace Luminous {
       m_areas[i].ptr()->setPixelSizeCm(sizeCm);
   }
 
-  bool MultiHead::Window::readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::Window::readElement(xercesc::DOMElement * ce,
+				      CL::ClassLoader<ValueObject> & cl)
   {
     using namespace xercesc;
 
@@ -212,7 +213,8 @@ namespace Luminous {
 
     // Get the 'type' attribute
     if(!ce->hasAttribute(typeAttr)) {
-      Radiant::error("MultiHead::Window::readElement # no type attribute on element '%s'", nameVal);
+      Radiant::error("MultiHead::Window::readElement # "
+		     "no type attribute on element '%s'", nameVal);
       XMLString::release(&nameVal);
       XMLString::release(&typeAttr);
       return false;
