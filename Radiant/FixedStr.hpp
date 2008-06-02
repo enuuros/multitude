@@ -17,6 +17,7 @@
 #define RADIANT_FIXED_STR_HPP
 
 #include <stdio.h>
+#include <cassert>
 
 #include <Nimble/Vector4.hpp>
 
