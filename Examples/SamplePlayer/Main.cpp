@@ -57,6 +57,7 @@ int main(int argc, char ** argv)
     Radiant::trace("Playing sample %s", file);
     dsp.send(control);
     Radiant::Sleep::sleepMs(900);
+    // Radiant::Sleep::sleepS(3);
   }
 
   Radiant::Sleep::sleepS(3);

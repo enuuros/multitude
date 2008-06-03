@@ -186,6 +186,7 @@ namespace Resonant {
     std::vector<Radiant::RefPtr<Sample> > m_samples;
 
     std::vector<SampleVoice> m_voices;
+    std::vector<SampleVoice *> m_voiceptrs;
     
     unsigned m_channels;
     unsigned m_active;

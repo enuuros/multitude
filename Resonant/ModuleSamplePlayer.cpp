@@ -204,7 +204,8 @@ namespace Resonant {
   bool ModuleSamplePlayer::BGLoader::addLoadable(const char * filename,
 						 SampleVoice * waiting)
   {
-    trace("ModuleSamplePlayer::BGLoader::addLoadable # %s", filename);
+    trace("ModuleSamplePlayer::BGLoader::addLoadable # %s %p",
+	  filename, waiting);
 
     for(int i = 0; i < BINS; i++) {
       if(m_loads[i].m_name == filename) {
@@ -214,8 +215,9 @@ namespace Resonant {
 
     for(int i = 0; i < BINS; i++) {
       if(m_loads[i].m_free) {
-	m_loads[i].m_free = false;
 	m_loads[i].m_name = filename;
+	m_loads[i].addWaiting(waiting);
+	m_loads[i].m_free = false;
 	break;
       }
     }
@@ -266,10 +268,14 @@ namespace Resonant {
 	    trace("ModuleSamplePlayer::BGLoader::childLoop # Loaded "
 		  "\"%s\"", it.m_name.str());
 
-	    for(int j = 0; j < LoadItem::WAITING_COUNT; i++) {
-	      SampleVoice * voice = it.m_waiting[i];
+	    for(int j = 0; j < LoadItem::WAITING_COUNT; j++) {
+	      SampleVoice * voice = it.m_waiting[j];
 	      if(!voice)
 		break;
+
+	      trace("ModuleSamplePlayer::BGLoader::childLoop # Delivering "
+		    "\"%s\"", it.m_name.str());
+	      
 	      voice->setSample(s);
 	    }
 	  }
@@ -294,6 +300,8 @@ namespace Resonant {
       m_loader(this)
   {
     m_voices.resize(256);
+    m_voiceptrs.resize(m_voices.size());
+    bzero( & m_voiceptrs[0], m_voiceptrs.size() * sizeof(SampleVoice *));
     m_samples.resize(2048);
   }
 
@@ -338,6 +346,7 @@ namespace Resonant {
       }
 
       SampleVoice & voice = m_voices[voiceind];
+      m_voiceptrs[m_active] = & voice;
       
       int sampleind = findSample(buf);
 
@@ -355,7 +364,7 @@ namespace Resonant {
 
       trace("ModuleSamplePlayer::control # Started sample %s (%d/%d)",
 	    buf, voiceind, m_active);
-      assert(voiceind < (int) m_active);
+      // assert(voiceind < (int) m_active);
 
     }
     else
@@ -372,7 +381,7 @@ namespace Resonant {
 
     // Then fill the outputs with audio
     for(i = 0; i < m_active; ) {
-      if(!m_voices[i].synthesize(out, n))
+      if(!m_voiceptrs[i]->synthesize(out, n))
 	dropVoice(i);
       else
 	i++;
@@ -394,10 +403,10 @@ namespace Resonant {
 
   int ModuleSamplePlayer::findFreeVoice()
   {
-    for(unsigned i = 0; i < m_voices.size(); i++)
+    for(unsigned i = 0; i < m_voices.size(); i++) {
       if(!m_voices[i].isActive())
         return i;
-
+    }
     return -1;
   }
 
@@ -445,10 +454,11 @@ namespace Resonant {
     trace("ModuleSamplePlayer::dropVoice # %d", i);
     assert((uint) i < m_active);
     m_active--;
+    m_voiceptrs[i]->clear();
     for( ; i < m_active; i++) {
-      m_voices[i] = m_voices[i + 1];
+      m_voiceptrs[i] = m_voiceptrs[i + 1];
     }
-    m_voices[m_active].clear();
+    m_voiceptrs[m_active] = 0;
   }
 }
 
