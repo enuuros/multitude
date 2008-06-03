@@ -48,6 +48,8 @@ int main(int argc, char ** argv)
   control.writeString(file);
   // Gain
   control.writeFloat32(0.745f);
+  // Relative pitch
+  control.writeFloat32(0.25);
 
   Radiant::Sleep::sleepMs(500);
 
@@ -56,6 +58,8 @@ int main(int argc, char ** argv)
     dsp.send(control);
     Radiant::Sleep::sleepMs(900);
   }
+
+  Radiant::Sleep::sleepS(3);
 
   dsp.stop();
 

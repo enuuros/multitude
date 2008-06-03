@@ -70,7 +70,8 @@ namespace Resonant {
     {
     public:
       SampleVoice(Sample * s = 0)
-	: m_state(INACTIVE),m_gain(1), m_sample(s), m_position(0)
+	: m_state(INACTIVE), m_gain(1), m_relPitch(1.0f),
+	  m_sample(s), m_position(0)	  
       {}
       
       bool synthesize(float ** out, int n);
@@ -83,6 +84,8 @@ namespace Resonant {
 
       void setSample(Sample * s);
 
+      void clear() { m_state = INACTIVE; m_sample = 0; }
+
     protected:
       enum State {
 	INACTIVE,
@@ -93,6 +96,8 @@ namespace Resonant {
       State m_state;
 
       float m_gain;
+      float m_relPitch;
+      double m_dpos;
 
       Sample * m_sample;
       unsigned m_position;

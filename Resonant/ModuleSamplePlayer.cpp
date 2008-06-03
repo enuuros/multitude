@@ -65,7 +65,8 @@ namespace Resonant {
     while(pos < m_info.frames) {
       uint get = Nimble::Math::Min((uint) (m_info.frames - pos), block);
       uint n = get * m_info.channels;
-      sf_read_float(sndf, & m_data[n], n);
+      
+      sf_read_float(sndf, & m_data[pos * m_info.channels], n);
 
       pos += get;
     }
@@ -81,12 +82,12 @@ namespace Resonant {
   bool ModuleSamplePlayer::SampleVoice::synthesize(float ** out, int n)
   {
     if(m_state != PLAYING) {
-      printf(":"); fflush(0);
+      //printf(":"); fflush(0);
       return m_state == WAITING_FOR_SAMPLE;
     }
     
-    printf("+"); fflush(0);
-
+    // printf("+"); fflush(0);
+   
     unsigned avail = m_sample->data().size() - m_position;
 
     if((int) avail > n)
@@ -94,16 +95,41 @@ namespace Resonant {
 
     float * b1 = out[0];
     float gain = m_gain;
+    float pitch = m_relPitch;
 
-    const float * src = m_sample->buf(m_position);
+    bool more;
 
-    for(unsigned i = 0; i < avail; i++) {
-      *b1++ += *src++ * gain;
-      
+    if(pitch == 1.0f) {
+      const float * src = m_sample->buf(m_position);
+    
+      for(unsigned i = 0; i < avail; i++) {
+	*b1++ += *src++ * gain;
+	
+      }
+
+      m_position += avail;
+
+      more = (int) avail == n;
     }
+    else {
+      double dpos = m_dpos;
+      double dmax = m_sample->data().size() - 1;
 
-    m_position += avail;
-    bool more = (int) avail == n;
+      const float * src = m_sample->buf(0);
+
+      for(int i = 0 ; i < n && dpos < dmax; i++) {
+
+	int base = (int) dpos;
+	double w2 = dpos - (double) base;
+	*b1++ = (src[base] * (1.0 - w2) + src[base+1] * w2) * gain;
+	dpos += pitch;
+      }
+
+      m_dpos = dpos;
+
+      more = dpos < dmax;
+    }
+    
 
     if(!more) {
       m_sample = 0;
@@ -126,6 +152,15 @@ namespace Resonant {
       m_gain = gain;
     else
       m_gain = 1.0f;
+
+    float pitch = data->readFloat32( & ok);
+
+    if(ok)
+      m_relPitch = pitch;
+    else
+      m_relPitch = 1.0f;
+
+    m_dpos = 0.0;
 
     m_state = sample ? PLAYING : WAITING_FOR_SAMPLE;
   }
@@ -317,9 +352,11 @@ namespace Resonant {
       voice.init(sampleind >= 0 ? 
 		 m_samples[sampleind].ptr() : 0, data);
       m_active++;
+
+      trace("ModuleSamplePlayer::control # Started sample %s (%d/%d)",
+	    buf, voiceind, m_active);
       assert(voiceind < (int) m_active);
 
-      trace("ModuleSamplePlayer::control # Started sample %s", buf);
     }
     else
       error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
@@ -327,8 +364,6 @@ namespace Resonant {
 
   void ModuleSamplePlayer::process(float ** , float ** out, int n)
   {
-    printf("."); fflush(0);
-
     uint i;
 
     // First zero the outputs
@@ -413,6 +448,7 @@ namespace Resonant {
     for( ; i < m_active; i++) {
       m_voices[i] = m_voices[i + 1];
     }
+    m_voices[m_active].clear();
   }
 }
 
