@@ -17,10 +17,13 @@ namespace Valuable
 {  
   class HasValues;
 
-  class ValueObject : public Patterns::NotCopyable
+  class ValueObject /*: public Patterns::NotCopyable*/
   {
     public:
       ValueObject() : m_parent(0), m_transit(false) {}
+      /// The copy constructor creates a copy of the ValueObject WITHOUT the
+      /// link to parent
+      ValueObject(const ValueObject & o);
       ValueObject(HasValues * parent, const std::string & name, bool transit);
       virtual ~ValueObject();
       

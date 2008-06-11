@@ -16,6 +16,13 @@ namespace Valuable
       parent->addValue(name, this);
   }
 
+  ValueObject::ValueObject(const ValueObject & o)
+  : m_parent(0)
+  {
+    m_name = o.m_name;
+    m_transit = o.m_transit;
+  }
+
   ValueObject::~ValueObject()
   {
     emitDelete();
