@@ -61,10 +61,17 @@ namespace Luminous {
     glLoadIdentity();
     m_keyStone.applyGlState();
     glPushMatrix(); // Recovered in cleanEdges
+/*
     gluOrtho2D(m_graphicsLocation[0] - m_seams[0],
         m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
         m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
         m_graphicsLocation[1] - m_seams[3]);
+*/
+    glOrtho(m_graphicsLocation[0] - m_seams[0],
+        m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
+        m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
+        m_graphicsLocation[1] - m_seams[3], -1e3, 1e3);
+
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -120,8 +127,8 @@ namespace Luminous {
       loc += m_graphicsLocation.asVector();
 
       /// @todo commenting this breaks things on single display machines (where's the bug?)    
-      trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)",
-          orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
+//      trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)",
+//          orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
 
       return loc;
     }
@@ -234,6 +241,7 @@ namespace Luminous {
       return false;
     }
 
+    XMLString::release(&myType);
     XMLString::release(&nameVal);
     XMLString::release(&typeAttr);
     
