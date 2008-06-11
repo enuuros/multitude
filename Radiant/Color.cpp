@@ -26,6 +26,11 @@ namespace Radiant
     setRGBA(r, g, b, a);
   }
 
+  Color::Color(int r, int g, int b, int a)
+  {
+    setRGBA((unsigned char)r, (unsigned char)g, (unsigned char)b, (unsigned char)a);
+  }
+
   Color::Color(float r, float g, float b, float a)
   {
     setRGBA(r, g, b, a);

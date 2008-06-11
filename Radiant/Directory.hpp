@@ -26,10 +26,10 @@ namespace Radiant
 
   /// Class for reading filenames in a directory.
   /** This class exists because there exists no portable way to read
-      directories (which is sad).
-      
-      @author Esa Nuuros
-  */ 
+    directories (which is sad).
+
+    @author Esa Nuuros
+    */ 
 
   /// @todo add support for filename filters (see QDir)
   class Directory
@@ -52,17 +52,17 @@ namespace Radiant
 
       /// Construct a directory listing
       /** Creating a Directory object immediately scans the contents
-          of the directory. Entries matching the given filters are
-          included.
+        of the directory. Entries matching the given filters are
+        included.
 
         @param pathname directory path
         @param filters one or more filter flags OR'ed together
         @param sortFlag flag indicating how the results should be sorted
-      */
+        */
       Directory(const char * pathname,
-                int filters = AllEntries, SortFlag sortFlag = Unsorted);
+          int filters = AllEntries, SortFlag sortFlag = Unsorted);
       Directory(const std::string & pathname,
-                int filters = AllEntries, SortFlag sortFlag = Unsorted);
+          int filters = AllEntries, SortFlag sortFlag = Unsorted);
       /// Deallocates the list
       virtual ~Directory();
 
@@ -75,7 +75,7 @@ namespace Radiant
         */
       std::string fileName(int n) const;
 
-    /// Returns the directory path
+      /// Returns the directory path
       const std::string & path() const { return m_path; } 
 
       /// Creates a new directory.
@@ -83,8 +83,8 @@ namespace Radiant
 
     private:
 
-    Directory(const Directory &) {}
-    Directory & operator = (const Directory &) { return * this;}
+      Directory(const Directory &) {}
+      Directory & operator = (const Directory &) { return * this;}
 
       void openDir();
       bool applyFilters(const struct dirent * entry);
