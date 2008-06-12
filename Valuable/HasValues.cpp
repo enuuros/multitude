@@ -16,6 +16,13 @@ namespace Valuable
   {
   }
 
+  HasValues::~HasValues()
+  {
+//    for(container::iterator it = m_children.begin(); it != m_children.end(); it++) {
+//      delete it->second;
+//    }
+  }
+
   ValueObject * HasValues::getValue(const std::string & name)
   {
     container::iterator it = m_children.find(name);

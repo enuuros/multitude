@@ -20,6 +20,7 @@ namespace Valuable
     public:
       HasValues() : ValueObject() {}
       HasValues(HasValues * parent, const std::string & name, bool transit);
+      virtual ~HasValues();
 
       bool addValue(const std::string & name, ValueObject * const value);
       ValueObject * getValue(const std::string & name);
