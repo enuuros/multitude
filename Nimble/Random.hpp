@@ -70,6 +70,12 @@ namespace Nimble {
       return m_val;
     }
 
+    // Random 2d unit vector
+    inline Nimble::Vector2f randVec2() 
+    {
+      return Nimble::Vector2f(rand11(), rand11()).normalize();
+    }
+
   protected:
     unsigned m_val;
     static const unsigned m_randMul = 134695621;  
