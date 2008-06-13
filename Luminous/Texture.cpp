@@ -89,6 +89,23 @@ namespace Luminous
     return tex;
   }
 
+  bool Texture2D::loadImage(const char * filename, bool buildMipmaps)
+  {
+    try {
+      Magick::Image im;
+      
+      im.read(filename);
+      if(im.columns()) {
+        loadImage(im, buildMipmaps);
+	return true;
+      }
+    }
+    catch(...) {
+      
+    }
+    return false;
+  }
+
   bool Texture2D::loadImage(Luminous::Image & image, bool buildMipmaps)
   {
     return loadBytes(image.pixelFormat().layout(),

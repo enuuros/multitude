@@ -330,6 +330,31 @@ namespace Luminous {
     glEnd();
   }
 
+  void Utils::glRectWithHole(const Nimble::Rect & area,
+			     const Nimble::Rect & hole)
+  {
+    glBegin(GL_TRIANGLE_STRIP);
+
+    glVertex2fv(area.low().data());
+    glVertex2fv(hole.low().data());
+
+    glVertex2fv(area.lowHigh().data());
+    glVertex2fv(hole.lowHigh().data());
+
+    glVertex2fv(area.high().data());
+    glVertex2fv(hole.high().data());
+
+    glVertex2fv(area.highLow().data());
+    glVertex2fv(hole.highLow().data());
+
+    glVertex2fv(area.low().data());
+    glVertex2fv(hole.low().data());
+
+    glEnd();
+    
+  }
+
+
   void Utils::glLineRect(float x1, float y1, float x2, float y2)
   {
     glBegin(GL_LINE_STRIP);
@@ -654,6 +679,46 @@ namespace Luminous {
                     width, blendwidth, linesegments, color);
   }
 
+  void Utils::glSolidSoftArc(float centerx, float centery, float radius,
+			      float fromRadians, float toRadians,
+			      float blendwidth,
+			      int linesegments, const float * color)
+  {
+    float r = color[0];
+    float g = color[1];
+    float b = color[2];
+    float a = color[3];
+
+    float delta = (toRadians - fromRadians) / linesegments;
+
+    float r2 = radius + blendwidth;
+
+
+    for(int i = 0; i < linesegments; i++) {
+      float a1 = fromRadians + i * delta;
+      float a2 = fromRadians + (i + 1) * delta;
+      float sa1 = sinf(a1);
+      float ca1 = - cosf(a1);
+      float sa2 = sinf(a2);
+      float ca2 = - cosf(a2);
+
+      glBegin(GL_TRIANGLE_STRIP);
+
+      glColor4f(r, g, b, a);
+
+      glVertex2f(centerx, centery);
+
+      glVertex2f(sa1 * radius + centerx, ca1 * radius + centery);
+      glVertex2f(sa2 * radius + centerx, ca2 * radius + centery);
+
+      glColor4f(r, g, b, 0);
+      glVertex2f(sa1 * r2 + centerx, ca1 * r2 + centery);
+      glVertex2f(sa2 * r2 + centerx, ca2 * r2 + centery);
+
+      glEnd();
+    }    
+  }
+
 
   void Utils::glCircle(float centerx, float centery, float radius,
     int linesegments)
@@ -702,6 +767,14 @@ namespace Luminous {
   {
     glFilledSoftArc(center[0], center[1], radius, 0, Nimble::Math::TWO_PI,
 		    width, blendwidth, linesegments, color);
+  }
+
+  void Utils::glSolidSoftCircle(float centerx, float centery, float radius,
+				float blendwidth,
+				int linesegments, const float * color)
+  {
+    glSolidSoftArc(centerx, centery, radius, 0, Nimble::Math::TWO_PI, 
+		   blendwidth, linesegments, color);
   }
 
   void Utils::glSectorf(float centerx, float centery, float radius,

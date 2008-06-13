@@ -72,6 +72,9 @@ namespace Nimble {
     Vector2T<T> & high() { return m_high; }
     const Vector2T<T> & high() const { return m_high; }
 
+    Vector2T<T> lowHigh() const { return Vector2T<T>(m_low.x, m_high.y); }
+    Vector2T<T> highLow() const { return Vector2T<T>(m_high.x, m_low.y); }
+
     void set(T lx, T ly, T hx, T hy)
     { m_low.make(lx, ly); m_high.make(hx, hy); }
 

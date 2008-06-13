@@ -14,12 +14,40 @@
  */
 #include "Color.hpp"
 
+#include <wctype.h>
+
 namespace Radiant
 {
-
+  
   Color::Color()
   : Nimble::Vector4f(0.f, 0.f, 0.f, 1.f)
   {}
+
+  Color::Color(const char * color)
+  {
+    int clen = strlen(color);
+
+    make(0, 0, 0, 1);
+
+    if(color[0] == '#') {
+      char tmp[3];
+      tmp[2] = 0;
+
+
+      for(int i = 0; i < 4 && (i * 2 + 2) < clen; i++) {
+	tmp[0] = color[i * 2 + 1];
+	tmp[1] = color[i * 2 + 2];
+
+	if(!ishexnumber(tmp[0]) || !ishexnumber(tmp[1]))
+	  break;
+
+	char * foo = 0;
+	int val = strtol(tmp, & foo,  16);
+	get(i) = val / 255.0f;
+	// printf("Got color %d, %f", i, val / 255.0f);
+      }
+    }
+  }
 
   Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
   {

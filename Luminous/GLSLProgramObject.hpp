@@ -40,12 +40,12 @@ namespace Luminous
     virtual bool link();
     virtual void clear();
 
-    const char* linkerLog();
+    const char * linkerLog();
     
     virtual void bind();
     virtual void unbind();
     
-    int getUniformLoc(const std::string& name);
+    int getUniformLoc(const std::string & name);
     int getUniformLoc(const char * name);
     
     bool validate();

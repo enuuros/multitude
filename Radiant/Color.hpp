@@ -1,3 +1,4 @@
+
 /* COPYRIGHT
  *
  * This file is part of Radiant.
@@ -27,6 +28,7 @@ namespace Radiant
   {
     public:
       Color();
+      Color(const char * color);
       Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
       Color(int r, int g, int b, int a = 255);
       Color(float r, float g, float b, float a = 1.f);

@@ -19,6 +19,7 @@
 
 #include <Luminous/Luminous.hpp>
 
+#include <Nimble/Rect.hpp>
 #include <Nimble/Vector2.hpp>
 #include <Nimble/Vector3.hpp>
 #include <Nimble/Matrix3.hpp>
@@ -53,6 +54,8 @@ namespace Luminous {
     { glTexRect(v1.x, v1.y, v2.x, v2.y); }
     static void glTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
     static void glCenteredTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
+    static void glRectWithHole(const Nimble::Rect & area,
+			       const Nimble::Rect & hole);
 
     /// Draw a square using GL_LINE_STRIP
     static void glLineRect(float x1, float y1, float x2, float y2);
@@ -93,6 +96,10 @@ namespace Luminous {
 				float fromRadians, float toRadians,
                                 float width, float blendwidth,
 				int linesegments, const float * color);
+    static void glSolidSoftArc(float centerx, float centery, float radius,
+			       float fromRadians, float toRadians,
+			       float blendwidth,
+			       int linesegments, const float * color);
     /// Draw a circle using GL_LINE_STRIP, uses glArc
     static void glCircle(float centerx, float centery, float radius,
 			 int linesegments);
@@ -111,6 +118,9 @@ namespace Luminous {
     static void glFilledSoftCircle(const float * center, float radius,
 				   float width, float blendwidth,
 				   int linesegments, const float * color);
+    static void glSolidSoftCircle(float centerx, float centery, float radius,
+				  float blendwidth,
+				  int linesegments, const float * color);
     /// Draw a circle sector ('pie slice') using GL_LINE_STRIP
     static void glSectorf(float centerx, float centery, float radius,
        float fromRadians, float toRadians, int lineSegments);
@@ -137,6 +147,7 @@ namespace Luminous {
     static void glAdditiveBlend();
 
     static void glGrayf(float level);
+    static inline void glWhite() { glGrayf(1.0f); }
 
     /** Check that there are no OpenGL errors. If there has been an
 	error, then the error is printed along with msg. */
