@@ -10,6 +10,9 @@ using namespace xercesc;
 
 namespace Valuable
 {
+  HasValues::HasValues()
+  : ValueObject()
+  {}
 
   HasValues::HasValues(HasValues * parent, const std::string & name, bool transit)
   : ValueObject(parent, name, transit)
@@ -115,7 +118,7 @@ namespace Valuable
     return true;
   }
 
-  bool HasValues::loadXML(const char * filename, CL::ClassLoader<ValueObject> & cl)
+  bool HasValues::loadXML(const char * filename)
   {
     // Get implementation of the Load-Store (LS) interface
     const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
@@ -128,7 +131,7 @@ namespace Valuable
     DOMDocument * doc = parser->parseURI(filename);
     if(!doc) return false;
 
-    bool r = deserializeXML(doc->getDocumentElement(), cl);
+    bool r = deserializeXML(doc->getDocumentElement());
 
     parser->release();
 
@@ -160,8 +163,7 @@ namespace Valuable
     return elem;
   }
 
-  bool HasValues::deserializeXML(xercesc::DOMElement * element,
-                                 CL::ClassLoader<ValueObject> & cl)
+  bool HasValues::deserializeXML(xercesc::DOMElement * element)
   {
     // Name
     char * nameVal = XMLString::transcode(element->getTagName());
@@ -185,8 +187,8 @@ namespace Valuable
       // If the value exists, just deserialize it. Otherwise, pass the element
       // to readElement()
       if(vo)
-        vo->deserializeXML(ce, cl);
-      else if(!readElement(ce, cl)) {
+        vo->deserializeXML(ce);
+      else if(!readElement(ce)) {
         Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'",
                        nameVal);
         XMLString::release(&nameVal);
@@ -216,7 +218,7 @@ namespace Valuable
     Radiant::trace("}");
   }
 
-  bool HasValues::readElement(xercesc::DOMElement * , CL::ClassLoader<ValueObject> & )
+  bool HasValues::readElement(xercesc::DOMElement *)
   {
 /*
     char * nameVal = XMLString::transcode(ce->getTagName());

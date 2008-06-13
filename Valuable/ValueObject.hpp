@@ -5,8 +5,6 @@
 
 #include <Patterns/NotCopyable.hpp>
 
-#include <CL/ClassLoader.hpp>
-
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -42,7 +40,7 @@ namespace Valuable
       virtual const char * const type() const = 0;      
 
       virtual xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      virtual bool deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl) = 0;
+      virtual bool deserializeXML(xercesc::DOMElement * element) = 0;
 
       HasValues * parent() { return m_parent; }
       void removeParent();

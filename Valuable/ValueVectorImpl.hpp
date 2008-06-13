@@ -28,7 +28,7 @@ namespace Valuable
   const char * const ValueVector<Nimble::Vector4i, int, 4>::type() const { return "vec4i"; }
 
   template<class VectorType, typename ElementType, int N>
-  bool ValueVector<VectorType, ElementType, N>::deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & ) {
+  bool ValueVector<VectorType, ElementType, N>::deserializeXML(xercesc::DOMElement * element) {
     using namespace xercesc;
 
     const XMLCh * content = element->getTextContent();

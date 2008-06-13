@@ -3,8 +3,6 @@
 
 #include <Valuable/ValueObject.hpp>
 
-#include <CL/ClassLoader.hpp>
-
 #include <map>
 #include <string>
 
@@ -18,7 +16,7 @@ namespace Valuable
   class HasValues : public ValueObject
   {
     public:
-      HasValues() : ValueObject() {}
+      HasValues();
       HasValues(HasValues * parent, const std::string & name, bool transit);
       virtual ~HasValues();
 
@@ -31,14 +29,14 @@ namespace Valuable
       // ...
 
       bool saveXML(const char * filename);
-      bool loadXML(const char * filename, CL::ClassLoader<ValueObject> & cl);
+      bool loadXML(const char * filename);
 
       virtual const char * const type() const { return VO_TYPE_HASVALUES; }
 
       xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      bool deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl);
+      bool deserializeXML(xercesc::DOMElement * element);
 
-      virtual bool readElement(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl);
+      virtual bool readElement(xercesc::DOMElement * element);
 
       void debugDump() ;
 

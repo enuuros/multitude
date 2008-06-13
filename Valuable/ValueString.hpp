@@ -31,7 +31,7 @@ namespace Valuable
  
       const char * const type() const { return VO_TYPE_STRING; }
 
-      bool deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & )
+      bool deserializeXML(xercesc::DOMElement * element)
       {
         using namespace xercesc;
 
