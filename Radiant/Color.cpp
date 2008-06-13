@@ -38,7 +38,8 @@ namespace Radiant
 	tmp[0] = color[i * 2 + 1];
 	tmp[1] = color[i * 2 + 2];
 
-	if(!ishexnumber(tmp[0]) || !ishexnumber(tmp[1]))
+        // ishexnumber
+	if(!isxdigit(tmp[0]) || !isxdigit(tmp[1]))
 	  break;
 
 	char * foo = 0;
