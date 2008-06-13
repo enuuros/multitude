@@ -172,10 +172,10 @@ namespace Luminous
         return false;
     };
 
-    header.widthLo = (m_width & 0x00FF);
-    header.widthHi = (m_width & 0xFF00);
-    header.heightLo = (m_height & 0x00FF);
-    header.heightHi = (m_height & 0xFF00);
+    header.widthLo = static_cast<unsigned char> (m_width & 0x00FF);
+    header.widthHi = static_cast<unsigned char> (m_width & 0xFF00);
+    header.heightLo = static_cast<unsigned char> (m_height & 0x00FF);
+    header.heightHi = static_cast<unsigned char> (m_height & 0xFF00);
     header.bpp = (m_pixelFormat.numChannels() << 3);
 
     // Write header

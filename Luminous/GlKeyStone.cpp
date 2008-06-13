@@ -45,9 +45,9 @@ namespace Luminous {
   GlKeyStone::~GlKeyStone()
   {}
 
-  bool GlKeyStone::deserializeXML(xercesc::DOMElement * e, CL::ClassLoader<Valuable::ValueObject> & cl)
+  bool GlKeyStone::deserializeXML(xercesc::DOMElement * e)
   {
-    if(!Valuable::HasValues::deserializeXML(e, cl))
+    if(!Valuable::HasValues::deserializeXML(e))
       return false;
 
     calculateMatrix();

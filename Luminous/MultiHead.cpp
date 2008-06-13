@@ -43,9 +43,9 @@ namespace Luminous {
   MultiHead::Area::~Area()
   {}
 
-  bool MultiHead::Area::deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::Area::deserializeXML(xercesc::DOMElement * element)
   {
-    bool ok = HasValues::deserializeXML(element, cl);
+    bool ok = HasValues::deserializeXML(element);
 
     updateBBox();
 
@@ -210,8 +210,7 @@ namespace Luminous {
       m_areas[i].ptr()->setPixelSizeCm(sizeCm);
   }
 
-  bool MultiHead::Window::readElement(xercesc::DOMElement * ce,
-				      CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::Window::readElement(xercesc::DOMElement * ce)
   {
     using namespace xercesc;
 
@@ -234,7 +233,7 @@ namespace Luminous {
       Area * area = new Area();
       // Add as child & recurse
       addValue(nameVal, area);
-      area->deserializeXML(ce, cl);
+      area->deserializeXML(ce);
       m_areas.push_back(area);
     } else {
       XMLString::release(&myType);
@@ -415,19 +414,18 @@ namespace Luminous {
     return (int) (bottom - top);
   }
 
-  bool MultiHead::deserializeXML(xercesc::DOMElement * element,
-                                 CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::deserializeXML(xercesc::DOMElement * element)
   {
     m_windows.clear();
 
-    bool ok = HasValues::deserializeXML(element, cl);
+    bool ok = HasValues::deserializeXML(element);
 
     m_edited = false;
 
     return ok;
   }
 
-  bool MultiHead::readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl)
+  bool MultiHead::readElement(xercesc::DOMElement * ce)
   {
     using namespace xercesc;
 
@@ -450,7 +448,7 @@ namespace Luminous {
 
       // Add as child & recurse
       addValue(nameVal, win);
-      win->deserializeXML(ce, cl);
+      win->deserializeXML(ce);
 
       const float pixelSizeCm = m_widthcm.asFloat() / width();
       win->setPixelSizeCm(pixelSizeCm);

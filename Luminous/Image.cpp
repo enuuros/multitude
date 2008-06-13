@@ -201,7 +201,7 @@ namespace Luminous
     m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_UNKNOWN,
         PixelFormat::TYPE_UNKNOWN);
   }
-
+/*
   void Image::scale(int reqWidth, int reqHeight, bool keepAspectRatio, Image& dest) const
   {
     dest.clear();
@@ -255,7 +255,7 @@ namespace Luminous
     }
 #endif
   }
-    
+*/    
   /// @todo currently ignores alpha channel
   void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
   {

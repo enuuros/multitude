@@ -56,7 +56,7 @@ namespace Luminous {
         Area();
         virtual ~Area();
 
-        bool deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl);
+        bool deserializeXML(xercesc::DOMElement * element);
 
         void setGeometry(int x, int y, int w, int h, bool copyToGraphics = true)
         {
@@ -215,7 +215,7 @@ namespace Luminous {
         void setPixelSizeCm(float sizeCm);
 
       protected:
-        virtual bool readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl);
+        virtual bool readElement(xercesc::DOMElement * ce);
 
         Valuable::ValueVector2i   m_location;
         Valuable::ValueVector2i   m_size;
@@ -263,7 +263,7 @@ namespace Luminous {
       /** Total height of the display area, in graphics pixels. */
       int height();
 
-      bool deserializeXML(xercesc::DOMElement * element, CL::ClassLoader<ValueObject> & cl);
+      bool deserializeXML(xercesc::DOMElement * element);
       
       void addWindow(Window * w) { m_windows.push_back(w); }
 
@@ -271,7 +271,7 @@ namespace Luminous {
     bool isEdited() const { return m_edited; }
 
     protected:
-      virtual bool readElement(xercesc::DOMElement * ce, CL::ClassLoader<ValueObject> & cl);
+      virtual bool readElement(xercesc::DOMElement * ce);
 
       std::vector<RefPtr<Window> > m_windows;
       Valuable::ValueFloat m_widthcm;

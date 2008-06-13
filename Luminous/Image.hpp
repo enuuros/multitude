@@ -64,7 +64,7 @@ namespace Luminous
 
     bool empty() const { return (m_data == 0); }
 
-    void scale(int width, int height, bool keepAspectRatio, Image& dest) const;
+//    void scale(int width, int height, bool keepAspectRatio, Image& dest) const;
 
     void flipVertical();
 
