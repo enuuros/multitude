@@ -17,6 +17,16 @@
 namespace Dyslexic
 {
 
+  void GPUFont::render(const char * str, float x, float y)
+  {
+    Nimble::Matrix3 transform;
+    transform.identity();
+    transform[0][2] = x;
+    transform[1][2] = y;
+
+    internalRender(str, strlen(str), transform);
+  }
+
   void GPUFont::render(const char * str, const Nimble::Matrix3 & m)
   {
     internalRender(str, strlen(str), m);

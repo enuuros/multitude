@@ -29,8 +29,12 @@ namespace Dyslexic
 
       virtual CPUFont * cpuFont() = 0;
 
+      void render(const char * str);
+      void render(const char * str, Nimble::Vector2 loc);
+      void render(const char * str, float scale, Nimble::Vector2 loc);
       void render(const char * str, const Nimble::Matrix3 & transform);
-      void render(const wchar_t * str, const Nimble::Matrix3 & transform);
+      void render(const char * str, float x, float y);
+
 
       void render(const std::string & str);
       void render(const std::string & str, const Nimble::Matrix3 & transform);
@@ -40,11 +44,10 @@ namespace Dyslexic
       void render(const std::wstring & str, const Nimble::Matrix3 & transform);
       void render(const std::wstring & str, const Nimble::Vector2 & location);
 
-      void render(const char * str);
-      void render(const wchar_t * str);
 
-      void render(const char * str, Nimble::Vector2 loc);
-      void render(const char * str, float scale, Nimble::Vector2 loc);
+      void render(const wchar_t * str);
+      void render(const wchar_t * str, const Nimble::Matrix3 & transform);
+
 
     protected:
       // The actual rendering methods, override these in derived classes
