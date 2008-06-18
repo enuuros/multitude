@@ -47,6 +47,9 @@ namespace Luminous
     
     int getUniformLoc(const std::string & name);
     int getUniformLoc(const char * name);
+
+    int getAttribLoc(const std::string & name);
+    int getAttribLoc(const char * name);
     
     bool validate();
     

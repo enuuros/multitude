@@ -161,6 +161,16 @@ namespace Luminous
     return glGetUniformLocation(m_handle, name);
   }
 
+  int GLSLProgramObject::getAttribLoc(const std::string & name)
+  {
+    return glGetAttribLocation(m_handle, name.c_str());
+  }
+
+  int GLSLProgramObject::getAttribLoc(const char * name)
+  {
+    return glGetAttribLocation(m_handle, name);
+  }
+
   bool GLSLProgramObject::validate()
   {
     glValidateProgram(m_handle);
