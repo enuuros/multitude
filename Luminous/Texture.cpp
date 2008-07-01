@@ -28,27 +28,28 @@ namespace Luminous
   Texture1D* Texture1D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)
   {
-    assert(image.rows() == 1);
+    Radiant::trace("DEBUG: img size %d,%d", image.columns(), image.rows());
+    assert(image.columns() == 1);
   
     Magick::Blob blob;
 
     image.magick("RGBA");
     image.write(&blob);
 
-    return fromBytes(GL_RGBA, image.columns(), blob.data(),
+    return fromBytes(GL_RGBA, image.rows(), blob.data(),
                      PixelFormat(PixelFormat::LAYOUT_RGBA,
                                  PixelFormat::TYPE_UBYTE) ,
                      buildMipmaps, resources);
   }
 
-  Texture1D* Texture1D::fromBytes(GLenum internalFormat, int w,
+  Texture1D* Texture1D::fromBytes(GLenum internalFormat, int h,
 				  const void* data,
 				  const PixelFormat& srcFormat,
 				  bool buildMipmaps, GLResources * resources)
   {
     // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
-      bool isPowerOfTwo = !((w - 1) & w);
+      bool isPowerOfTwo = !((h - 1) & h);
       if(!isPowerOfTwo) {
         cerr << "ERROR: non-power-of-two textures are not supported" << endl;
         return 0;
@@ -58,8 +59,8 @@ namespace Luminous
     Texture1D* tex = new Texture1D(resources);
 
     tex->m_haveMipmaps = buildMipmaps;
-    tex->m_width = w;
-    tex->m_height = 1;
+    tex->m_width = 1;
+    tex->m_height = h;
     /// @todo this is actually wrong, should convert from internalFormat really
     tex->m_pf = srcFormat;
 
@@ -77,12 +78,12 @@ namespace Luminous
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, minFilter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, magFilter);
 
-    glTexImage1D(GL_TEXTURE_1D, 0, internalFormat, w, 0,
+    glTexImage1D(GL_TEXTURE_1D, 0, internalFormat, h, 0,
                  srcFormat.layout(), srcFormat.type(), data);
 
     if(buildMipmaps) {
       gluBuild1DMipmaps(GL_TEXTURE_1D,
-			srcFormat.numChannels(), w, 
+			srcFormat.numChannels(), h, 
 			srcFormat.layout(), srcFormat.type(), data);
     }
 

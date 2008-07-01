@@ -127,8 +127,7 @@ namespace Luminous {
       loc += m_graphicsLocation.asVector();
 
       /// @todo commenting this breaks things on single display machines (where's the bug?)    
-//      trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)",
-//          orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
+      //trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)", orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
 
       return loc;
     }
