@@ -30,7 +30,7 @@ namespace Luminous {
   class GlKeyStone : public Valuable::HasValues
   {
   public:
-    GlKeyStone();
+    GlKeyStone(Valuable::HasValues * parent, const std::string & name);
     virtual ~GlKeyStone();
 
     virtual const char * const type() const { return "glkeystone"; }

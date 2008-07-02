@@ -24,10 +24,10 @@ namespace Luminous {
   using Nimble::Vector2;
   using Nimble::Vector4;
 
-  GlKeyStone::GlKeyStone()
-    : HasValues(0, "GlKeystone", false),
-    m_lastMove(0),
-    m_rotations(this, "rotations", false, 0)
+  GlKeyStone::GlKeyStone(HasValues * parent, const std::string & name)
+  : HasValues(parent, name, false),
+  m_lastMove(0),
+  m_rotations(this, "rotations", false, 0)
   {
     setVertex(0, 0, 0);
     setVertex(1, 1, 0);

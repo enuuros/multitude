@@ -26,18 +26,18 @@ namespace Luminous {
   using Radiant::trace;
 
   MultiHead::Area::Area()
-    : HasValues(0, "Area", false),
-    m_location(this, "location", false, Nimble::Vector2i(0, 0)),
-    m_size(this, "size", false, Nimble::Vector2i(100, 100)),
-    m_graphicsLocation(this, "graphicslocation", false, Nimble::Vector2i(0, 0)),
-    m_graphicsSize(this, "graphicssize", false, Nimble::Vector2i(100, 100)),
-    m_seams(this, "seams", false, Nimble::Vector4f(0, 0, 0, 0)),
-    m_active(this, "active", false, 1),
-    m_comment(this, "comment", false, ""),
+    : HasValues(0, "Area"),
+    m_keyStone(this, "keystone"),
+    m_location(this, "location", Nimble::Vector2i(0, 0)),
+    m_size(this, "size", Nimble::Vector2i(100, 100)),
+    m_graphicsLocation(this, "graphicslocation", Nimble::Vector2i(0, 0)),
+    m_graphicsSize(this, "graphicssize", Nimble::Vector2i(100, 100)),
+    m_seams(this, "seams", Nimble::Vector4f(0, 0, 0, 0)),
+    m_active(this, "active", 1),
+    m_comment(this, "comment", ""),
     m_graphicsBounds(0, 0, 100, 100),
     m_pixelSizeCm(0.1f)
   {
-    addValue("keystone", &m_keyStone);
   }
 
   MultiHead::Area::~Area()
@@ -148,11 +148,12 @@ namespace Luminous {
   /////////////////////////////////////////////////////////////////////////////
 
   MultiHead::Window::Window()
-    : m_location(this, "location", false, Nimble::Vector2i(0, 0)),
-    m_size(this, "size", false, Nimble::Vector2i(100, 100)),
-    m_frameless(this, "frameless", false, 1),
-    m_fullscreen(this, "fullscreen", false, 0),
-    m_resizeable(this, "resizeable", false, 0),
+    : HasValues(0, "Window"),
+    m_location(this, "location", Nimble::Vector2i(0, 0)),
+    m_size(this, "size", Nimble::Vector2i(100, 100)),
+    m_frameless(this, "frameless", 1),
+    m_fullscreen(this, "fullscreen", 0),
+    m_resizeable(this, "resizeable", 0),
     m_pixelSizeCm(0.1f)
   {
   }
