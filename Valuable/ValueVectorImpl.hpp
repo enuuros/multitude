@@ -57,6 +57,13 @@ namespace Valuable
     return r;
   }
 
+  template<class VectorType, typename ElementType, int N>
+  bool ValueVector<VectorType, ElementType, N>::set(const VectorType & v)
+  {
+    m_value = v;
+    return true;
+  }
+ 
 }
 
 #endif

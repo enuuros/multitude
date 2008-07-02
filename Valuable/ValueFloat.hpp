@@ -19,8 +19,8 @@ namespace Valuable
 
     public:
       ValueFloatT() : Base() {}
-      ValueFloatT(HasValues * parent, const std::string & name, bool transit, T v)
-      : ValueNumeric<T>(parent, name, transit, v)
+      ValueFloatT(HasValues * parent, const std::string & name, T v, bool transit = false)
+      : ValueNumeric<T>(parent, name, v, transit)
       {}
 
       ValueFloatT<T> & operator = (T i) { Base::m_value = i; STD_OP }

@@ -15,7 +15,7 @@ namespace Valuable
   {
     public:
       ValueNumeric() : ValueObject(), m_value(T(0)) {}
-      ValueNumeric(HasValues * parent, const std::string & name, bool transit, T v)
+      ValueNumeric(HasValues * parent, const std::string & name, T v, bool transit = false)
       : ValueObject(parent, name, transit),
       m_value(v)
       {}
@@ -31,6 +31,9 @@ namespace Valuable
       float asFloat(bool * const ok = 0) const { if(ok) *ok = true; return static_cast<float> (m_value); }
       int asInt(bool * const ok = 0) const { if(ok) *ok = true; return static_cast<int> (m_value); }
       std::string asString(bool * const ok = 0) const { if(ok) *ok = true; return Radiant::StringUtils::stringify(m_value); }
+
+      
+      virtual bool set(int v) { m_value = static_cast<T> (v); return true; }
 
     protected:
       T m_value;

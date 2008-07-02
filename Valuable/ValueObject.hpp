@@ -5,6 +5,8 @@
 
 #include <Patterns/NotCopyable.hpp>
 
+#include <Nimble/Vector4.hpp>
+
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -22,7 +24,7 @@ namespace Valuable
       /// The copy constructor creates a copy of the ValueObject WITHOUT the
       /// link to parent
       ValueObject(const ValueObject & o);
-      ValueObject(HasValues * parent, const std::string & name, bool transit);
+      ValueObject(HasValues * parent, const std::string & name, bool transit = false);
       virtual ~ValueObject();
       
       std::string name() const { return m_name; }
@@ -35,6 +37,12 @@ namespace Valuable
       virtual float       asFloat(bool * const ok = 0) const;
       virtual int         asInt(bool * const ok = 0) const;
       virtual std::string asString(bool * const ok = 0) const;
+
+      virtual bool set(float v);
+      virtual bool set(int v);
+      virtual bool set(const std::string & v);
+      virtual bool set(const Nimble::Vector2f & v);
+      virtual bool set(const Nimble::Vector4f & v);
  
       /// Get the type id of the type 
       virtual const char * const type() const = 0;      

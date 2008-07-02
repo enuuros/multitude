@@ -103,4 +103,34 @@ namespace Valuable
     }
   }
 
+  bool ValueObject::set(float )
+  {
+    Radiant::error("ValueObject::set(float) # conversion not available");
+    return false;
+  }
+
+  bool ValueObject::set(int )
+  {
+    Radiant::error("ValueObject::set(int) # conversion not available");
+    return false;
+  }
+
+  bool ValueObject::set(const std::string & )
+  {
+    Radiant::error("ValueObject::set(string) # conversion not available");
+    return false;
+  }
+
+  bool ValueObject::set(const Nimble::Vector2f & )
+  {
+    Radiant::error("ValueObject::set(Vector2f) # conversion not available");
+    return false;
+  }
+
+  bool ValueObject::set(const Nimble::Vector4f & )
+  {
+    Radiant::error("ValueObject::set(Vector4f) # conversion not available");
+    return false;
+  }
+
 }

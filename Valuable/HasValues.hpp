@@ -3,6 +3,8 @@
 
 #include <Valuable/ValueObject.hpp>
 
+#include <Radiant/Color.hpp>
+
 #include <map>
 #include <string>
 
@@ -17,7 +19,7 @@ namespace Valuable
   {
     public:
       HasValues();
-      HasValues(HasValues * parent, const std::string & name, bool transit);
+      HasValues(HasValues * parent, const std::string & name, bool transit = false);
       virtual ~HasValues();
 
       bool addValue(const std::string & name, ValueObject * const value);
@@ -27,6 +29,9 @@ namespace Valuable
       /// @todo add 'shortcut' API
       // float getValueFloat(const std::string & name, bool * ok = 0, float default = 0.f)
       // ...
+      
+      template<class T>
+      bool setValue(const std::string & name, const T & v);
 
       bool saveXML(const char * filename);
       bool loadXML(const char * filename);
@@ -40,10 +45,13 @@ namespace Valuable
 
       void debugDump() ;
 
-    protected: 
-
       typedef std::map<std::string, ValueObject *> container;
+      typedef container::iterator iterator;
 
+      iterator valuesBegin() { return m_children.begin(); }
+      iterator valuesEnd() { return m_children.end(); }
+
+    protected: 
       container m_children;
   };
 

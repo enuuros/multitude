@@ -19,16 +19,19 @@ namespace Valuable
   {
     public:
       ValueVector() : ValueObject() {}
-      ValueVector(HasValues * parent, const std::string & name, bool transit, const VectorType & v) : ValueObject(parent, name, transit), m_value(v) {}
+      ValueVector(HasValues * parent, const std::string & name, const VectorType & v, bool transit = false) : ValueObject(parent, name, transit), m_value(v) {}
 
       ValueVector<VectorType, ElementType, N> & operator = (const VectorType & v) { m_value = v; return *this; }
       ValueVector<VectorType, ElementType, N> & operator += (const VectorType & v) { m_value += v; return *this; }
+      ValueVector<VectorType, ElementType, N> & operator -= (const VectorType & v) { m_value -= v; return *this; }
 
-      ElementType operator [] (int i) const { return m_value[i]; }
+      ElementType operator [] (int i) const { return m_value[i]; }      
 
       virtual bool deserializeXML(xercesc::DOMElement * element);
 
       const char * const type() const;
+
+      virtual bool set(const VectorType & v);
 
       const VectorType & asVector() const { return m_value; }
 

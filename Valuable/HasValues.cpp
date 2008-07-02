@@ -1,4 +1,5 @@
-#include <Valuable/HasValues.hpp>
+//#include <Valuable/HasValues.hpp>
+#include <Valuable/HasValuesImpl.hpp>
 
 #include <Radiant/Trace.hpp>
 
@@ -250,5 +251,8 @@ namespace Valuable
 */
     return false;
   }
+
+  template bool HasValues::setValue<Nimble::Vector2T<float> >(const std::string & name, const Nimble::Vector2T<float> &);
+  template bool HasValues::setValue<Nimble::Vector4T<float> >(const std::string & name, const Nimble::Vector4T<float> &);
 
 }
