@@ -31,14 +31,14 @@ namespace Radiant
     typedef std::list<std::string>    StringList;
     typedef std::list<std::wstring>   WStringList;
 
-    // Removes non-visible characters from string
+    /// Removes non-visible characters from string
     MTEXPORT void eraseNonVisibles(std::string & s);
 
-    // Converts std::string to std::wstring
+    /// Converts std::string to std::wstring
     MTEXPORT std::wstring stringTowstring(const std::string & str);
 
-    // Converts std::wstring to std::string
-    // Warning: non-ASCII characters may be lost in conversion
+    /// Converts std::wstring to std::string
+    /// Warning: non-ASCII characters may be lost in conversion
     MTEXPORT std::string wstringTostring(const std::wstring & wstr);
 
     // Splits string into sub-strings.
@@ -46,7 +46,9 @@ namespace Radiant
       StringList & out, bool skipEmpty = true);
     MTEXPORT void split(const std::wstring & ws, const std::wstring & delim,
 	       WStringList & out);
-    
+    /** Counts the number of lines in the string. */
+    MTEXPORT int lineCount(const char * s);
+
     MTEXPORT void utf8ToWString(std::wstring & dest, const std::string & src);
     MTEXPORT void wstringToUtf8(std::string & dest, const std::wstring & src);
     /// Counts the number of decoded unicode characters in a utf8 string

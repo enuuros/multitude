@@ -118,6 +118,21 @@ namespace Radiant
     }
 
 
+    int lineCount(const char * s)
+    {
+      if(!s)
+	return 0;
+
+      int n = s[0] ? 1 : 0;
+
+      for(; s[0] != 0; s++) {
+	if(s[0] == '\n')
+	  n++;
+      }
+
+      return n;
+    }
+
     void utf8ToWString(std::wstring & dest, const std::string & src)
     {
       int len = utf8DecodedLength(src);
