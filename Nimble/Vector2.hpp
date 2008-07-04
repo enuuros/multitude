@@ -12,6 +12,7 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #ifndef NIMBLE_VECTOR2T_HPP
 #define NIMBLE_VECTOR2T_HPP
 
@@ -164,11 +165,13 @@ namespace Nimble {
 
   namespace Math {
 
-    inline Vector2T<int> Round(const Vector2T<float>  & that)
+    template <class T>
+    inline Vector2T<int> Round(const Vector2T<T>  & that)
     {
       return Vector2T<int>(Math::Round(that.x), Math::Round(that.y));
     }
   }
+
 
   typedef Vector2T<float>  Vector2;
   typedef Vector2T<float>  Vector2f;

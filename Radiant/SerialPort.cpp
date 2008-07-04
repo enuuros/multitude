@@ -47,7 +47,7 @@ namespace Radiant
 
     const char * fname = "SerialPort::open";
 
-    m_fd = ::open(device, O_RDWR);
+    m_fd = ::open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if(m_fd <= 0) {
       error("%s # Failed to open \"%s\" (%s)", 
@@ -72,14 +72,16 @@ namespace Radiant
     else
       opts.c_cflag &= ~PARENB;
 
+    opts.c_cflag &= ~CSIZE;
+    
     if(bits == 5)
-      opts.c_cflag |= CSIZE & CS5;
+      opts.c_cflag |= CS5;
     else if(bits == 6)
-      opts.c_cflag |= CSIZE & CS6;
+      opts.c_cflag |= CS6;
     else if(bits == 7)
-      opts.c_cflag |= CSIZE & CS7;
+      opts.c_cflag |= CS7;
     else if(bits == 8)
-      opts.c_cflag |= CSIZE & CS8;
+      opts.c_cflag |= CS8;
 
     // Clear bauds:
     speed_t speed = baud;
@@ -109,16 +111,27 @@ namespace Radiant
     cfsetispeed( & opts, speed);
     cfsetospeed( & opts, speed);
 
+    // Disable flow control
+    opts.c_cflag &= ~CRTSCTS;
+
     opts.c_cflag |= CREAD;	/* Allow reading */
     opts.c_cflag |= CLOCAL;	/* No modem between us and device */
     
     opts.c_cc[VMIN] = waitBytes;
     opts.c_cc[VTIME] = waitTimeUS / 100000; /* Unit = 0.1 s*/
     
+
+    opts.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
+    opts.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
+
+    opts.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+    opts.c_oflag &= ~OPOST; // make raw
+    
+#if 0
     opts.c_iflag = (IGNBRK | IGNPAR);  /* Ignore break & parity errs */
     opts.c_oflag = 0;                  /* Raw output, leave tabs alone */
     opts.c_lflag = 0;              /* Raw input (no KILL, etc.), no echo */
-
+#endif
 
     if(tcsetattr(m_fd, TCSANOW, & opts) < 0) {
       error("%s # Failed to set TTY parameters (%s)", fname, strerror(errno));

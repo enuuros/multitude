@@ -16,6 +16,7 @@
 #ifndef RADIANT_SERIAL_PORT_HPP
 #define RADIANT_SERIAL_PORT_HPP
 
+#include <stdint.h>
 #include <unistd.h>
 
 namespace Radiant
@@ -56,6 +57,8 @@ namespace Radiant
     /// Write bytes to the port
     /** This method returns the number of bytes written. */
     int write(const void * buf, int bytes);
+    int writeByte(uint8_t byte)
+    { return write( & byte, 1); }
     /// Read bytes from the port
     /** This method returns the number of bytes read. */
     int read(void * buf, int bytes);
