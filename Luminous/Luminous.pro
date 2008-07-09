@@ -21,6 +21,8 @@ HEADERS += Task.hpp
 HEADERS += Texture.hpp
 #HEADERS += TiledMipMapImage.hpp
 HEADERS += Utils.hpp
+HEADERS += TCBSpline.hpp
+HEADERS += Path.hpp
 
 SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
@@ -45,6 +47,8 @@ SOURCES += Texture.cpp
 SOURCES += TGA.cpp
 #SOURCES += TiledMipMapImage.cpp
 SOURCES += Utils.cpp
+SOURCES += TCBSpline.cpp
+SOURCES += Path.cpp
 
 TARGET = Luminous
 
