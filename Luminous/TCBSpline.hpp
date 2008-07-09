@@ -2,8 +2,11 @@
 #define TCB_SPLINE_HPP
 
 #include <Nimble/Vector2.hpp>
+#include <Nimble/Matrix3.hpp>
 
 #include <vector>
+
+namespace Luminous {
 
 class TCBSpline2 
 {
@@ -22,7 +25,7 @@ class TCBSpline2
     Nimble::Vector2f firstDerivative(float t) const;
 
     void render() const;
-    void renderQuads(float step, float thickness) const;
+    void renderQuads(float step, float thickness, const Nimble::Matrix3f & m) const;
 
   protected:
     void computePoly(int i0, int i1, int i2, int i3);
@@ -42,5 +45,7 @@ class TCBSpline2
     std::vector<Nimble::Vector2f> m_C;
     std::vector<Nimble::Vector2f> m_D;
 };
+
+}
 
 #endif

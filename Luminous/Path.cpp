@@ -113,6 +113,8 @@ namespace {
 
 }
 
+namespace Luminous {
+
 Path::Path(long id)
   : HasValues(0, "Path", false),
   m_id(id)
@@ -379,3 +381,4 @@ void Path::prepare()
   m_points.push_back(v1);
 }
 
+}

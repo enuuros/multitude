@@ -4,6 +4,8 @@
 #include <cassert>
 #include <Radiant/Trace.hpp>
 
+namespace Luminous {
+
 TCBSpline2::TCBSpline2(int segments,
         const std::vector<float> & time, 
         const std::vector<Nimble::Vector2f> & points, 
@@ -130,7 +132,7 @@ void TCBSpline2::render() const
   glEnd();
 }
 
-void TCBSpline2::renderQuads(float step, float thickness) const
+void TCBSpline2::renderQuads(float step, float thickness, const Nimble::Matrix3f & m) const
 {
   float len = m_time.back();
 
@@ -145,6 +147,9 @@ void TCBSpline2::renderQuads(float step, float thickness) const
     Nimble::Vector2f v0 = p + thickness * n;
     Nimble::Vector2f v1 = p - thickness * n;
 
+    v0 = (m * v0).xy();
+    v1 = (m * v1).xy();
+
     glTexCoord2f(t / len, 0);
     glVertex2fv(v0.data());
     glTexCoord2f(t / len, 1);
@@ -152,5 +157,7 @@ void TCBSpline2::renderQuads(float step, float thickness) const
   }
   
   glEnd();
+}
+
 }
 

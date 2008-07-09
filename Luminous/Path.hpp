@@ -12,12 +12,16 @@
 
 #include <Luminous/TCBSpline.hpp>
 
+namespace Luminous {
+
 class Path : public Valuable::HasValues
 {
   public:
     Path(long id);
 
     void addPoint(Nimble::Vector2f p) { m_points.push_back(p); }
+
+    void clear() { m_points.clear(); }
 
     void render();
 
@@ -59,5 +63,7 @@ class Path : public Valuable::HasValues
     long m_id;
     container m_points;
 };
+
+}
 
 #endif
