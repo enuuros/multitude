@@ -282,9 +282,9 @@ namespace Luminous {
 
     /*
 
-    This is wrong. The Z-value is the homogenous coordinate, and it
-    should be 1 (usually).  Consider using glVertex4f if you really
-    want to pass the value somewhere.
+    The stuff below is wrong. The Z-value is the homogenous
+    coordinate, and it should be 1 (usually).  Consider using
+    glVertex4f if you really want to pass the value somewhere.
 
     glTexCoord2f(0, 0);
     glVertex3fv(static_cast<const GLfloat *> (&v[0].x));
@@ -302,6 +302,26 @@ namespace Luminous {
     glEnd();
   }
 
+  void Utils::glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2,
+			Nimble::Vector2f uv1, Nimble::Vector2f uv2)
+  {
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(uv1.x, uv1.y);
+    glVertex2f(v1.x, v1.y);
+
+    glTexCoord2f(uv2.x, uv1.y);
+    glVertex2f(v2.x, v1.y);
+
+    glTexCoord2f(uv2.x, uv2.y);
+    glVertex2f(v2.x, v2.y);
+
+    glTexCoord2f(uv1.x, uv2.y);
+    glVertex2f(v1.x, v2.y);
+
+    glEnd();
+  }
+  
   void Utils::glCenteredTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m)
   {
     float xh = size.x * 0.5f;
@@ -834,6 +854,81 @@ namespace Luminous {
 
     glEnd();
   }
+
+  void Utils::glFilledSoftLinePolygon(const Vector2f * corners, int n,
+				  float width, float blendwidth,
+				  const float * color)
+  {
+    float r = color[0];
+    float g = color[1];
+    float b = color[2];
+    float a = color[3];
+
+    width *= 0.5f;
+    float fullw = width + blendwidth;
+
+    for(int i = 0; i < n; i++) {
+      Vector2f cnow = corners[i];
+      Vector2f cnext = corners[(i + 1) % n];
+      Vector2f cnext2 = corners[(i + 2) % n];
+      Vector2f cprev = corners[(i + n - 1) % n];
+
+      Vector2f dir0 = cnext2 - cnext;
+      Vector2f dir1 = cnext - cnow;
+      Vector2f dir2 = cnow - cprev;
+
+      dir0.normalize();
+      dir1.normalize();
+      dir2.normalize();
+
+      Vector2 q = dir1.perpendicular();
+            
+      Vector2 p01 = (dir0 + dir1).perpendicular();
+      p01.normalize();
+
+      float q01 = dot(p01, q);
+      if(q01 > 0.000001f)
+	p01 /= q01;
+
+      Vector2 p12 = (dir2 + dir1).perpendicular();
+      p12.normalize();
+
+      float q12 = dot(p12, q);
+      if(q12 > 0.000001f)
+	p12 /= q12;
+
+      glBegin(GL_QUAD_STRIP);
+      
+      glColor4f(r, g, b, 0);
+      glVertex2fv((cnow + p12 * fullw).data());
+      glVertex2fv((cnext + p01 * fullw).data());
+
+      glColor4f(r, g, b, a);
+      glVertex2fv((cnow + p12 * width).data());
+      glVertex2fv((cnext + p01 * width).data());
+
+      glVertex2fv((cnow - p12 * width).data());
+      glVertex2fv((cnext - p01 * width).data());
+
+      glColor4f(r, g, b, 0);
+      glVertex2fv((cnow - p12 * fullw).data());
+      glVertex2fv((cnext - p01 * fullw).data());
+
+      glEnd();
+    }
+  }
+
+  void Utils::glFilledSoftLineTriangle(Nimble::Vector2f c1, 
+				       Nimble::Vector2f c2, 
+				       Nimble::Vector2f c3,
+				       float width, float blendwidth,
+				       const float * color)
+  {
+    Vector2 corners[3] = { c1, c2, c3 };
+
+    glFilledSoftLinePolygon(corners, 3, width, blendwidth, color);    
+  }
+  
 
   void Utils::glRoundedRectf(const float x1, const float y1, const float x2, const float y2,
     const float cornerRadius, const int cornerLineSegments)

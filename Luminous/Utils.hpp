@@ -53,6 +53,8 @@ namespace Luminous {
     static void inline glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2)
     { glTexRect(v1.x, v1.y, v2.x, v2.y); }
     static void glTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
+    static void glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2,
+			  Nimble::Vector2f uv1, Nimble::Vector2f uv2);
     static void glCenteredTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
     static void glRectWithHole(const Nimble::Rect & area,
 			       const Nimble::Rect & hole);
@@ -127,6 +129,14 @@ namespace Luminous {
    /// Draw a filled circle sector ('pie slice') using GL_TRIANGLE_FAN
     static void glFilledSectorf(float centerx, float centery, float radius,
        float fromRadians, float toRadians, int lineSegments);
+    static void glFilledSoftLinePolygon(const Nimble::Vector2f * corners, int n,
+					float width, float blendwidth,
+					const float * color);
+    static void glFilledSoftLineTriangle(Nimble::Vector2f c1,
+					 Nimble::Vector2f c2, 
+					 Nimble::Vector2f c3,
+					 float width, float blendwidth,
+					 const float * color);
     /// Draw a rounded rectangle
     static void glRoundedRectf(const float x1, const float y1, const float x2, const float y2,
       const float cornerRadius, const int cornerLineSegments);
