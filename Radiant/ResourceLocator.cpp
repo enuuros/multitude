@@ -51,10 +51,10 @@ namespace Radiant
   void ResourceLocator::addModuleDataPath(const std::string & module,
 					  bool front)
   {
-    std::string p1 =
-      PlatformUtils::getModuleGlobalDataPath(module.c_str(), false);
-    std::string p2 = 
+    std::string p1 = 
       PlatformUtils::getModuleUserDataPath(module.c_str(), false);
+    std::string p2 =
+      PlatformUtils::getModuleGlobalDataPath(module.c_str(), false);
 
     addPath(p1 + ":" + p2, front);
   }

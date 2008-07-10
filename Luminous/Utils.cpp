@@ -928,6 +928,19 @@ namespace Luminous {
 
     glFilledSoftLinePolygon(corners, 3, width, blendwidth, color);    
   }
+
+  void Utils::glTriangle(float x1, float y1,
+			 float x2, float y2,
+			 float x3, float y3)
+  {
+    glBegin(GL_TRIANGLES);
+
+    glVertex2f(x1, y1);
+    glVertex2f(x2, y2);
+    glVertex2f(x3, y3);
+
+    glEnd();
+  }
   
 
   void Utils::glRoundedRectf(const float x1, const float y1, const float x2, const float y2,

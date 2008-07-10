@@ -48,7 +48,6 @@ namespace Dyslexic
       void render(const wchar_t * str);
       void render(const wchar_t * str, const Nimble::Matrix3 & transform);
 
-
     protected:
       // The actual rendering methods, override these in derived classes
       virtual void internalRender(const char * str, int n, const Nimble::Matrix3 & transform) = 0;

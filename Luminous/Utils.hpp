@@ -137,6 +137,8 @@ namespace Luminous {
 					 Nimble::Vector2f c3,
 					 float width, float blendwidth,
 					 const float * color);
+
+    static void glTriangle(float x1, float y1, float x2, float y2, float x3, float y3); 
     /// Draw a rounded rectangle
     static void glRoundedRectf(const float x1, const float y1, const float x2, const float y2,
       const float cornerRadius, const int cornerLineSegments);

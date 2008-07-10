@@ -122,9 +122,10 @@ namespace Radiant
     {
       StringList pathList;
       split(paths, ";", pathList, true);
-      if(pathList.size() == 1)
+      if(pathList.size() == 1) {
+	pathList.clear();
         split(paths, ":", pathList, true);
-
+      }
       for(StringList::iterator it = pathList.begin();
 	  it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
