@@ -129,21 +129,28 @@ namespace Luminous
       image.magick("RGB");
       type = GL_RGB;
     }
-    
+
     image.write(&blob);
-      
+
     return loadBytes(GL_RGBA, image.columns(), image.rows(), blob.data(),
 		     PixelFormat(PixelFormat::LAYOUT_RGBA,
 				 PixelFormat::TYPE_UBYTE), buildMipmaps);
   }
 
-  
+  void Texture2D::loadSubImage(Magick::Image & subImage, int x, int y)
+  {
+    Magick::Blob  blob;
+    subImage.write(& blob);
+
+    loadSubBytes(x, y, subImage.columns(), subImage.rows(), blob.data());
+  }
+
   bool Texture2D::loadBytes(GLenum internalFormat, int w, int h,
 			    const void * data, 
 			    const PixelFormat& srcFormat,
 			    bool buildMipmaps)
  {
-    // Check dimensionsq
+    // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
       bool isPowerOfTwo1 = !((w - 1) & w);
       bool isPowerOfTwo2 = !((h - 1) & h);
@@ -188,6 +195,18 @@ namespace Luminous
     changeByteConsumption(used, uses); 
 
     return true;
+  }
+
+  void Texture2D::loadSubBytes(int x, int y, int w, int h, const void * data)
+  {
+    if(m_haveMipmaps)
+    {
+      // @todo
+    }
+    else
+    {
+      glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, m_pf.layout(), m_pf.type(), data);
+    }
   }
 
   Texture2D* Texture2D::fromImage

@@ -27,8 +27,6 @@ namespace Dyslexic
     void breakToLines(const std::wstring & wStr, const float width,
       CPUBitmapFont & bitmapFont, WStringList & lines)
     {
-      assert(width > 0.0f);
-
       lines.clear();
 
       if(wStr.empty())
@@ -42,7 +40,7 @@ namespace Dyslexic
       delim = wchar_t('\n');
       WStringList   wSub;
 
-	  split(wStr, delim, wSub);
+      split(wStr, delim, wSub);
 
       // Break the resulting sub-wstrings to fit width
 
@@ -57,11 +55,12 @@ namespace Dyslexic
 
         // Make the lines
 
-        while(words.size())
+        int   numWords = 0;
+        while(words.size() && int(words.size()) != numWords)
         {
           // First try to fit it in as separate words
 
-          const int numWords = words.size();
+          numWords = words.size();
           bool  got = false;
           BBox  bBox;
           for(int i = numWords; i >= 1 && !got; i--)
@@ -110,7 +109,7 @@ namespace Dyslexic
     }
 
 #ifdef WIN32
-	    void split(const std::wstring & ws, const std::wstring & delim,
+    void split(const std::wstring & ws, const std::wstring & delim,
         WStringList & out)
     {
       out.clear();
@@ -139,6 +138,7 @@ namespace Dyslexic
       }
     }
 #endif
+
   }
 
 }

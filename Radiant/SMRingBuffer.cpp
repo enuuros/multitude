@@ -18,6 +18,8 @@
 #include "Nimble/Math.hpp"
 
 #include <errno.h>
+#include <iostream>
+#include <sstream>
 
 namespace Radiant
 {
@@ -32,21 +34,18 @@ namespace Radiant
 
   uint32_t  SMRingBuffer::smHeaderSize = sizeof(uint32_t) * 3;
 
-  // Set maximum buffer size to the largest possible value of a 32-bit integer
-  // less (header size + 1).
+  // Set maximum buffer size to the largest possible value of a 32-bit integer less (header size + 1).
   uint32_t  SMRingBuffer::maxSize = 4294967295 - (smHeaderSize + 1);
 
   // Construction / destruction.
 
   SMRingBuffer::SMRingBuffer(const key_t smKey, const uint32_t size)
-  : m_smKey(smKey)
+  : m_isCreator(false)
+  , m_smKey(smKey)
   , m_id(-1)
   , m_startPtr(0)
   {
     trace("SMRingBuffer::SMRingBuffer");
-
-    uint32_t  smSize = 0;
-    bool      creator = false;
 
     if(size > 0)
     // Create new shared memory area (SMA)
@@ -81,11 +80,10 @@ namespace Radiant
       // shmget() rounds up size to nearest page size, so actual size of area may be greater
       // than requested size - however, this does not affect anything, the extra will simply
       // remain unused
-      smSize = smHeaderSize + size + 1;
-      m_id = shmget(m_smKey, smSize, smDefaultPermissions | IPC_EXCL | IPC_CREAT);
+      m_id = shmget(m_smKey, smHeaderSize + size + 1, smDefaultPermissions | IPC_EXCL | IPC_CREAT);
       if(m_id != -1)
       {
-        creator = true;
+        m_isCreator = true;
         trace("SMRingBuffer::SMRingBuffer: successfully created new shared memory area.");
       }
       else
@@ -122,28 +120,25 @@ namespace Radiant
       assert(0);
     }
 
-    if(creator)
+    if(m_isCreator)
     // This is the creating object
     {
-      // initialize the SMA
-      memset(smPtr, 0, smSize);
-
-      // write headersize
+     // write size to header
       memcpy(smPtr, & size, sizeof(uint32_t));
     }
 
     // Set ring buffer pointer - buffer starts after header information
 
-    m_startPtr = (unsigned char *)(smPtr) + smHeaderSize;
+    m_startPtr = ((unsigned char *)(smPtr)) + smHeaderSize;
 
-    assertValid();
+    assert(isValid());
   }
 
   SMRingBuffer::~SMRingBuffer()
   {
     trace("SMRingBuffer::~SMRingBuffer");
 
-    assertValid();
+    assert(isValid());
 
     // Detach the SMA
 
@@ -157,16 +152,19 @@ namespace Radiant
       error("SMRingBuffer::~SMRingBuffer: unable to detach shared memory area (%s).", shmError().c_str());
     }
 
-    // Destroy the SMA (it will actually be destroyed only after the last detach,
-    // i.e. when no more objects are referencing it).
+    // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
+    // objects are referencing it.
 
-    if(shmctl(m_id, IPC_RMID, 0) != -1)
+    if(m_isCreator)
     {
-      trace("SMRingBuffer::~SMRingBuffer: successfully destroyed shared memory area.");
-    }
-    else
-    {
-      error("SMRingBuffer::SMRingBuffer: unable to destroy shared memory area (%s).", shmError().c_str());
+      if(shmctl(m_id, IPC_RMID, 0) != -1)
+      {
+        trace("SMRingBuffer::~SMRingBuffer: successfully destroyed shared memory area.");
+      }
+      else
+      {
+        error("SMRingBuffer::SMRingBuffer: unable to destroy shared memory area (%s).", shmError().c_str());
+      }
     }
   }
 
@@ -186,7 +184,6 @@ namespace Radiant
     {
       // If used part of buffer wraps, compute size of first block
       * first = ((rPos + total) > bufSize) ? bufSize - rPos : total;
-      // second = total - first
     }
 
     return total;
@@ -205,7 +202,6 @@ namespace Radiant
     {
       // If available part of buffer wraps, compute size of first block
       * first = ((wPos + total) >= bufSize) ? bufSize - wPos : total;
-      // second = total - first
     }
 
     return total;
@@ -214,28 +210,30 @@ namespace Radiant
 
   // Reading and writing.
 
-  bool SMRingBuffer::write(const void * const src, const uint32_t numBytes)
+  uint32_t SMRingBuffer::write(const void * const src, const uint32_t numBytes)
   {
-//    trace("SMRingBuffer::write");
+    if(numBytes == 0)
+    {
+      return 0;
+    }
 
     assert(src);
-    assert(numBytes > 0);
 
     // Check sufficient space available
 
-    uint32_t         firstAvl = 0;
-    const uint32_t   totalAvl = available(& firstAvl);
+    uint32_t  firstAvl = 0;
+    const uint32_t  totalAvl = available(& firstAvl);
 
     if(numBytes > totalAvl)
     {
-//      error("SMRingBuffer::write: insufficient space, %ul requested, %ul available.",
+//      error("SMRingBuffer::place: insufficient space, %ul requested, %ul available.",
 //        (unsigned long)(numBytes), (unsigned long)(totalAvl));
-      return false;
+      return 0;
     }
 
     // Write the data
 
-    unsigned char * const    wPtr = writePtr();
+    unsigned char * const   wPtr = writePtr();
 
     if(numBytes <= firstAvl)
     // in 1 chunk
@@ -249,44 +247,99 @@ namespace Radiant
       memcpy(m_startPtr, (unsigned char *)(src) + firstAvl, numBytes - firstAvl);
     }
 
+    // Advance the write position
+
     advanceWritePos(numBytes);
 
-    assertValid();
-
-    return true;
+    return numBytes;
   }
 
-  bool SMRingBuffer::peek(void * const dst, const uint32_t numBytes)
+  uint32_t SMRingBuffer::write(const uint32_t numBlocks, const void * const * const srcArray,
+    const uint32_t * const numBytesArray)
   {
-    const uint32_t  prevReadPos = readPos();
-    const bool      result = read(dst, numBytes);
-    setReadPos(prevReadPos);
+    if(numBlocks == 0)
+    {
+      return 0;
+    }
 
-    assertValid();
+    assert(srcArray);
+    assert(numBytesArray);
 
-    return result;
+    // Compute total size of blocks
+
+    uint32_t  totalBytes = 0;
+    for(uint32_t i = 0; i < numBlocks; i++)
+    {
+      totalBytes += numBytesArray[i];
+    }
+
+    // Check sufficient space available
+
+    uint32_t  firstAvl = 0;
+    if(totalBytes > available(& firstAvl))
+    {
+      return 0;
+    }
+
+    // Write the blocks
+
+    const uint32_t    sz = size();
+    uint32_t          wPos = writePos();
+    unsigned char *   wPtr = 0;
+
+    for(uint32_t i = 0; i < numBlocks; i++)
+    {
+      if(!srcArray[i] || !numBytesArray[i])
+      {
+        continue;
+      }
+
+      wPtr = m_startPtr + wPos;
+
+      if(numBytesArray[i] <= firstAvl)
+      // in 1 chunk
+      {
+        memcpy(wPtr, srcArray[i], numBytesArray[i]);
+      }
+      else
+      // in 2 chunks
+      {
+        memcpy(wPtr, srcArray[i], firstAvl);
+        memcpy(m_startPtr, (unsigned char *)(srcArray[i]) + firstAvl, numBytesArray[i] - firstAvl);
+      }
+
+      firstAvl -= numBytesArray[i];
+      wPos = (wPos + numBytesArray[i]) % sz;
+    }
+
+    // Finally advance the write position
+
+    advanceWritePos(totalBytes);
+
+    return totalBytes;
   }
 
-  bool SMRingBuffer::read(void * const dst, const uint32_t numBytes)
+  uint32_t SMRingBuffer::peek(void * const dst, const uint32_t numBytes)
   {
-//    trace("SMRingBuffer::read");
+    if(numBytes == 0)
+    {
+      return 0;
+    }
 
     assert(dst);
-    assert(numBytes > 0);
 
-    // Check read area does not overlap write position
+    // Check that peek will not overlap write position
 
     uint32_t         firstUsd = 0;
     const uint32_t   totalUsd = used(& firstUsd);
-
     if(numBytes > totalUsd)
     {
-//     error("SMRingBuffer::read: insufficient data, %ul requested, %ul in use.",
+//     error("SMRingBuffer::peek: insufficient data, %ul requested, %ul in use.",
 //        (unsigned long)(numBytes), (unsigned long)(totalUsd));
-      return false;
+      return 0;
     }
 
-    // Read the data
+    // Peek the data
 
     const unsigned char * const  rPtr = readPtr();
 
@@ -302,35 +355,120 @@ namespace Radiant
       memcpy((unsigned char *)(dst) + firstUsd, m_startPtr, numBytes - firstUsd);
     }
 
-    advanceReadPos(numBytes);
-
-    assertValid();
-
-    return true;
+    return numBytes;
   }
 
-  bool SMRingBuffer::discard(const uint32_t numBytes)
+  uint32_t SMRingBuffer::peek(const uint32_t numBlocks, void * const * const dstArray,
+    const uint32_t * const numBytesArray)
   {
-    trace("SMRingBuffer::discard");
+    if(numBlocks == 0)
+    {
+      return 0;
+    }
 
-    assert(numBytes > 0);
+    assert(dstArray);
+    assert(numBytesArray);
 
-    // Check discard area does not overlap write position
+    // Compute total size of blocks
 
-    const uint32_t   totalDis = used();
-    if(numBytes > totalDis)
+    uint32_t  totalBytes = 0;
+    for(uint32_t i = 0; i < numBlocks; i++)
+    {
+      totalBytes += numBytesArray[i];
+    }
+
+    // Check that peek will not overlap write position
+
+    uint32_t  firstUsd = 0;
+    if(totalBytes > used(& firstUsd))
+    {
+      return 0;
+    }
+
+    // Peek the blocks
+
+    const uint32_t    sz = size();
+    uint32_t          rPos = readPos();
+    unsigned char *   rPtr = 0;
+
+    for(uint32_t i = 0; i < numBlocks; i++)
+    {
+      if(!dstArray[i] || !numBytesArray[i])
+      {
+        continue;
+      }
+
+      rPtr = m_startPtr + rPos;
+
+      if(numBytesArray[i] <= firstUsd)
+      // in 1 chunk
+      {
+        memcpy(dstArray[i], rPtr, numBytesArray[i]);
+      }
+      else
+      // in 2 chunks
+      {
+        memcpy(dstArray[i], rPtr, firstUsd);
+        memcpy((unsigned char *)(dstArray[i]) + firstUsd, m_startPtr, numBytesArray[i] - firstUsd);
+      }
+
+      firstUsd -= numBytesArray[i];
+      rPos = (rPos + numBytesArray[i]) % sz;
+    }
+
+    return totalBytes;
+  }
+
+  uint32_t SMRingBuffer::read(void * const dst, const uint32_t numBytes)
+  {
+    const uint32_t  bytesPeeked = peek(dst, numBytes);
+
+    if(bytesPeeked)
+    {
+      // Advance the read position
+
+      advanceReadPos(bytesPeeked);
+    }
+
+    return bytesPeeked;
+  }
+
+  uint32_t SMRingBuffer::read(const uint32_t numBlocks, void * const * const dstArray,
+    const uint32_t * const numBytesArray)
+  {
+    const uint32_t  bytesPeeked = peek(numBlocks, dstArray, numBytesArray);
+
+    if(bytesPeeked)
+    {
+      // Advance the read position
+
+      advanceReadPos(bytesPeeked);
+    }
+
+    return bytesPeeked;
+  }
+
+  uint32_t SMRingBuffer::discard(const uint32_t numBytes)
+  {
+    if(numBytes == 0)
+    {
+      return 0;
+    }
+
+    // Check that discard will not overlap write position
+
+    const uint32_t   totalUsd = used();
+    if(numBytes > totalUsd)
     {
       error("SMRingBuffer::discard: insufficient data.");
-      return false;
+      return 0;
     }
 
     // Discard the data
 
     advanceReadPos(numBytes);
 
-    assertValid();
-
-    return true;
+    return numBytes;
   }
 
 
@@ -362,26 +500,27 @@ namespace Radiant
 
       case EPERM:  errMsg = "EPERM";  break;
 
-      default: assert(0);
+      default:
+      {
+        std::stringstream  ss;
+        ss << errno;
+        errMsg = std::string("errno = ") + ss.str();
+      }
     }
 
     return errMsg;
   }
 
-  void SMRingBuffer::assertValid() const
+  bool SMRingBuffer::isValid() const
   {
-    assert(m_smKey > 0);
-    assert(m_startPtr);
-
-    const uint32_t    bufSize = size();
-    assert(writePos() < bufSize);
-    assert(readPos() < bufSize);
+    return (m_smKey > 0 && m_startPtr && writePos() < size() && readPos() < size());
   }
 
   void SMRingBuffer::dump() const
   {
     trace("SMRingBuffer::dump()");
 
+    trace("m_isCreator = %s", m_isCreator ? "true" : "false");
     trace("m_smKey = %ul", (unsigned long)(m_smKey));
     trace("m_id = %d", m_id);
     trace("size() = %ul", (unsigned long)(size()));

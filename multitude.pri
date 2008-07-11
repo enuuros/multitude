@@ -10,7 +10,7 @@ CONFIG += release
 CONFIG -= debug
 
 # Uncomment for debug build
-#CONFIG += debug
+CONFIG += debug
 
 #MULTI_CORE_LIBS = -lNimble -lDyslexic -lLuminous -lMultiTouch -lMultiStateDisplay -lNotable -lRadiant -lValueIO -lxerces-c -lGLEW -lGraphicsMagick
 

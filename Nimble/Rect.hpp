@@ -86,7 +86,25 @@ namespace Nimble {
 
     void set(const Vector2T<T> &point, T radius)
     { m_low = point - radius; m_high = point + radius; }
-  
+
+    void setLow(const Vector2T<T> &low)
+    { m_low = low; }
+
+    void setHigh(const Vector2T<T> &high)
+    { m_high = high; }
+
+    void setLowX(const T lowX)
+    { m_low.x = lowX; }
+
+    void setLowY(const T lowY)
+    { m_low.y = lowY; }
+
+    void setHighX(const T highX)
+    { m_high.x = highX; }
+
+    void setHighY(const T highY)
+    { m_high.y = highY; }
+
     inline Vector2T<T> center() const { return (m_low + m_high) * (T) 0.5; }
     inline Vector2T<T> span() const { return m_high - m_low; }
     inline Vector2T<T> topCenter() const;

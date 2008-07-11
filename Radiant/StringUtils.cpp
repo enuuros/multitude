@@ -26,7 +26,7 @@ namespace Radiant
 
     using namespace std;
 
-    void eraseNonVisibles(std::string & s)
+    void eraseNonVisibles(string & s)
     {
       for(unsigned i = 0; i < s.size();) {
         if(s[i] < 23)
@@ -36,13 +36,13 @@ namespace Radiant
       }
     }
 
-    std::wstring stringTowstring(const std::string & str)
+    wstring stringTowstring(const string & str)
     {
-      std::wstring  wstr;
+      wstring  wstr;
 
-      const int     l = str.length();
+      const int   l = str.length();
       wstr.resize(l);
-      for(register int i = 0; i < l; i++)
+      for(int i = 0; i < l; i++)
       {
         wstr[i] = wchar_t(str[i]);
       }
@@ -50,13 +50,13 @@ namespace Radiant
       return wstr;
     }
 
-    std::string wstringTostring(const std::wstring & wstr)
+    string wstringTostring(const wstring & wstr)
     {
-      std::string   str;
+      string   str;
 
-      const int     l = wstr.length();
+      const int   l = wstr.length();
       str.resize(l);
-      for(register int i = 0; i < l; i++)
+      for(int i = 0; i < l; i++)
       {
         str[i] = char(wstr[i]);
       }
@@ -88,7 +88,7 @@ namespace Radiant
         out.push_back(piece);
     }
 
-    void split(const std::wstring & ws, const std::wstring & delim,
+    void split(const wstring & ws, const wstring & delim,
         WStringList & out)
     {
       out.clear();
@@ -99,8 +99,8 @@ namespace Radiant
       }
 
       // Find first a delimiter
-      std::wstring  wscopy(ws);
-      size_t        pos = wscopy.find_first_of(delim);
+      wstring   wscopy(ws);
+      size_t    pos = wscopy.find_first_of(delim);
 
       // Loop until no delimiters left
       while(pos != wscopy.npos)
@@ -117,23 +117,22 @@ namespace Radiant
       }
     }
 
-
     int lineCount(const char * s)
     {
       if(!s)
-	return 0;
+        return 0;
 
       int n = s[0] ? 1 : 0;
 
       for(; s[0] != 0; s++) {
-	if(s[0] == '\n')
-	  n++;
+        if(s[0] == '\n')
+          n++;
       }
 
       return n;
     }
 
-    void utf8ToWString(std::wstring & dest, const std::string & src)
+    void utf8ToWString(wstring & dest, const string & src)
     {
       int len = utf8DecodedLength(src);
 
@@ -174,7 +173,7 @@ namespace Radiant
       }
     }
 
-    void wstringToUtf8(std::string & dest, const std::wstring & src)
+    void wstringToUtf8(string & dest, const wstring & src)
     {
       int bytes = utf8EncodedLength(src);
       dest.resize(bytes);
@@ -207,7 +206,7 @@ namespace Radiant
       }
     }
 
-    int utf8DecodedLength(const std::string & src)
+    int utf8DecodedLength(const string & src)
     {
       int characters = 0;
 
@@ -235,7 +234,7 @@ namespace Radiant
       return characters;
     }
 
-    int utf8EncodedLength(const std::wstring & src)
+    int utf8EncodedLength(const wstring & src)
     {
       int bytes = 0;
 
