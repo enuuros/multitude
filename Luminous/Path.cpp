@@ -346,11 +346,11 @@ void Path::renderSpline()
   delete s;
 }
 
-void Path::renderLineStrip() const
+void Path::renderLineStrip(const Nimble::Matrix3f & m) const
 {
   glBegin(GL_LINE_STRIP);
   for(size_t i = 0; i < m_points.size(); i++) {
-    glVertex2fv(m_points[i].data());
+    glVertex2fv((m * m_points[i]).data());
   }
   glEnd();
 }

@@ -24,13 +24,19 @@ class TCBSpline2
     Nimble::Vector2f value(float t) const;
     Nimble::Vector2f firstDerivative(float t) const;
 
+    float length() const { return m_time.back(); }
+
     void render() const;
     void renderQuads(float step, float thickness, const Nimble::Matrix3f & m) const;
+
+    void transform(const Nimble::Matrix3f & m);
 
   protected:
     void computePoly(int i0, int i1, int i2, int i3);
 
     void getKeyInfo(float t, int & key, float & dt) const;
+
+    void rebuildPolys();
    
     size_t m_segments; 
     std::vector<float> m_time;
