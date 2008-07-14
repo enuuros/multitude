@@ -12,6 +12,8 @@ LIBS += $$LIB_SCREENPLAY $$LIB_RADIANT $$LIB_LUMINOUS
 LIBS += $$LIB_VALUABLE
 
 CONFIG += qt
+CONFIG -= debug
+
 QT = core gui opengl xml
 
 PKGCONFIG += GraphicsMagick++

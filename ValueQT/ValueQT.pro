@@ -7,6 +7,7 @@ SOURCES += HasValuesQT.cpp
 TARGET = ValueQT
 
 CONFIG += qt
+CONFIG -= debug
 
 QT = core
 

@@ -334,14 +334,42 @@ namespace Nimble {
     Rect bounds(0, 0, 1, 1);
 
     if(offsets) {
+      
+      Vector2 tests[4] = { 
+	project(m_matrix, Vector2(m_width, m_height / 2)),
+	project(m_matrix, Vector2(0, m_height / 2)),
+	project(m_matrix, Vector2(m_width / 2, 0)),
+	project(m_matrix, Vector2(m_width / 2, m_height))
+      };
+
+      int i;
+      Rect b2(tests[0]);
+      
+      for(i = 1; i < 4; i++)
+	b2.expand(tests[i]);
+
+      for(i = 0; i < 4; i++) {
+	Vector2 test = tests[i];
+	
+	if(test.y == b2.low().y)
+	  bounds.low().y -= (*offsets)[i];
+	else if(test.y == b2.high().y)
+	  bounds.high().y += (*offsets)[i];
+	else if(test.x == b2.low().x)
+	  bounds.low().x -= (*offsets)[i];
+	else if(test.x == b2.high().x)
+	  bounds.high().x += (*offsets)[i];
+      }
+		  
       /*
       printf("KeyStone::updateLimits # offsets: %f %f %f %f\n",
              (*offsets)[0], (*offsets)[1], (*offsets)[2], (*offsets)[3]);
       */
-      bounds.low().x -= (*offsets)[0];
+      /* bounds.low().x -= (*offsets)[0];
       bounds.low().y -= (*offsets)[2];
       bounds.high().x += (*offsets)[1];
       bounds.high().y += (*offsets)[3];
+      */
     }
 
     int count = 0;
@@ -381,7 +409,7 @@ namespace Nimble {
 
       int wid = last - first;
       /* v = project(Vector2(640, y));
-	 printf("Projecion limits[%d] = %d - %d (%d %.3f %.3f)\n", y, 
+	 printf("Projection limits[%d] = %d - %d (%d %.3f %.3f)\n", y, 
 	 first, last, wid, v.x, v.y);
       */
       limits[y].make(first, wid);

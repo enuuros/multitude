@@ -57,7 +57,8 @@ MULTI_LIB_FLAG = -L
 
 macx {
 
-  withbundles = $$(MULTI_BUNDLES)
+  # withbundles = $$(MULTI_BUNDLES)
+  withbundles = YES
 
   LIB_OPENGL = -framework,OpenGL
 
