@@ -150,7 +150,8 @@ namespace Luminous {
 
   void TCBSpline2::renderQuads(float step, float thickness, const Nimble::Matrix3f & m) const
   {
-    float len = m_time.back();
+    const float len = m_time.back();
+    const float ht = 0.5f * thickness;
 
     glBegin(GL_QUAD_STRIP);
 
@@ -160,8 +161,8 @@ namespace Luminous {
       Nimble::Vector2f n(-d.y, d.x);
       n.normalize();
 
-      Nimble::Vector2f v0 = p + thickness * n;
-      Nimble::Vector2f v1 = p - thickness * n;
+      Nimble::Vector2f v0 = p + ht * n;
+      Nimble::Vector2f v1 = p - ht * n;
 
       v0 = (m * v0).xy();
       v1 = (m * v1).xy();

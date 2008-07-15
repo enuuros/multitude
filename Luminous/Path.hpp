@@ -16,6 +16,7 @@ namespace Luminous {
   class Path : public Valuable::HasValues
   {
     public:
+      /// @todo get rid of this id
       Path(long id);
 
       void addPoint(Nimble::Vector2f p) { m_points.push_back(p); }
@@ -42,9 +43,9 @@ namespace Luminous {
       size_t size() const { return m_points.size(); }
       Nimble::Vector2f point(size_t i) const { return m_points[i]; }
 
-      const char * const type() const { return "Path"; }
-      xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      bool deserializeXML(xercesc::DOMElement * element);
+      virtual const char * const type() const { return "Path"; }
+      virtual xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
+      virtual bool deserializeXML(xercesc::DOMElement * element);
 
       Nimble::Vector2f center() const;
 
