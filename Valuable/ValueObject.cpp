@@ -85,7 +85,7 @@ namespace Valuable
 
   void ValueObject::emitChange()
   {
-    Radiant::trace("ValueObject::emitChange");
+//    Radiant::trace("ValueObject::emitChange # '%s'", m_name.c_str());
     ChangeMap::addChange(this);
   }
 
