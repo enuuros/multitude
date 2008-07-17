@@ -55,7 +55,7 @@ TARGET = Luminous
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE
  
-linux-g++:LIBS += -lGL -lGLU
+unix:LIBS += -lGL -lGLU
 
 PKGCONFIG += GraphicsMagick++
 

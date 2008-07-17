@@ -51,7 +51,7 @@ PKGCONFIG += freetype2
 
 LIBS += $$LIB_LUMINOUS $$LIB_RADIANT 
 
-linux-g++:LIBS += -lGL -lGLU
+unix:LIBS += -lGL -lGLU
 
 macx:LIBS += -framework,OpenGL
 

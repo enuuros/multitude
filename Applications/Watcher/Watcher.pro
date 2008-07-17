@@ -8,7 +8,7 @@ TARGET = Watcher
 
 DEPENDPATH += ../../
 
-linux-g++ {
+unix {
   BASEPATH=/usr
 }
 

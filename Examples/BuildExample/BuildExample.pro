@@ -5,7 +5,7 @@ SOURCES += Main.cpp
 
 TARGET = BuildExample
 
-linux-g++:LIBS += -lNimble
+unix:LIBS += -lNimble
 
 macx:LIBS += -framework,Nimble
 
