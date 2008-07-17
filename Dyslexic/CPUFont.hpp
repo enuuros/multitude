@@ -33,8 +33,14 @@ namespace Dyslexic
     public:
       virtual ~CPUFont() {}
   
+
       virtual float advance(const char * str) = 0;
       virtual float advance(const wchar_t * str) = 0;
+
+    float advance(const std::string & str)
+    {
+      return advance(str.c_str());
+    }
 
       virtual int faceSize() const = 0;
       virtual bool setFaceSize(int size, int resolution = DYSLEXIC_DEFAULT_RESOLUTION) = 0;
