@@ -355,19 +355,42 @@ namespace Luminous {
   {
     glBegin(GL_TRIANGLE_STRIP);
 
+    Vector2 as = area.size();
+
+    // Hole texture UV-coordinates
+    Rectf htxuv(hole.low() - area.low(), hole.high() - area.low());
+
+    htxuv.low().descale(as);
+    htxuv.high().descale(as);
+
+    glTexCoord2f(0, 0);
     glVertex2fv(area.low().data());
+
+    glTexCoord2fv(htxuv.low().data());
     glVertex2fv(hole.low().data());
 
+    glTexCoord2f(0, 1);
     glVertex2fv(area.lowHigh().data());
+
+    glTexCoord2fv(htxuv.lowHigh().data());
     glVertex2fv(hole.lowHigh().data());
 
+    glTexCoord2f(1, 1);
     glVertex2fv(area.high().data());
+
+    glTexCoord2fv(htxuv.high().data());
     glVertex2fv(hole.high().data());
 
+    glTexCoord2f(1, 0);
     glVertex2fv(area.highLow().data());
+
+    glTexCoord2fv(htxuv.highLow().data());
     glVertex2fv(hole.highLow().data());
 
+    glTexCoord2f(0, 0);
     glVertex2fv(area.low().data());
+
+    glTexCoord2fv(htxuv.low().data());
     glVertex2fv(hole.low().data());
 
     glEnd();
@@ -1053,4 +1076,132 @@ namespace Luminous {
 
     return e == 0;
   }
+
+  void Utils::glCircularHalo(float x, float y, float inside, float outside,
+			     float radians1,
+			     float radians2, 
+			     int rings, int sectors,
+			     const float * rgba)
+  {
+    float span = outside - inside;
+    
+    float spanstep = span / rings;
+
+    float secstep = (radians2 - radians1) / sectors;
+
+    glColor4fv(rgba);
+    
+    glBegin(GL_TRIANGLE_FAN);
+
+    glVertex2f(x, y);
+    
+    for(int sec = 0; sec <= sectors; sec++) {
+      
+      float angle = radians1 + secstep * sec;
+      float yd = cosf(angle);
+      float xd = sinf(angle);
+
+      glVertex2f(x + xd * inside, y + yd * inside);
+    }
+
+    glEnd();
+
+    float r = rgba[0];
+    float g = rgba[1];
+    float b = rgba[2];
+    float a = rgba[3];
+
+    for(int ring = 0; ring < rings; ring++) {
+
+      float rel1 = ring / (float) rings;
+      float rel2 = (ring + 1) / (float) rings;
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
+      float a2 = a * (0.5f + 0.5f * cosf(rel2 * Math::PI));
+
+      float rad1 = ring * spanstep + inside;
+      float rad2 = (ring+1) * spanstep + inside;
+
+      glBegin(GL_QUAD_STRIP);
+
+      for(int sec = 0; sec <= sectors; sec++) {
+	
+	float angle = radians1 + secstep * sec;
+	float yd = cosf(angle);
+	float xd = sinf(angle);
+
+	glColor4f(r, g, b, a1);
+	glVertex2f(x + xd * rad1, y + yd * rad1);
+
+	glColor4f(r, g, b, a2);
+	glVertex2f(x + xd * rad2, y + yd * rad2);
+      }
+
+      glEnd();
+    }
+
+  }
+
+  void Utils::glHorizontalHalo(float x1, float y1, 
+			       float x2, float y2,
+			       float inside, float outside,
+			       int rings, int sectors,
+			       const float * rgba)
+  {
+    glCircularHalo(x2, y2, inside, outside, Math::PI * 0.0f, Math::PI * 1.0f,
+		   rings, sectors / 2, rgba);
+    glCircularHalo(x1, y1, inside, outside, Math::PI * 1.0, Math::PI * 2.0f,
+		   rings, sectors / 2, rgba);
+
+    Vector2 p1(x1, y1);
+    Vector2 p2(x2, y2);
+
+    Vector2 dir = p2 - p1;
+
+    Vector2 perp = dir.perpendicular();
+    perp.normalize();
+
+    // perp /= rings;
+    
+    float r = rgba[0];
+    float g = rgba[1];
+    float b = rgba[2];
+    float a = rgba[3];
+
+    float span = outside - inside;
+
+    glBegin(GL_QUAD_STRIP);
+
+    int ring;
+
+    for( ring = - rings; ring <= 0; ring++) {
+
+      float rel1 = ring / (float) rings;
+
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
+
+      float d = rel1 * span - inside;
+      
+      glColor4f(r, g, b, a1);
+      glVertex2fv((p1 + d * perp).data());
+      glVertex2fv((p2 + d * perp).data());
+    }
+
+    for(; ring <= rings; ring++) {
+
+      float rel1 = ring / (float) rings;
+
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
+
+      float d = rel1 * span + inside;
+      
+      glColor4f(r, g, b, a1);
+      glVertex2fv((p1 + d * perp).data());
+      glVertex2fv((p2 + d * perp).data());
+    }
+    
+
+
+    glEnd();
+  }
+
 }

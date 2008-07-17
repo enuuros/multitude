@@ -20,6 +20,9 @@
 #include <Magick++.h>
 #include "Image.hpp"
 #include "GLResource.hpp"
+
+#include <Nimble/Vector2.hpp>
+
 #include <Patterns/NotCopyable.hpp>
 
 // JJK
@@ -75,6 +78,9 @@ namespace Luminous
     int width() const { return m_width; }
     int height() const { return m_height; }
  
+    Nimble::Vector2i size() const
+    { return Nimble::Vector2i(m_width, m_height); }
+
     void setWidth(int w) { m_width = w; }
     void setHeight(int h) { m_height = h; }
 

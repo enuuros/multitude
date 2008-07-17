@@ -164,6 +164,18 @@ namespace Luminous {
     /** Check that there are no OpenGL errors. If there has been an
 	error, then the error is printed along with msg. */
     static bool glCheck(const char * msg);
+
+    static void glCircularHalo(float x, float y, float inside, float outside,
+			       float radians1,
+			       float radians2, 
+			       int segments, int sectors,
+			       const float * rgba);
+
+    static void glHorizontalHalo(float x1, float y1, 
+				 float x2, float y2,
+				 float inside, float outside,
+				 int segments, int sectors,
+				 const float * rgba);
   };
 
 }

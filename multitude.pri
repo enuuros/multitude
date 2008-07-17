@@ -12,19 +12,6 @@ CONFIG -= debug
 # Uncomment for debug build
 CONFIG += debug
 
-#MULTI_CORE_LIBS = -lNimble -lDyslexic -lLuminous -lMultiTouch -lMultiStateDisplay -lNotable -lRadiant -lValueIO -lxerces-c -lGLEW -lGraphicsMagick
-
-#macx {
-#  MULTI_CORE_LIBS += -Wl,-framework,Cocoa -framework,OpenGL
-#  BASEPATH = /usr/local
-#}
-#linux {
-#  MULTI_CORE_LIBS += -lGLU  -lGL
-#  BASEPATH = /usr
-#}
-
-#MULTI_USUAL_LIBS = $$MULTI_CORE_LIBS -lMultiWidgets -lSDL
-
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
@@ -82,7 +69,6 @@ macx {
     LIB_VALUABLE = -framework,Valuable
     LIB_VALUEIO = -framework,ValueIO
     LIB_VIDEODISPLAY = -framework,VideoDisplay
-
   }
 
 }
