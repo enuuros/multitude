@@ -115,9 +115,8 @@ namespace {
 
 namespace Luminous {
 
-Path::Path(long id)
-  : HasValues(0, "Path", false),
-  m_id(id)
+Path::Path()
+  : HasValues(0, "Path", false)
 {}
 
 void Path::render() 

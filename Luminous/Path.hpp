@@ -16,8 +16,7 @@ namespace Luminous {
   class Path : public Valuable::HasValues
   {
     public:
-      /// @todo get rid of this id
-      Path(long id);
+      Path();
 
       void addPoint(Nimble::Vector2f p) { m_points.push_back(p); }
 
@@ -31,8 +30,6 @@ namespace Luminous {
       void renderDebug() const;
 
       void prepare();
-
-      long id() const { return m_id; }
 
       void simplify(float clusterTolerance, float dpTolerance);
 
@@ -60,7 +57,6 @@ namespace Luminous {
     protected:
       typedef std::vector<Nimble::Vector2f> container;
 
-      long m_id;
       container m_points;
   };
 
