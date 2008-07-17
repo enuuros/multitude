@@ -71,13 +71,14 @@ SOURCES += WatchDog.cpp
 #linux-g++:HEADERS += TimeSignaller.hpp
 #linux-g++:SOURCES += TimeSignaller.cpp
 
-unix:SOURCES += PlatformUtilsLinux.cpp
+# Cannot be "unix" -> conflict on OSX
+linux-g++:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 
 TARGET = Radiant
 
-unix:LIBS += -lpthread -lrt -ldl
+unix:LIBS += -lpthread $$LIB_RT -ldl
 
 macx:LIBS += -framework,CoreFoundation
 PKGCONFIG += libdc1394-2

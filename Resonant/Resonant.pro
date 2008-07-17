@@ -22,16 +22,15 @@ SOURCES += ModuleGain.cpp
 SOURCES += ModuleOutCollect.cpp
 SOURCES += ModuleSamplePlayer.cpp
 
-unix {
-  HEADERS += AudioDevice.hpp 
-  SOURCES += AudioDevice.cpp
-}
+# Obsolete code, never used:
+#unix {
+#  HEADERS += AudioDevice.hpp 
+#  SOURCES += AudioDevice.cpp
+#}
 
 TARGET = Resonant
 
 LIBS += $$LIB_RADIANT 
-
-unix:LIBS += -lasound
 
 PKGCONFIG += portaudio-2.0 sndfile
 
