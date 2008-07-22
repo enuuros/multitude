@@ -118,7 +118,9 @@ namespace Luminous {
         /// The bounds of the graphics
         /** In principle this method only combines the information you
           get with graphicsLocation() and graphicsSize(). In practice
-          how-ever that information is not exactly correct as */
+          how-ever that information is not exactly correct as the
+          bounds also need to include the small extra areas, if one is
+          using edge-blending. */
         const Rect & graphicsBounds() const 
         { return m_graphicsBounds; }
 
