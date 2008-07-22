@@ -12,7 +12,10 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "GPUFont.hpp"
+
+#include "CPUFont.hpp"
 
 namespace Dyslexic
 {
@@ -105,6 +108,19 @@ namespace Dyslexic
   void GPUFont::render(const std::wstring & str, const Nimble::Matrix3 & transform)
   {
     internalRender(str.c_str(), str.length(), transform);
+  }
+
+
+  void GPUFont::renderCentered(const char * str, float x, float y)
+  {
+    BBox bb;
+
+    cpuFont()->bbox(str, bb);
+
+    float w = bb.width();
+    float h = bb.height();
+
+    render(str, x - w * 0.5f, y + h * 0.5f);
   }
 
 }

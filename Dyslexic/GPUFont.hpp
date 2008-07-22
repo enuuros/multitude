@@ -35,7 +35,6 @@ namespace Dyslexic
       void render(const char * str, const Nimble::Matrix3 & transform);
       void render(const char * str, float x, float y);
 
-
       void render(const std::string & str);
       void render(const std::string & str, const Nimble::Matrix3 & transform);
       void render(const std::string & str, const Nimble::Vector2 & location);
@@ -47,6 +46,8 @@ namespace Dyslexic
 
       void render(const wchar_t * str);
       void render(const wchar_t * str, const Nimble::Matrix3 & transform);
+
+      void renderCentered(const char * str, float x, float y);
 
     protected:
       // The actual rendering methods, override these in derived classes
