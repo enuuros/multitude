@@ -68,6 +68,9 @@ namespace Resonant {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
+
+  DSPNetwork * DSPNetwork::m_instance = 0;
+
   DSPNetwork::DSPNetwork()
     : m_continue(false),
       m_doneCount(0)
@@ -80,10 +83,16 @@ namespace Resonant {
     tmp.m_module = m_collect;
 
     m_newItems.push_back(tmp);
+
+    if(!m_instance)
+      m_instance = this;
   }
 
   DSPNetwork::~DSPNetwork()
   {
+    if(m_instance == this)
+      m_instance = 0;
+
     for(uint i = 0; i < m_buffers.size(); i++)
       m_buffers[i].clear();
   }

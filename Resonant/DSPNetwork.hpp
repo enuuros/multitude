@@ -152,6 +152,8 @@ namespace Resonant {
 
     void send(ControlData & control);
 
+    static DSPNetwork * instance() { return m_instance; }
+    
   protected:
 
     virtual int callback(const void *in, void *out,
@@ -196,6 +198,8 @@ namespace Resonant {
     int         m_doneCount;
 
     Radiant::MutexAuto m_newMutex;
+
+    static DSPNetwork * m_instance;
   };
 
 }

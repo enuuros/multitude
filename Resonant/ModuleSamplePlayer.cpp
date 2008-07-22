@@ -451,7 +451,7 @@ namespace Resonant {
     
   void ModuleSamplePlayer::dropVoice(unsigned i)
   {
-    trace("ModuleSamplePlayer::dropVoice # %d", i);
+    // trace("ModuleSamplePlayer::dropVoice # %d", i);
     assert((uint) i < m_active);
     m_active--;
     m_voiceptrs[i]->clear();
