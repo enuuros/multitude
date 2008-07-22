@@ -47,6 +47,8 @@ namespace Dyslexic
       void render(const wchar_t * str);
       void render(const wchar_t * str, const Nimble::Matrix3 & transform);
 
+      /** Render text that is centered both horizontally and
+	  vertically. */
       void renderCentered(const char * str, float x, float y);
 
     protected:
