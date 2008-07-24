@@ -89,6 +89,35 @@ namespace Nimble {
     void copy(const S * data) { x = data[0]; y = data[1]; }
   };
 
+
+  template <class T> inline T crossProduct(const Vector2T<T>& v1, const Vector2T<T>& v2) { return T(v1.x * v2.y - v1.y * v2.x); }
+
+  template <class T> inline bool intersects(const Vector2T<T>& line1start, const Vector2T<T>& line1end,
+    const Vector2T<T>& line2start, const Vector2T<T>& line2end)
+  {
+    if((Math::Max(line1start.x, line1end.x) >= Math::Min(line2start.x,line2end.x))
+    && (Math::Max(line2start.x, line2end.x) >= Math::Min(line1start.x,line1end.x))
+    && (Math::Max(line1start.y, line1end.y) >= Math::Min(line2start.x,line2end.y))
+    && (Math::Max(line2start.y, line2end.y) >= Math::Min(line1start.x,line1end.y)))
+    {
+      int sign1 = Math::Sign(crossProduct(line2start - line1start, line1end - line1start));
+      int sign2 = Math::Sign(crossProduct(line2end - line1start, line1end - line1start));
+
+      if(sign1 == sign2 || sign1 == 0 || sign2 == 0)
+      {
+        sign1 = Math::Sign(crossProduct(line1start - line2start, line2end - line2start));
+        sign2 = Math::Sign(crossProduct(line1end - line2start, line2end - line2start));
+
+        if(sign1 == sign2 || sign1 == 0 || sign2 == 0)
+        {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, const Vector2T<T>& v2)	{ return Vector2T<T>(v1.x+v2.x, v1.y+v2.y); }
   template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, T v2)	{ return Vector2T<T>(v1.x+v2, v1.y+v2); }
   template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v1, const Vector2T<T>& v2)	{ return Vector2T<T>(v1.x-v2.x, v1.y-v2.y); }

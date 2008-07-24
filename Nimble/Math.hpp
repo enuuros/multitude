@@ -27,6 +27,9 @@ namespace Nimble {
   {
     // Constants:
 
+    // for real number comparisons
+    const double TOLERANCE  = 0.000001f;
+
     const double PI         = 3.1415926535897931;
     const double TWO_PI     = 6.2831853071795862;
     const double HALF_PI    = 1.57079632679489660;
@@ -37,6 +40,8 @@ namespace Nimble {
     const double EPSILON    = 1.0e-10;
 
     // float & double inlines:
+
+    inline int Sign(float v) { return ((v < 0.0f) ? -1 : ((v == 0.0f) ? 0 : 1)); }
 
     inline float Cos(float v)  { return cosf(v); }
     inline float Sin(float v)  { return sinf(v); }  
@@ -51,7 +56,9 @@ namespace Nimble {
     inline float ASin(float v)  { return asinf(v); }
     inline float ATan(float v)  { return atanf(v); }
     inline float ATan2(float x, float y)  { return atan2f(x, y); }
-  
+
+    inline int Sign(double v) { return ((v < 0.0) ? -1 : ((v == 0.0) ? 0 : 1)); }
+
     inline double Cos(double v)  { return cos(v); }
     inline double Sin(double v)  { return sin(v); } 
     inline double Tan(double v)  { return tan(v); }  

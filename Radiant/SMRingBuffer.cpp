@@ -32,10 +32,11 @@ namespace Radiant
   // rw-rw-rw-.
   uint32_t  SMRingBuffer::smDefaultPermissions = 0666;
 
-  uint32_t  SMRingBuffer::smHeaderSize = sizeof(uint32_t) * 3;
+  uint32_t  SMRingBuffer::smHeaderSize = sizeof(uint32_t) * 4;
 
   // Set maximum buffer size to the largest possible value of a 32-bit integer less (header size + 1).
   uint32_t  SMRingBuffer::maxSize = 4294967295 - (smHeaderSize + 1);
+
 
   // Construction / destruction.
 
@@ -123,7 +124,9 @@ namespace Radiant
     if(m_isCreator)
     // This is the creating object
     {
-     // write size to header
+      // initialize header
+      memset(smPtr, 0, smHeaderSize);
+      // write size to header
       memcpy(smPtr, & size, sizeof(uint32_t));
     }
 
@@ -219,6 +222,18 @@ namespace Radiant
 
     assert(src);
 
+    // Do not write if other process is writing
+
+    const uint32_t  prevReadWriteState = readWriteState();
+    if(prevReadWriteState & RWS_WRITING)
+    {
+      return 0;
+    }
+
+    // Set read/write state to prevent other process from writing whilst this process is writing
+
+    setReadWriteState(prevReadWriteState | RWS_WRITING);
+
     // Check sufficient space available
 
     uint32_t  firstAvl = 0;
@@ -251,6 +266,10 @@ namespace Radiant
 
     advanceWritePos(numBytes);
 
+    // Restore previous read/write state
+
+    setReadWriteState(prevReadWriteState);
+
     return numBytes;
   }
 
@@ -264,6 +283,18 @@ namespace Radiant
 
     assert(srcArray);
     assert(numBytesArray);
+
+    // Do not write if other process is writing
+
+    const uint32_t  prevReadWriteState = readWriteState();
+    if(prevReadWriteState & RWS_WRITING)
+    {
+      return 0;
+    }
+
+    // Set read/write state to prevent other process from writing whilst this process is writing
+
+    setReadWriteState(prevReadWriteState | RWS_WRITING);
 
     // Compute total size of blocks
 
@@ -312,9 +343,13 @@ namespace Radiant
       wPos = (wPos + numBytesArray[i]) % sz;
     }
 
-    // Finally advance the write position
+    // Advance the write position
 
     advanceWritePos(totalBytes);
+
+    // Restore previous read/write state
+
+    setReadWriteState(prevReadWriteState);
 
     return totalBytes;
   }
@@ -421,6 +456,27 @@ namespace Radiant
 
   uint32_t SMRingBuffer::read(void * const dst, const uint32_t numBytes)
   {
+    if(numBytes == 0)
+    {
+      return 0;
+    }
+
+    assert(dst);
+
+    // Do not read if other process is reading
+
+    const uint32_t  prevReadWriteState = readWriteState();
+    if(prevReadWriteState & RWS_READING)
+    {
+      return 0;
+    }
+
+    // Set read/write state to prevent other process from reading whilst this process is reading
+
+    setReadWriteState(prevReadWriteState | RWS_READING);
+
+    // Read the data
+
     const uint32_t  bytesPeeked = peek(dst, numBytes);
 
     if(bytesPeeked)
@@ -430,12 +486,38 @@ namespace Radiant
       advanceReadPos(bytesPeeked);
     }
 
+    // Restore previous read/write state
+
+    setReadWriteState(prevReadWriteState);
+
     return bytesPeeked;
   }
 
   uint32_t SMRingBuffer::read(const uint32_t numBlocks, void * const * const dstArray,
     const uint32_t * const numBytesArray)
   {
+    if(numBlocks == 0)
+    {
+      return 0;
+    }
+
+    assert(dstArray);
+    assert(numBytesArray);
+
+    // Do not read if other process is reading
+
+    const uint32_t  prevReadWriteState = readWriteState();
+    if(prevReadWriteState & RWS_READING)
+    {
+      return 0;
+    }
+
+    // Set read/write state to prevent other process from reading whilst this process is reading
+
+    setReadWriteState(prevReadWriteState | RWS_READING);
+
+    // Read the data
+
     const uint32_t  bytesPeeked = peek(numBlocks, dstArray, numBytesArray);
 
     if(bytesPeeked)
@@ -444,6 +526,10 @@ namespace Radiant
 
       advanceReadPos(bytesPeeked);
     }
+
+    // Restore previous read/write state
+
+    setReadWriteState(prevReadWriteState);
 
     return bytesPeeked;
   }
@@ -454,6 +540,18 @@ namespace Radiant
     {
       return 0;
     }
+
+    // Do not discard if other process is reading
+
+    const uint32_t  prevReadWriteState = readWriteState();
+    if(prevReadWriteState & RWS_READING)
+    {
+      return 0;
+    }
+
+    // Set read/write state to prevent other process from reading whilst this process is discarding
+
+    setReadWriteState(prevReadWriteState | RWS_READING);
 
     // Check that discard will not overlap write position
 
@@ -467,6 +565,10 @@ namespace Radiant
     // Discard the data
 
     advanceReadPos(numBytes);
+
+    // Restore previous read/write state
+
+    setReadWriteState(prevReadWriteState);
 
     return numBytes;
   }
@@ -513,7 +615,7 @@ namespace Radiant
 
   bool SMRingBuffer::isValid() const
   {
-    return (m_smKey > 0 && m_startPtr && writePos() < size() && readPos() < size());
+    return (m_smKey > 0 && m_startPtr && writePos() < size() && readPos() < size() && readWriteState() <= RWS_WRITING);
   }
 
   void SMRingBuffer::dump() const
@@ -528,6 +630,7 @@ namespace Radiant
 
     trace("writePos() = %ul", (unsigned long)(writePos()));
     trace("readPos() = %ul", (unsigned long)(readPos()));
+    trace("readWriteState() = %ul", (unsigned long)(readWriteState()));
 
     trace("used = %ul", (unsigned long)(used()));
     trace("available() = %ul", (unsigned long)(available()));

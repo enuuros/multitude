@@ -62,14 +62,27 @@ namespace Radiant
     public:
 
 
+      /// Class types.
+
+      /// The read/write state tells whether the buffer is currently being read from or written
+      /// to and is used to prevent simultanous reads or simultaneous writes by sharing processes.
+      enum ReadWriteState
+      {
+        RWS_NONE    = 0x00,     ///< neither reading nor writing
+        RWS_READING = 0x01,     ///< currently reading
+        RWS_WRITING = 0x02,     ///< currently writing
+      };
+
+
       /// Static data.
 
       /// Default permissions for shared memory.
       static uint32_t   smDefaultPermissions;
 
       /// Size of header information preceding ring buffer in shared memory.
-      /// The header contains 3 (x 32-bit integer) items that must be available to all sharing
-      /// processes: buffer size, write position and read position, in that order.
+      /// The header contains 4 (x 32-bit integer) items that must be available to all sharing
+      /// processes: buffer size, write position, read position and read/write state,
+      /// in that order.
       static uint32_t   smHeaderSize;
 
       /// Maximum size in bytes of buffer.
@@ -100,19 +113,21 @@ namespace Radiant
       }
 
       /// Return the write position.
-      /// @note Call this function regularly to monitor additions to the buffer (the
-      /// position changes with each write()).
       uint32_t writePos() const
       {
         return * ((uint32_t *)((m_startPtr - smHeaderSize) + sizeof(uint32_t)));
       }
 
       /// Return the read position.
-      /// @note Call this function regularly to monitor removals from the buffer (the
-      /// position changes with each read()).
       uint32_t readPos() const
       {
         return * ((uint32_t *)((m_startPtr - smHeaderSize) + sizeof(uint32_t) * 2));
+      }
+
+      /// Return the current read/write state.
+      uint32_t readWriteState() const
+      {
+        return * ((uint32_t *)((m_startPtr - smHeaderSize) + sizeof(uint32_t) * 3));
       }
 
       /// Set the write position.
@@ -125,6 +140,12 @@ namespace Radiant
       void setReadPos(const uint32_t readPos)
       {
         * ((uint32_t *)((m_startPtr - smHeaderSize) + sizeof(uint32_t) * 2)) = readPos;
+      }
+
+      /// Set the read/write state.
+      void setReadWriteState(const uint32_t readWriteState)
+      {
+        * ((uint32_t *)((m_startPtr - smHeaderSize) + sizeof(uint32_t) * 3)) = readWriteState;
       }
 
 
@@ -196,8 +217,8 @@ namespace Radiant
       /// @return Number of bytes discarded.
       uint32_t discard(const uint32_t numBytes);
 
-      /// Clear the ring buffer, reset write and read positions to start.
-      void clear() { setWritePos(0); setReadPos(0); }
+      /// Clear and reset the ring buffer.
+      void clear() { setWritePos(0); setReadPos(0); setReadWriteState(RWS_NONE); }
 
 
       /// Diagnostics.
