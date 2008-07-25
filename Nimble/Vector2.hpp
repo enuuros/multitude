@@ -89,35 +89,6 @@ namespace Nimble {
     void copy(const S * data) { x = data[0]; y = data[1]; }
   };
 
-
-  template <class T> inline T crossProduct(const Vector2T<T>& v1, const Vector2T<T>& v2) { return T(v1.x * v2.y - v1.y * v2.x); }
-
-  template <class T> inline bool intersects(const Vector2T<T>& line1start, const Vector2T<T>& line1end,
-    const Vector2T<T>& line2start, const Vector2T<T>& line2end)
-  {
-    if((Math::Max(line1start.x, line1end.x) >= Math::Min(line2start.x,line2end.x))
-    && (Math::Max(line2start.x, line2end.x) >= Math::Min(line1start.x,line1end.x))
-    && (Math::Max(line1start.y, line1end.y) >= Math::Min(line2start.x,line2end.y))
-    && (Math::Max(line2start.y, line2end.y) >= Math::Min(line1start.x,line1end.y)))
-    {
-      int sign1 = Math::Sign(crossProduct(line2start - line1start, line1end - line1start));
-      int sign2 = Math::Sign(crossProduct(line2end - line1start, line1end - line1start));
-
-      if(sign1 == sign2 || sign1 == 0 || sign2 == 0)
-      {
-        sign1 = Math::Sign(crossProduct(line1start - line2start, line2end - line2start));
-        sign2 = Math::Sign(crossProduct(line1end - line2start, line2end - line2start));
-
-        if(sign1 == sign2 || sign1 == 0 || sign2 == 0)
-        {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
   template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, const Vector2T<T>& v2)	{ return Vector2T<T>(v1.x+v2.x, v1.y+v2.y); }
   template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, T v2)	{ return Vector2T<T>(v1.x+v2, v1.y+v2); }
   template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v1, const Vector2T<T>& v2)	{ return Vector2T<T>(v1.x-v2.x, v1.y-v2.y); }
@@ -207,8 +178,188 @@ namespace Nimble {
   typedef Vector2T<int>    Vector2i;
   typedef Vector2T<double> Vector2d;
 
-} // namespace
 
+  /// Line slope types.
+  enum LineSlopeType
+  {
+    LS_VERTICAL,
+    LS_SLOPING,
+    LS_HORIZONTAL
+  };
+
+  /// Compute slope of line.
+  /// @param lineStart, lineEnd, the line.
+  /// @param slopeType, reference to int to receive slope type.
+  /// @param delta, reference to Vector2f to receive delta.
+  /// @return Slope value.
+  static float lineSlope(const Vector2f lineStart, const Vector2f lineEnd,
+    int & slopeType, Vector2f & delta)
+  {
+    float   m = 0.0f;
+
+    delta = lineEnd - lineStart;
+
+    if(delta.x == 0.0f)
+    {
+      slopeType = LS_VERTICAL;
+    }
+    else if(delta.y == 0.0f)
+    {
+      slopeType = LS_HORIZONTAL;
+    }
+    else
+    {
+      slopeType = LS_SLOPING;
+      m = delta.y / delta.x;
+    }
+
+    return m;
+  }
+
+  /// Test for intersection of line segments.
+  /// @param line1Start, line1End, first line.
+  /// @param line2Start, line2End, second line.
+  /// @param interPoint, optional pointer to vector to receive the intersection point.
+  /// @return true if line segments intersect.
+  static bool linesIntersect(const Vector2f line1Start, const Vector2f line1End,
+    const Vector2f line2Start, const Vector2f line2End, Vector2f * const interPoint = 0)
+  {
+    // Check if either line has zero length
+
+    if((line1Start == line1End) || (line2Start == line2End))
+    {
+      return false;
+    }
+
+    // Get slope and deltas of first line
+
+    int   slopeType1 = 0;
+    Vector2f  delta1;
+    const float   m1 = lineSlope(line1Start, line1End, slopeType1, delta1);
+
+    // Get slope and deltas of second line
+
+    int   slopeType2 = 0;
+    Vector2f  delta2;
+    const float   m2 = lineSlope(line2Start, line2End, slopeType2, delta2);
+
+    // Determine whether infinite lines cross: if so compute line parameters
+
+    bool  cross = false;
+    float   t1 = 0.0f;
+    float   t2 = 0.0f;
+
+    switch(slopeType1)
+    {
+      case LS_VERTICAL:
+      switch(slopeType2)
+      {
+        case LS_VERTICAL:
+        // Lines parallel - no intersection point
+        break;
+
+        case LS_SLOPING:
+        {
+          cross = true;
+          t2 = (line1Start.x - line2Start.x) / delta2.x;
+          t1 = (line2Start.y + (t2 * delta2.y) - line1Start.y) / delta1.y;
+        }
+        break;
+
+        case LS_HORIZONTAL:
+        {
+          cross = true;
+          t1 = (line2Start.y - line1Start.y) / delta1.y;
+          t2 = (line1Start.x - line2Start.x) / delta2.x;
+        }
+        break;
+      }
+      break;
+
+      case LS_SLOPING:
+      switch(slopeType2)
+      {
+        case LS_VERTICAL:
+        {
+          cross = true;
+          t1 = (line2Start.x - line1Start.x) / delta1.x;
+          t2 = (line1Start.y + (t1 * delta1.y) - line2Start.y) / delta2.y;
+        }
+        break;
+
+        case LS_SLOPING:
+        {
+          if(m1 == m2)
+          // Lines parallel - no intersection point
+          {
+          }
+          else
+          {
+            cross = true;
+            const float   value = delta2.x * delta1.y;
+            const float   divisor = 1.0f - (delta1.x * delta2.y) / value;
+            t1 = (line2Start.y / delta1.y + (line1Start.x * delta2.y) / value
+              - (line2Start.x * delta2.y) / value - line1Start.y / delta1.y) / divisor;
+            t2 = (line1Start.x + t1 * delta1.x - line2Start.x) / delta2.x;
+          }
+        }
+        break;
+
+        case LS_HORIZONTAL:
+        {
+          cross = true;
+          t1 = (line2Start.y - line1Start.y) / delta1.y;
+          t2 = (line1Start.x + (t1 * delta1.x) - line2Start.x) / delta2.x;
+        }
+        break;
+      };
+      break;
+
+      case LS_HORIZONTAL:
+      switch(slopeType2)
+      {
+        case LS_VERTICAL:
+        {
+          cross = true;
+          t1 = (line2Start.x - line1Start.x) / delta1.x;
+          t2 = (line1Start.y - line2Start.y) / delta2.y;
+        }
+        break;
+
+        case LS_SLOPING:
+        {
+          cross = true;
+          t2 = (line1Start.y - line2Start.y) / delta2.y;
+          t1 = (line2Start.x + t2 * delta2.x - line1Start.x) / delta1.x;
+        }
+        break;
+
+        case LS_HORIZONTAL:
+        // Lines parallel - no intersection point
+        break;
+      }
+      break;
+    }
+
+    if(!cross)
+    {
+      return false;
+    }
+
+    // Compute point of intersection
+
+    if(interPoint)
+    {
+      * interPoint = Vector2f(line1Start.x + t1 * delta1.x, line1Start.y + t1 * delta1.y);
+    }
+
+    // Return true only if point of intersection is on both lines
+
+    return(t1 >= 0.0f && t1 <= 1.0f && t2 >= 0.0f && t2 <= 1.0f);
+  }
+
+
+} // namespace
 
 
 template <class S, class T>
@@ -217,7 +368,6 @@ inline S &operator<<(S &os, const Nimble::Vector2T<T> &t)
   os << t.x << ' ' << t.y;
   return os;
 }
-
 
 
 #endif

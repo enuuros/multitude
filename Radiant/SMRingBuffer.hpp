@@ -18,7 +18,7 @@
 
 #include <Radiant/Trace.hpp>
 
-#include <assert.h>
+#include <cassert>
 #include <memory>
 
 #include <sys/ipc.h>

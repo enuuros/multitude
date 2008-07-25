@@ -41,8 +41,6 @@ namespace Nimble {
 
     // float & double inlines:
 
-    inline int Sign(float v) { return ((v < 0.0f) ? -1 : ((v == 0.0f) ? 0 : 1)); }
-
     inline float Cos(float v)  { return cosf(v); }
     inline float Sin(float v)  { return sinf(v); }  
     inline float Tan(float v)  { return tanf(v); }  
@@ -56,8 +54,6 @@ namespace Nimble {
     inline float ASin(float v)  { return asinf(v); }
     inline float ATan(float v)  { return atanf(v); }
     inline float ATan2(float x, float y)  { return atan2f(x, y); }
-
-    inline int Sign(double v) { return ((v < 0.0) ? -1 : ((v == 0.0) ? 0 : 1)); }
 
     inline double Cos(double v)  { return cos(v); }
     inline double Sin(double v)  { return sin(v); } 
@@ -78,6 +74,10 @@ namespace Nimble {
     inline double degToRad(const double degrees) { return (degrees * PI / 180.0); }
     inline double radToDeg(const double radians) { return (radians * 180.0 / PI); }
 
+    /// Return sign.
+    template <class T>
+    inline int Sign(T v) { return ((v < T(0)) ? -1 : ((v == T(0)) ? 0 : 1)); }
+
     // Min & Max inlines:
 
     template <class T>
@@ -96,8 +96,6 @@ namespace Nimble {
 
     template <class T>
     inline T Abs(T x) { return x > 0 ? x : -x; }
-
-
 
     /// Seeks the maximum value in an vector
     /** VMax = vector maximum. 
