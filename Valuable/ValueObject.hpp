@@ -1,6 +1,8 @@
 #ifndef VALUABLE_VALUE_OBJECT_HPP
 #define VALUABLE_VALUE_OBJECT_HPP
 
+#include <Valuable/ValueListener.hpp>
+
 #include <Radiant/BinaryData.hpp>
 
 #include <Patterns/NotCopyable.hpp>
@@ -53,6 +55,9 @@ namespace Valuable
       HasValues * parent() { return m_parent; }
       void removeParent();
 
+    void addListener(ValueListener * l) { m_listeners.push_back(l); }
+    void removeListener(ValueListener * l) { m_listeners.remove(l); }
+    
     protected:
       virtual void emitChange();
       virtual void emitDelete();
@@ -60,6 +65,8 @@ namespace Valuable
       HasValues * m_parent;
       std::string m_name;
       bool m_transit;
+
+    ValueListeners m_listeners;
 
       friend class HasValues;
   };

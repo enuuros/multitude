@@ -21,9 +21,18 @@ namespace Valuable
       ValueVector() : ValueObject() {}
       ValueVector(HasValues * parent, const std::string & name, const VectorType & v, bool transit = false) : ValueObject(parent, name, transit), m_value(v) {}
 
-      ValueVector<VectorType, ElementType, N> & operator = (const VectorType & v) { m_value = v; return *this; }
-      ValueVector<VectorType, ElementType, N> & operator += (const VectorType & v) { m_value += v; return *this; }
-      ValueVector<VectorType, ElementType, N> & operator -= (const VectorType & v) { m_value -= v; return *this; }
+      ValueVector<VectorType, ElementType, N> & operator =
+      (const VectorType & v) { m_value = v; emitChange(); return *this; }
+
+      ValueVector<VectorType, ElementType, N> & operator += 
+      (const VectorType & v) { m_value += v; emitChange(); return *this; }
+      ValueVector<VectorType, ElementType, N> & operator -= 
+      (const VectorType & v) { m_value -= v; emitChange(); return *this; }
+
+    VectorType operator - 
+      (const VectorType & v) const { return m_value - v; }
+    VectorType operator + 
+      (const VectorType & v) const { return m_value + v; }
 
       ElementType operator [] (int i) const { return m_value[i]; }      
 
@@ -34,8 +43,10 @@ namespace Valuable
       virtual bool set(const VectorType & v);
 
       const VectorType & asVector() const { return m_value; }
+      const VectorType & operator * () const { return m_value; }
 
       std::string asString(bool * const ok = 0) const;
+
 
     protected:
       VectorType m_value;
@@ -50,6 +61,7 @@ namespace Valuable
   typedef ValueVector<Nimble::Vector4f, float, 4> ValueVector4f;
 
 }
+
 
 #undef STD_OP
 
