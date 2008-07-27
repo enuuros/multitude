@@ -124,6 +124,12 @@ namespace Luminous
       Luminous::Image * img = m_pyramid->getLevel(residentLevel + 1).image;
 
       Texture2D * tex = Texture2D::fromImage(*img, false, resources());
+
+      
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+
       if(!tex) {
         error("DynamicTexture::updateGPUMipmaps # Failed to create a texture mipmap");
         return;

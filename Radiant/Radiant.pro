@@ -72,8 +72,8 @@ SOURCES += WatchDog.cpp
 #linux-g++:SOURCES += TimeSignaller.cpp
 
 # Cannot be "unix" -> conflict on OSX
-# linux-g++-64:SOURCES += PlatformUtilsLinux.cpp
-SOURCES += PlatformUtilsLinux.cpp
+linux-g++-64:SOURCES += PlatformUtilsLinux.cpp
+linux-g++:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 

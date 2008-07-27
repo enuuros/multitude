@@ -14,7 +14,11 @@
  */
 
 #include "Directory.hpp"
+
+#include "FileUtils.hpp"
+#include "StringUtils.hpp"
 #include "Trace.hpp"
+
 #include <assert.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -42,6 +46,25 @@ namespace Radiant
   {
     openDir();
   }
+
+
+  Directory::Directory(const char * pathname, const char * suffixlist,
+		       int filters, SortFlag sortFlag)
+    : m_path(pathname),
+      m_filterFlags(filters),
+      m_sortFlag(sortFlag)
+  {
+    StringUtils::StringList suflist;
+    StringUtils::split(suffixlist, ",", suflist);
+
+    for(StringUtils::StringList::iterator it = suflist.begin();
+	it != suflist.end(); it++) {
+      m_suffixes.push_back(*it);
+    }
+
+    openDir();
+  }
+
 
   Directory::~Directory()
   {
@@ -106,6 +129,19 @@ namespace Radiant
         ok = false;
     if( (name[0] == '.' && (name != DOT && name != DOTDOT)) 
         && !(m_filterFlags & Hidden) ) ok = false;
+
+    if(m_suffixes.size()) {
+      std::string suffix = StringUtils::lowerCase(FileUtils::suffix(name));
+
+      ok = false;
+
+      for(unsigned i = 0; i < m_suffixes.size(); i++) {
+	if(suffix == m_suffixes[i]) {
+	  ok = true;
+	  break;
+	}
+      }
+    }
 
 //    trace("Directory::applyFilters # DIR: %s FILE: %s MATCH: %d", m_path.c_str(), dent->d_name, ok);
 

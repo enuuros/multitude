@@ -58,6 +58,9 @@ namespace Luminous {
     static void glCenteredTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
     static void glRectWithHole(const Nimble::Rect & area,
 			       const Nimble::Rect & hole);
+    static void glRectWithHole(const Nimble::Rect & area,
+			       const Nimble::Rect & hole,
+			       const Nimble::Matrix3 & m);
 
     /// Draw a square using GL_LINE_STRIP
     static void glLineRect(float x1, float y1, float x2, float y2);

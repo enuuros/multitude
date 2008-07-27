@@ -59,6 +59,8 @@ namespace Radiant
     MTEXPORT int utf8DecodedLength(const std::string & src);
     /// Count the number of encoded utf8 bytes characters in a wide string.
     MTEXPORT int utf8EncodedLength(const std::wstring & src);
+    // Returns the lower-case version of the ascii string
+    MTEXPORT std::string lowerCase(const std::string & src);
 
     template<class T>
       std::string stringify(T x) {

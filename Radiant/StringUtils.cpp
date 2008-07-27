@@ -259,6 +259,20 @@ namespace Radiant
       return bytes;
     }
 
+    std::string lowerCase(const std::string & src)
+    {
+      std::string res(src);
+
+      for(unsigned i = 0; i < res.size(); i++) {
+	int c = res[i];
+
+	if(c >= 'A' && c <= 'Z')
+	  res[i] = c + ('a' - 'A');
+      }
+
+      return res;
+    }
+
     const char * yesNo(bool yes)
     {
       return yes ? "yes" : "no";

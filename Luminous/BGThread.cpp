@@ -26,9 +26,15 @@
 
 namespace Luminous
 {
+
+  BGThread * BGThread::m_instance = 0;
+
   BGThread::BGThread():
     m_continue(true)
-  {}
+  {
+    if(m_instance == 0)
+      m_instance = this;
+  }
 /*  
   static void g_deletePred1(Task * x)
   {
@@ -42,6 +48,8 @@ namespace Luminous
 */
   BGThread::~BGThread()
   {
+    if(m_instance == this)
+      m_instance = 0;
     stop();
 
     /// @todo Free resources, should we do this?

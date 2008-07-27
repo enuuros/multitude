@@ -18,7 +18,6 @@
 
 #include <Nimble/Vector3.hpp>
 
-
 #include <cmath>
 #include <cassert>
 
@@ -392,6 +391,53 @@ namespace Luminous {
 
     glTexCoord2fv(htxuv.low().data());
     glVertex2fv(hole.low().data());
+
+    glEnd();
+    
+  }
+  void Utils::glRectWithHole(const Nimble::Rect & area,
+			     const Nimble::Rect & hole,
+			     const Nimble::Matrix3 & m)
+  {
+    glBegin(GL_TRIANGLE_STRIP);
+
+    Vector2 as = area.size();
+
+    // Hole texture UV-coordinates
+    Rectf htxuv(hole.low() - area.low(), hole.high() - area.low());
+
+    htxuv.low().descale(as);
+    htxuv.high().descale(as);
+
+    glTexCoord2f(0, 0);
+    glVertex2fv((m * area.low()).data());
+
+    glTexCoord2fv(htxuv.low().data());
+    glVertex2fv((m * hole.low()).data());
+
+    glTexCoord2f(0, 1);
+    glVertex2fv((m * area.lowHigh()).data());
+
+    glTexCoord2fv(htxuv.lowHigh().data());
+    glVertex2fv((m * hole.lowHigh()).data());
+
+    glTexCoord2f(1, 1);
+    glVertex2fv((m * area.high()).data());
+
+    glTexCoord2fv(htxuv.high().data());
+    glVertex2fv((m * hole.high()).data());
+
+    glTexCoord2f(1, 0);
+    glVertex2fv((m * area.highLow()).data());
+
+    glTexCoord2fv(htxuv.highLow().data());
+    glVertex2fv((m * hole.highLow()).data());
+
+    glTexCoord2f(0, 0);
+    glVertex2fv((m * area.low()).data());
+
+    glTexCoord2fv(htxuv.low().data());
+    glVertex2fv((m * hole.low()).data());
 
     glEnd();
     

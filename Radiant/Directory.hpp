@@ -63,6 +63,22 @@ namespace Radiant
           int filters = AllEntries, SortFlag sortFlag = Unsorted);
       Directory(const std::string & pathname,
           int filters = AllEntries, SortFlag sortFlag = Unsorted);
+      /// Construct a directory listing
+      /** Creating a Directory object immediately scans the contents
+	  of the directory. Entries matching the given filters are
+	  included.
+
+	  @param pathname directory path
+
+	  @param suffixlist list of accpeted suffices, for example
+	  "jpg,png,tiff"
+
+	  @param filters one or more filter flags OR'ed together
+	  @param sortFlag flag indicating how the results should be sorted
+        */
+    Directory(const char * pathname, const char * suffixlist,
+	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+
       /// Deallocates the list
       virtual ~Directory();
 
@@ -91,6 +107,7 @@ namespace Radiant
 
       std::string m_path;
       std::vector<std::string> m_entries;      
+      std::vector<std::string> m_suffixes;
       int m_filterFlags;
       SortFlag m_sortFlag;
   };

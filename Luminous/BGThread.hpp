@@ -49,6 +49,8 @@ namespace Luminous
     /// Change the priority of a task
     virtual void setPriority(Task * task, Priority p);
 
+    static BGThread * instance() { return m_instance; }
+
     typedef std::multimap<Priority, Task * > container;
     typedef std::pair<Priority, Task * > contained;
 
@@ -64,6 +66,7 @@ namespace Luminous
     container m_taskQueue;
     
     bool m_continue;
+    static BGThread * m_instance;
   };
 
 }

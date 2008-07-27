@@ -192,7 +192,7 @@ namespace Nimble {
   /// @param slopeType, reference to int to receive slope type.
   /// @param delta, reference to Vector2f to receive delta.
   /// @return Slope value.
-  static float lineSlope(const Vector2f lineStart, const Vector2f lineEnd,
+  inline float lineSlope(const Vector2f lineStart, const Vector2f lineEnd,
     int & slopeType, Vector2f & delta)
   {
     float   m = 0.0f;
@@ -221,7 +221,7 @@ namespace Nimble {
   /// @param line2Start, line2End, second line.
   /// @param interPoint, optional pointer to vector to receive the intersection point.
   /// @return true if line segments intersect.
-  static bool linesIntersect(const Vector2f line1Start, const Vector2f line1End,
+  inline bool linesIntersect(const Vector2f line1Start, const Vector2f line1End,
     const Vector2f line2Start, const Vector2f line2End, Vector2f * const interPoint = 0)
   {
     // Check if either line has zero length
