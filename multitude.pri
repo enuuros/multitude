@@ -28,6 +28,14 @@ exists(/opt/local/include/libavformat/avformat.h) {
   DEFINES += MULTI_FFMPEG_NEW
 }
 
+macx {
+  exists(/opt/local/include/xercesc) {
+
+    INCLUDEPATH += /opt/local/include/
+    LIBS += -L/opt/local/lib/
+  }
+}
+
 LIB_DYSLEXIC = -lDyslexic
 LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
