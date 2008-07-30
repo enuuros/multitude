@@ -5,11 +5,10 @@ SUBDIRS += Nimble
 SUBDIRS += Radiant
 SUBDIRS += Valuable
 SUBDIRS += ValueIO
-#SUBDIRS += ValueQT
 SUBDIRS += Luminous
 SUBDIRS += Dyslexic
 #SUBDIRS += Documents
-#SUBDIRS += Notable is not used
+
 
 # Get these from environment variables
 ffmpeg = $$(WITH_FFMPEG)
