@@ -16,6 +16,7 @@
 
 #include <Luminous/Image.hpp>
 
+#include <Radiant/Directory.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/FileUtils.hpp>
 
@@ -42,26 +43,19 @@ namespace Luminous
     delete m_origImage;
   }
 
-/*
--  void TextureLoadable::getInfoCacheFilename(std::string& cacheFile) const
--  {
--    cacheFile = FileUtils::path(m_filepath) + "cache_" + FileUtils::baseFilename(m_filepath) + ".size"; 
--  }
--
--  void TextureLoadable::getMipmapCacheFilename(int level, std::string& cacheFile) const
--  {
--    std::ostringstream os;
--    os << FileUtils::path(m_filepath) << "cache_" << level << "_" << FileUtils::filename(m_filepath);
--    
--    cacheFile = os.str();
--  }
-*/
 
   std::string MipmapTask::getLevelCacheFilename(int level) const
   {
+    /* Put the cache files into separate directory so they are easier
+       to delete and ignore. */
+
+    std::string cachedir = Radiant::FileUtils::path(m_filename) + "/.cache";
+
+    Radiant::Directory::mkdir(cachedir);
+    
     std::ostringstream os;
     os << Radiant::FileUtils::path(m_filename) << 
-      "cache_" << 
+      "/.cache/" << 
       level << 
       "_" <<
       Radiant::FileUtils::filename(m_filename);
