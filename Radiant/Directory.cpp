@@ -81,6 +81,11 @@ namespace Radiant
     return m_entries[i];
   }
 
+  std::string Directory::fileNameWithPath(int n) const
+  {
+    return path() + "/" + fileName(n);
+  }
+
   /// @todo should we expose permissions?
   bool Directory::mkdir(const char * dirname)
   {
@@ -89,6 +94,11 @@ namespace Radiant
 #else
     return (::mkdir(dirname) == 0);
 #endif
+  }
+
+  bool Directory::mkdir(const std::string & dirname)
+  {
+    return mkdir(dirname.c_str());
   }
 
   void Directory::openDir()

@@ -91,11 +91,19 @@ namespace Radiant
         */
       std::string fileName(int n) const;
 
+    /** Return the full path name of the nth file.
+	
+	This method is equal to calling "dir.path() + dir.filename(n)".
+     */
+    std::string fileNameWithPath(int n) const;
+
       /// Returns the directory path
       const std::string & path() const { return m_path; } 
 
+
       /// Creates a new directory.
       static bool mkdir(const char * dirname);
+      static bool mkdir(const std::string & dirname);
 
     private:
 
