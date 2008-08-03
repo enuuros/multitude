@@ -22,7 +22,8 @@
 
 namespace Dyslexic
 {
-
+  /** Utility functions for the Dyslexic font rendering engine. */
+  
   namespace Utils
   {
 

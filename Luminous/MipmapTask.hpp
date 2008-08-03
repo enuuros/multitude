@@ -30,6 +30,7 @@
   <draw stuff, tex takes care of stuff under the hood>
 */
 
+/// The Magick image processing library
 namespace Magick
 {
   class Image;

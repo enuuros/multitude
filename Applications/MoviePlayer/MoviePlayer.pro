@@ -27,3 +27,5 @@ win32 {
 	LIBPATH += $$LNK_MULTITUDE
 	QMAKE_CXXFLAGS *= -wd4251	# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
 }
+
+include(../Applications_end.pri)

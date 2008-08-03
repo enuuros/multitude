@@ -29,18 +29,18 @@
 
 #include <list>
 
-/* Here we introduce an anonymous pointer that helps us limit the
-   include-chains (include the relevant declaration only in the cpp
-   file.*/
-namespace ProjectX {
-  class DreamTime;
-}
 
 
 /* Sometimes we cannot keep this include order, in those cases it is
    good to document, why there is a non-standard order. */
 
 namespace CodingGuide {
+
+  /* Here we introduce an anonymous pointer that helps us limit the
+     include-chains (include the relevant declaration only in the cpp
+     file.*/
+  
+  class DreamTime;
 
   /// Example class
   /** Here we document the class in depth. */
@@ -57,7 +57,7 @@ namespace CodingGuide {
     class Item
     {
     public:
-      Item(ProjectX::DreamTime *);
+      Item(DreamTime *);
       ~Item();
       
       /* To access members, we write usually one-liners. */
@@ -82,7 +82,7 @@ namespace CodingGuide {
       /* Velocity is "velocity" and nothing else. */
       Nimble::Vector2f m_velocity;
 
-      ProjectX::DreamTime * m_dreamTime;
+      DreamTime * m_dreamTime;
     };
     
     /** Class-specific constants are easily presented as enums (where

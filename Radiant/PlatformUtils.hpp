@@ -19,6 +19,7 @@
 
 namespace Radiant 
 {
+  /** Small utility functions to help handle platform-specific functions. */
 
   namespace PlatformUtils
   {

@@ -24,7 +24,7 @@
 #ifndef CODINGGUIDE_CODINGGUIDE_HP
 #define CODINGGUIDE_CODINGGUIDE_HP
 
-/// Basic coding example
+/// Coding example, for consistent programming style
 /** <B> Some general comments</B>
 
     A library or application of name Xyz has a header Xyz.hpp that

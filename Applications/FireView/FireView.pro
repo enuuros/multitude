@@ -32,3 +32,5 @@ win32 {
 	LIBS -= -framework,Cocoa
 	QMAKE_CXXFLAGS *= -wd4251	# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
 }
+
+include(../Applications_end.pri)
