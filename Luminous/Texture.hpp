@@ -100,6 +100,8 @@ namespace Luminous
     /** Returns the OpenGL texture id. */
     GLuint id() const { return m_textureId; };
 
+    bool isDefined() const { return id() != 0; }
+
     const PixelFormat & pixelFormat() const { return m_pf; }
 
   protected:
