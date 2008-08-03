@@ -36,7 +36,7 @@ namespace Dyslexic
 
       // First break the wstring at newlines
 
-      std::wstring       delim;
+      std::wstring  delim;
       delim = wchar_t('\n');
       WStringList   wSub;
 
@@ -55,12 +55,11 @@ namespace Dyslexic
 
         // Make the lines
 
-        int   numWords = 0;
-        while(words.size() && int(words.size()) != numWords)
+        while(words.size())
         {
           // First try to fit it in as separate words
 
-          numWords = words.size();
+          const int   numWords = words.size();
           bool  got = false;
           BBox  bBox;
           for(int i = numWords; i >= 1 && !got; i--)
