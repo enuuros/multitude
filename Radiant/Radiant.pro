@@ -12,6 +12,7 @@ HEADERS += ConfigReaderTmpl.hpp
 HEADERS += CycleRecord.hpp
 HEADERS += Directory.hpp
 HEADERS += Endian.hpp
+HEADERS += Export.hpp
 HEADERS += FileUtils.hpp
 HEADERS += FixedStr.hpp
 HEADERS += ImageConversion.hpp
