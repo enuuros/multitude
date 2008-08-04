@@ -16,13 +16,15 @@ HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
 HEADERS += MipmapTask.hpp
 HEADERS += MultiHead.hpp
+HEADERS += Path.hpp
 HEADERS += PixelFormat.hpp
 HEADERS += Task.hpp
+HEADERS += TCBSpline.hpp
 HEADERS += Texture.hpp
 #HEADERS += TiledMipMapImage.hpp
 HEADERS += Utils.hpp
-HEADERS += TCBSpline.hpp
-HEADERS += Path.hpp
+HEADERS += VertexBuffer.hpp
+HEADERS += VertexBufferImpl.hpp
 
 SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
@@ -40,15 +42,16 @@ SOURCES += JPEG.cpp
 SOURCES += Luminous.cpp
 SOURCES += MipmapTask.cpp
 SOURCES += MultiHead.cpp
+SOURCES += Path.cpp
 SOURCES += PixelFormat.cpp
 SOURCES += PNG.cpp
 SOURCES += Task.cpp
+SOURCES += TCBSpline.cpp
 SOURCES += Texture.cpp
 SOURCES += TGA.cpp
 #SOURCES += TiledMipMapImage.cpp
 SOURCES += Utils.cpp
-SOURCES += TCBSpline.cpp
-SOURCES += Path.cpp
+SOURCES += VertexBuffer.cpp
 
 TARGET = Luminous
 

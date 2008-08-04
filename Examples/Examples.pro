@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += SocketExample
 SUBDIRS += ImageExample
 SUBDIRS += PlatformExample
+SUBDIRS += SocketExample
+SUBDIRS += VertexBuffers
