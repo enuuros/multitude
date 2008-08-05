@@ -22,13 +22,13 @@ namespace Luminous
   }
 
   template<GLenum type>
-  void BufferObject<type>::bind()
+  void BufferObject<type>::bind() const
   {
     glBindBuffer(type, m_bufferId);
   }
 
   template<GLenum type>
-  void BufferObject<type>::unbind()
+  void BufferObject<type>::unbind() const
   {
     glBindBuffer(type, 0);
   }

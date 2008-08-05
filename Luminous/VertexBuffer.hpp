@@ -8,6 +8,9 @@
 namespace Luminous
 {
 
+  /// Abstraction of the OpenGL Buffer Objects.
+  /// BufferObject provides an abstraction for the Buffer Objects (vertex
+  /// buffers, index buffers) in OpenGL.
   template<GLenum type>
     class BufferObject 
     {
@@ -71,8 +74,8 @@ namespace Luminous
 
         void allocate(size_t bytes, Usage usage);
 
-        void bind();
-        void unbind();
+        void bind() const;
+        void unbind() const;
 
         void fill(void * data, size_t bytes, Usage usage);
         void partialFill(size_t start, void * data, size_t count);
