@@ -27,18 +27,31 @@ namespace Dyslexic
   namespace Utils
   {
 
+    /// Zero-width space character is used as new line character.
+    #define W_NEWLINE wchar_t(0x200B)
+
     /**
-      * @brief Breaks wstring into lines.
+      * @brief Break wstring into lines.
       * The lines will be less than or equal to the specified width when displayed
       * in the given font.
-      * @param wStr
-      * @param width
-      * @param bitmapFont
+      * @param ws The string to be broken.
+      * @param width Maximum width of line.
+      * @param bitmapFont The font used for rendering.
       * @param lines Reference to list to receive the lines.
       * @note Newline characters are retained in the output.
       */
-    void breakToLines(const std::wstring & wStr, const float width,
+    void breakToLines(const std::wstring & ws, const float width,
       CPUBitmapFont & bitmapFont, Radiant::StringUtils::WStringList & lines);
+
+    /**
+      * @brief Tokenize wstring.
+      * @param ws The string to be tokenized.
+      * @param delim One or more delimiter characters.
+      * @param out Reference to list to receive the tokens.
+      * @param afterDelim true to split string after delimiter.
+      */
+    void split(const std::wstring & ws, const std::wstring & delim,
+      Radiant::StringUtils::WStringList & out, const bool afterDelim = true);
 
   }
 

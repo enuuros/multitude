@@ -24,12 +24,12 @@ namespace Dyslexic
     using namespace Radiant;
     using namespace StringUtils;
 
-    void breakToLines(const std::wstring & wStr, const float width,
+    void breakToLines(const std::wstring & ws, const float width,
       CPUBitmapFont & bitmapFont, WStringList & lines)
     {
       lines.clear();
 
-      if(wStr.empty())
+      if(ws.empty())
       {
         return;
       }
@@ -37,14 +37,14 @@ namespace Dyslexic
       // First break the wstring at newlines
 
       std::wstring  delim;
-      delim = wchar_t('\n');
+      delim = W_NEWLINE;
       WStringList   wSub;
 
-      split(wStr, delim, wSub);
+      split(ws, delim, wSub);
 
       // Break the resulting sub-wstrings to fit width
 
-      delim = wchar_t(' ');
+      delim = std::wstring(L" ");
 
       for(WStringList::iterator itSub = wSub.begin(); itSub != wSub.end(); itSub++)
       {
@@ -105,11 +105,17 @@ namespace Dyslexic
           }
         }
       }
+
+      // If last character is newline append empty line
+
+      if(ws[ws.length() - 1] == W_NEWLINE)
+      {
+        lines.push_back(std::wstring(L""));
+      }
     }
 
-#ifdef WIN32
     void split(const std::wstring & ws, const std::wstring & delim,
-        WStringList & out)
+      WStringList & out, const bool afterDelim)
     {
       out.clear();
 
@@ -119,24 +125,40 @@ namespace Dyslexic
       }
 
       // Find first a delimiter
-      std::wstring  wscopy(ws);
-      size_t        pos = wscopy.find_first_of(delim);
+
+      std::wstring  wsCopy(ws);
+      size_t  pos = wsCopy.find_first_of(delim);
 
       // Loop until no delimiters left
-      while(pos != wscopy.npos)
+
+      if(afterDelim)
+      // split string after delimiter
       {
-        out.push_back(wscopy.substr(0, pos + 1));
-        wscopy.erase(0, pos + 1);
-        pos = wscopy.find_first_of(delim);
+        while(pos != wsCopy.npos)
+        {
+          out.push_back(wsCopy.substr(0, pos + 1));
+          wsCopy.erase(0, pos + 1);
+          pos = wsCopy.find_first_of(delim);
+        }
+      }
+      else
+      // split string before delimiter
+      {
+        while(pos != wsCopy.npos)
+        {
+          out.push_back(wsCopy.substr(0, pos));
+          wsCopy.erase(0, pos);
+          pos = wsCopy.find_first_of(delim, 1);
+        }
       }
 
       // Push remainder of wstring onto list
-      if(!wscopy.empty())
+
+      if(!wsCopy.empty())
       {
-        out.push_back(wscopy);
+        out.push_back(wsCopy);
       }
     }
-#endif
 
   }
 
