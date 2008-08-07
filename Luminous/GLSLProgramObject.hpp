@@ -58,6 +58,8 @@ namespace Luminous
 
     int shaderObjectCount() const { return m_shaderObjects.size(); } 
 
+    GLuint handle() const { return m_handle; }
+
   protected:
     
     std::vector<GLchar> m_linkerLog;
