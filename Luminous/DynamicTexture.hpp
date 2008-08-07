@@ -23,6 +23,7 @@
 #include <Radiant/RefPtr.hpp>
 
 #include <Nimble/Vector2.hpp>
+#include <Nimble/Matrix3.hpp>
 
 #include <vector>
 
@@ -36,30 +37,27 @@ namespace Luminous
       DynamicTexture(GLResources * resources = 0);
       virtual ~DynamicTexture();
 
-      virtual Texture2D * selectMipmap(); 
+      /// Bind the dynamic texture to current active texture unit
+      bool bind(const Nimble::Matrix3f & sceneToScreen, Nimble::Vector2 sceneSize);      
 
       virtual int mipmapsOnGPU() const;
       virtual int mipmapsOnCPU() const;
 
-      virtual void updateGPUMipmaps();
-
-      virtual void hint(const Nimble::Vector2 & size);
-  
-      ImagePyramid * pyramid() { return m_pyramid; }
-      void setPyramid(ImagePyramid * pyramid) { m_pyramid = pyramid; }
+      Radiant::RefPtr<ImagePyramid> pyramid() { return m_pyramid; }
+      void setPyramid(Radiant::RefPtr<ImagePyramid> pyramid) { m_pyramid = pyramid; }
 
       Texture2D * getMipmap(int n);
 
       float aspect(int level = 0) const;
 
     protected:
+      virtual void updateGPUMipmaps(Nimble::Vector2i size);
+      virtual Texture2D * selectMipmap(Nimble::Vector2i size); 
+
       std::vector<Radiant::RefPtr<Texture2D> > m_mipmaps;
 
-      ImagePyramid * m_pyramid; 
-
-      Nimble::Vector2i m_desiredSize;
+      Radiant::RefPtr<ImagePyramid> m_pyramid; 
   };
-
 }
 
 #endif

@@ -24,7 +24,7 @@
 namespace Luminous
 {
 
-  /// A simple image pyramid used for mipmaps.
+  /// A simple image pyramid used for storing mipmaps.
   class ImagePyramid
   {
     public:
@@ -43,7 +43,7 @@ namespace Luminous
         m_levels.push_back(level);
       }
 
-      MipmapLevel getLevel(int n) { return m_levels[n]; }
+      const MipmapLevel getLevel(int n) const { return m_levels[n]; }
       int levels() const { return m_levels.size(); }
 
       Nimble::Vector2i levelSize(int n) const { return Nimble::Vector2i(m_levels[n].image->width(), m_levels[n].image->height()); }

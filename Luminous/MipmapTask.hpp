@@ -42,6 +42,7 @@ namespace Luminous
   class MipmapTask : public Task
   {
     public:
+
       MipmapTask(const std::string & filename, ImagePyramid * pyramid, int maxDimExp, int desiredLevels);
       ~MipmapTask();
 

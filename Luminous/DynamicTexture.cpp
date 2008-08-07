@@ -30,17 +30,17 @@ namespace Luminous
 
   DynamicTexture::DynamicTexture(GLResources * resources)
     : GLResource(resources),
-      m_pyramid(0),
-      m_desiredSize(0, 0)
+      m_pyramid(0)
   {}
 
   DynamicTexture::~DynamicTexture()
   {}
 
-  Texture2D* DynamicTexture::selectMipmap() 
+  /// @todo check resources 
+  Texture2D* DynamicTexture::selectMipmap(Nimble::Vector2i size) 
   {
     // Select a mipmap based on the size hint
-    int desiredMax = Nimble::Math::Max(m_desiredSize.x, m_desiredSize.y);
+    int desiredMax = std::max(size.x, size.y);
 
     int available = mipmapsOnGPU();
 
@@ -65,7 +65,7 @@ namespace Luminous
 
   int DynamicTexture::mipmapsOnCPU() const
   {
-    return m_pyramid ? m_pyramid->levels() : 0;
+    return m_pyramid.ptr() ? m_pyramid->levels() : 0;
   }
 
   Texture2D * DynamicTexture::getMipmap(int n)
@@ -76,89 +76,73 @@ namespace Luminous
     return m_mipmaps[n].ptr();
   }
 
-  void DynamicTexture::updateGPUMipmaps()
+  void DynamicTexture::updateGPUMipmaps(Nimble::Vector2i size)
   {
     // Nothing we can do if nothing has been loaded yet
     if(mipmapsOnCPU() == 0) {
       return;
     }
 
-#if 0
-    // The coarsest mipmap should always be defined (or should it?)
-    if(m_mipmaps.size() == 0) {
-      const Image* img = m_loadable->mipmap(0).ptr();
-
-      Texture2D* tex = Texture2D::fromImage(*img, false);
-      if(!tex) {
-        error("DynamicTexture::updateGPUMipmaps # Failed to create a texture mipmap");
-        return;
-      }
-      m_mipmaps.push_back(Radiant::RefPtr<Texture2D>(tex));
-
-      trace("DynamicTexture::updateGPUMipmaps # Uploaded mipmap 0");
-    }
-#endif
-
     // Based on the currently most detailed resident mipmap and the hint, upload
     // a new mipmap or purge the existing one
 
     int residentLevel = mipmapsOnGPU() - 1;
-//    int residentDim = (residentLevel >= 0 ? m_loadable->mipmapLevelDim(residentLevel) : 0);
+
     int residentDim = (residentLevel >= 0 ? m_pyramid->levelSize(residentLevel).maximum() : 0);
-//    int nextLowerDim = (residentLevel > 0 ? m_loadable->mipmapLevelDim(residentLevel - 1) : 0);
     int nextLowerDim = (residentLevel > 0 ? m_pyramid->levelSize(residentLevel - 1).maximum() : 0);
 
-    int desiredDim = Nimble::Math::Max(m_desiredSize.x, m_desiredSize.y);
+    int desiredDim = std::max(size.x, size.y); 
 
     if(desiredDim > residentDim) {
-      // If there's no more data, nothing we can do
+      // If there's not more detailed data on the CPU, nothing we can do
       if(mipmapsOnCPU() <= mipmapsOnGPU()) {
         return;
       }
     
-      //trace("\tDesired %dx%d\n\tResident %d", m_desiredSize.x, m_desiredSize.y, residentDim);
-      //trace("\tMipmaps on CPU %d, on GPU %d", mipmapsOnCPU(), mipmapsOnGPU());
-      
       // Upload a sharper mipmap
-//      Magick::Image img = m_loadable->mipmap(residentLevel + 1);
       Luminous::Image * img = m_pyramid->getLevel(residentLevel + 1).image;
 
       Texture2D * tex = Texture2D::fromImage(*img, false, resources());
-
-      
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-
+     
       if(!tex) {
-        error("DynamicTexture::updateGPUMipmaps # Failed to create a texture mipmap");
+        error("DynamicTexture::updateGPUMipmaps # failed to create a texture mipmap");
         return;
       }
-      
+ 
+      /// @todo texture addressing shouldn't be changed here 
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+     
       m_mipmaps.push_back(Radiant::RefPtr<Texture2D>(tex));
-//      trace("\tUploaded mipmap level %d", residentLevel + 1);
-
-//    } else if(desiredDim < residentDim) {
-      } else if(desiredDim < nextLowerDim) {    
-
+    } else if(desiredDim < nextLowerDim) {    
       // Anything to throw away? Should we throw the last level away?
       if(residentLevel <= 0) {
         return;
       }
 
       m_mipmaps.pop_back();
-//      trace("\tPurged mipmap level %d", residentLevel);     
+      //trace("\tPurged mipmap level %d", residentLevel);     
     }
-  }
-
-  void DynamicTexture::hint(const Nimble::Vector2 & size)
-  {
-		m_desiredSize = size;
   }
 
   float DynamicTexture::aspect(int level) const
   {
-    return m_pyramid->getLevel(level).image->aspect();
+    return m_pyramid.ptr()->getLevel(level).image->aspect();
+  }
+
+  bool DynamicTexture::bind(const Nimble::Matrix3f & sceneToScreen, Nimble::Vector2 sceneSize)
+  {
+    Nimble::Vector2 trueSize = sceneSize * sceneToScreen.extractScale();
+
+    updateGPUMipmaps(trueSize);
+    Texture2D * tex = selectMipmap(trueSize);
+
+    if(tex) {
+      tex->bind();
+      return true;
+    }
+
+    return false;
   }
 
 }
