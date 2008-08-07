@@ -49,15 +49,6 @@ namespace Dyslexic
     gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
   }
 
-  float GPUManagedFont::extractScale(const Nimble::Matrix3 & m)
-  {
-    Nimble::Vector3f u(1, 0, 0);
-    Nimble::Vector3f v = m * u;
-    float s = Nimble::Math::Sqrt(v.x * v.x + v.y * v.y);
-
-    return s;
-  }
-
   GPUFontBase * GPUManagedFont::getFont(int fontNo)
   {
     GPUFontBase * font = m_fonts[fontNo];
@@ -75,7 +66,7 @@ namespace Dyslexic
 
   void GPUManagedFont::computeRenderParams(const Nimble::Matrix3 & m, int pts, GPUFont ** gf, float * scale)
   {
-    float s = extractScale(m);
+    float s = m.extractScale();
 
     float actual = pts * s;
     int fontNo = m_cmf->selectFont(actual);

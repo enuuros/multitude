@@ -40,8 +40,6 @@ namespace Dyslexic
     private:
       typedef std::vector<GPUFontBase *> container;
 
-      float extractScale(const Nimble::Matrix3 & m);
-
       void computeRenderParams(const Nimble::Matrix3 & m, int pts, GPUFont ** gf, float * scale);
 
       GPUFontBase * getFont(int fontNo);
