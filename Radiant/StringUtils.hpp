@@ -34,27 +34,31 @@ namespace Radiant
     /// Remove non-visible characters from std::string.
     MTEXPORT void eraseNonVisibles(std::string & s);
 
+    /// Convert std::string to double.
+    MTEXPORT double stdStringToDouble(const std::string & str, const int precision = 12);
+
+    /// Convert double to std::string.
+    MTEXPORT std::string doubleToStdString(const double value, const int precision = 12);
+
     /// Convert std::string to std::wstring.
-    MTEXPORT std::wstring stringTowstring(const std::string & str);
+    MTEXPORT std::wstring stdStringToStdWstring(const std::string & str);
 
     /// Convert std::wstring to std::string
     /// @warning: non-ASCII characters may be lost in conversion.
-    MTEXPORT std::string wstringTostring(const std::wstring & wstr);
+    MTEXPORT std::string stdWstringToStdString(const std::wstring & wstr);
 
     /// Split std::string into sub-strings.
-    MTEXPORT void split(const std::string & s, const std::string & delim,
-      StringList & out, bool skipEmpty = true);
+    MTEXPORT void split(const std::string & s, const std::string & delim, StringList & out, bool skipEmpty = true);
     /// Split std::wstring into sub-strings.
-    MTEXPORT void split(const std::wstring & ws, const std::wstring & delim,
-      WStringList & out);
+    MTEXPORT void split(const std::wstring & ws, const std::wstring & delim, WStringList & out);
 
     /// Count the number of lines in the string.
     MTEXPORT int lineCount(const char * s);
 
     /// Convert utf8 string to wide string.
-    MTEXPORT void utf8ToWString(std::wstring & dest, const std::string & src);
+    MTEXPORT void utf8ToStdWstring(std::wstring & dest, const std::string & src);
     /// Convert wide string to utf8 string.
-    MTEXPORT void wstringToUtf8(std::string & dest, const std::wstring & src);
+    MTEXPORT void stdWstringToUtf8(std::string & dest, const std::wstring & src);
     /// Count the number of decoded unicode characters in a utf8 string.
     MTEXPORT int utf8DecodedLength(const std::string & src);
     /// Count the number of encoded utf8 bytes characters in a wide string.

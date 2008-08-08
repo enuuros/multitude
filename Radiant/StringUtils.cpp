@@ -14,6 +14,8 @@
  */
 #include "StringUtils.hpp"
 
+#include <sstream>
+
 #ifdef WIN32
 #include <WinPort.h>
 #endif
@@ -36,7 +38,31 @@ namespace Radiant
       }
     }
 
-    wstring stringTowstring(const string & str)
+    double stdStringToDouble(const std::string & str, const int precision)
+    {
+      std::stringstream   ss;
+      ss.precision(precision);
+
+      ss << str;
+      double  value = 0.0f;
+      ss >> value;
+
+      return value;
+    }
+
+    std::string doubleToStdString(const double value, const int precision)
+    {
+      std::stringstream   ss;
+      ss.precision(precision);
+
+      ss << value;
+      std::string   str;
+      ss >> str;
+
+      return str;
+    }
+
+    wstring stdStringToStdWstring(const string & str)
     {
       wstring  wstr;
 
@@ -50,7 +76,7 @@ namespace Radiant
       return wstr;
     }
 
-    string wstringTostring(const wstring & wstr)
+    string stdWstringToStdString(const wstring & wstr)
     {
       string   str;
 
@@ -64,8 +90,7 @@ namespace Radiant
       return str;
     }
 
-    void split(const string & s, const string & delim,
-        StringList & out, bool skipEmpty)
+    void split(const string & s, const string & delim, StringList & out, bool skipEmpty)
     {
       string::size_type offset = 0;
       string::size_type index = 0;
@@ -88,8 +113,7 @@ namespace Radiant
         out.push_back(piece);
     }
 
-    void split(const wstring & ws, const wstring & delim,
-        WStringList & out)
+    void split(const wstring & ws, const wstring & delim, WStringList & out)
     {
       out.clear();
 
@@ -132,7 +156,7 @@ namespace Radiant
       return n;
     }
 
-    void utf8ToWString(wstring & dest, const string & src)
+    void utf8ToStdWstring(wstring & dest, const string & src)
     {
       int len = utf8DecodedLength(src);
 
@@ -173,7 +197,7 @@ namespace Radiant
       }
     }
 
-    void wstringToUtf8(string & dest, const wstring & src)
+    void stdWstringToUtf8(string & dest, const wstring & src)
     {
       int bytes = utf8EncodedLength(src);
       dest.resize(bytes);
@@ -201,7 +225,7 @@ namespace Radiant
           *ptr++ = c & 0x03F;	  
         }
         else {
-          error("wstringToUtf8 # Bad Unicode character %x", c);
+          error("stdWstringToUtf8 # Bad Unicode character %x", c);
         }
       }
     }
