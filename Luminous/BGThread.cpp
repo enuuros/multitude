@@ -58,7 +58,7 @@ namespace Luminous
 
   void BGThread::addTask(Task * task)
   {
-    Radiant::trace("BGThread::addTask #");
+//    Radiant::trace("BGThread::addTask #");
     assert(task);
 
     m_mutex.lock();

@@ -65,7 +65,7 @@ namespace Luminous
 
   void MipmapTask::initialize()
   {
-    Radiant::trace("MipmapTask::initialize # %s", m_filename.c_str());
+//    Radiant::trace("MipmapTask::initialize # %s", m_filename.c_str());
 
     m_origImage = new Magick::Image();
 
@@ -82,7 +82,7 @@ namespace Luminous
 
   void MipmapTask::doTask()
   {
-    Radiant::trace("MipmapTask::doTask #");
+//    Radiant::trace("MipmapTask::doTask #");
 
     /// @todo rewrite
 
@@ -116,7 +116,7 @@ namespace Luminous
     try {
       next.read(levelCache);
     } catch(...) {
-      Radiant::trace("MipmapTask::doTask # failed to load level %d from cache", level);
+//      Radiant::trace("MipmapTask::doTask # failed to load level %d from cache", level);
 
       // Loading the cached mipmap failed; see if we need the mipmap by
       // comparing the dimension to the original image
@@ -127,10 +127,12 @@ namespace Luminous
 
       // Unless we have nothing loaded, don't upscale
       if(level > 0 && maxDim < levelDim) {
+/*
         Radiant::trace("MipmapTask::doTask # Finished loading\n\t\
             Reason: do not upscale\n\t\
             Texture: %s\n\t\
             Level: %d\n", m_filename.c_str(), level);
+*/
         m_state = Task::DONE;
         return;
       }
@@ -147,7 +149,7 @@ namespace Luminous
       try {
         next.write(levelCache);
       } catch(...) {
-        Radiant::error("MipmapTask::doTask # failed to write cached mipmap to disk");
+//        Radiant::error("MipmapTask::doTask # failed to write cached mipmap to disk");
         m_state = Task::DONE;
       }
     }
@@ -162,10 +164,10 @@ namespace Luminous
 
     m_pyramid->addLevel(image);
     
-    Radiant::trace("DEBUG: ADDED NEW MIPMAP %d,%d (%d total)", image->width(), image->height(), loadedLevels());
+//    Radiant::trace("DEBUG: ADDED NEW MIPMAP %d,%d (%d total)", image->width(), image->height(), loadedLevels());
 
     if(loadedLevels() == m_maxLevels) {
-      Radiant::trace("MipmapTask::load # finished loading (desired mipmaps reached)");
+//      Radiant::trace("MipmapTask::load # finished loading (desired mipmaps reached)");
       m_state = Task::DONE;
     }
   }
