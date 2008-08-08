@@ -81,7 +81,7 @@ namespace Luminous
     delete resource;
     m_resources.erase(it);
 
-    Radiant::trace("GLResources::eraseResource # Resource erased.");
+//    Radiant::trace("GLResources::eraseResource # Resource erased.");
 
     return true;
   }
