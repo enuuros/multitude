@@ -74,6 +74,11 @@ namespace Luminous
     static PixelFormat alphaUByte()
     { return PixelFormat(LAYOUT_ALPHA, TYPE_UBYTE); }
 
+    inline bool operator == (const PixelFormat & that) const
+    {
+      return m_layout == that.m_layout && m_type == that.m_type;
+    }
+
     protected:
       ChannelLayout m_layout;
       ChannelType m_type;

@@ -48,8 +48,8 @@ namespace Luminous
 
     unsigned char* line(unsigned y) { return &m_data[y * lineSize()]; }
 
-    unsigned char* bytes() { return &m_data[0]; }
-    const unsigned char* bytes() const { return &m_data[0]; }
+    unsigned char* bytes() { return & m_data[0]; }
+    const unsigned char* bytes() const { return & m_data[0]; }
 
     bool read(const char* filename, ImageType* type = 0);
     bool write(const char* filename, ImageType type);
@@ -64,9 +64,13 @@ namespace Luminous
 
     bool empty() const { return (m_data == 0); }
 
-//    void scale(int width, int height, bool keepAspectRatio, Image& dest) const;
-
     void flipVertical();
+
+    /** Resample a source image using straightforward bilinear
+	interpolation. */
+    bool copyResample(const Image & source, int w, int h);
+
+    bool quarterSize(const Image & source);
 
     Image & operator = (const Image& img);
 

@@ -14,7 +14,11 @@
  */
 
 #include <Luminous/Image.hpp>
+
+#include <Nimble/Math.hpp>
+
 #include <Radiant/Trace.hpp>
+
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -78,6 +82,143 @@ namespace Luminous
         l2++;
       };
     }
+  }
+
+  bool Image::copyResample(const Image & source, int w, int h)
+  {
+    if(source.pixelFormat() == PixelFormat::rgbUByte()) {
+      allocate(w, h, source.pixelFormat());
+
+      int sw = source.width();
+      int sh = source.height();
+
+      float xscale = source.width()  / (float) width();
+      float yscale = source.height() / (float) height();
+
+      const uint8_t * src = source.bytes();
+      uint8_t * dest = bytes();
+
+      for(int y = 0; y < h; y++) {
+
+	float sy = y * yscale;
+	int yi = (int) sy;
+	int yi1 = yi + 1;
+	if(yi1 >= sh) yi1 = yi;
+	float wy1 = sy - yi;
+	float wy0 = 1.0f - wy1;
+
+	for(int x = 0; x < w; x++) {
+
+	  float sx = x * xscale;
+	  int xi = (int) sx;
+	  int xi1 = xi + 1;
+	  if(xi1 >= sw) xi1 = xi;
+
+	  float wx1 = sx - xi;
+	  float wx0 = 1.0f - wx1;
+
+	  int v00 = src[yi * sw + xi];
+	  int v10 = src[yi * sw  + xi1];
+	  int v01 = src[yi1 * sw + xi];
+	  int v11 = src[yi1 * sw + xi1];
+	  
+	  float interp = 
+	    v00 * wy0 * wx0 + 
+	    v10 * wy0 * wx1 + 
+	    v01 * wy1 * wx0 + 
+	    v11 * wy1 * wx1;
+
+	  *dest = Nimble::Math::Min((int) (interp + 0.5f), 255);
+
+	  dest++;
+	}
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  bool Image::quarterSize(const Image & source)
+  {
+    int sw = source.width();
+    int w = sw / 2;
+    /*if(sw & 0x1)
+      w++;
+    */
+    int sh = source.height();
+    int h = sh / 2;
+    /*if(sh & 0x1)
+      h++;
+    */
+    if(source.pixelFormat() == PixelFormat::rgbUByte()) {
+
+      allocate(w + sw & 0x1, h + sh & 0x1, source.pixelFormat());
+
+      const uint8_t * src = source.bytes();
+      uint8_t * dest = bytes();
+      
+      for(int y = 0; y < h; y++) {
+
+	const uint8_t * l0 = src + y * 2 * sw;
+	const uint8_t * l1 = src + ((y * 2) + 1) * sw;
+
+	for(int x = 0; x < w; x++) {
+	  
+	  unsigned tmp = l0[0];
+	  tmp += l0[1];
+	  tmp += l1[0];
+	  tmp += l1[1];
+
+	  *dest = tmp >> 2;
+
+	  l0 += 2;
+	  l1 += 2;
+	
+	  dest++;
+	}
+
+	// If we missed the last one, then:
+
+	if(sw & 0x1) {
+	  unsigned tmp = l0[0];
+	  tmp += l1[0];
+
+	  *dest = tmp >> 1;
+	
+	  dest++;	  
+	}
+	
+      }
+
+      if(sh & 0x1) {
+
+	// Last line
+	const uint8_t * l0 = src + ((h * 2) + 1) * sw;
+
+	for(int x = 0; x < w; x++) {
+	  
+	  unsigned tmp = l0[0];
+	  tmp += l0[1];
+
+	  *dest = tmp >> 1;
+
+	  l0 += 2;
+	
+	  dest++;
+	}
+
+	// Last pixel
+	if(sw & 0x1) {
+	  *dest = *l0;
+	}
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   Image& Image::operator = (const Image& img) 
