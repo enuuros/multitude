@@ -77,6 +77,20 @@ namespace Radiant {
       return tmp + ticksPerDay() * (type) days;
     }
 
+    static TimeStamp createDate(const char * date,
+				const char * delim = "-",
+				bool yearfirst = true);
+
+    static TimeStamp createTime(const char * time,
+				const char * delim = ":");
+
+    static TimeStamp createDateTime(const char * date,
+				    const char * delim,
+				    bool yearfirst,
+				    const char * time,
+				    const char * timedelim);
+
+
     int64_t days() const { return m_val / ticksPerDay(); }
     double  daysD() const { return m_val / (double) ticksPerDay(); }
     int64_t seconds() const { return m_val >> 24; }

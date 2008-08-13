@@ -63,6 +63,7 @@ SOURCES += TCPServerSocket.cpp
 SOURCES += TCPSocket.cpp
 SOURCES += Thread.cpp
 SOURCES += Timer.cpp
+SOURCES += TimeStamp.cpp
 SOURCES += Trace.cpp
 SOURCES += Video1394.cpp
 SOURCES += VideoImage.cpp

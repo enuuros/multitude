@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <cassert>
 
+#include <Nimble/Matrix3.hpp>
 #include <Nimble/Vector4.hpp>
 
 namespace Radiant {
@@ -39,6 +40,10 @@ namespace Radiant {
     { writeFloats(v.data(), 3, digits); }
     FixedStrT(Nimble::Vector4 v, int digits = 1)
     { writeFloats(v.data(), 4, digits); }
+
+    FixedStrT(const Nimble::Matrix3 & v, int digits = 1)
+    { writeFloats(v.data(), 9, digits); }
+
     FixedStrT(const char * str)
     { 
       if(str) {
