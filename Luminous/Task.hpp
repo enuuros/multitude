@@ -54,7 +54,10 @@ namespace Luminous
       void schedule(Radiant::TimeStamp ts) { m_scheduled = ts; }
       /// Schedule the next execution time for this task
       void scheduleFromNow(Radiant::TimeStamp wait) 
-    { m_scheduled = Radiant::TimeStamp::getTime() + wait; }
+      { m_scheduled = Radiant::TimeStamp::getTime() + wait; }
+      void scheduleFromNowSecs(double seconds) 
+      { m_scheduled = Radiant::TimeStamp::getTime() + 
+          Radiant::TimeStamp::createSecondsD(seconds); }
 
       /// @internal 
       //bool canBeDeleted() const { return m_canDelete; }

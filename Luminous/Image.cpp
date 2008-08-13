@@ -87,13 +87,14 @@ namespace Luminous
   bool Image::copyResample(const Image & source, int w, int h)
   {
     if(source.pixelFormat() == PixelFormat::rgbUByte()) {
+
       allocate(w, h, source.pixelFormat());
 
       int sw = source.width();
       int sh = source.height();
 
-      float xscale = source.width()  / (float) width();
-      float yscale = source.height() / (float) height();
+      float xscale = 0.5f * source.width()  / (float) w;
+      float yscale = source.height() / (float) h;
 
       const uint8_t * src = source.bytes();
       uint8_t * dest = bytes();
@@ -103,6 +104,7 @@ namespace Luminous
 	float sy = y * yscale;
 	int yi = (int) sy;
 	int yi1 = yi + 1;
+
 	if(yi1 >= sh) yi1 = yi;
 	float wy1 = sy - yi;
 	float wy0 = 1.0f - wy1;
@@ -117,18 +119,18 @@ namespace Luminous
 	  float wx1 = sx - xi;
 	  float wx0 = 1.0f - wx1;
 
-	  int v00 = src[yi * sw + xi];
-	  int v10 = src[yi * sw  + xi1];
-	  int v01 = src[yi1 * sw + xi];
-	  int v11 = src[yi1 * sw + xi1];
+	  const uint8_t * v00 = & src[(yi * sw  + xi) * 3];
+          const uint8_t * v10 = src[(yi * sw  + xi1) * 3];
+	  const uint8_t * v01 = src[(yi1 * sw + xi) * 3];
+          const uint8_t * v11 = src[(yi1 * sw + xi1) * 3];
 	  
-	  float interp = 
-	    v00 * wy0 * wx0 + 
-	    v10 * wy0 * wx1 + 
-	    v01 * wy1 * wx0 + 
-	    v11 * wy1 * wx1;
+	  float r = 
+	    (*v00) * wy0 * wx0 + 
+	    (*v10) * wy0 * wx1 + 
+	    (*v01) * wy1 * wx0 + 
+	    (*v11) * wy1 * wx1;
 
-	  *dest = Nimble::Math::Min((int) (interp + 0.5f), 255);
+	  // *dest = Nimble::Math::Min((int) (interp + 0.5f), 255);
 
 	  dest++;
 	}
@@ -154,7 +156,7 @@ namespace Luminous
     */
     if(source.pixelFormat() == PixelFormat::rgbUByte()) {
 
-      allocate(w + sw & 0x1, h + sh & 0x1, source.pixelFormat());
+      allocate(w + (sw & 0x1), h + (sh & 0x1), source.pixelFormat());
 
       const uint8_t * src = source.bytes();
       uint8_t * dest = bytes();
@@ -162,7 +164,7 @@ namespace Luminous
       for(int y = 0; y < h; y++) {
 
 	const uint8_t * l0 = src + y * 2 * sw;
-	const uint8_t * l1 = src + ((y * 2) + 1) * sw;
+	const uint8_t * l1 = l0 + sw;
 
 	for(int x = 0; x < w; x++) {
 	  
