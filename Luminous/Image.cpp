@@ -93,11 +93,10 @@ namespace Luminous
       int sw = source.width();
       int sh = source.height();
 
-      float xscale = 0.5f * source.width()  / (float) w;
+      float xscale = source.width()  / (float) w;
       float yscale = source.height() / (float) h;
 
       const uint8_t * src = source.bytes();
-      uint8_t * dest = bytes();
 
       for(int y = 0; y < h; y++) {
 
@@ -108,6 +107,8 @@ namespace Luminous
 	if(yi1 >= sh) yi1 = yi;
 	float wy1 = sy - yi;
 	float wy0 = 1.0f - wy1;
+
+        uint8_t * dest = bytes() + y * w * 3;
 
 	for(int x = 0; x < w; x++) {
 
@@ -124,12 +125,14 @@ namespace Luminous
 	  const uint8_t * v01 = & src[(yi1 * sw + xi) * 3];
           const uint8_t * v11 = & src[(yi1 * sw + xi1) * 3];
 
+          float fw00 = wy0 * wx0;
+          float fw10 = wy1 * wx0;
+          float fw01 = wy0 * wx1;
+          float fw11 = wy1 * wx1;
+
 	  for(int c = 0; c < 3; c++) {
 	    float val = 
-	      (*v00) * wy0 * wx0 + 
-	      (*v10) * wy0 * wx1 + 
-	      (*v01) * wy1 * wx0 + 
-	      (*v11) * wy1 * wx1;
+	      (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 +  (*v11) * fw11;
 
 	    *dest = Nimble::Math::Min((int) (val + 0.5f), 255);
 	    
@@ -151,11 +154,11 @@ namespace Luminous
 
   bool Image::quarterSize(const Image & source)
   {
-    int sw = source.width();
-    int w = sw / 2;
+    const int sw = source.width();
+    const int w = sw / 2;
 
-    int sh = source.height();
-    int h = sh / 2;
+    const int sh = source.height();
+    const int h = sh / 2;
 
     if(source.pixelFormat() == PixelFormat::alphaUByte() ||
        source.pixelFormat() == PixelFormat::luminanceUByte()) {
@@ -226,61 +229,70 @@ namespace Luminous
 
       allocate(w + (sw & 0x1), h + (sh & 0x1), source.pixelFormat());
 
-      const uint8_t * src = source.bytes();
+      const uint8_t * const src = source.bytes();
       uint8_t * dest = bytes();
       
-      for(int y = 0; y < h; y++) {
+      for(int y = 0; y < h / 2; y++) {
 	
 	const uint8_t * l0 = src + y * 2 * 3 * sw;
 	const uint8_t * l1 = l0 + sw * 3;
 
-	for(int x = 0; x < (w * 3); x++) {
+	for(int x = 0; x < w; x++) {
 	  
-	  unsigned tmp = l0[0];
-	  tmp += l0[3];
-	  tmp += l1[0];
-	  tmp += l1[3];
+          for(int i = 0; i < 3; i++) {
+            unsigned tmp = l0[0];
+            tmp += l0[3];
+            tmp += l1[0];
+            tmp += l1[3];
 
-	  *dest = tmp >> 2;
+            *dest = tmp >> 2;
 
-	  l0++;
-	  l1++;
-	
-	  dest++;
+            l0++;
+            l1++;
+            dest++;
+          }
+
+          l0 += 3;
+          l1 += 3;
 	}
 
-	// If we missed the last one, then:
+	// If we missed the last pixel, then:
 
 	if(sw & 0x1) {
 	  for(int c = 0; c < 3; c++) {
 	    unsigned tmp = l0[0];
 	    tmp += l1[0];
-	    
+
 	    *dest = tmp >> 1;
-	    
-	    l0 ++;
-	    l1 ++;
-	    dest++;	  
-	  }	
+
+	    l0++;
+	    l1++;
+            // dest++;
+            dest += 2;
+	  }
 	}
       }
 
       if(sh & 0x1) {
 
 	// Last line
-	const uint8_t * l0 = src + ((h * 2) + 1) * sw;
+	const uint8_t * l0 = src + ((h * 2) + 1) * sw * 3;
 
-	for(int x = 0; x < (w * 3); x++) {
+	for(int x = 0; x < w; x++) {
 	  
-	  unsigned tmp = l0[0];
-	  tmp += l0[3];
+          for(int i = 0; i < 3; i++) {
+            unsigned tmp = l0[0];
+            tmp += l0[3];
 
-	  *dest = tmp >> 1;
-
-	  l0 ++;
+            *dest = tmp >> 1;
+            
+            l0++;
 	
-	  dest++;
-	}
+            dest++;
+          }
+          
+          l0 += 3;
+        }
 
 	// Last pixel
 	if(sw & 0x1) {
