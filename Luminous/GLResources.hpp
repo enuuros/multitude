@@ -72,6 +72,8 @@ namespace Luminous
       rendering the OpenGL scene. */
     void resetSumCounters() { m_deallocationSum = m_allocationSum = 0; }
 
+    void deleteAfter(GLResource * resource, int frames);
+
  protected:
 
     container m_resources;
@@ -82,6 +84,8 @@ namespace Luminous
     /** This number is likely to be quite approximate as we cannot
 	estimate exactly much GPU memory a particular object uses. */
     long m_consumingBytes;
+
+    long m_frame;
   };
 }
 

@@ -21,7 +21,8 @@ namespace Luminous
 {
 
   GLResource::GLResource(GLResources * resources)
-    : m_resources(resources)
+    : m_resources(resources),
+      m_deleteOnFrame(0)
   {}
   
   GLResource::~GLResource()

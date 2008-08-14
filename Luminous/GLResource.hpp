@@ -113,6 +113,8 @@ namespace Luminous
   class MTEXPORT GLResource
   {
   public:
+    friend class GLResources;
+
     GLResource(GLResources * resources = 0);
     virtual ~GLResource();
 
@@ -132,6 +134,8 @@ namespace Luminous
 
   private:
     GLResources * m_resources;
+
+    long m_deleteOnFrame;
   };
 }
 

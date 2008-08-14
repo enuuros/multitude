@@ -26,7 +26,8 @@ namespace Luminous
   GLResources::GLResources()
     : m_deallocationSum(0),
       m_allocationSum(0),
-      m_consumingBytes(0)
+      m_consumingBytes(0),
+      m_frame(0)
   {}
 
   GLResources::~GLResources()
@@ -93,6 +94,24 @@ namespace Luminous
       void * key = GarbageCollector::getObject(it);
       eraseResource(key);
     }
+
+    m_frame++;
+    
+    for(iterator it = m_resources.begin(); it != m_resources.end(); ) {
+      
+      GLResource * r = (*it).second;
+
+      if(r->m_deleteOnFrame && r->m_deleteOnFrame < m_frame) {
+
+        delete (*it).second;
+        iterator tmp = it;
+        tmp++;
+        m_resources.erase(it);
+        it = tmp;
+      }
+      else
+        it++;
+    }
   }
 
   void GLResources::clear()
@@ -115,6 +134,14 @@ namespace Luminous
     m_consumingBytes  += (allocated - deallocated);
 
     assert(m_consumingBytes >= 0);
+  }
+
+  void GLResources::deleteAfter(GLResource * resource, int frames)
+  {
+    if(frames >= 0)
+      resource->m_deleteOnFrame = m_frame + frames;
+    else
+      resource->m_deleteOnFrame = -1;
   }
 
 }
