@@ -38,7 +38,7 @@ namespace Luminous
 
   void Task::finished()
   {
-    Radiant::trace("Task::finished # %s", typeid(*this).name());
+    // Radiant::trace("Task::finished # %s", typeid(*this).name());
   }
 
 }

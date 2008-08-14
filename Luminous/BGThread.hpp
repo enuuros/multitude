@@ -54,6 +54,8 @@ namespace Luminous
     typedef std::multimap<Priority, Task * > container;
     typedef std::pair<Priority, Task * > contained;
 
+    unsigned taskCount();
+
   protected:
     virtual void childLoop();
 
