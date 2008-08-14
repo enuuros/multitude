@@ -155,23 +155,36 @@ namespace Luminous
   bool Image::quarterSize(const Image & source)
   {
     const int sw = source.width();
-    const int w = sw / 2;
-
+    int w = sw / 2;
+     
     const int sh = source.height();
-    const int h = sh / 2;
+    int h = sh / 2;
+
+    // Make even:
+    /* if(w & 0x1)
+      w--;
+    if(h & 0x1)
+      h--;
+    */
+
+    while(w & 0x3)
+      w--;
+    while(h & 0x3)
+      h--;
 
     if(source.pixelFormat() == PixelFormat::alphaUByte() ||
        source.pixelFormat() == PixelFormat::luminanceUByte()) {
 
-      allocate(w + (sw & 0x1), h + (sh & 0x1), source.pixelFormat());
+      allocate(w, h, source.pixelFormat());
 
       const uint8_t * src = source.bytes();
-      uint8_t * dest = bytes();
       
       for(int y = 0; y < h; y++) {
-
+        
 	const uint8_t * l0 = src + y * 2 * sw;
 	const uint8_t * l1 = l0 + sw;
+
+        uint8_t * dest = bytes() + y * w;
 
 	for(int x = 0; x < w; x++) {
 	  
@@ -188,57 +201,25 @@ namespace Luminous
 	  dest++;
 	}
 
-	// If we missed the last one, then:
-
-	if(sw & 0x1) {
-	  unsigned tmp = l0[0];
-	  tmp += l1[0];
-
-	  *dest = tmp >> 1;
-	
-	  dest++;	  
-	}	
-      }
-
-      if(sh & 0x1) {
-
-	// Last line
-	const uint8_t * l0 = src + ((h * 2) + 1) * sw;
-
-	for(int x = 0; x < w; x++) {
-	  
-	  unsigned tmp = l0[0];
-	  tmp += l0[1];
-
-	  *dest = tmp >> 1;
-
-	  l0 += 2;
-	
-	  dest++;
-	}
-
-	// Last pixel
-	if(sw & 0x1) {
-	  *dest = *l0;
-	}
       }
 
       return true;
     }
     else if(source.pixelFormat() == PixelFormat::rgbUByte()) {
 
-      allocate(w + (sw & 0x1), h + (sh & 0x1), source.pixelFormat());
+      allocate(w, h, source.pixelFormat());
 
       const uint8_t * const src = source.bytes();
-      uint8_t * dest = bytes();
       
-      for(int y = 0; y < h / 2; y++) {
+      for(int y = 0; y < h; y++) {
 	
 	const uint8_t * l0 = src + y * 2 * 3 * sw;
 	const uint8_t * l1 = l0 + sw * 3;
 
+        uint8_t * dest = bytes() + y * w * 3;
+
 	for(int x = 0; x < w; x++) {
-	  
+          
           for(int i = 0; i < 3; i++) {
             unsigned tmp = l0[0];
             tmp += l0[3];
@@ -255,53 +236,29 @@ namespace Luminous
           l0 += 3;
           l1 += 3;
 	}
-
-	// If we missed the last pixel, then:
-
-	if(sw & 0x1) {
-	  for(int c = 0; c < 3; c++) {
-	    unsigned tmp = l0[0];
-	    tmp += l1[0];
-
-	    *dest = tmp >> 1;
-
-	    l0++;
-	    l1++;
-            // dest++;
-            dest += 2;
-	  }
-	}
       }
 
-      if(sh & 0x1) {
+      return true;
+    }
 
-	// Last line
-	const uint8_t * l0 = src + ((h * 2) + 1) * sw * 3;
+    return false;
+  }
 
-	for(int x = 0; x < w; x++) {
-	  
-          for(int i = 0; i < 3; i++) {
-            unsigned tmp = l0[0];
-            tmp += l0[3];
+  bool Image::forgetLastPixels(int n)
+  {
+    if(pixelFormat() == PixelFormat::rgbUByte()) {
+      int linewidth = m_width * 3;
+      int newlinewidth = (m_width - n) * 3;
 
-            *dest = tmp >> 1;
-            
-            l0++;
-	
-            dest++;
-          }
-          
-          l0 += 3;
-        }
+      for(int y = 0; y < m_height; y++) {
+        unsigned char * dest = bytes() + y * newlinewidth;
+        unsigned char * src = bytes() + y * linewidth;
 
-	// Last pixel
-	if(sw & 0x1) {
-	  for(int c = 0; c < 3; c++) {
-	    *dest++ = *l0++;
-	  }
-	}
+        memmove(dest, src, newlinewidth);
       }
 
+      m_width -= n;
+      
       return true;
     }
 

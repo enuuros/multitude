@@ -72,6 +72,9 @@ namespace Luminous
 
     bool quarterSize(const Image & source);
 
+    bool forgetLastPixels(int n);
+    void forgetLastLine() { if(m_height) m_height--; }
+
     Image & operator = (const Image& img);
 
   protected:
