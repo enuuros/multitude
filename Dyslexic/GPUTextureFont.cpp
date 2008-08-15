@@ -205,6 +205,8 @@ namespace Dyslexic
     m_remGlyphs = m_numGlyphs = m_cpuFont->face()->numGlyphs();
 
     GPUFontBase::faceSizeChanged();
+
+    m_reset = false;
   }
 
   void GPUTextureFont::resetGLResources()
