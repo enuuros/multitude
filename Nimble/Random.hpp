@@ -81,6 +81,40 @@ namespace Nimble {
     static const unsigned m_randMul = 134695621;  
   };
 
+  /// RandomGaussian generates pseudo-random numbers from a normal (gaussian) distribution.
+  class RandomGaussian
+  {
+    public:
+      /// Construct a generator with given parameters for the distribution of
+      /// the random numbers.
+      /// @param mean the mean of the normal distribution
+      /// @param stdDev the standard deviation for the normal distribution
+      /// @param seed seed value for the pseudo-random sequence
+      RandomGaussian(float mean = 0.0f, float stdDev = 1.0f, unsigned seed = 0) : m_uniform(seed), m_mean(mean), m_stdDev(stdDev) {}
+
+      /// Generate a random number from the distribution
+      /// @return a pseudo-random number
+      inline float rand() {
+        float x1, x2, rsq;
+
+        do {
+          // Pick two uniform numbers within a unit-square and test if they are
+          // within a unit-circle, if not, try again
+          x1 = 2.0f * m_uniform.rand01() - 1.0f;
+          x2 = 2.0f * m_uniform.rand01() - 1.0f;
+          rsq = x1 * x1 + x2 * x2;
+        } while(rsq >= 1.0f || rsq == 0.0f);
+
+        // Box-Muller transformation and return the other number
+        float fac = sqrt((-2.0f * log(rsq)) / rsq);
+        return (x2 * fac) * m_stdDev + m_mean;
+      }
+
+    private:
+      RandomUniform m_uniform;
+      float m_mean;
+      float m_stdDev;
+  };
 }
 
 #endif
