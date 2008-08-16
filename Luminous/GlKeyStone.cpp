@@ -162,6 +162,12 @@ namespace Luminous {
 
   void GlKeyStone::applyGlState()
   {
+    if(*m_vertices[0] == Vector2(0, 0) &&
+       *m_vertices[0] == Vector2(1, 0) &&
+       *m_vertices[0] == Vector2(1, 1) &&
+       *m_vertices[0] == Vector2(0, 1))
+      return;
+    
     glTranslatef(-1.0, -1.0, 0.0);
     glScalef(2.0, 2.0, 2.0);
     glMultTransposeMatrixf(m_matrix.data());

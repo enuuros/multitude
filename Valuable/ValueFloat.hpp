@@ -23,7 +23,9 @@ namespace Valuable
       : ValueNumeric<T>(parent, name, v, transit)
       {}
 
-      ValueFloatT<T> & operator = (T i) { Base::m_value = i; STD_OP }
+      inline ValueFloatT<T> & operator = (T i) { Base::m_value = i; STD_OP }
+
+      inline operator const T & () const { return Base::m_value; }
 
       const char * const type() const { return VO_TYPE_FLOAT; }
 

@@ -47,7 +47,6 @@ namespace Valuable
 
       std::string asString(bool * const ok = 0) const;
 
-
     protected:
       VectorType m_value;
   };

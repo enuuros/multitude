@@ -6,6 +6,7 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
+#include <xercesc/framework/MemBufFormatTarget.hpp>
 
 using namespace xercesc;
 
@@ -78,8 +79,8 @@ namespace Valuable
     m_children.erase(it);
     value->m_parent = 0;
   }
-
-  bool HasValues::saveXML(const char * filename)
+  
+  bool HasValues::saveXML(XMLFormatTarget & target)
   {
     // Get implementation of the Load-Store (LS) interface
     const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
@@ -95,8 +96,6 @@ namespace Valuable
 
       // Output pretty XML
       writer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-
-      LocalFileFormatTarget target(filename);
 
       writer->writeNode(&target, *doc);
 
@@ -115,6 +114,35 @@ namespace Valuable
     // Cleanup
     writer->release();
     doc->release();
+
+    return true;
+  }
+
+  bool HasValues::saveXML(const char * filename)
+  {
+    try {
+      LocalFileFormatTarget target(filename);
+      return saveXML(target);
+    }
+    catch(...) {
+      return false;
+    }
+    
+    return false; // Unreachable
+  }
+
+  bool HasValues::saveInMemoryXML(std::vector<char> & buffer)
+  {
+    MemBufFormatTarget target;
+    if(!saveXML(target)) {
+      buffer.clear();
+      return false;
+    }
+
+    unsigned size = target.getLen();
+
+    buffer.resize(size);
+    memcpy(& buffer[0], target.getRawBuffer(), size);
 
     return true;
   }
@@ -221,34 +249,6 @@ namespace Valuable
 
   bool HasValues::readElement(xercesc::DOMElement *)
   {
-/*
-    char * nameVal = XMLString::transcode(ce->getTagName());
-    XMLCh * typeAttr = XMLString::transcode("type");
-
-    // Get the 'type' attribute
-    if(!ce->hasAttribute(typeAttr)) {
-      Radiant::error("HasValues::readElement # no type attribute on element '%s'", nameVal);
-      XMLString::release(&nameVal);
-      XMLString::release(&typeAttr);
-      return false;
-    }
-
-    const XMLCh * typeVal = ce->getAttribute(typeAttr);
-
-    // Instantiate from type
-    char * myType = XMLString::transcode(typeVal);
-    ValueObject * vo = cl.instantiate(myType);
-    XMLString::release(&myType);
-
-    // Add as child & recurse
-    addValue(nameVal, vo);
-    vo->deserializeXML(ce, cl);
-
-    XMLString::release(&nameVal);
-    XMLString::release(&typeAttr);
-
-    return true;
-*/
     return false;
   }
 

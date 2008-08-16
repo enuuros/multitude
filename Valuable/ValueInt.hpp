@@ -25,6 +25,8 @@ namespace Valuable
 
       ValueIntT<T> & operator = (T i) { Base::m_value = i; STD_OP }
 
+      inline operator const T & () const { return Base::m_value; }
+
       // Postfix
       ValueIntT<T> & operator ++ (int) { Base::m_value++; STD_OP }
       ValueIntT<T> & operator -- (int) { Base::m_value--; STD_OP }
@@ -45,7 +47,7 @@ namespace Valuable
         const XMLCh * content = element->getTextContent();
         char * myContent = XMLString::transcode(content);
 
-        Base::m_value = atoi(myContent);
+        Base::m_value = Radiant::StringUtils::fromString<T>(myContent);
 
         XMLString::release(&myContent);
 
@@ -54,6 +56,7 @@ namespace Valuable
   };
 
   typedef ValueIntT<int> ValueInt;
+  typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
 
 }
 

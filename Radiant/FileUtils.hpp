@@ -53,6 +53,8 @@ namespace Radiant
     MTEXPORT std::string filename(const std::string & filepath);
     /// Extract filename without suffix
     MTEXPORT std::string baseFilename(const std::string & filepath);
+    /// Extract full path (including filename) without suffix
+    MTEXPORT std::string withoutSuffix(const std::string & filepath);
     /// Extract suffix
     MTEXPORT std::string suffix(const std::string & filepath);
 

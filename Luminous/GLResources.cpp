@@ -102,6 +102,8 @@ namespace Luminous
       GLResource * r = (*it).second;
 
       if(r->m_deleteOnFrame && r->m_deleteOnFrame < m_frame) {
+	
+	// Radiant::trace("GLResources::eraseResources # Removing old");
 
         delete (*it).second;
         iterator tmp = it;

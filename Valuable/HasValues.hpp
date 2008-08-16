@@ -33,7 +33,9 @@ namespace Valuable
       template<class T>
       bool setValue(const std::string & name, const T & v);
 
+      bool saveXML(xercesc::XMLFormatTarget & target);
       bool saveXML(const char * filename);
+      bool saveInMemoryXML(std::vector<char> & buffer);
       bool loadXML(const char * filename);
 
       virtual const char * const type() const { return VO_TYPE_HASVALUES; }

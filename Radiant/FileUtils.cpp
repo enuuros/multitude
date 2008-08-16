@@ -112,6 +112,16 @@ namespace Radiant
       return filepath.substr(cut1, cut2);
     }
 
+    std::string withoutSuffix(const std::string & filepath)
+    {
+      int cut = filepath.rfind(".");
+      if(cut > 0)
+	return filepath.substr(0, cut);
+
+      return filepath;
+    }
+
+
     string suffix(const string & filepath)
     {
       int cut = filepath.rfind(".") + 1;
