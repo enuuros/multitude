@@ -171,27 +171,40 @@ namespace Radiant
       // http://en.wikipedia.org/wiki/UTF-8
 
       while(ptr < sentinel) {
-        uint8_t c0 = *ptr++;
+        unsigned c0 = *ptr++;
+
+	unsigned left = sentinel - ptr;
+	
+	trace("utf8ToStdWstring # 0x%x 0x%x (%c)",
+	      (int) c0, (int) (c0 & 0xE0), (char) c0);
 
         if((c0 & 0x80) == 0)
           dest[characters] = c0;
         else if((c0 & 0xE0) == 0xC0) {
-          uint8_t c1 = *ptr++;
-          dest[characters] = c1 & 0x3F + (((unsigned) c0) & 0x1F) << 6;
+	  assert(left >= 1);
+          unsigned c1 = *ptr++;
+          dest[characters] = (c1 & 0x3F) + ((c0 & 0x1F) << 6);
+	  trace("utf8ToStdWstring # Got 2 = 0x%x (%x %x)",
+		(int) dest[characters], c0, c1);
         }
         else if((c0 & 0xF0) == 0xE0) {
-          uint8_t c1 = *ptr++;
-          uint8_t c2 = *ptr++;
-          dest[characters] = c2 & 0x3F + (((unsigned) c1) & 0x3F) << 6 + 
-            (((unsigned) c0) & 0x0F) << 12;
+	  assert(left >= 2);
+          unsigned c1 = *ptr++;
+          unsigned c2 = *ptr++;
+          dest[characters] = (c2 & 0x3F) + ((((unsigned) c1) & 0x3F) << 6) + 
+            ((((unsigned) c0) & 0x0F) << 12);
         }
         else if((c0 & 0xF8) == 0xF0) {
-          uint8_t c1 = *ptr++;
-          uint8_t c2 = *ptr++;
-          uint8_t c3 = *ptr++;
-          dest[characters] = c3 & 0x3 + (((unsigned) c2) & 0x3F) << 6 + 
-            (((unsigned) c1) & 0x3F) << 12 + (((unsigned) c1) & 0x07) << 18;
+	  assert(left >= 3);
+          unsigned c1 = *ptr++;
+          unsigned c2 = *ptr++;
+          unsigned c3 = *ptr++;
+          dest[characters] = (c3 & 0x3) + ((c2 & 0x3F) << 6) + 
+            ((c1 & 0x3F) << 12) + ((c0 & 0x07) << 18);
         }
+	else {
+	  error("utf8ToStdWstring # Bad character 0x%x", (int) c0);
+	}
 
         characters++;
       }
@@ -241,16 +254,21 @@ namespace Radiant
       while(ptr < sentinel) {
         uint8_t c0 = *ptr++;
 
+	int left = sentinel - ptr;
+
         characters++;
-        if((c0 & 80) == 0)
+        if((c0 & 0x80) == 0)
           ;
         else if((c0 & 0xE0) == 0xC0) {
+	  assert(left >= 1);
           ptr++;
         }
         else if((c0 & 0xF0) == 0xE0) {
+	  assert(left >= 2);
           ptr += 2;
         }
         else if((c0 & 0xF8) == 0xF0) {
+	  assert(left >= 3);
           ptr += 3;
         }
       }

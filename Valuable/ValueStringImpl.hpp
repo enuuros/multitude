@@ -49,12 +49,26 @@ namespace Valuable
   }
 
   template<class T>
+  std::wstring ValueStringT<T>::asWString(bool * const ok) const 
+  { 
+    if(ok) *ok = true; 
+    std::wstring tmp;
+    Radiant::StringUtils::utf8ToStdWstring(tmp, m_value);
+    return tmp; 
+  }
+
+  template<class T>
   bool ValueStringT<T>::set(const std::string & v) 
   { 
     m_value = T(v); 
     STD_EM;
     return true; 
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  // Specializations for wide strings.
 
   template <>
   float ValueStringT<std::wstring>::asFloat(bool * const ok) const 
@@ -81,6 +95,13 @@ namespace Valuable
     std::string tmp;
     Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
     return tmp; 
+  }
+
+  template<>
+  std::wstring ValueStringT<std::wstring>::asWString(bool * const ok) const 
+  { 
+    if(ok) *ok = true; 
+    return m_value;
   }
 
   template<>

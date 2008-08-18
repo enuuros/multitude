@@ -37,8 +37,8 @@ namespace Dyslexic
       void internalRender(const char * str, int n, const Nimble::Matrix3 & transform);
       void internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform);
 
-      GPUManagedFont * m_gmf;
-      CPUWrapperFont * m_cf;
+    GPUManagedFont * m_gmf;
+    CPUWrapperFont * m_cf;
   };
 
 }

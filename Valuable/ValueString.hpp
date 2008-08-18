@@ -28,6 +28,7 @@ namespace Valuable
       float asFloat(bool * const ok = 0) const;
       int asInt(bool * const ok = 0) const;
       std::string asString(bool * const ok = 0) const;
+      std::wstring asWString(bool * const ok = 0) const;
 
       virtual bool set(const std::string & v);
  

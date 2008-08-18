@@ -23,7 +23,8 @@
 namespace Dyslexic
 {
 
-  GPUManagedFont::GPUManagedFont(CPUManagedFont * cmf, Luminous::GLResources * glrc)
+  GPUManagedFont::GPUManagedFont(CPUManagedFont * cmf,
+				 Luminous::GLResources * glrc)
     : GLResource(glrc),
     m_cmf(cmf),
     m_resources(glrc)
@@ -31,7 +32,8 @@ namespace Dyslexic
     m_fonts.resize(m_cmf->fontCount());
   }
 
-  void GPUManagedFont::render(const std::string & text, int pointSize, const Nimble::Matrix3 & m)
+  void GPUManagedFont::render(const std::string & text,
+			      int pointSize, const Nimble::Matrix3 & m)
   {
     GPUFont * gf;
     float sfix;
@@ -40,7 +42,8 @@ namespace Dyslexic
     gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
   }
 
-  void GPUManagedFont::render(const std::wstring & text, int pointSize, const Nimble::Matrix3 & m)
+  void GPUManagedFont::render(const std::wstring & text,
+			      int pointSize, const Nimble::Matrix3 & m)
   {
     GPUFont * gf;
     float sfix;
