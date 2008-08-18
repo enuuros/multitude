@@ -3,6 +3,10 @@
 
 #include "ValueString.hpp"
 
+#include <Radiant/StringUtils.hpp>
+
+#define STD_EM this->emitChange();
+
 namespace Valuable
 {
 
@@ -15,6 +19,8 @@ namespace Valuable
     char * myContent = XMLString::transcode(content);
 
     m_value = T(myContent);
+
+    STD_EM;
 
     XMLString::release(&myContent);
 
@@ -46,7 +52,62 @@ namespace Valuable
   bool ValueStringT<T>::set(const std::string & v) 
   { 
     m_value = T(v); 
+    STD_EM;
     return true; 
+  }
+
+  template <>
+  float ValueStringT<std::wstring>::asFloat(bool * const ok) const 
+  { 
+    if(ok) *ok = true; 
+    std::string tmp;
+    Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
+    return atof(tmp.c_str()); 
+  }
+
+  template <>
+  int ValueStringT<std::wstring>::asInt(bool * const ok) const 
+  { 
+    if(ok) *ok = true; 
+    std::string tmp;
+    Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
+    return atoi(tmp.c_str()); 
+  }
+
+  template<>
+  std::string ValueStringT<std::wstring>::asString(bool * const ok) const 
+  { 
+    if(ok) *ok = true; 
+    std::string tmp;
+    Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
+    return tmp; 
+  }
+
+  template<>
+  bool ValueStringT<std::wstring>::set(const std::string & v) 
+  { 
+    Radiant::StringUtils::utf8ToStdWstring(m_value, v); 
+    STD_EM;
+    return true; 
+  }
+
+  template<>
+  bool ValueStringT<std::wstring>::deserializeXML(xercesc::DOMElement * element)
+  {
+    using namespace xercesc;
+
+    const XMLCh * content = element->getTextContent();
+    int len = XMLString::stringLen(content); 
+
+    m_value.resize(len);
+
+    for(int i = 0; i < len; i++) {
+      m_value[i] = len;
+    }
+
+    STD_EM;
+
+    return true;
   }
  
 }
