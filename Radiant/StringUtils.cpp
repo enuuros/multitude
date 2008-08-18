@@ -173,7 +173,7 @@ namespace Radiant
       while(ptr < sentinel) {
         uint8_t c0 = *ptr++;
 
-        if((c0 & 80) == 0)
+        if((c0 & 0x80) == 0)
           dest[characters] = c0;
         else if((c0 & 0xE0) == 0xC0) {
           uint8_t c1 = *ptr++;
