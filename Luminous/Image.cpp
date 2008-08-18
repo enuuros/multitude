@@ -265,6 +265,11 @@ namespace Luminous
     return false;
   }
 
+  void Image::forgetLastLine()
+  {
+    if(m_height) m_height--;
+  }
+  
   Image& Image::operator = (const Image& img) 
   {    
     allocate(img.m_width, img.m_height, img.m_pixelFormat);
