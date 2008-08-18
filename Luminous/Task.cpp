@@ -12,26 +12,37 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "Task.hpp"
+
+#include "BGThread.hpp"
 
 #include <typeinfo>
 
 #include <Radiant/Trace.hpp>
 
-#define TASK_DEFAULT_PRIORITY 0.f
 
 namespace Luminous
 {
 
-  Task::Task()
+  Task::Task(Priority p)
     : m_state(WAITING),
-    m_priority(TASK_DEFAULT_PRIORITY),
+    m_priority(p),
 //    m_canDelete(false),
-    m_scheduled(0)
+      m_scheduled(0),
+      m_host(0)
   {}
 
   Task::~Task()
   {}
+
+  Radiant::Mutex * Task::generalMutex()
+  {
+    if(m_host)
+      return m_host->generalMutex();
+
+    return 0;
+  }
 
   void Task::initialize()
   {}

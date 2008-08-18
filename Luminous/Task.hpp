@@ -19,15 +19,30 @@
 
 #include <Radiant/TimeStamp.hpp>
 
+namespace Radiant {
+  class Mutex;
+}
+
 namespace Luminous
 {
+  class BGThread;
+
   typedef float Priority;
 
   /// Task is a base class for tasks that can be executed within BGThread. 
   class Task : Patterns::NotCopyable
   {
-    public:
-      Task();
+  public:
+    enum {
+      PRIORITY_LOW = 1,
+      PRIORITY_NORMAL = 500,
+      PRIORITY_HIGH = 1000,
+      PRIORITY_URGENT = 1500,
+      PRIORITY_OFFSET_BIT_HIGHER = 1,
+      PRIORITY_OFFSET_BIT_LOWER = -1
+    };
+
+      Task(Priority p = PRIORITY_NORMAL);
       virtual ~Task();
 
       /// State of the task
@@ -62,6 +77,8 @@ namespace Luminous
       /// @internal 
       //bool canBeDeleted() const { return m_canDelete; }
 
+    Radiant::Mutex * generalMutex();
+
     protected:
        /// Initialize the task. Called by BGThread before the task is processed
       virtual void initialize();
@@ -74,6 +91,8 @@ namespace Luminous
 
       Radiant::TimeStamp m_scheduled;
 
+      BGThread * m_host;
+    
       friend class BGThread;
   };
 

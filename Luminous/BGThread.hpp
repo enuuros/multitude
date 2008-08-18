@@ -51,16 +51,28 @@ namespace Luminous
 
     static BGThread * instance() { return m_instance; }
 
-    typedef std::multimap<Priority, Task * > container;
+    typedef std::multimap<Priority, Task *, std::greater<Priority> > container;
     typedef std::pair<Priority, Task * > contained;
 
     unsigned taskCount();
+
+    /** This method returns a mutex that tasks and their clients can
+	use to perform temporary mutex locking.
+
+	This mutex is provided so that one can do locking related to
+	accessing the tasks, without the need to create a separate
+	mutex for each class.
+
+	BGThread does not use this mutex for anything.
+    */
+    Radiant::Mutex * generalMutex() { return & m_generalMutex; }
 
   protected:
     virtual void childLoop();
 
     Task * pickNextTask(Radiant::TimeStamp & wait);
 
+    Radiant::MutexAuto m_generalMutex;
     Radiant::MutexAuto m_mutex;
     Radiant::MutexAuto m_mutexWait;
     Radiant::Condition m_wait;

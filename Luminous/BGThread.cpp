@@ -60,6 +60,7 @@ namespace Luminous
   {
 //    Radiant::trace("BGThread::addTask #");
     assert(task);
+    task->m_host = this;
 
     m_mutex.lock();
     m_taskQueue.insert(contained(task->priority(), task));
@@ -152,6 +153,9 @@ namespace Luminous
 
       // Run the task
       if(task) {
+
+	Radiant::trace("Picked a task %s with priority %f",
+		       typeid(*task).name(), task->priority());
 //        Radiant::trace("FOO");
         bool first = (task->state() == Task::WAITING);
 
