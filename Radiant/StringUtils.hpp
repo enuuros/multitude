@@ -82,9 +82,10 @@ namespace Radiant
     inline long fromString(const char * str)
     { return atol(str); }
 
-    template <int64_t>
+    /* template <int64_t>
     inline int64_t fromString(const char * str)
     { return atoll(str); }
+    */
 
     /* template <Radiant::TimeStamp>
     inline Radiant::TimeStamp fromString(const char * str)
