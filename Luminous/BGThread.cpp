@@ -154,8 +154,8 @@ namespace Luminous
       // Run the task
       if(task) {
 
-	Radiant::trace("Picked a task %s with priority %f",
-		       typeid(*task).name(), task->priority());
+	/* Radiant::trace("Picked a task %s with priority %f",
+           typeid(*task).name(), task->priority());*/
 //        Radiant::trace("FOO");
         bool first = (task->state() == Task::WAITING);
 

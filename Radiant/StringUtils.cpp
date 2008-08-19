@@ -176,8 +176,8 @@ namespace Radiant
 
 	unsigned left = sentinel - ptr;
 	
-	trace("utf8ToStdWstring # 0x%x 0x%x (%c)",
-	      (int) c0, (int) (c0 & 0xE0), (char) c0);
+	/* trace("utf8ToStdWstring # 0x%x 0x%x (%c)",
+           (int) c0, (int) (c0 & 0xE0), (char) c0); */
 
         if((c0 & 0x80) == 0)
           dest[characters] = c0;
@@ -185,8 +185,8 @@ namespace Radiant
 	  assert(left >= 1);
           unsigned c1 = *ptr++;
           dest[characters] = (c1 & 0x3F) + ((c0 & 0x1F) << 6);
-	  trace("utf8ToStdWstring # Got 2 = 0x%x (%x %x)",
-		(int) dest[characters], c0, c1);
+	  /*trace("utf8ToStdWstring # Got 2 = 0x%x (%x %x)",
+            (int) dest[characters], c0, c1); */
         }
         else if((c0 & 0xF0) == 0xE0) {
 	  assert(left >= 2);
@@ -205,6 +205,7 @@ namespace Radiant
         }
 	else {
 	  error("utf8ToStdWstring # Bad character 0x%x", (int) c0);
+          return;
 	}
 
         characters++;
