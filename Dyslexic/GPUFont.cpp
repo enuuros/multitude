@@ -40,6 +40,12 @@ namespace Dyslexic
     internalRender(str, wcslen(str), m);
   }
 
+  void GPUFont::render(const wchar_t * str, int n,
+                       const Nimble::Matrix3 & transform)
+  {
+    internalRender(str, n, transform);
+  }
+
   void GPUFont::render(const std::string & str, const Nimble::Matrix3 & transform)
   {
     internalRender(str.c_str(), str.size(), transform);
@@ -103,6 +109,12 @@ namespace Dyslexic
     transform[0][2] = loc.x;
     transform[1][2] = loc.y;
     internalRender(str, strlen(str), transform);    
+  }
+
+  void GPUFont::render(const char * str, int n,
+                       const Nimble::Matrix3 & transform)
+  {
+    internalRender(str, n, transform);
   }
 
   void GPUFont::render(const std::wstring & str, const Nimble::Matrix3 & transform)

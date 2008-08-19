@@ -39,7 +39,18 @@ namespace Dyslexic
     float sfix;
 
     computeRenderParams(m, pointSize, &gf, &sfix);
-    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
+    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix,sfix)));
+  }
+
+  void GPUManagedFont::render(const char * str, int n, int pointSize,
+                              const Nimble::Matrix3 & m)
+  {
+    GPUFont * gf;
+    float sfix;
+
+    computeRenderParams(m, pointSize, &gf, &sfix);
+    gf->render(str, n,
+               m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix,sfix)));
   }
 
   void GPUManagedFont::render(const std::wstring & text,
@@ -49,8 +60,20 @@ namespace Dyslexic
     float sfix;
     
     computeRenderParams(m, pointSize, &gf, &sfix);
-    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
+    gf->render(text, m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix,sfix)));
   }
+
+  void GPUManagedFont::render(const wchar_t * str, int n, int pointSize,
+                              const Nimble::Matrix3 & m)
+  {
+    GPUFont * gf;
+    float sfix;
+    
+    computeRenderParams(m, pointSize, &gf, &sfix);
+    gf->render(str, n ,
+               m * Nimble::Matrix3::scale2D(Nimble::Vector2(sfix, sfix)));
+  }
+
 
   GPUFontBase * GPUManagedFont::getFont(int fontNo)
   {

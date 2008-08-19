@@ -34,8 +34,16 @@ namespace Dyslexic
     public:
       GPUManagedFont(CPUManagedFont * font, Luminous::GLResources * glrc);
 
-      void render(const std::wstring & text, int pointSize, const Nimble::Matrix3 & m);
-      void render(const std::string & text, int pointSize, const Nimble::Matrix3 & m);
+      void render(const std::string & text, int pointSize,
+                  const Nimble::Matrix3 & m);
+      void render(const char * str, int n, int pointSize,
+                  const Nimble::Matrix3 & m);
+
+      void render(const std::wstring & text, int pointSize,
+                  const Nimble::Matrix3 & m);
+      void render(const wchar_t * str, int n, int pointSize,
+                  const Nimble::Matrix3 & m);
+
 
     private:
       typedef std::vector<GPUFontBase *> container;
