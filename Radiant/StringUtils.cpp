@@ -15,6 +15,7 @@
 #include "StringUtils.hpp"
 
 #include <sstream>
+#include <cassert>
 
 #ifdef WIN32
 #include <WinPort.h>
