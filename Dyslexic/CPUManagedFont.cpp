@@ -22,7 +22,7 @@ namespace Dyslexic
 {
 
   // Maintain a user-defined list of the font-sizes i.e. [3,4,6,8,10,16,32//
-  static int g_faceSizes[] = { 8, 16, 32, 64};
+  static int g_faceSizes[] = { 8, 16, 32, 64, 128};
 
   CPUManagedFont::CPUManagedFont(Luminous::GarbageCollector * gc)
   : Collectable(gc),

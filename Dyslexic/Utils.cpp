@@ -25,7 +25,7 @@ namespace Dyslexic
     using namespace StringUtils;
 
     void breakToLines(const std::wstring & ws, const float width,
-      CPUBitmapFont & bitmapFont, WStringList & lines)
+      CPUFont & bitmapFont, WStringList & lines)
     {
       lines.clear();
 

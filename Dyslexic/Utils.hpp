@@ -41,7 +41,7 @@ namespace Dyslexic
       * @note Newline characters are retained in the output.
       */
     void breakToLines(const std::wstring & ws, const float width,
-      CPUBitmapFont & bitmapFont, Radiant::StringUtils::WStringList & lines);
+      CPUFont & bitmapFont, Radiant::StringUtils::WStringList & lines);
 
     /**
       * @brief Tokenize wstring.
