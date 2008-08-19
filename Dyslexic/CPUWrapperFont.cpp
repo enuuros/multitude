@@ -23,7 +23,8 @@ namespace Dyslexic
 
   CPUWrapperFont::CPUWrapperFont(CPUManagedFont * mfont)
   : m_managedFont(mfont),
-  m_pointSize(16)
+    m_pointSize(16),
+    m_minimumRenderSize(3)
   {}
 
   CPUWrapperFont::~CPUWrapperFont()

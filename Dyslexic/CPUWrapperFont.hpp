@@ -12,6 +12,7 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #ifndef DYSLEXIC_CPU_WRAPPER_FONT_HPP
 #define DYSLEXIC_CPU_WRAPPER_FONT_HPP
 
@@ -37,6 +38,9 @@ namespace Dyslexic
       int faceSize() const        { return m_pointSize; }
       bool setFaceSize(int size, int = DYSLEXIC_DEFAULT_RESOLUTION)  { m_pointSize = size; return true; }
 
+      float minimumRenderSize() const        { return m_minimumRenderSize; }
+      void setMinimumRenderSize(float size) { m_minimumRenderSize = size; }
+
       float ascender() const;
       float descender() const;
       float lineHeight() const;
@@ -51,6 +55,7 @@ namespace Dyslexic
     protected:
       CPUManagedFont * m_managedFont;
       int m_pointSize;
+    float m_minimumRenderSize;
   };
 
 

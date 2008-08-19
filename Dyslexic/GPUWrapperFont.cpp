@@ -32,12 +32,14 @@ namespace Dyslexic
 
   void GPUWrapperFont::internalRender(const char * str, int n, const Nimble::Matrix3 & transform)
   {
-    m_gmf->render(str, n, m_cf->faceSize(), transform);
+    m_gmf->render(str, n, m_cf->faceSize(),
+                  transform, m_cf->minimumRenderSize());
   }
 
   void GPUWrapperFont::internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform)
   {
-    m_gmf->render(str, n, m_cf->faceSize(), transform);
+    m_gmf->render(str, n, m_cf->faceSize(),
+                  transform, m_cf->minimumRenderSize());
   }
 
 }
