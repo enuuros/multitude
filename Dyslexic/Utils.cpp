@@ -25,8 +25,10 @@ namespace Dyslexic
     using namespace StringUtils;
 
     void breakToLines(const std::wstring & ws, const float width,
-      CPUFont & bitmapFont, WStringList & lines)
+      CPUFont & bitmapFont, WStringList & lines, const bool afterSpace)
     {
+      // Ensure line list empty
+
       lines.clear();
 
       if(ws.empty())
@@ -51,7 +53,7 @@ namespace Dyslexic
         // Split the sub-string into words
 
         WStringList   words;
-        split(* itSub, delim, words);
+        split(* itSub, delim, words, afterSpace);
 
         // Make the lines
 

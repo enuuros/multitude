@@ -22,8 +22,9 @@
 
 namespace Dyslexic
 {
+
   /** Utility functions for the Dyslexic font rendering engine. */
-  
+
   namespace Utils
   {
 
@@ -36,12 +37,14 @@ namespace Dyslexic
       * in the given font.
       * @param ws The string to be broken.
       * @param width Maximum width of line.
-      * @param bitmapFont The font used for rendering.
+      * @param bitmapFont Font used for rendering.
       * @param lines Reference to list to receive the lines.
       * @note Newline characters are retained in the output.
+      * @param afterSpace true to break lines after inter-word spaces.
       */
     void breakToLines(const std::wstring & ws, const float width,
-      CPUFont & bitmapFont, Radiant::StringUtils::WStringList & lines);
+      CPUFont & bitmapFont, Radiant::StringUtils::WStringList & lines,
+      const bool afterSpace = true);
 
     /**
       * @brief Tokenize wstring.
