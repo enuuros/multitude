@@ -79,7 +79,7 @@ namespace Radiant {
 
     StringUtils::StringList segments;
     StringUtils::split(time, delim, segments);
-
+    
     if(segments.size() != 3) {
       return TimeStamp(0);
     }

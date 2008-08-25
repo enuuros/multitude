@@ -69,6 +69,9 @@ namespace Radiant {
     static TimeStamp createDaysD(double days)
     { return (type) (days * ticksPerDay()); }
 
+    static TimeStamp createDaysI(type days)
+    { return (type) (days * ticksPerDay()); }
+
     static TimeStamp createDHMS(int days, int hours, int minutes, int seconds)
     { 
       type tmp = ((type) seconds) << 24;

@@ -102,6 +102,7 @@ namespace Nimble {
 
     /// Create a matrix that performs 2D translation
     static Matrix3T<T> translation(const Vector2T<T> & t) { Matrix3T<T> m; m.identity(); m.set(0, 2, t.x); m.set(1, 2, t.y); return m; }
+    static Matrix3T<T> translation(const T & x, const T & y) { Matrix3T<T> m; m.identity(); m.set(0, 2, x); m.set(1, 2, y); return m; }
     /// Create a matrix that performs 2D translation
     inline static Matrix3T<T> translate2D(const Vector2T<T> & t);
     /// Create a matrix that performs 2D scaling
