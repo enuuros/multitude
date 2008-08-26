@@ -15,6 +15,8 @@
 
 #include <Radiant/DateTime.hpp>
 
+#include <cassert>
+
 namespace Radiant {
 
   DateTime::DateTime()
