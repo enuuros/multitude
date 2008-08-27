@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <Radiant/Trace.hpp>
+
 namespace Valuable
 {  
 
@@ -11,6 +13,19 @@ namespace Valuable
     for(vliterator it = m_listening.begin(); it != m_listening.end(); it++)
       (*it)->remove(this);
   }
+
+  void ValueListener::removeObject(ValueListeners * obj)
+  {
+    vliterator it = std::find(m_listening.begin(), m_listening.end(), obj);
+
+    if(it != m_listening.end()) {
+      m_listening.erase(it);
+    }
+    else {
+      Radiant::error("ValueListener::removeObject # Object %p not found", obj);
+    }
+  }
+
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +77,9 @@ namespace Valuable
       return;
 
     for(iterator it = begin(); it != end(); it++) {
-      (*it)->valueDeleted(obj);
+      ValueListener * vl = (*it);
+      vl->valueDeleted(obj);
+      vl->removeObject(this);
     }
   }
   

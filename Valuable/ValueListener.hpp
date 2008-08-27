@@ -22,6 +22,9 @@ namespace Valuable
 
   private:
 
+    void removeObject(ValueListeners *);
+
+
     typedef std::list<ValueListeners *> vlcontainer;
     typedef vlcontainer::iterator vliterator;
 
