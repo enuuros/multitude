@@ -163,9 +163,9 @@ namespace Luminous {
   void GlKeyStone::applyGlState()
   {
     if(*m_vertices[0] == Vector2(0, 0) &&
-       *m_vertices[0] == Vector2(1, 0) &&
-       *m_vertices[0] == Vector2(1, 1) &&
-       *m_vertices[0] == Vector2(0, 1))
+       *m_vertices[1] == Vector2(1, 0) &&
+       *m_vertices[2] == Vector2(1, 1) &&
+       *m_vertices[3] == Vector2(0, 1))
       return;
     
     glTranslatef(-1.0, -1.0, 0.0);
