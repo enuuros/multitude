@@ -13,7 +13,7 @@
  * 
  */
 #ifndef DYSLEXIC_FONT_MANAGER_HPP
-#define DYSLECIC_FONT_MANAGER_HPP
+#define DYSLEXIC_FONT_MANAGER_HPP
 
 #include <Dyslexic/CPUFont.hpp>
 #include <Dyslexic/GPUFont.hpp>
