@@ -43,7 +43,7 @@ namespace Luminous
         m_levels.push_back(level);
       }
 
-      const MipmapLevel getLevel(int n) const { return m_levels[n]; }
+      const MipmapLevel & getLevel(int n) const { return m_levels[n]; }
       int levels() const { return m_levels.size(); }
 
       Nimble::Vector2i levelSize(int n) const { return Nimble::Vector2i(m_levels[n].image->width(), m_levels[n].image->height()); }
