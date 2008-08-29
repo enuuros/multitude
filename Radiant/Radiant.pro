@@ -72,12 +72,7 @@ SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
-#linux-g++:HEADERS += TimeSignaller.hpp
-#linux-g++:SOURCES += TimeSignaller.cpp
-
-# Cannot be "unix" -> conflict on OSX
-linux-g++-64:SOURCES += PlatformUtilsLinux.cpp
-linux-g++:SOURCES += PlatformUtilsLinux.cpp
+linux-*:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 

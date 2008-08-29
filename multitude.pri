@@ -50,12 +50,6 @@ LIB_VALUABLE = -lValuable
 
 MULTI_LIB_FLAG = -L
 
-linux-g++ {
-  LIB_RT = -lrt
-  LIB_OPENGL = -lGLU -lGL
-}
-
-
 macx {
 
   # withbundles = $$(MULTI_BUNDLES)

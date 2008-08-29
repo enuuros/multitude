@@ -1,5 +1,4 @@
-
-linux-g++ {
+linux-* {
 
  target.path = $$PREFIX/lib
 
