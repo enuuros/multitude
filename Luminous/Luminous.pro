@@ -2,6 +2,7 @@ include(../multitude.pri)
 
 HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
+HEADERS += CPUMipmaps.hpp
 HEADERS += DynamicTexture.hpp
 HEADERS += Error.hpp
 HEADERS += FramebufferObject.hpp
@@ -11,6 +12,7 @@ HEADERS += GLResource.hpp
 HEADERS += GLResources.hpp
 HEADERS += GLSLProgramObject.hpp
 HEADERS += GLSLShaderObject.hpp
+HEADERS += GPUMipmaps.hpp
 HEADERS += Image.hpp
 HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
@@ -28,6 +30,7 @@ HEADERS += VertexBufferImpl.hpp
 
 SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
+SOURCES += CPUMipmaps.cpp
 SOURCES += DynamicTexture.cpp
 SOURCES += Error.cpp
 SOURCES += FramebufferObject.cpp
@@ -37,6 +40,7 @@ SOURCES += GLResource.cpp
 SOURCES += GLResources.cpp
 SOURCES += GLSLProgramObject.cpp
 SOURCES += GLSLShaderObject.cpp
+SOURCES += GPUMipmaps.cpp
 SOURCES += Image.cpp
 SOURCES += JPEG.cpp
 SOURCES += Luminous.cpp

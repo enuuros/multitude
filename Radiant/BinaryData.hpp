@@ -70,6 +70,7 @@ namespace Radiant {
   {
   public:
     BinaryData();
+    BinaryData(const BinaryData & );
     ~BinaryData();
 
     /// Writes a 32-bit floating point number to the data buffer
@@ -82,6 +83,7 @@ namespace Radiant {
     /** The timestamp uses Radiant::TimeStamp internal structure (40+24
 	bit fixed-point value).*/
     void writeTimeStamp(int64_t v);
+
     /// Write a null-terminated string to the buffer
     /** */
     void writeString(const char *);
@@ -119,6 +121,8 @@ namespace Radiant {
 
     inline const char * data() const { return & m_buf[0]; }
 
+    void linkTo(void * data, int capacity);
+
     inline BinaryData & operator = (const BinaryData & that)
     { rewind(); append(that); return * this;}
 
@@ -139,7 +143,9 @@ namespace Radiant {
     
     unsigned m_current;
     unsigned m_total;
-    std::vector<char> m_buf;
+    unsigned m_size;
+    bool     m_shared;
+    char    *m_buf;
   };
 
 }

@@ -57,11 +57,28 @@ namespace Radiant {
   const int BLOB_MARKER   = makeMarker(',', 'b', '\0', '\0');
 
   BinaryData::BinaryData()
-    : m_current(0)
-  {}
+    : m_current(0),
+      m_total(0),
+      m_size(0),
+      m_shared(false),
+      m_buf(0)
+    {}
+
+  BinaryData::BinaryData(const BinaryData & that)
+    : m_current(0),
+      m_total(0),
+      m_size(0),
+      m_shared(false),
+      m_buf(0)
+  {
+    *this = that;
+  }
 
   BinaryData::~BinaryData()
-  {}
+  {
+    if(!m_shared)
+      free(m_buf);
+  }
 
   void BinaryData::writeFloat32(float v)
   {
@@ -268,13 +285,14 @@ namespace Radiant {
     if(stream->read(&s, 4) != 4)
       return false;
 
-    if(m_buf.size() < s) {
+    if(m_size < s) {
       if(s > 500000000) { // Not more than 500 MB at once, please
 	error("BinaryData::read # Attempting extraordinary read (%d bytes)",
 	      s);
 	return false;
       }
-      m_buf.resize(s);
+      m_buf = (char *) realloc(m_buf, s);
+      m_size = s;
     }
     
     if(stream->read( & m_buf[0], s) != (int) s)
@@ -286,11 +304,26 @@ namespace Radiant {
     return true;
   }
 
+  void BinaryData::linkTo(void * data, int capacity)
+  {
+    if(!m_shared && m_buf)
+      free(m_buf);
+    
+    m_buf = (char *) data;
+    m_size = capacity;
+    m_shared = true;
+  }
+
   void BinaryData::ensure(unsigned bytes)
   {
     unsigned need = m_current + bytes;
-    if(need > m_buf.size()) {
-      m_buf.resize(need + 128 + need / 16);
+    if(need > m_size) {
+      if(m_shared)
+	fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
+      
+      m_size = need + 128 + need / 16;
+      m_buf = (char *) realloc(m_buf, m_size);
+      
     }
     m_total = m_current + bytes;
   }
