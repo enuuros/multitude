@@ -56,7 +56,7 @@ SOURCES += VertexBuffer.cpp
 TARGET = Luminous
 
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
-LIBS += $$LIB_VALUABLE
+LIBS += $$LIB_VALUABLE $$LIB_GLU
 
 
 PKGCONFIG += GraphicsMagick++
