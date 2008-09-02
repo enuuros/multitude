@@ -41,6 +41,7 @@ LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
 LIB_OPENGL = -lGL
+LIB_GLU = -lGLU
 LIB_RADIANT = -lRadiant
 LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
