@@ -1,10 +1,13 @@
 linux-* {
 
- target.path = $$PREFIX/lib
+  target.path = $$PREFIX/lib
+ 
+  !isEmpty(MULTITOUCH_SDK) {
+    includes.path = $$PREFIX/include/$$TARGET
+    includes.files = $$HEADERS
+    INSTALLS += includes
+  }
 
- includes.path = $$PREFIX/include/$$TARGET
- includes.files = $$HEADERS
-
- INSTALLS += target includes
+  INSTALLS += target
 }
 
