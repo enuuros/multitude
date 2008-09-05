@@ -57,6 +57,7 @@ macx {
   withbundles = YES
 
   LIB_OPENGL = -framework,OpenGL
+  LIB_GLU = 
 
   contains(withbundles,YES) {
 
