@@ -284,7 +284,7 @@ namespace Luminous {
         continue;
       item->m_unUsed += dt;
 
-      if(item->m_unUsed > purgeTime) {
+      if(item->m_unUsed > purgeTime && purgeTime >= 0) {
 	//&& item->m_state == FINISHED && 
 	// trace("CPUMipmaps:: # Dropping level %d from CPU", i);
         m_stack[i].clear();

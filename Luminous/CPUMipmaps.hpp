@@ -31,7 +31,60 @@ namespace Luminous {
   
   class CPUMipmaps
   {
+  private:
   public:
+    
+    friend class GPUMipmaps;
+
+    CPUMipmaps();
+    virtual ~CPUMipmaps();
+
+    /** Drop old CPU mipmaps from memory.
+
+	@param dt delta-time
+
+	@param purgeTime The time-limit for keeping CPUMipmaps in
+	memory. If purgeTime is less than zero, the mipmap idle times
+	are updated, but they are <B>not</B> deleted from memory.
+     */
+    void update(float dt, float purgeTime);
+
+    /** Returns the index of the mipmap level that would best match
+	the actual output pixel resolution. */
+    int getOptimal(Nimble::Vector2f size);
+    /** Returns the index of the closest available mipmap-level. */
+    int getClosest(Nimble::Vector2f size);
+    /** Gets the mipmap image on level i. If the level does not
+	contain a valid mipmap, then 0 is returned. */
+    Image * getImage(int i);
+    /** Mark an image used. This method resets the idle-counter of the
+	level, preventing it from being dropped from the memory in the
+	near future. */
+    void markImage(int i);
+
+    /** Starts to load given file, and build the mipmaps. */
+    bool startLoading(const char * filename, bool immediate);
+
+    /** Returns the native size of the image, in pixels. */
+    const Nimble::Vector2i & nativeSize() const { return m_nativeSize;}
+  
+    /** Fetch corresponding GPU mipmaps from a resource set. If the
+	GPUMipmaps object does not exist yet, it is created and
+	returned. */
+    GPUMipmaps * getGpuMipmaps(GLResources *);
+    
+    /** Returns the highest possible mipmap-level. This is basically
+	the level of the mipmap with native resolution. */
+    int maxLevel() const { return m_maxLevel; }
+    /** Returns the lowest mipmap level that is ever going to be
+	created. */
+    int lowestLevel() const { return 5; }
+    /** Returns true if the mipmaps are still being loaded. */
+    bool isActive();
+    /** Returns the aspect ratio of the image. */
+    inline float aspect() const
+    { return (float)m_nativeSize.x / (float)m_nativeSize.y; }
+  private:
 
     class CPUItem;
     
@@ -114,31 +167,6 @@ namespace Luminous {
       float     m_unUsed;
     };
 
-    CPUMipmaps();
-    virtual ~CPUMipmaps();
-
-    void update(float dt, float purgeTime);
-
-    int getOptimal(Nimble::Vector2f size);
-    int getClosest(Nimble::Vector2f size);
-
-    Image * getImage(int i);
-
-    void markImage(int i);
-
-    bool startLoading(const char * filename, bool immediate);
-
-    const Nimble::Vector2i & nativeSize() const { return m_nativeSize;}
-  
-    GPUMipmaps * getGpuMipmaps(GLResources *);
-    
-    int maxLevel() const { return m_maxLevel; }
-    int lowestLevel() const { return 5; }
-
-    bool isActive();
-
-    inline float aspect() const { return (float)m_nativeSize.x / (float)m_nativeSize.y; }
-  private:
 
     Luminous::Priority levelPriority(int level)
     {
