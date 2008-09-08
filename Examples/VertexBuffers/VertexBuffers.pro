@@ -5,7 +5,7 @@ SOURCES += Main.cpp
 CONFIG += link_pkgconfig
 PKGCONFIG += sdl GraphicsMagick++
 
-LIBS += $$LIB_LUMINOUS 
+LIBS += $$LIB_LUMINOUS $$LIB_VALUABLE $$LIB_RADIANT
 
 macx:LIBS += -framework OpenGL
 

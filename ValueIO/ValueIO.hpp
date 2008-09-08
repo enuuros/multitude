@@ -1,4 +1,4 @@
-/* COPYRIGHT
+x1/* COPYRIGHT
  *
  * This file is part of ValueIO.
  *
@@ -19,6 +19,8 @@
 /// ValueIO libary is a collection of C++ classes for storing parameter values into XML files
 
 /** ValueIO uses the Xerces-C library for XML manipulation.
+
+    It is being gradually replaced by Valuable.
 
     \b Copyright: The ValueIO library has been developed by Helsinki
     Institute for Information Technology (HIIT, 2006-2007) and
