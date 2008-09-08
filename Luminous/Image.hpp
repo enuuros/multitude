@@ -75,6 +75,8 @@ namespace Luminous
     bool forgetLastPixels(int n);
     void forgetLastLine();
 
+    bool hasAlpha() const;
+
     Image & operator = (const Image& img);
 
   protected:

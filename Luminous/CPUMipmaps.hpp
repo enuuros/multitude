@@ -84,6 +84,8 @@ namespace Luminous {
     /** Returns the aspect ratio of the image. */
     inline float aspect() const
     { return (float)m_nativeSize.x / (float)m_nativeSize.y; }
+
+    inline bool hasAlpha() const { return m_hasAlpha; }
   private:
 
     class CPUItem;
@@ -93,15 +95,15 @@ namespace Luminous {
     public:
       friend class CPUItem;
       Loader(Luminous::Priority prio,
-	     CPUItem * dest, const std::string file);
+	     CPUMipmaps * master, CPUItem * dest, const std::string file);
       virtual ~Loader();
 
       virtual void doTask();
 
     private:
-
-      CPUItem   * m_dest;
-      std::string m_file;
+      CPUMipmaps * m_master;
+      CPUItem    * m_dest;
+      std::string  m_file;
     };
 
     class Scaler : public Task
@@ -201,6 +203,7 @@ namespace Luminous {
     int              m_maxLevel;
     // What level files are available as mip-maps.
     uint32_t         m_fileMask;
+    bool             m_hasAlpha;
   };
 
 

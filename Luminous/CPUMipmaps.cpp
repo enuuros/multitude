@@ -33,8 +33,10 @@ namespace Luminous {
   using namespace Radiant;
 
   CPUMipmaps::Loader::Loader(Luminous::Priority prio,
+			     CPUMipmaps * master, 
 			     CPUItem * dest, const std::string file)
     : Task(prio),
+      m_master(master),
       m_dest(dest),
       m_file(file)
   {
@@ -73,6 +75,8 @@ namespace Luminous {
     }
 
     Guard g(generalMutex());
+
+    m_master->m_hasAlpha = image->hasAlpha();
 
     if(m_dest) {
       assert(m_dest->m_loader == this);
@@ -192,14 +196,25 @@ namespace Luminous {
     
     // trace("CPUMipmaps::Scaler::doTask # created level %d", m_level);
 
+    // Temporary hack to avoid file-format-related bugs.
+    // m_file = "";
+
     if(m_file.size()) {
 
       Directory::mkdir(FileUtils::path(m_file));
 
-      bool ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_JPG);
+      bool ok;
+
+      if(dimage->pixelFormat() == PixelFormat::rgbaUByte()) {
+	// if(FileUtils::suffix(m_file) == "PNG")
+	//  m_file = FileUtils::baseFileName(m_file) + ".png";
+	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_PNG);
+      }
+      else
+	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_JPG);
 
       if(ok)
-        ;//trace("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
+        trace("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
       else
         error("CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
     }
@@ -267,7 +282,8 @@ namespace Luminous {
   CPUMipmaps::CPUMipmaps()
     : m_nativeSize(100, 100),
       m_maxLevel(0),
-      m_fileMask(0)
+      m_fileMask(0),
+      m_hasAlpha(false)
   {}
 
   CPUMipmaps::~CPUMipmaps()
@@ -533,7 +549,7 @@ namespace Luminous {
         CPUItem * ci = m_stack[DEFAULT_MAP1].ptr();
 
         Loader * load = new Loader(levelPriority(DEFAULT_MAP1),
-                                   ci, cachefile);
+                                   this, ci, cachefile);
         ci->m_loader = load;
         bgt()->addTask(load);
 
@@ -559,7 +575,7 @@ namespace Luminous {
 	    Guard g(bgt()->generalMutex());
             
             Loader * load = new Loader(levelPriority(i),
-				       m_stack[i].ptr(), cachefile);
+				       this, m_stack[i].ptr(), cachefile);
             m_stack[i].ptr()->m_loader = load;
             higher = i;
             bgt()->addTask(load);
@@ -590,7 +606,7 @@ namespace Luminous {
 	if(ci->needsLoader()) {
 	  
 	  Loader * load =
-            new Loader(levelPriority(m_maxLevel), ci, m_filename);
+            new Loader(levelPriority(m_maxLevel), this, ci, m_filename);
 
 	  ci->m_loader = load;
 	  

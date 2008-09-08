@@ -43,7 +43,7 @@ namespace Radiant
 	os << path << ":" << m_paths;
       else
 	os << m_paths << ":" << path;
-
+      
       m_paths = os.str();
     }
   }
@@ -63,7 +63,7 @@ namespace Radiant
   {
     std::string r = FileUtils::findFile(file, m_paths);
 
-    //trace("ResourceLocator::locate # using %s", r.c_str());
+    trace("ResourceLocator::locate # using %s", r.c_str());
 
     return r;
   }

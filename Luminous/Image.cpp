@@ -145,13 +145,101 @@ namespace Luminous
 	  }
 	}
       }
+    }
+    else if(source.pixelFormat() == PixelFormat::rgbaUByte()) {
 
+      trace("SCALING RGBA");
+
+      allocate(w, h, source.pixelFormat());
+
+      int sw = source.width();
+      int sh = source.height();
+
+      float xscale = source.width()  / (float) w;
+      float yscale = source.height() / (float) h;
+
+      const uint8_t * src = source.bytes();
+      for(int y = 0; y < h; y++) {
+
+	float sy = y * yscale;
+	int yi = (int) sy;
+	int yi1 = yi + 1;
+
+	if(yi1 >= sh) yi1 = yi;
+	float wy1 = sy - yi;
+	float wy0 = 1.0f - wy1;
+
+        uint8_t * dest = bytes() + y * w * 4;
+
+	for(int x = 0; x < w; x++) {
+
+	  float sx = x * xscale;
+	  int xi = (int) sx;
+	  int xi1 = xi + 1;
+	  if(xi1 >= sw) xi1 = xi;
+
+	  float wx1 = sx - xi;
+	  float wx0 = 1.0f - wx1;
+
+	  const uint8_t * v00 = & src[(yi * sw  + xi) * 4];
+          const uint8_t * v10 = & src[(yi * sw  + xi1) * 4];
+	  const uint8_t * v01 = & src[(yi1 * sw + xi) * 4];
+          const uint8_t * v11 = & src[(yi1 * sw + xi1) * 4];
+
+          float fw00 = wy0 * wx0;
+          float fw10 = wy1 * wx0;
+          float fw01 = wy0 * wx1;
+          float fw11 = wy1 * wx1;
+
+	  float a00 = v00[3];
+	  float a10 = v10[3];
+	  float a01 = v01[3];
+	  float a11 = v11[3];
+
+	  /*a00 = 200;
+	  a10 = 200;
+	  a01 = 200;
+	  a11 = 20;
+	  */
+	  float asum = a00 * fw00 + a10 * fw10 + a01 * fw01 + a11 * fw11;
+	  float ascale = asum > 0.00001 ? 1.0f / asum : 0.0f;
+
+	  for(int c = 0; c < 3; c++) {
+	    float val = 
+	      ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
+	       (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
+
+	    *dest = Nimble::Math::Min((int) (val + 0.5f), 255);
+	    
+	    if(c == 0)
+	      ; // trace("d = %d (%d)", (int) *dest, (int) v00);
+	    
+	    dest++;
+
+	    v00++;
+	    v10++;
+	    v01++;
+	    v11++;
+	  }
+
+	  *dest = Nimble::Math::Min((int) asum, 255);
+
+	  /* if(*dest > 128)
+	     printf("."); */
+	  // *dest = 255;
+	  dest++;
+	}
+      }
+
+      write("some-with-a.png", IMAGE_TYPE_PNG);
+      
       return true;
     }
-
+    
     return false;
   }
 
+    
   bool Image::quarterSize(const Image & source)
   {
     const int sw = source.width();
@@ -240,6 +328,62 @@ namespace Luminous
 
       return true;
     }
+    else if(source.pixelFormat() == PixelFormat::rgbaUByte()) {
+
+      trace("QUARTER RGBA");
+
+      allocate(w, h, source.pixelFormat());
+
+      const uint8_t * const src = source.bytes();
+      
+      for(int y = 0; y < h; y++) {
+	
+	const uint8_t * l0 = src + y * 2 * 4 * sw;
+	const uint8_t * l1 = l0 + sw * 4;
+
+        uint8_t * dest = bytes() + y * w * 4;
+
+	for(int x = 0; x < w; x++) {
+
+	  unsigned a00 = l0[3];
+	  unsigned a10 = l0[7];
+	  unsigned a01 = l1[3];
+	  unsigned a11 = l1[7];
+	  
+	  /* a00 = 255;
+	     a10 = 255;
+	     a01 = 255;
+	     a11 = 255;
+	  */
+	  unsigned asum = a00 + a10 + a01 + a11;
+
+	  if(!asum)
+	    asum = 1;
+          
+          for(int i = 0; i < 3; i++) {
+            unsigned tmp = (unsigned) l0[0] * a00;
+            tmp += (unsigned) l0[4] * a10;
+            tmp += (unsigned) l1[0] * a01;
+            tmp += (unsigned) l1[4] * a11;
+
+            *dest = tmp / asum;
+
+            l0++;
+            l1++;
+            dest++;
+          }
+
+	  *dest = asum >> 2;
+	  // *dest = 255;
+	  dest++;
+
+          l0 += 5;
+          l1 += 5;
+	}
+      }
+
+      return true;
+    }
 
     return false;
   }
@@ -268,6 +412,13 @@ namespace Luminous
   void Image::forgetLastLine()
   {
     if(m_height) m_height--;
+  }
+
+  bool Image::hasAlpha() const
+  {
+    return (m_pixelFormat.layout() == PixelFormat::LAYOUT_ALPHA) ||
+      (m_pixelFormat.layout() == PixelFormat::LAYOUT_LUMINANCE_ALPHA) ||
+      (m_pixelFormat.layout() == PixelFormat::LAYOUT_RGBA);
   }
   
   Image& Image::operator = (const Image& img) 
@@ -322,9 +473,13 @@ namespace Luminous
       switch(type) {
         case IMAGE_TYPE_PNG:
           ret = readPNG(file);
+	  if(!ret)
+	    ret = readJPG(file);
           break;
         case IMAGE_TYPE_JPG:
           ret = readJPG(file);
+	  if(!ret)
+	    ret = readPNG(file);
           break;
         case IMAGE_TYPE_TGA:
           ret = readTGA(file);
@@ -458,19 +613,20 @@ namespace Luminous
 
     for(int y = begY; y < endY; y++) {
       for(int x = begX; x < endX; x++) {
-
-        float w = computeWeight(x, y, x1, y1, x2, y2);
-
-        assert(w > 0.0f && w <= 1.0f);
-
-        unsigned int dstOffset = destY * dest.width() + destX;
-        unsigned int srcOffset = y * m_width + x;
-  
-        for(int c = 0; c < nc; c++) 
-          dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
+	  
+	float w = computeWeight(x, y, x1, y1, x2, y2);
+	  
+	assert(w > 0.0f && w <= 1.0f);
+	  
+	unsigned int dstOffset = destY * dest.width() + destX;
+	unsigned int srcOffset = y * m_width + x;
+	  
+	for(int c = 0; c < nc; c++) 
+	  dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
       }
     }
   }
+
 
   float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2) const
   {
