@@ -21,7 +21,7 @@ namespace Radiant
 {
 
   /// Default font search paths (no trailing /) 
-  const std::string STD_FONT_PATHS("../Fonts:/usr/share/fonts/truetype/ttf-dejavu:.");
+  const std::string STD_FONT_PATHS("../../share/MultiTouch/Fonts:/usr/share/fonts/truetype/ttf-dejavu:.");
 
 }
 
