@@ -86,11 +86,39 @@ void runClient(const char * host, int port, const char * message)
   socket.close();
 }
 
+void runListener(const char * host, int port, const char *)
+{
+  printf("Setting up a listener socket to %s:%d\n", host, port);
+
+  TCPSocket socket;
+  int err;
+  if((err = socket.open(host, port)) != 0) {
+    printf("%s cannot open client socket to %s:%d -> %s\n", 
+	   appname, host, port, strerror(err));
+    return;
+  }
+
+  while(true) {
+    char buf[64];
+    bzero(buf, sizeof(buf));
+
+    int n = socket.read(buf, sizeof(buf) - 1);
+    
+    buf[n] = 0;
+
+    printf(buf);
+    fflush(0);
+  }
+
+  socket.close();
+}
+
 int main(int argc, char ** argv)
 {
   const char * host = "localhost";
   const char * message = "Here we have a message";
   int port = 3456;
+  bool islistener = false;
   bool isclient = true;
   bool withBlocking = false;
 
@@ -99,6 +127,8 @@ int main(int argc, char ** argv)
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--server") == 0)
       isclient = false;
+    else if(strcmp(argv[i], "--listen") == 0)
+      islistener = true;
     else if(strcmp(argv[i], "--host") == 0 && (i + 1) < argc)
       host = argv[++i];
     else if(strcmp(argv[i], "--port") == 0 && (i + 1) < argc)
@@ -115,7 +145,9 @@ int main(int argc, char ** argv)
   WinPort::initSockets();
 #endif
 
-  if(isclient)
+  if(islistener)
+    runListener(host, port, message);
+  else if(isclient)
     runClient(host, port, message);
   else
     runServer(host, port, withBlocking);
