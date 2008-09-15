@@ -8,9 +8,7 @@ PKGCONFIG += libavutil libavformat libavcodec
 
 LIBS += $$LIB_RADIANT
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	INCLUDEPATH += $$INC_WINPORT $$INC_FFMPEG

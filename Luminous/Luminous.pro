@@ -62,12 +62,9 @@ TARGET = Luminous
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE $$LIB_GLU
 
-
 PKGCONFIG += GraphicsMagick++
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_MAGICK $$INC_LIBPNG $$INC_ZLIB $$INC_LIBJPEG  

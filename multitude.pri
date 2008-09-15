@@ -1,13 +1,10 @@
 # This file is to be included by all project files of qmake.
 # Use this to setup global build options & variables.
-include(prefix.pri)
-
 CONFIG -= qt
 CONFIG += link_pkgconfig
 
 # Release build
 CONFIG += release
-CONFIG -= debug
 
 # Uncomment for debug build
 # CONFIG += debug
@@ -15,18 +12,6 @@ CONFIG -= debug
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
-
-exists(/usr/include/libavformat/avformat.h) {
-  DEFINES += MULTI_FFMPEG_NEW
-}
-
-exists(/usr/local/include/libavformat/avformat.h) {
-  DEFINES += MULTI_FFMPEG_NEW
-}
-
-exists(/opt/local/include/libavformat/avformat.h) {
-  DEFINES += MULTI_FFMPEG_NEW
-}
 
 macx {
   exists(/opt/local/include/xercesc) {

@@ -6,9 +6,4 @@ HEADERS += Singleton.hpp
 
 SOURCES += Dummy.cpp
 
-TARGET = Patterns
-
-# Must be at end (Headers for OSX Bundles)
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)

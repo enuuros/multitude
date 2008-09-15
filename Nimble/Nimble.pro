@@ -18,12 +18,7 @@ HEADERS += Vector4.hpp
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
 
-TARGET = Nimble
-
-# Must be at end (Headers for OSX Bundles)
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	CONFIG += staticlib

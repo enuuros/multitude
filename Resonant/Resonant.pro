@@ -28,17 +28,11 @@ SOURCES += ModuleSamplePlayer.cpp
 #  SOURCES += AudioDevice.cpp
 #}
 
-TARGET = Resonant
-
 LIBS += $$LIB_RADIANT 
 
 PKGCONFIG += portaudio-2.0 sndfile
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
-
-CONFIG += debug
+include(../library.pri)
 
 win32 {
 	INCLUDEPATH += $$INC_LIBSNDFILE $$INC_PORTAUDIO $$INC_WINPORT $$INC_PTHREADS $$INC_MAGICK

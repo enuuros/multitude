@@ -43,21 +43,16 @@ SOURCES += GPUWrapperFont.cpp
 SOURCES += Size.cpp
 SOURCES += Utils.cpp
 
-TARGET = Dyslexic
-
 DEFINES += DYSLEXIC_FLIP_Y
 
 PKGCONFIG += freetype2
 
 LIBS += $$LIB_LUMINOUS $$LIB_RADIANT 
-
 LIBS += $$LIB_OPENGL
 
 macx:LIBS += -framework,OpenGL
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	SOURCES -= FontManager.cpp

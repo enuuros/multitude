@@ -12,8 +12,6 @@ SOURCES += SubTitles.cpp
 SOURCES += VideoIn.cpp
 SOURCES += VideoInFFMPEG.cpp
 
-TARGET = VideoDisplay
-
 # $${BASEPATH}/include/ffmpeg
 #INCLUDEPATH += $${BASEPATH}/include/GraphicsMagick
 
@@ -25,9 +23,7 @@ LIBS += $$LIB_RESONANT $$LIB_SCREENPLAY $$LIB_LUMINOUS
 LIBS += $$LIB_RADIANT $$LIB_DYSLEXIC -lGLEW $$LIB_OPENGL $$LIB_RESONANT
 macx:LIBS += -framework,OpenGL
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_PTHREADS $$INC_FFMPEG $$INC_MAGICK $$INC_PORTAUDIO

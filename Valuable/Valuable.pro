@@ -1,4 +1,3 @@
-
 include(../multitude.pri)
 
 HEADERS += ChangeMap.hpp
@@ -25,12 +24,9 @@ SOURCES += ValueObject.cpp
 SOURCES += ValueString.cpp
 SOURCES += ValueVector.cpp
 
-TARGET = Valuable
-
 # PKGCONFIG += xercesc
 
 unix:LIBS += $$LIB_RADIANT -lxerces-c
 
-include(../libs.pri)
-include(../lib_inst.pri)
+include(../library.pri)
 

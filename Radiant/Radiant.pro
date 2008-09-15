@@ -76,16 +76,12 @@ linux-*:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 
-TARGET = Radiant
-
 unix:LIBS += -lpthread $$LIB_RT -ldl
 
 macx:LIBS += -framework,CoreFoundation
 PKGCONFIG += libdc1394-2
 
-include(../libs.pri)
-
-include(../lib_inst.pri)
+include(../library.pri)
 
 win32 {
 	SOURCES -= SerialPort.cpp Video1394.cpp SMRingBuffer.cpp

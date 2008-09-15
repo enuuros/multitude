@@ -1,3 +1,4 @@
+# Common rules to build libraries
 TEMPLATE = lib
 
 DEPENDPATH += ../
@@ -5,6 +6,16 @@ DEPENDPATH += ../
 INCLUDEPATH += ../ 
 
 DESTDIR = ../lib
+
+linux-* {
+
+  target.path = /lib
+ 
+  includes.path = /include/$$TARGET
+  includes.files = $$HEADERS
+
+  INSTALLS += target includes
+}
 
 macx {
 
@@ -26,9 +37,12 @@ macx {
     message(Creating OSX bundle)
 }
 
-DEFINES += EXPORT=""
+#DEFINES += EXPORT=""
+
+VERSION=1.0
 
 win32 {
 	DEFINES += EXPORT=__declspec(dllexport)
 	include(./Win32/WinPort.pri)
 }
+
