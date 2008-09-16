@@ -33,7 +33,6 @@ namespace Radiant
       char tmp[3];
       tmp[2] = 0;
 
-
       for(int i = 0; i < 4 && (i * 2 + 2) < clen; i++) {
 	tmp[0] = color[i * 2 + 1];
 	tmp[1] = color[i * 2 + 2];

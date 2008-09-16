@@ -54,10 +54,11 @@ namespace FireView {
 				   int triggerSource, int triggerMode)
   {
     m_video.setCameraEuid64(euid64);
-
-    Radiant::trace("CamView::InputThread::start # %f %f",
-		   customFps, Radiant::asFloat(fps));
-
+    /*
+    Radiant::trace("CamView::InputThread::start # %f %f # %d %d",
+		   customFps, Radiant::asFloat(fps),
+		   triggerSource, triggerMode);
+    */
     while(customFps > Radiant::asFloat(fps) && fps < Radiant::FPS_60) {
       puts("Adjusting the core FPS");
       fps = (Radiant::FrameRate) (fps + 1);

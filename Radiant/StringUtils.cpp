@@ -317,6 +317,17 @@ namespace Radiant
       return res;
     }
 
+    int which(const char ** strings, const char * str)
+    {
+      const char * tmp;
+      for(int i = 0; (tmp = strings[i]) != 0; i++) {
+	if(strcmp(tmp, str) == 0)
+	  return i;
+      }
+ 
+      return -1;
+    }
+
     const char * yesNo(bool yes)
     {
       return yes ? "yes" : "no";

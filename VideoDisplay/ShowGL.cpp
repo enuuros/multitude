@@ -329,6 +329,8 @@ namespace VideoDisplay {
     m_position = 0;
     m_duration = Radiant::TimeStamp::createSecondsD(video.durationSeconds());
 
+    trace("ShowGL::init # Opened %s", filename);
+
     return true;
   }
 

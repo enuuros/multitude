@@ -55,6 +55,21 @@ namespace Luminous {
     return true;
   }
 
+  int GlKeyStone::closestVertex(Nimble::Vector2 loc)
+  {
+    int index = 0;
+    float best = (m_vertices[0].asVector() - loc).length();
+
+    for(int i = 1; i < 4; i++) {
+      float d = (m_vertices[i].asVector() - loc).length();
+      if(best > d) {
+        best = d;
+        index = i;
+      }
+    }
+    return index;
+  }
+
   bool GlKeyStone::moveVertex(Vector2 loc)
   {
     selectVertex(loc);
@@ -71,18 +86,7 @@ namespace Luminous {
 
   void GlKeyStone::selectVertex(Vector2 loc)
   {
-    int index = 0;
-    float best = (m_vertices[0].asVector() - loc).length();
-
-    for(int i = 1; i < 4; i++) {
-      float d = (m_vertices[i].asVector() - loc).length();
-      if(best > d) {
-        best = d;
-        index = i;
-      }
-    }
-
-    m_lastMove = index;
+    m_lastMove = closestVertex(loc);
   }
 
   void GlKeyStone::rotateVertices()
@@ -134,6 +138,9 @@ namespace Luminous {
         d, e, 0, f,
         0, 0, 1, 0,
         g, h, 0, 1);
+
+    std::cout << "KEYSTONE MATRIX = \n" << m_matrix <<
+      std::endl;
   }
 
   Vector4 GlKeyStone::project(Vector2 v)
@@ -162,12 +169,12 @@ namespace Luminous {
 
   void GlKeyStone::applyGlState()
   {
-    if(*m_vertices[0] == Vector2(0, 0) &&
+    /* if(*m_vertices[0] == Vector2(0, 0) &&
        *m_vertices[1] == Vector2(1, 0) &&
        *m_vertices[2] == Vector2(1, 1) &&
        *m_vertices[3] == Vector2(0, 1))
       return;
-    
+    */
     glTranslatef(-1.0, -1.0, 0.0);
     glScalef(2.0, 2.0, 2.0);
     glMultTransposeMatrixf(m_matrix.data());

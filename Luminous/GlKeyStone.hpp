@@ -37,6 +37,7 @@ namespace Luminous {
 
     virtual bool deserializeXML(xercesc::DOMElement * e);
 
+    int closestVertex(Nimble::Vector2 loc);
     void setVertex(int index, float x, float y) 
     { m_vertices[index] = Nimble::Vector2f(x, y); }
 
