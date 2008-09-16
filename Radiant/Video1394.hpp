@@ -45,7 +45,7 @@ namespace Radiant {
     };
 
     /// Get the list of cameras that are connected.
-    static void queryCameras(std::vector<CameraInfo> * cameras);
+    static bool queryCameras(std::vector<CameraInfo> * cameras);
     static bool queryCamera(u_int64_t euid64, CameraInfo * camera);
 
     virtual const VideoImage * captureImage();

@@ -501,7 +501,7 @@ namespace Radiant {
     {
       std::vector<CameraInfo> cameras;
     
-      queryCameras(&cameras);
+      if(!queryCameras(&cameras)) return false;
     }
   
     if(!__infos.size()) {
@@ -812,7 +812,7 @@ namespace Radiant {
     return true;
   }
 
-  void Video1394::queryCameras(std::vector<CameraInfo> * query)
+  bool Video1394::queryCameras(std::vector<CameraInfo> * query)
   {
     if(!__dc)
       __dc = dc1394_new();
@@ -825,34 +825,35 @@ namespace Radiant {
     dc1394camera_list_t * camlist = 0;
 
     if((err = dc1394_camera_enumerate(__dc, & camlist))
-       != DC1394_SUCCESS) {
+        != DC1394_SUCCESS) {
 
       // if(err != DC1394_NO_CAMERA)
-	
+
 #ifdef __linux__      
       error("%s # dc1394_find_cameras failed (%s)\n"
-	    "**********************************************\n"
-	    "Please check that relevant device files exist:\n"
-	    "/dev/raw1394\n"
-	    "/dev/video (or /dev/video/0 etc)\n"
-	    "And that you have permissions to use them\n"
-	    "**********************************************\n\n",
-	    fname, dc1394_error_get_string(err));
+          "**********************************************\n"
+          "Please check that relevant device files exist:\n"
+          "/dev/raw1394\n"
+          "/dev/video (or /dev/video/0 etc)\n"
+          "And that you have permissions to use them\n"
+          "**********************************************\n\n",
+          fname, dc1394_error_get_string(err));
 #else
       error("%s # dc1394_find_cameras failed (%s)\n",
-	    fname, dc1394_error_get_string(err));
+          fname, dc1394_error_get_string(err));
 #endif
+      return false;
     }
-  
+
     for(i = 0; i < camlist->num; i++) {
       bool already = false;
 
       for(j = 0; j < __infos.size(); j++)
-	if(__infos[j]->guid == camlist->ids[i].guid)
-	  already = true;
-      
+        if(__infos[j]->guid == camlist->ids[i].guid)
+          already = true;
+
       if(!already)
-	__infos.push_back(dc1394_camera_new(__dc, camlist->ids[i].guid));
+        __infos.push_back(dc1394_camera_new(__dc, camlist->ids[i].guid));
     }
 
     query->clear();
@@ -869,6 +870,8 @@ namespace Radiant {
     }
 
     dc1394_camera_free_list(camlist);
+
+    return true;
   }
 
   bool Video1394::queryCamera(u_int64_t euid64, CameraInfo * camera)
