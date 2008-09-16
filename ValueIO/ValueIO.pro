@@ -3,6 +3,7 @@ include(../multitude.pri)
 HEADERS += Dom.hpp
 HEADERS += HasValues.hpp
 HEADERS += IO.hpp
+HEADERS += DomStore.hpp
 
 SOURCES += Dom.cpp
 SOURCES += HasValues.cpp

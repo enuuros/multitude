@@ -39,7 +39,16 @@ contains(portaudio, YES) {
   }
 }
 
-SUBDIRS += Examples
+exists(Examples/Examples.pro):SUBDIRS += Examples
 SUBDIRS += Applications
 
 CONFIG += ordered
+
+# Install some build files to the source package
+linux-* {
+
+  stuff.path = /src/MultiTouch/multitude
+  stuff.files = LGPL.txt multitude.pro multitude.pri library.pri
+
+  INSTALLS += stuff
+}

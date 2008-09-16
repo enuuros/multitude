@@ -1,14 +1,14 @@
 include(../multitude.pri)
 
-HEADERS += cycle.h
-
 HEADERS += BinaryData.hpp
+HEADERS += BinaryStream.hpp
 HEADERS += Color.hpp
 HEADERS += ColorUtils.hpp
 HEADERS += Condition.hpp
 HEADERS += Config.hpp
 HEADERS += ConfigReader.hpp
 HEADERS += ConfigReaderTmpl.hpp
+HEADERS += cycle.h
 HEADERS += CycleRecord.hpp
 HEADERS += DateTime.hpp
 HEADERS += Directory.hpp
@@ -19,10 +19,12 @@ HEADERS += FixedStr.hpp
 HEADERS += ImageConversion.hpp
 HEADERS += IODefs.hpp
 HEADERS += Mutex.hpp
+HEADERS += PlatformUtils.hpp
 HEADERS += Priority.hpp
 HEADERS += Radiant.hpp
 HEADERS += RefObj.hpp
 HEADERS += RefPtr.hpp
+HEADERS += ResourceLocator.hpp
 HEADERS += Semaphore.hpp
 HEADERS += SerialPort.hpp
 HEADERS += Size2D.hpp
@@ -43,10 +45,7 @@ HEADERS += Video1394.hpp
 HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
-HEADERS += ResourceLocator.hpp
-HEADERS += PlatformUtils.hpp
 
-SOURCES += ResourceLocator.cpp
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
@@ -56,6 +55,7 @@ SOURCES += Directory.cpp
 SOURCES += FileUtils.cpp
 SOURCES += ImageConversion.cpp
 SOURCES += Mutex.cpp
+SOURCES += ResourceLocator.cpp
 SOURCES += SerialPort.cpp
 SOURCES += Size2D.cpp
 SOURCES += Sleep.cpp

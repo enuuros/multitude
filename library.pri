@@ -1,4 +1,4 @@
-# Common rules to build libraries
+# Common rules to build multitude libraries
 TEMPLATE = lib
 
 DEPENDPATH += ../
@@ -14,7 +14,13 @@ linux-* {
   includes.path = /include/$$TARGET
   includes.files = $$HEADERS
 
-  INSTALLS += target includes
+  src_code.path = /src/MultiTouch/multitude/$$TARGET
+  src_code.files = $$HEADERS $$SOURCES
+
+  PROJECT_FILE = $$join(TARGET, "", "", ".pro")
+  src_code.files += $$PROJECT_FILE
+
+  INSTALLS += target includes src_code
 }
 
 macx {
@@ -36,10 +42,6 @@ macx {
 
     message(Creating OSX bundle)
 }
-
-#DEFINES += EXPORT=""
-
-VERSION=1.0
 
 win32 {
 	DEFINES += EXPORT=__declspec(dllexport)

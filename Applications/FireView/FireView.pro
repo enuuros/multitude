@@ -9,20 +9,13 @@ SOURCES += MainWindow.cpp
 SOURCES += ParamView.cpp 
 SOURCES += Main.cpp
 
-TARGET = FireView
-
 LIBS += $$LIB_RADIANT $$LIB_LUMINOUS $$LIB_VALUABLE
 
-# CONFIG += debug
-CONFIG -= debug
 CONFIG += qt
 
 QT = core gui opengl xml
 
 PKGCONFIG += GraphicsMagick++
-
-target.path = $$PREFIX/bin
-INSTALLS += target
 
 win32 {
 	include(../../Win32/WinApps.pri)

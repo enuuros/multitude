@@ -4,6 +4,7 @@ HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
 HEADERS += DynamicTexture.hpp
+HEADERS += EnableStep.hpp
 HEADERS += Error.hpp
 HEADERS += FramebufferObject.hpp
 HEADERS += GarbageCollector.hpp
@@ -16,6 +17,7 @@ HEADERS += GPUMipmaps.hpp
 HEADERS += Image.hpp
 HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
+HEADERS += MatrixStep.hpp
 HEADERS += MipmapTask.hpp
 HEADERS += MultiHead.hpp
 HEADERS += Path.hpp
@@ -56,8 +58,6 @@ SOURCES += TGA.cpp
 #SOURCES += TiledMipMapImage.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
-
-TARGET = Luminous
 
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE $$LIB_GLU
