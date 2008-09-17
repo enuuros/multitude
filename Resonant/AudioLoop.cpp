@@ -87,10 +87,14 @@ namespace Resonant {
     bzero( & m_outParams, sizeof(m_outParams));
 
     m_outParams.device = Pa_GetDefaultOutputDevice();
+    if(m_outParams.device == paNoDevice) {
+      Radiant::error("AudioLoop::startReadWrite # No default output device available");
+      return false;
+    }
+
     m_outParams.channelCount = channels;
     m_outParams.sampleFormat = paFloat32;
-    m_outParams.suggestedLatency = 
-      Pa_GetDeviceInfo( m_outParams.device )->defaultLowOutputLatency;
+    m_outParams.suggestedLatency = Pa_GetDeviceInfo( m_outParams.device )->defaultLowOutputLatency;
     m_outParams.hostApiSpecificStreamInfo = 0;
 
     m_inParams = m_outParams;
