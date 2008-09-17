@@ -99,15 +99,12 @@ namespace Luminous {
 
       if(((closest < 0) || Math::Abs(mybest - best) <= Math::Abs(closest - best))
          && mybest >= 0) {
-        // trace("MYTEX dist = %d", mybest - best);
 
         tex = dynamic_cast<Texture2D *> (res);
         assert(tex);
         tex->bind();
       }
       else if(closest >= 0) {
-	// trace("CPUTEX dist = %d", closest - best);
-
         tex = new Texture2D(resources());
         resources()->addResource(m_keys + closest, tex);
         tex->loadImage(*m_cpumaps->getImage(closest), false);
@@ -116,7 +113,6 @@ namespace Luminous {
     }
     
     if(tex) {
-      // trace("Using TEX with %dx%d %d", tex->width(), tex->height(), best);
       resources()->deleteAfter(tex, 10);
     }
     else
