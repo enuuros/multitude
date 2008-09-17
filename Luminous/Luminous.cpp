@@ -33,7 +33,8 @@ namespace Luminous
     std::string versionMsg = "Luminous initialized: ";
 
     // Print which OpenGL version we have support for
-    if(GLEW_VERSION_2_0)      versionMsg += std::string("OpenGL 2.0 supported");
+    bool warn = true;
+    if(GLEW_VERSION_2_0) { warn = false; versionMsg += std::string("OpenGL 2.0 supported"); }
     else if(GLEW_VERSION_1_5) versionMsg += std::string("OpenGL 1.5 supported");
     else if(GLEW_VERSION_1_4) versionMsg += std::string("OpenGL 1.4 supported");
     else if(GLEW_VERSION_1_3) versionMsg += std::string("OpenGL 1.3 supported");
@@ -45,6 +46,10 @@ namespace Luminous
     std::string glslMsg = (glsl ? glsl : "GLSL not supported");
 
     Radiant::trace("%s (%s)", versionMsg.c_str(), glslMsg.c_str());
+    if(warn) { 
+      Radiant::error("OpenGL 2.0 is not supported.");
+      return false;
+    }
 
 //    Magick::InitializeMagick(0);
 
