@@ -11,14 +11,14 @@ HEADERS += Nimble.hpp
 HEADERS += Ramp.hpp 
 HEADERS += Random.hpp 
 HEADERS += Rect.hpp 
+HEADERS += RectImpl.hpp
 HEADERS += Vector2.hpp 
 HEADERS += Vector3.hpp 
 HEADERS += Vector4.hpp 
-HEADERS += RectImpl.hpp
 
-SOURCES += Rect.cpp
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
+SOURCES += Rect.cpp
 
 include(../library.pri)
 
