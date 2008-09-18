@@ -187,7 +187,10 @@ namespace Screenplay {
 	m_audioFrames   += aframes;
 	m_capturedAudio += aframes;
 
-	assert((uint)(m_audioFrames * m_audioChannels) < m_audioBuffer.size());
+        if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
+          error("VideoInputFFMPEG::captureImage # Audio trouble %d %d",
+                aframes, m_audioFrames);
+        }
 	// printf("_"); fflush(0);
       }
     }
@@ -414,7 +417,7 @@ namespace Screenplay {
     m_audioFrames = 0;
 
     if(m_aindex >= 0 && m_acontext) {
-      m_audioBuffer.resize(100000 * 2);
+      m_audioBuffer.resize(300000 * 2);
       m_audioChannels = m_acontext->channels;
       m_audioSampleRate = m_acontext->sample_rate;
     }
