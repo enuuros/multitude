@@ -41,31 +41,31 @@ namespace Radiant {
     unsigned pixels = w * h;
 
     if(fmt == IMAGE_RGB ||
-       fmt == IMAGE_RGBA ||  
-       fmt == IMAGE_GRAYSCALE) {
+        fmt == IMAGE_RGBA ||  
+        fmt == IMAGE_GRAYSCALE) {
 
       m_format = fmt;
-    
+
       PlaneType pt = PLANE_UNKNOWN;
       int ls = 0;
 
       if(fmt == IMAGE_GRAYSCALE) {
-	pt = PLANE_GRAYSCALE;
-	ls = w;
+        pt = PLANE_GRAYSCALE;
+        ls = w;
       }
       else if(fmt == IMAGE_RGB) {
-	pt = PLANE_RGB;
-	ls = w * 3;
+        pt = PLANE_RGB;
+        ls = w * 3;
       }
       else if(fmt == IMAGE_RGBA) {
-	pt = PLANE_RGBA;
-	ls = w * 4;
+        pt = PLANE_RGBA;
+        ls = w * 4;
       }
       else
-	fatal("VideoImage::allocateMemory");
+        fatal("VideoImage::allocateMemory");
 
       unsigned char * buf = (unsigned char *) malloc(ls * h);
-    
+
       m_planes[0].set(buf, ls, pt);
     }
     else if(fmt == IMAGE_YUV_420P) {
@@ -97,15 +97,15 @@ namespace Radiant {
   bool VideoImage::copyData(const VideoImage & that)
   {
     if(m_format != that.m_format ||
-       m_width  != that.m_width ||
-       m_height != that.m_height)
+        m_width  != that.m_width ||
+        m_height != that.m_height)
       return false;
 
     // The line counts of different planes
     uint linecount[4] = { 
       m_height, m_height, m_height, 0 
     };
-    
+
     uint rowbytes[4] = { 
       m_width, m_width, m_width, 0 
     };
@@ -156,7 +156,7 @@ namespace Radiant {
       uint bytes = rowbytes[i];
 
       for(uint y = 0; y < lines; y++)
-	memcpy(dest.line(y), src.line(y), bytes);
+        memcpy(dest.line(y), src.line(y), bytes);
     }
 
     return true;
@@ -186,9 +186,28 @@ namespace Radiant {
       return "RGBA";
     else if(fmt == IMAGE_RAWBAYER)
       return "BAYER";
- 
+
     return "ILLEGAL IMAGE FORMAT";
   }
-  
+
+  void VideoImage::zero()
+  {
+    switch(m_format) {
+      case IMAGE_GRAYSCALE:
+      case IMAGE_RGB:
+      case IMAGE_RGBA:
+          memset(m_planes[0].m_data, 0, m_planes[0].m_linesize * m_height);
+        break;
+        case IMAGE_YUV_420P:
+        case IMAGE_YUV_422P:
+          memset(m_planes[0].m_data, 0, m_planes[0].m_linesize * m_height);
+          memset(m_planes[1].m_data, 0, m_planes[1].m_linesize * m_height);
+          memset(m_planes[2].m_data, 0, m_planes[2].m_linesize * m_height);
+          break;
+      default:
+        Radiant::error("VideoImage::zero # unsupported format");
+        break;
+    };
+  }
 
 }

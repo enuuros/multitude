@@ -200,6 +200,9 @@ namespace Radiant {
     /// The number of pixels in the image
     int pixels() const { return m_width * m_height; }
 
+    /// Fill the image with 0
+    void zero();
+
     /// Plane information
     Plane m_planes[4];
     /// Image format
