@@ -115,7 +115,7 @@ namespace Nimble {
 
     inline bool intersects(const RectT &) const;
     inline bool contains(T x, T y) const;
-    inline bool contains(Vector2T<T> ) const;
+    bool contains(Vector2T<T> v) const;
     inline bool contains(const RectT &b) const;
     inline T    distance(const RectT &b) const;
 
@@ -196,12 +196,6 @@ namespace Nimble {
   {
     return ((x >= m_low[0]) && (x <= m_high[0]) &&
 	    (y >= m_low[1]) && (y <= m_high[1]));  
-  }
-
-  template <class T> 
-  inline bool RectT<T>::contains(Vector2T<T> v) const
-  {
-    return ((v[0] >= m_low[0]) && (v[0] <= m_high[0]) && (v[1] >= m_low[1]) && (v[1] <= m_high[1]));  
   }
 
   template <class T> 
@@ -291,7 +285,7 @@ namespace Nimble {
   {
     RectT<T> res;
 
-    Vector2T<T> size = span() * 0.5f;
+    Vector2T<T> size = span() / T(2);
     if(row)
       res.m_low.y = m_low.y + size.y;
     if(col)

@@ -60,7 +60,7 @@ SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
 
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
-LIBS += $$LIB_VALUABLE $$LIB_GLU
+LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE
 
 PKGCONFIG += GraphicsMagick++
 

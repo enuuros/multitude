@@ -120,9 +120,6 @@ namespace Luminous {
 
       Nimble::Rectf rectangle(0.f, 0.f, 1.f, 1.f);    
       bool ok = rectangle.contains(loc);
-      /// @bug strange hack needed to make this work when Luminous is compiled
-      /// with -O2. No idea what the real reason is...
-      usleep(1);
 
       isInside = ok;
 
