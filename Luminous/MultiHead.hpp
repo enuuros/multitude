@@ -127,12 +127,12 @@ namespace Luminous {
         /** Converts a screen-space coordinate to image-space coordinate.
           @param loc The location vector to convert.
           @param windowheight height of the window
-          @param convOk Optional parameter that is set to true if the
-          location is inside this area. Otherwise convOk is set to
+          @param insideArea set to true if the location is inside this 
+                 area. Otherwise convOk is set to
           false.
           @return The vector in graphics coordinates.
           */
-        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool * convOk = 0);
+        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & insideArea);
 
         int active() const { return m_active.asInt(); }
 
@@ -201,11 +201,10 @@ namespace Luminous {
 
           @param loc The location in screen coordinates.
 
-          @param convOk If this value is non-null, then it is set to
-          true or false depending on whether the conversion could be
-          carried out.
+          @param convOk set to true or false depending on whether the 
+          conversion could be carried out.
           */
-        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool * convOk=0);
+        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk);
 
         /// Should the window be frameless
         bool frameless() const { return m_frameless.asInt(); }

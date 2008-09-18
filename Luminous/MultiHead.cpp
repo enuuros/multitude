@@ -99,9 +99,10 @@ namespace Luminous {
     m_keyStone.cleanExterior();
   }
 
-  Nimble::Vector2f MultiHead::Area::windowToGraphics
-    (Nimble::Vector2f loc, int windowheight, bool * convOk)
+  Nimble::Vector2f MultiHead::Area::windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & isInside)
     {
+//      Radiant::trace("MultiHead::Area::windowToGraphics");
+
       assert((m_size[0] > 0.01f) && (m_size[1] > 0.01f));
 
       Nimble::Vector2f orig = loc;
@@ -111,23 +112,23 @@ namespace Luminous {
       loc.descale(m_size.asVector());
       loc.y = 1.0f - loc.y;
 
-      bool foo = true;
-      Nimble::Matrix4 m = m_keyStone.matrix().inverse( & foo);
+      bool dontCare = false;
+      Nimble::Matrix4 m = m_keyStone.matrix().inverse( &dontCare);
+      assert(dontCare);
 
       loc = GlKeyStone::projectCorrected(m, loc).vector2();
 
-      Nimble::Rect area(0, 0, 1, 1);    
-      bool ok = area.contains(loc);
-      if(convOk) {
-        *convOk = ok;
-      }
+      Nimble::Rectf rectangle(0.f, 0.f, 1.f, 1.f);    
+      bool ok = rectangle.contains(loc);
+      /// @bug strange hack needed to make this work when Luminous is compiled
+      /// with -O2. No idea what the real reason is...
+      usleep(1);
+
+      isInside = ok;
 
       loc.y = 1.0f - loc.y;
       loc.scale(m_graphicsSize.asVector());
       loc += m_graphicsLocation.asVector();
-
-      /// @todo commenting this breaks things on single display machines (where's the bug?)    
-      //trace("MultiHead::Area::windowToGraphics # %.2f %.2f to %.2f %.2f %d (%s)", orig.x, orig.y, loc.x, loc.y, (int) foo, ok ? "ok" : "fail");
 
       return loc;
     }
@@ -180,24 +181,25 @@ namespace Luminous {
     }
   }
 
-  Nimble::Vector2f MultiHead::Window::windowToGraphics
-    (Nimble::Vector2f loc, bool * convOk)
+  Nimble::Vector2f MultiHead::Window::windowToGraphics(Nimble::Vector2f loc, bool & convOk)
     {
+//      Radiant::trace("MultiHead::Window::windowToGraphics # loc(%f,%f), m_size[1] = %d", loc.x, loc.y, m_size[1]);
+
+
       for(uint i = 0; i < m_areas.size(); i++) {
         bool ok = false;
-        Nimble::Vector2f res =
-          m_areas[i].ptr()->windowToGraphics(loc, m_size[1], & ok);
+        Nimble::Vector2f res = m_areas[i].ptr()->windowToGraphics(loc, m_size[1], ok);
 
         if(ok) {
           // puts("CONV OK");
-          if(convOk)
-            *convOk = true;
+//          if(convOk)
+            convOk = true;
           return res;
         }
       }
 
-      if(convOk)
-        *convOk = false;
+//      if(convOk)
+        convOk = false;
 
       return Nimble::Vector2f(0, 0);
     }
