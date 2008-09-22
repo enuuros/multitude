@@ -250,7 +250,7 @@ namespace Luminous {
       /// The number of windows
       unsigned windowCount() const { return m_windows.size(); }
       /// Access one of the windows
-      Window & window(unsigned i) { return * m_windows[i].ptr(); }
+    Window & window(unsigned i);
 
 
     Nimble::Vector2i size()

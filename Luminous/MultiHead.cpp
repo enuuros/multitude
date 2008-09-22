@@ -297,34 +297,44 @@ namespace Luminous {
   }
 
   void MultiHead::makeQuadSideways
-    (int x, int y, int w, int h, float seam)
-    {
-      m_windows.clear();
+  (int x, int y, int w, int h, float seam)
+  {
+    m_windows.clear();
+    
+    int w4 = w / 4;
 
-      int w4 = w / 4;
+    int visibleWidth = h;
+    int visibleHeight = w4;
 
-      int visibleWidth = h;
-      int visibleHeight = w4;
+    Window * wi = new Window();
+    wi->setGeometry(x, y, w, h);
 
-      Window * wi = new Window();
-      wi->setGeometry(x, y, w, h);
+    for(int i = 0; i < 4; i++) {
+      Area * a = new Area();
+      a->setGeometry(i * w4, 0, w4, h, false);
+      a->setGraphicsGeometry(i * visibleWidth, 0,
+			     visibleWidth, visibleHeight);
+      a->keyStone().rotateVertices();
+      a->keyStone().rotateVertices();
+      a->keyStone().rotateVertices();
+      // a->keyStone().rotateVertices();
+      a->setSeams(i == 0 ? 0 : seam, i == 3 ? 0 : seam, 0, 0);
 
-      for(int i = 0; i < 4; i++) {
-        Area * a = new Area();
-        a->setGeometry(i * w4, 0, w4, h, false);
-        a->setGraphicsGeometry(i * visibleWidth, 0,
-            visibleWidth, visibleHeight);
-        a->keyStone().rotateVertices();
-        a->keyStone().rotateVertices();
-        a->keyStone().rotateVertices();
-        // a->keyStone().rotateVertices();
-        a->setSeams(i == 0 ? 0 : seam, i == 3 ? 0 : seam, 0, 0);
-
-        wi->addArea(a);
-      }
-
-      m_windows.push_back(wi);    
+      wi->addArea(a);
     }
+
+    m_windows.push_back(wi);    
+  }
+
+  MultiHead::Window & MultiHead::window(unsigned i)
+  {
+    if(i >= m_windows.size()) {
+      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
+		     i, (unsigned) m_windows.size());
+    }
+
+    return * m_windows[i].ptr();
+  }
 
   unsigned MultiHead::areaCount()
   {
