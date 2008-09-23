@@ -31,7 +31,6 @@ namespace Radiant
     @author Esa Nuuros
     */ 
 
-  /// @todo add support for filename filters (see QDir)
   class Directory
   {
     public:
