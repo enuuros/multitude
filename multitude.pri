@@ -7,7 +7,7 @@ CONFIG += link_pkgconfig
 CONFIG += release
 
 # Uncomment for debug build
-CONFIG += debug
+#CONFIG += debug
 
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
