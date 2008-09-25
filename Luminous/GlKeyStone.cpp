@@ -16,6 +16,8 @@
 #include <Luminous/Luminous.hpp>
 #include <Luminous/GlKeyStone.hpp>
 
+#include <Valuable/DOMElement.hpp>
+
 #include <GL/glew.h>
 
 namespace Luminous {
@@ -45,7 +47,7 @@ namespace Luminous {
   GlKeyStone::~GlKeyStone()
   {}
 
-  bool GlKeyStone::deserializeXML(xercesc::DOMElement * e)
+  bool GlKeyStone::deserializeXML(Valuable::DOMElement e)
   {
     if(!Valuable::HasValues::deserializeXML(e))
       return false;

@@ -2,6 +2,7 @@
 #define VALUABLE_VECTOR_SPECIALIZATION_HPP
 
 #include "ValueVector.hpp"
+#include "DOMElement.hpp"
 
 namespace Valuable
 {
@@ -28,19 +29,11 @@ namespace Valuable
   const char * const ValueVector<Nimble::Vector4i, int, 4>::type() const { return "vec4i"; }
 
   template<class VectorType, typename ElementType, int N>
-  bool ValueVector<VectorType, ElementType, N>::deserializeXML(xercesc::DOMElement * element) {
-    using namespace xercesc;
+  bool ValueVector<VectorType, ElementType, N>::deserializeXML(DOMElement element) {
+    std::stringstream in(element.getTextContent());
 
-    const XMLCh * content = element->getTextContent();
-    char * myContent = XMLString::transcode(content);
-
-    std::stringstream in(myContent);
-
-    for(int i = 0; i < N; i++) {
+    for(int i = 0; i < N; i++)
       in >> m_value[i];
-    }
-
-    XMLString::release(&myContent);
 
     return true;
   }

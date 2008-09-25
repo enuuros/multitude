@@ -59,7 +59,7 @@ SOURCES += TGA.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
 
-LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng -lxerces-c $$LIB_OPENGL
+LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE
 
 PKGCONFIG += GraphicsMagick++
@@ -74,7 +74,7 @@ win32 {
 	LIBS += $$LIB_WINPORT
 	LIBS += $$LIB_PTHREADS $$LIB_OPENGL $$LIB_GLU $$LIB_GLEW $$LIB_JPEG $$LIB_MAGICK $$LIB_XERCES
 	LIBS += $$LIB_PNG
-	LIBS -= -lGLEW -ljpeg -lpng -lxerces-c -lGL
+	LIBS -= -lGLEW -ljpeg -lpng -lGL
 	QMAKE_CXXFLAGS += -Zc:wchar_t	# treat wchar_t as a builtin type
 	QMAKE_CXXFLAGS *= -wd4251		# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
 }

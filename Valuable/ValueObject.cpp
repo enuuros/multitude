@@ -2,10 +2,18 @@
 #include "HasValues.hpp"
 #include "ChangeMap.hpp"
 
+#include "DOMElement.hpp"
+#include "DOMDocument.hpp"
+
 #include <Radiant/Trace.hpp>
 
 namespace Valuable
 {
+  ValueObject::ValueObject()
+  : m_parent(0),
+//  m_name("noname"),
+  m_transit(false)
+  {}
 
   ValueObject::ValueObject(HasValues * parent, const std::string & name, bool transit)
     : m_parent(0),
@@ -62,23 +70,16 @@ namespace Valuable
     return "";
   }
 
-  xercesc::DOMElement * ValueObject::serializeXML(xercesc::DOMDocument * doc) 
+  DOMElement ValueObject::serializeXML(DOMDocument * doc) 
   {
-    using namespace xercesc;
+    if(m_name.empty()) {
+      Radiant::error("ValueObject::serializeXML # attempt to serialize object with no name");
+      return DOMElement(0);
+    }
 
-    XMLCh * name = XMLString::transcode(m_name.c_str());
-    XMLCh * value = XMLString::transcode(asString().c_str());
-    XMLCh * typeAttr = XMLString::transcode("type");
-    XMLCh * typeVal = XMLString::transcode(type());
-
-    DOMElement * elem = doc->createElement(name);
-    elem->setAttribute(typeAttr, typeVal);    
-    elem->setTextContent(value);
-
-    XMLString::release(&name);
-    XMLString::release(&value);
-    XMLString::release(&typeAttr);
-    XMLString::release(&typeVal);
+    DOMElement elem = doc->createElement(m_name.c_str());
+    elem.setAttribute("type", type());
+    elem.setTextContent(asString().c_str());
 
     return elem;   
   }

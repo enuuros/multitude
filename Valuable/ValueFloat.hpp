@@ -29,18 +29,7 @@ namespace Valuable
 
       const char * const type() const { return VO_TYPE_FLOAT; }
 
-      bool deserializeXML(xercesc::DOMElement * element) {
-        using namespace xercesc;
-
-        const XMLCh * content = element->getTextContent();
-        char * myContent = XMLString::transcode(content);
-
-        Base::m_value = atof(myContent);
-
-        XMLString::release(&myContent);
-  
-        return true;
-      }
+      bool deserializeXML(DOMElement element);
   };
 
   typedef ValueFloatT<float> ValueFloat;

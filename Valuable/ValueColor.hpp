@@ -1,7 +1,7 @@
 #ifndef VALUABLE_VALUE_COLOR_HPP
 #define VALUABLE_VALUE_COLOR_HPP
 
-#include "ValueObject.hpp"
+#include <Valuable/ValueObject.hpp>
 
 #include <Radiant/Color.hpp>
 
@@ -21,7 +21,7 @@ namespace Valuable
 
       std::string asString(bool * const ok = 0) const;
 
-      bool deserializeXML(xercesc::DOMElement * element);
+      bool deserializeXML(DOMElement element);
 
       Radiant::Color asColor() const { return m_color; }
 

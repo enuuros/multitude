@@ -20,12 +20,12 @@
 #include <Radiant/Trace.hpp>
 
 #include <Valuable/ValueVector.hpp>
+#include <Valuable/DOMElement.hpp>
+#include <Valuable/DOMDocument.hpp>
 
 #include <Nimble/Random.hpp>
 
 #include <numeric>
-
-using namespace xercesc;
 
 namespace {
 
@@ -187,35 +187,34 @@ void Path::simplify(float clusterTolerance, float dpTolerance)
 //  Radiant::trace("Path::simplify # after stage 2: %d points", m_points.size());
 }
 
-xercesc::DOMElement * Path::serializeXML(xercesc::DOMDocument * doc)
+Valuable::DOMElement Path::serializeXML(Valuable::DOMDocument * doc)
 {
-
-  DOMElement * e = HasValues::serializeXML(doc);
+  Valuable::DOMElement e = HasValues::serializeXML(doc);
 
   for(container::iterator it = m_points.begin(); it != m_points.end(); it++) {
    Nimble::Vector2f p = *it;
 
     Valuable::ValueVector2f vv(0, "Point", p);
-    e->appendChild(vv.serializeXML(doc));
+    e.appendChild(vv.serializeXML(doc));
   }
 
   return e;
 }
 
-bool Path::deserializeXML(xercesc::DOMElement * e)
+bool Path::deserializeXML(Valuable::DOMElement e)
 {
   //bool r = HasValues::deserializeXML(e, cl);
+  using namespace Valuable;
 
-  for(DOMNode * node = e->getFirstChild(); node; node = node->getNextSibling()) {
-    DOMElement * pe = dynamic_cast<DOMElement *> (node);
-    if(!pe) continue;
+  const DOMElement::NodeList & nodes = e.getChildNodes();
+
+  for(DOMElement::NodeList::const_iterator it = nodes.begin(); it != nodes.end(); it++) {
+    const DOMElement & pe = *it;
 
     Valuable::ValueVector2f vv(0, "Point", Nimble::Vector2f(0, 0));
     vv.deserializeXML(pe);
 
     m_points.push_back(vv.asVector());
-
-    node = node->getNextSibling();
   }
 
   return true;

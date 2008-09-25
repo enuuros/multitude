@@ -3,8 +3,6 @@
 
 #include <Valuable/ValueNumeric.hpp>
 
-#include <Radiant/StringUtils.hpp>
-
 #define STD_OP this->emitChange(); return *this;
 
 #define VO_TYPE_INT "int"
@@ -41,18 +39,7 @@ namespace Valuable
 
       const char * const type() const { return VO_TYPE_INT; }
 
-      bool deserializeXML(xercesc::DOMElement * element) {
-        using namespace xercesc;
-
-        const XMLCh * content = element->getTextContent();
-        char * myContent = XMLString::transcode(content);
-
-        Base::m_value = Radiant::StringUtils::fromString<T>(myContent);
-
-        XMLString::release(&myContent);
-
-        return true;
-      }
+      bool deserializeXML(DOMElement element);
   };
 
   typedef ValueIntT<int> ValueInt;

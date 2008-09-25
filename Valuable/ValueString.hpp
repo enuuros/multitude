@@ -34,7 +34,7 @@ namespace Valuable
  
       const char * const type() const { return VO_TYPE_STRING; }
 
-      bool deserializeXML(xercesc::DOMElement * element);
+      bool deserializeXML(DOMElement element);
 
     private:
       T m_value;

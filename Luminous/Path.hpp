@@ -56,8 +56,9 @@ namespace Luminous {
       Nimble::Vector2f point(size_t i) const { return m_points[i]; }
 
       virtual const char * const type() const { return "Path"; }
-      virtual xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      virtual bool deserializeXML(xercesc::DOMElement * element);
+
+      virtual Valuable::DOMElement serializeXML(Valuable::DOMDocument * doc);
+      virtual bool deserializeXML(Valuable::DOMElement element);
 
       Nimble::Vector2f center() const;
 

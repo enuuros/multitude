@@ -35,7 +35,7 @@ namespace Luminous {
 
     virtual const char * const type() const { return "glkeystone"; }
 
-    virtual bool deserializeXML(xercesc::DOMElement * e);
+    virtual bool deserializeXML(Valuable::DOMElement e);
 
     int closestVertex(Nimble::Vector2 loc);
     void setVertex(int index, float x, float y) 

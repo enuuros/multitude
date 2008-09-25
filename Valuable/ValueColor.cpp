@@ -1,4 +1,5 @@
 #include "ValueColor.hpp"
+#include "DOMElement.hpp"
 
 #include <Radiant/StringUtils.hpp>
 
@@ -10,19 +11,11 @@ namespace Valuable
     m_color(c)
   {}
 
-  bool ValueColor::deserializeXML(xercesc::DOMElement * element) {
-    using namespace xercesc;
+  bool ValueColor::deserializeXML(DOMElement element) {
+    std::stringstream in(element.getTextContent());
 
-    const XMLCh * content = element->getTextContent();
-    char * myContent = XMLString::transcode(content);
-
-    std::stringstream in(myContent);
-
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++)
       in >> m_color[i];
-    }
-
-    XMLString::release(&myContent);
 
     return true;
   }

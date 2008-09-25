@@ -2,6 +2,7 @@
 #define VALUABLE_VALUE_STRING_IMPL_HPP
 
 #include "ValueString.hpp"
+#include "DOMElement.hpp"
 
 #include <Radiant/StringUtils.hpp>
 
@@ -11,18 +12,11 @@ namespace Valuable
 {
 
   template<class T>
-  bool ValueStringT<T>::deserializeXML(xercesc::DOMElement * element)
+  bool ValueStringT<T>::deserializeXML(DOMElement element)
   {
-    using namespace xercesc;
-
-    const XMLCh * content = element->getTextContent();
-    char * myContent = XMLString::transcode(content);
-
-    m_value = T(myContent);
+    m_value = T(element.getTextContent());
 
     STD_EM;
-
-    XMLString::release(&myContent);
 
     return true;
   }
@@ -113,21 +107,10 @@ namespace Valuable
   }
 
   template<>
-  bool ValueStringT<std::wstring>::deserializeXML(xercesc::DOMElement * element)
+  bool ValueStringT<std::wstring>::deserializeXML(DOMElement element)
   {
-    using namespace xercesc;
-
-    const XMLCh * content = element->getTextContent();
-    int len = XMLString::stringLen(content); 
-
-    m_value.resize(len);
-
-    for(int i = 0; i < len; i++) {
-      m_value[i] = len;
-    }
-
+    m_value = element.getTextContentW();
     STD_EM;
-
     return true;
   }
  

@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 
-#include <xercesc/dom/DOM.hpp>
+//#include <xercesc/dom/DOM.hpp>
 
 #define VO_TYPE_HASVALUES "HasValues"
 
@@ -33,19 +33,19 @@ namespace Valuable
       template<class T>
       bool setValue(const std::string & name, const T & v);
 
-      bool saveXML(xercesc::XMLFormatTarget & target);
-      bool saveXML(const char * filename);
-      bool saveInMemoryXML(std::vector<char> & buffer);
-      bool loadXML(const char * filename);
+      bool saveToFileXML(const char * filename);
+      bool saveToMemoryXML(std::vector<char> & buffer);
+
+      bool loadFromFileXML(const char * filename);
 
       virtual const char * const type() const { return VO_TYPE_HASVALUES; }
 
-      xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      bool deserializeXML(xercesc::DOMElement * element);
+      DOMElement serializeXML(DOMDocument * doc);
+      bool deserializeXML(DOMElement element);
 
-      virtual bool readElement(xercesc::DOMElement * element);
+      virtual bool readElement(DOMElement element);
 
-      void debugDump() ;
+      void debugDump();
 
       typedef std::map<std::string, ValueObject *> container;
       typedef container::iterator iterator;

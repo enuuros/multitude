@@ -9,20 +9,18 @@
 
 #include <Nimble/Vector4.hpp>
 
-#include <xercesc/dom/DOMDocument.hpp>
-#include <xercesc/dom/DOMElement.hpp>
-#include <xercesc/util/XMLString.hpp>
-
 #include <string>
 
 namespace Valuable
 {  
   class HasValues;
+  class DOMElement;
+  class DOMDocument;
 
-  class ValueObject /*: public Patterns::NotCopyable*/
+  class ValueObject 
   {
     public:
-      ValueObject() : m_parent(0), m_transit(false) {}
+      ValueObject();
       /// The copy constructor creates a copy of the ValueObject WITHOUT the
       /// link to parent
       ValueObject(const ValueObject & o);
@@ -49,8 +47,8 @@ namespace Valuable
       /// Get the type id of the type 
       virtual const char * const type() const = 0;      
 
-      virtual xercesc::DOMElement * serializeXML(xercesc::DOMDocument * doc);
-      virtual bool deserializeXML(xercesc::DOMElement * element) = 0;
+      virtual DOMElement serializeXML(DOMDocument * doc);
+      virtual bool deserializeXML(DOMElement element) = 0;
 
       HasValues * parent() { return m_parent; }
       void removeParent();

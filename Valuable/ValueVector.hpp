@@ -36,7 +36,7 @@ namespace Valuable
 
       ElementType operator [] (int i) const { return m_value[i]; }      
 
-      virtual bool deserializeXML(xercesc::DOMElement * element);
+      virtual bool deserializeXML(DOMElement element);
 
       const char * const type() const;
 

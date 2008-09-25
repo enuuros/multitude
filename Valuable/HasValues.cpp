@@ -1,14 +1,9 @@
-//#include <Valuable/HasValues.hpp>
 #include <Valuable/HasValuesImpl.hpp>
+#include <Valuable/DOMDocument.hpp>
+#include <Valuable/DOMElement.hpp>
 
 #include <Radiant/Trace.hpp>
-
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/framework/MemBufFormatTarget.hpp>
-
-using namespace xercesc;
+#include <Radiant/RefPtr.hpp>
 
 namespace Valuable
 {
@@ -79,43 +74,47 @@ namespace Valuable
     m_children.erase(it);
     value->m_parent = 0;
   }
-  
-  bool HasValues::saveXML(XMLFormatTarget & target)
+
+  bool HasValues::saveToFileXML(const char * filename)
   {
-    // Get implementation of the Load-Store (LS) interface
-    const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
-    DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
-
-    // Create a document & writer
-    DOMDocument * doc = impl->createDocument();
-    DOMWriter * writer = ((DOMImplementationLS*)impl)->createDOMWriter();
-
-    try {
-      // Fill the document
-      doc->appendChild(serializeXML(doc));
-
-      // Output pretty XML
-      writer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-
-      writer->writeNode(&target, *doc);
-
-      // Flush the target just to be sure all contents are written
-      target.flush();
-    } catch(const XMLException & e)  {
-      char * msg = XMLString::transcode(e.getMessage());
-      Radiant::error("HasValues::saveXML # %s", msg);
-      XMLString::release(&msg);
-    } catch(const DOMException & e) {
-      char * msg = XMLString::transcode(e.msg);
-      Radiant::error("HasValues::saveXML # %s", msg);
-      XMLString::release(&msg);
+    Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
+    DOMElement e = serializeXML(doc.ptr());
+    if(e.null()) {
+      Radiant::error("HasValues::saveToFileXML # object failed to serialize");
+      return false;
     }
 
-    // Cleanup
-    writer->release();
-    doc->release();
+    doc->appendChild(e);
 
-    return true;
+    return doc->writeToFile(filename);
+  }
+
+  bool HasValues::saveToMemoryXML(std::vector<char> & buffer)
+  {
+    Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
+    doc->appendChild(serializeXML(doc.ptr()));
+
+    return doc->writeToMem(buffer);
+  }  
+
+  bool HasValues::loadFromFileXML(const char * filename)
+  {
+    Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
+    
+    if(!doc->readFromFile(filename)) 
+      return false;
+
+    DOMElement e = doc->getDocumentElement();
+    return deserializeXML(e);
+  }
+
+/*  
+  bool HasValues::saveXML(XMLFormatTarget & target)
+  {
+    Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
+    doc->appendChild(serializeXML(doc));
+
+    return doc->save();
   }
 
   bool HasValues::saveXML(const char * filename)
@@ -166,65 +165,56 @@ namespace Valuable
 
     return r;
   }
-
-  xercesc::DOMElement * HasValues::serializeXML(DOMDocument * doc)
+*/
+  DOMElement HasValues::serializeXML(DOMDocument * doc)
   {
-    XMLCh * name = XMLString::transcode(m_name.c_str());
-    XMLCh * typeAttr = XMLString::transcode("type");
-    XMLCh * typeVal = XMLString::transcode(type());
+    if(m_name.empty()) {
+      Radiant::error("HasValues::serializeXML # attempt to serialize object with no name");
+      return DOMElement(0);
+    }
 
-    DOMElement * elem = doc->createElement(name);
-    elem->setAttribute(typeAttr, typeVal);    
+    DOMElement elem = doc->createElement(m_name.c_str());
+    if(elem.null()) {
+      Radiant::error("HasValues::serializeXML # failed to create XML element");
+      return DOMElement(0);
+    }
 
-    XMLString::release(&name);
-    XMLString::release(&typeAttr);
-    XMLString::release(&typeVal);
-
-    // Write children
+    elem.setAttribute("type", type());
+    
     for(container::iterator it = m_children.begin(); it != m_children.end(); it++) {
       ValueObject * vo = it->second;
-
-      DOMElement * child = vo->serializeXML(doc);
-      if(child) 
-        elem->appendChild(child);
+  
+      DOMElement child = vo->serializeXML(doc);
+      if(!child.null()) 
+        elem.appendChild(child);
     }
 
     return elem;
   }
 
-  bool HasValues::deserializeXML(xercesc::DOMElement * element)
+  bool HasValues::deserializeXML(DOMElement element)
   {
     // Name
-    char * nameVal = XMLString::transcode(element->getTagName());
-    m_name = nameVal;
-    XMLString::release(&nameVal);
+    m_name = element.getTagName();
 
     // Children
-    DOMNodeList * list = element->getChildNodes();
+    DOMElement::NodeList list = element.getChildNodes();
 
-    for(XMLSize_t i = 0; i < list->getLength(); i++) {
-      DOMElement * ce = dynamic_cast<DOMElement *> (list->item(i));
-      if(!ce) continue;
+    for(DOMElement::NodeList::iterator it = list.begin(); it != list.end(); it++) {
+      const DOMElement & elem = *it;
 
-      // Get the value matching the element tag
-      nameVal = XMLString::transcode(ce->getTagName());
+      std::string name = elem.getTagName();
 
-//      Radiant::trace("DEBUG: tag %s", nameVal);
-
-      ValueObject * vo = getValue(nameVal);
-
+      ValueObject * vo = getValue(name);
+      
       // If the value exists, just deserialize it. Otherwise, pass the element
       // to readElement()
       if(vo)
-        vo->deserializeXML(ce);
-      else if(!readElement(ce)) {
-        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'",
-                       nameVal);
-        XMLString::release(&nameVal);
+        vo->deserializeXML(elem);
+      else if(!readElement(elem)) {
+        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'", name.c_str());
         return false;
       }
-
-      XMLString::release(&nameVal);
     }
 
     return true;
@@ -247,7 +237,7 @@ namespace Valuable
     Radiant::trace("}");
   }
 
-  bool HasValues::readElement(xercesc::DOMElement *)
+  bool HasValues::readElement(DOMElement )
   {
     return false;
   }

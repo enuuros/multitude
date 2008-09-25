@@ -18,6 +18,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <Valuable/DOMElement.hpp>
+
 #include <GL/glew.h>
 
 namespace Luminous {
@@ -43,7 +45,7 @@ namespace Luminous {
   MultiHead::Area::~Area()
   {}
 
-  bool MultiHead::Area::deserializeXML(xercesc::DOMElement * element)
+  bool MultiHead::Area::deserializeXML(Valuable::DOMElement element)
   {
     bool ok = HasValues::deserializeXML(element);
 
@@ -209,40 +211,29 @@ namespace Luminous {
       m_areas[i].ptr()->setPixelSizeCm(sizeCm);
   }
 
-  bool MultiHead::Window::readElement(xercesc::DOMElement * ce)
+  bool MultiHead::Window::readElement(Valuable::DOMElement ce)
   {
-    using namespace xercesc;
-
-    char * nameVal = XMLString::transcode(ce->getTagName());
-    XMLCh * typeAttr = XMLString::transcode("type");
+    const std::string & name = ce.getTagName();
 
     // Get the 'type' attribute
-    if(!ce->hasAttribute(typeAttr)) {
+    if(!ce.hasAttribute("type")) {
       Radiant::error("MultiHead::Window::readElement # "
-		     "no type attribute on element '%s'", nameVal);
-      XMLString::release(&nameVal);
-      XMLString::release(&typeAttr);
+		     "no type attribute on element '%s'", name.c_str());
       return false;
     }
 
-    const XMLCh * typeVal = ce->getAttribute(typeAttr);
-    char * myType = XMLString::transcode(typeVal);
+    const std::string & type = ce.getAttribute("type");
 
-    if(strcmp(myType, "area") == 0) {
+    if(type == std::string("area")) {
       Area * area = new Area();
       // Add as child & recurse
-      addValue(nameVal, area);
+      addValue(name, area);
       area->deserializeXML(ce);
       m_areas.push_back(area);
     } else {
-      XMLString::release(&myType);
       return false;
     }
 
-    XMLString::release(&myType);
-    XMLString::release(&nameVal);
-    XMLString::release(&typeAttr);
-    
     return true;
   }
 
@@ -423,7 +414,7 @@ namespace Luminous {
     return (int) (bottom - top);
   }
 
-  bool MultiHead::deserializeXML(xercesc::DOMElement * element)
+  bool MultiHead::deserializeXML(Valuable::DOMElement element)
   {
     m_windows.clear();
 
@@ -434,29 +425,23 @@ namespace Luminous {
     return ok;
   }
 
-  bool MultiHead::readElement(xercesc::DOMElement * ce)
+  bool MultiHead::readElement(Valuable::DOMElement ce)
   {
-    using namespace xercesc;
-
-    char * nameVal = XMLString::transcode(ce->getTagName());
-    XMLCh * typeAttr = XMLString::transcode("type");
+    const std::string & name = ce.getTagName();
 
     // Get the 'type' attribute
-    if(!ce->hasAttribute(typeAttr)) {
-      Radiant::error("MultiHead::readElement # no type attribute on element '%s'", nameVal);
-      XMLString::release(&nameVal);
-      XMLString::release(&typeAttr);
+    if(!ce.hasAttribute("type")) {
+      Radiant::error("MultiHead::readElement # no type attribute on element '%s'", name.c_str());
       return false;
     }
 
-    const XMLCh * typeVal = ce->getAttribute(typeAttr);
-    char * myType = XMLString::transcode(typeVal);
+    const std::string & type = ce.getAttribute("type");
 
-    if(strcmp(myType, "window") == 0) {
+    if(type == std::string("window")) {
       Window * win = new Window();
 
       // Add as child & recurse
-      addValue(nameVal, win);
+      addValue(name, win);
       win->deserializeXML(ce);
 
       const float pixelSizeCm = m_widthcm.asFloat() / width();
@@ -464,14 +449,9 @@ namespace Luminous {
 
       m_windows.push_back(win);
     } else {
-      XMLString::release(&myType);
       return false;
     }
 
-    XMLString::release(&myType);
-    XMLString::release(&nameVal);
-    XMLString::release(&typeAttr);
-    
     return true;
   }
 
