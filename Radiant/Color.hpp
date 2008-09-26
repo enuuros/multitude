@@ -23,11 +23,26 @@
 namespace Radiant
 {
 
-  /// Utility class for color
+  /// Utility class for color management & conversion
+  /** Color implements a classical RGBA color in floating-point format. 
+      
+      <b>Caveat:</b> You need to careful with the floating-point and
+      integer versions of the functions. For integers the valid range
+      is 0-255, while for floating point values it is 0.0-1.0.
+   */
   class MTEXPORT Color : public Nimble::Vector4f
   {
     public:
       Color();
+      /** Decode color from a hex-string. The string must be in
+	  typical hex format and start with hash. If the string
+	  contains 8 number values, then the last to are interpreted
+	  as alpha. By default the alpha is set to 255 (fully opaque).
+	  
+	  Example arguments are #000000 (black), #FFFFFF (white),
+	  #FF0000 (red) and #FF000088 (transparent red).
+
+      */
       Color(const char * color);
       Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
       Color(int r, int g, int b, int a = 255);

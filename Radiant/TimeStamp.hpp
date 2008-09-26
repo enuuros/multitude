@@ -128,7 +128,7 @@ namespace Radiant {
       return std::string(ctime(&t));
     }
 
-  protected:
+  private:
     type m_val;
   };
 

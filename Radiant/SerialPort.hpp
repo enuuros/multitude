@@ -65,7 +65,7 @@ namespace Radiant
 
     inline bool isOpen() const { return m_fd >= 0; }
   
-  protected:
+  private:
   
     int m_fd;
   };

@@ -126,7 +126,7 @@ namespace Radiant {
     inline BinaryData & operator = (const BinaryData & that)
     { rewind(); append(that); return * this;}
 
-  protected:
+  private:
 
     template <class T> 
     inline T * getPtr(int advance = sizeof(T))

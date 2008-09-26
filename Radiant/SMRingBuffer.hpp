@@ -242,7 +242,7 @@ namespace Radiant
       const unsigned char * const readPtr() const { return (m_startPtr + readPos()); }
 
 
-    protected:
+    private:
 
 
       /// Advance the write position.

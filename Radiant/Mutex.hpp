@@ -154,7 +154,7 @@ namespace Radiant {
     /// Unlocks the mutex
     ~Guard() { m_mutex->unlock(); }
 
-  protected:
+  private:
     Mutex * m_mutex;
 
   };
@@ -174,7 +174,7 @@ namespace Radiant {
     /// Unlocks the mutex
     ~ReleaseGuard() { m_mutex->unlock(); }
 
-  protected:
+  private:
     Mutex * m_mutex;
   };
 

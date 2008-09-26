@@ -88,7 +88,7 @@ namespace Radiant {
       return *this;
     }
 
-  protected:
+  private:
     /// Breaks the link to the object.
     void breakLink()
     { 

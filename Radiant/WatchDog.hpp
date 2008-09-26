@@ -33,7 +33,7 @@ namespace Radiant {
 
     void stop();
 
-  protected:
+  private:
     
     virtual void childLoop();
 

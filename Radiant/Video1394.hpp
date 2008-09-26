@@ -110,7 +110,7 @@ namespace Radiant {
 
     dc1394camera_t * dc1394Camera() { return m_camera; }
  
-  protected:
+  private:
     bool enableCameraFeature(unsigned int feature, 
 			     const std::string & description, 
 			     bool automatic_mode,

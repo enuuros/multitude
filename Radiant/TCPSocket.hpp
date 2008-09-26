@@ -65,13 +65,17 @@ namespace Radiant {
 	it. This is done to increase performance in situations where
 	the application write many small packets to the socket. If the
 	latency of the packets is critical, then calling
-	setNoDelay(true) will disable this feature. */
+	setNoDelay(true) will disable this feature. 
+	
+	This function only affects the delivery strategy that the
+	operating system uses when data is written to the socket.
+    */
     bool setNoDelay(bool noDelay);
     
     /// Convert an IP address to in_addr structure
     static struct in_addr *atoaddr(const char *address);
     
-  protected:
+  private:
     TCPSocket(const TCPSocket & ) : BinaryStream() {}
     TCPSocket & operator = (const TCPSocket & )  { return * this; }
 

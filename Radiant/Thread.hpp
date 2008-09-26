@@ -140,7 +140,7 @@ namespace Radiant {
 	prior to "systemLevelWorks" etc it will be called to check the
 	values. */
     static void check();
-  protected:
+  private:
     static bool m_systemLevel, m_processLevel, m_defined;
 
   };
@@ -158,7 +158,7 @@ namespace Radiant {
     int count();
     void requestEnd();
   
-  protected:
+  private:
     void childLoop();
 
     Mutex *m_mutex;

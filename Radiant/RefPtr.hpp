@@ -122,7 +122,7 @@ namespace Radiant {
     T * operator -> () { return m_holder->m_object; }
     const T * operator -> () const { return m_holder->m_object; }
 
-  protected:
+  private:
   
     RefPtrInt<T> *m_holder;
   };

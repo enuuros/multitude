@@ -29,6 +29,18 @@ namespace Luminous {
   class GLResources;
   class GPUMipmaps;
   
+  /** Collection of image mipmaps in the RAM/disk of the
+      computer. This class is used to load and scale images from the
+      disk in the background. 
+      
+      It is usually used in conjunction with Luminous::GPUMipmaps.
+
+      CPU/GPUMipmaps are typically used to handle the loading of
+      images in the background. They ease the handling of large
+      amounts of images, so that neither the CPU or the GPU memory is
+      exceeded. The classes work in both single- and multi-threaded
+      environments.
+  */
   class CPUMipmaps
   {
   private:

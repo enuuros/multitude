@@ -114,7 +114,7 @@ public:
 
     dc1394camera_t * dc1394Camera() { return m_camera; }
  
-  protected:
+  private:
 	void cmu_setFeature1394(CAMERA_FEATURE feature, float value);
 
     bool enableCameraFeature(unsigned int feature, 

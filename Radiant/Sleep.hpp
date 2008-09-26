@@ -147,7 +147,7 @@ namespace Radiant {
 
     long sleepTo(const TimeStamp *stamp, Mutex *mutex = 0);
 
-  protected:  
+  private:  
     struct timeval m_initial, m_timing;
   };
 

@@ -95,7 +95,7 @@ namespace Radiant {
       return & (*m_table.begin()).second; 
     }
 
-  protected:
+  private:
     MutexAuto m_mutex;
 
     std::map<Thread::id_t, T> m_table;

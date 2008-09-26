@@ -80,7 +80,7 @@ namespace Radiant {
       return 0;
     }
 
-  protected:
+  private:
     sem_t m_semaphore;
   };
 

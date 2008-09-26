@@ -101,7 +101,7 @@ namespace Radiant {
       return r;
     }
     
-  protected:
+  private:
     pthread_cond_t m_cond;
   };
 }

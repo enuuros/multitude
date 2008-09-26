@@ -32,7 +32,7 @@ namespace Radiant
       /// Return the number of seconds since the last call to start().
       float elapsed() const;
 
-    protected:
+    private:
       TimeStamp m_started;
   };
 }

@@ -48,7 +48,7 @@ namespace Radiant
       /// Destructor.
       virtual ~TimeSignaller();
 
-    protected:
+    private:
 
       /// Initialize and enable the timer.
       bool setTimer(const float timeInterval,

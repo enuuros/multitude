@@ -97,7 +97,7 @@ namespace Radiant {
       return * this;
     }
 
-  protected:
+  private:
     char m_buf[N+1];
   };
 

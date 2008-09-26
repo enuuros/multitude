@@ -22,7 +22,10 @@
 
 namespace Luminous
 {
-
+  /// Describes the pixel format of an image
+  /** This class tells what typy values there are in the pixels, and
+      how they are aligned. It is implemented in away that makes it
+      easy to convert the pixel formats*/
   class MTEXPORT PixelFormat
   {
     public:

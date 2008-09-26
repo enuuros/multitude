@@ -51,7 +51,7 @@ namespace Radiant {
     /// Accept new connections
     TCPSocket * accept();
     
-  protected:
+  private:
     TCPServerSocket(const TCPServerSocket & ) {}
     TCPServerSocket & operator = (const TCPServerSocket & ) { return * this; }
 

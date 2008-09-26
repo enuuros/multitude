@@ -178,7 +178,7 @@ namespace Radiant {
       return * this;
     }
     
-  protected:
+  private:
     unsigned m_count;
     std::vector<T> m_points;
   };
