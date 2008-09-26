@@ -31,7 +31,7 @@ namespace Resonant {
     virtual bool prepare(int & channelsIn, int & channelsOut);
     virtual void process(float ** in, float ** out, int n);
     
-  protected:
+  private:
 
     int m_channels;
 

@@ -154,7 +154,7 @@ namespace Resonant {
 
     static DSPNetwork * instance() { return m_instance; }
     
-  protected:
+  private:
 
     virtual int callback(const void *in, void *out,
 			 unsigned long framesPerBuffer,

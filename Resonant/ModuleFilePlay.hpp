@@ -32,7 +32,7 @@ namespace Resonant {
     virtual void process(ControlData *, float ** in, float ** out, int n);
     virtual bool stop();
     
-  protected:
+  private:
 
     Resonant::AudioFileHandler::Handle * m_file;
     

@@ -42,7 +42,7 @@ namespace Resonant {
     const PaStreamParameters & inParameters()  { return m_inParams; }
     const PaStreamParameters & outParameters() { return m_outParams; }
 
-  protected:
+  private:
     static int paCallback(const void *in, void *out,
 			  unsigned long framesPerBuffer,
 			  const PaStreamCallbackTimeInfo* time,

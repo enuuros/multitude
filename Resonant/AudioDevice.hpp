@@ -57,7 +57,7 @@ namespace Resonant {
     static void convert(int16_t * to, const float * from, int n);
     static void convert(int32_t * to, const float * from, int n);
 
-  protected:
+  private:
     snd_pcm_t           * m_handle;
     std::vector<int8_t>   m_buf;
     int                   m_samplerate;

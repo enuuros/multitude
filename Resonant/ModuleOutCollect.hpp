@@ -47,7 +47,7 @@ namespace Resonant {
     
     const float * interleaved() const { return & m_interleaved[0]; }
 
-  protected:
+  private:
 
     int  m_channels;
     DSPNetwork * m_host;

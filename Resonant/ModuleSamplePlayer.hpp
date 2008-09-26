@@ -58,7 +58,7 @@ namespace Resonant {
 
       const std::string & name() const { return m_name; }
 
-    protected:
+    private:
       SF_INFO m_info;
 
       std::vector<float> m_data;
@@ -86,7 +86,7 @@ namespace Resonant {
 
       void clear() { m_state = INACTIVE; m_sample = 0; }
 
-    protected:
+    private:
       enum State {
 	INACTIVE,
 	WAITING_FOR_SAMPLE,
@@ -145,7 +145,7 @@ namespace Resonant {
       
       bool addLoadable(const char * filename, SampleVoice * waiting);
 
-    protected:
+    private:
 
       virtual void childLoop();
 
@@ -177,7 +177,7 @@ namespace Resonant {
     
     bool addSample(Sample * s);
 
-  protected:
+  private:
     
     void dropVoice(unsigned index);
 

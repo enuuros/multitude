@@ -71,7 +71,7 @@ namespace Resonant {
       void rewind(long frame);
       bool isReady();
 
-    protected:
+    private:
 
       void lock()   { m_host->lock(); }
       void unlock() { m_host->unlock(); }
@@ -140,7 +140,7 @@ namespace Resonant {
 
     static bool getInfo(const char * filename, SF_INFO * info);
 
-  protected:
+  private:
 
     virtual void childLoop();
   
