@@ -124,7 +124,7 @@ namespace Nimble {
     inline void transform(const Matrix3T<T>& m);
     inline RectT quarter(int row, int col) const;
   
-  protected:
+  private:
     Vector2T<T> m_low, m_high;
   };
 

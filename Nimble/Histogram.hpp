@@ -110,7 +110,7 @@ namespace Nimble {
         /// Returns the sum of all bin counts
         int count() const { return m_count; }
 
-      protected:
+      private:
 
         T   m_data[N];
         int m_count;

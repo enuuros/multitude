@@ -30,10 +30,10 @@ namespace Dyslexic
 
     FT_Outline_Get_CBox(&glyph->outline, &bbox);
      
-    m_low.x  = static_cast<float> (bbox.xMin) / 64.f;
-    m_low.y  = static_cast<float> (bbox.yMin) / 64.f;
-    m_high.x = static_cast<float> (bbox.xMax) / 64.f;
-    m_high.y = static_cast<float> (bbox.yMax) / 64.f;
+    low().x  = static_cast<float> (bbox.xMin) / 64.f;
+    low().y  = static_cast<float> (bbox.yMin) / 64.f;
+    high().x = static_cast<float> (bbox.xMax) / 64.f;
+    high().y = static_cast<float> (bbox.yMax) / 64.f;
   }
 
 }

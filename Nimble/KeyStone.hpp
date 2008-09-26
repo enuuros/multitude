@@ -203,7 +203,7 @@ namespace Nimble {
 
     int version() { return m_version; }
 
-  protected:
+  private:
 
     void updated() { m_version++; }
 

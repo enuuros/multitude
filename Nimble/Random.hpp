@@ -76,7 +76,7 @@ namespace Nimble {
       return Nimble::Vector2f(rand11(), rand11()).normalize();
     }
 
-  protected:
+  private:
     unsigned m_val;
     static const unsigned m_randMul = 134695621;  
   };

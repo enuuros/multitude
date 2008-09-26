@@ -68,7 +68,7 @@ namespace Nimble {
 	parameters. */
     const Vector4 & params() const { return m_params; }
 
-  protected:
+  private:
 
     Vector2 m_center;
     float   m_radiusInv;

@@ -70,7 +70,7 @@ namespace Nimble {
     /// The number of steps left to reach the target value
     unsigned left() const { return m_left; }
 
-  protected:
+  private:
     
     T m_step;
     T m_current;
