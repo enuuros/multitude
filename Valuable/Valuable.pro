@@ -38,3 +38,5 @@ unix:LIBS += $$LIB_RADIANT -lxerces-c
 
 include(../library.pri)
 
+CONFIG += debug
+

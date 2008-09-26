@@ -18,12 +18,15 @@ namespace Valuable
 
   DOMDocument::~DOMDocument()
   {
-    m_xDoc->release();
+    if(m_xDoc)
+      m_xDoc->release();
   }
 
   void DOMDocument::appendChild(DOMElement element)
   {
     if(element.null()) return;
+
+    assert(m_xDoc != 0);
 
     m_xDoc->appendChild(element.m_xElement);
   }
@@ -130,9 +133,14 @@ namespace Valuable
     xercesc::DOMDocument * parsed = parser->parseURI(filename);
    
     // Clone the document because the parsed
-    m_xDoc->release();
-    m_xDoc = (xercesc::DOMDocument *)parsed->cloneNode(parsed);
- 
+    if(m_xDoc)
+      m_xDoc->release();
+
+    if(parsed)
+      m_xDoc = (xercesc::DOMDocument *)parsed->cloneNode(parsed);
+    else
+      m_xDoc = 0;
+
     parser->release();
 
     return (m_xDoc != 0);
