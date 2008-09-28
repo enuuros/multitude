@@ -18,19 +18,19 @@
 
 /// Nimble libary is a collection of C++ classes for 2D/3D graphics.
 
-/** Nimble is used mostly for simple geometric calculations. The code
-    is optimized for performance, thus there are a lot of inline
-    functions. Also, the vector and matrix classes do not initialize
-    any of their members.
+/** Nimble is used mostly for simple arithmetic/geometric
+    calculations. The code is optimized for performance, thus there
+    are a lot of inline functions. Also, the vector and matrix classes
+    <b>do not</b> initialize any of their members.
 
     The matrix and vector classes use right-handed coordinates.
 
     \b Copyright: The Nimble library has been developed by Helsinki
     University of Technology, Telecommunications Software and
     Multimedia Laboratory in the Digital Interactive Virtual Acoustics
-    (RADIANT, 1999-2005, as part of the Fluid interaction framework). It
+    (DIVA, 1999-2005, as part of the Fluid interaction framework). It
     has been developed further by Helsinki Institute for Information
-    Technology (HIIT, 2006-2007) and MultiTouch Oy (2007).
+    Technology (HIIT, 2006-2007) and MultiTouch Oy (2007-2008).
     
     Nimble is released under the GNU Lesser General Public License
     (LGPL), version 2.1.

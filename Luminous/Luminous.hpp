@@ -23,8 +23,8 @@
 /// Luminous library is a collection of C++ classes for computer graphics, using OpenGL.
 
 /** \b Copyright: The Luminous library has been developed in Helsinki
-    Institute for Information Technology (HIIT, 2006-2007) and
-    MultiTouch Oy (2007).
+    Institute for Information Technology (HIIT, 2006-2008) and
+    MultiTouch Oy (2007-2008).
         
     Luminous is released under the GNU Lesser General Public License
     (LGPL), version 2.1.
@@ -35,6 +35,16 @@
 namespace Luminous
 {
 
+  /// Initializes the Luminous library.
+  /** In practice this function only initializes the GLEW and checks
+      the capabilities of the underlying OpenGL implementation. If the
+      OpenGL version is below 2.0, then a warnign message is
+      issued. 
+      
+      @return true if all relevant resources were successfully
+      initialized, false if something was left missing (for example
+      too low OpenGL version).
+  */
   MTEXPORT bool initLuminous();
 
 }

@@ -23,7 +23,15 @@
 namespace Nimble {
 
   /// An axis-aligned rectangle.
-  /** The ractangle is stored as */
+  /** The ractangle is stored as a pair of 2D vectors. The vectors
+      represent the corner points of the rectangle. The "low" vector
+      contains the lower X/Y values while the "high" vector contains
+      the heigher X/Y values.
+
+      RectT does not really care how the coordinates are orginized
+      (which way is up and so on). Some rare functions assume that one
+      is using normal GUI coordinates (Y increases from top to
+      bottom). */
   template <class T>
   class RectT
   {
@@ -61,19 +69,28 @@ namespace Nimble {
 	  m_high[i] = m_low[i]; 
     }
 
+    /// Resets both low and high point to origin.
     void clear() { m_low.clear(); m_high.clear(); }
+    /// Resets both low and high point to the given argument point.
     void clear(const Vector2T<T> &v) { m_low = m_high = v; }
 
+    /// Expands this rectangle to include the argument point
     inline void expand(const Vector2T<T> &v);
+    /// Expands this rectangle to include the argument circle.
     inline void expand(const Vector2T<T> &v, T radius);
+    /// Expands this rectangle to include the argument rectangle
     inline void expand(const RectT &b);
 
+    /// Returns the low X/Y vector
     Vector2T<T> & low() { return m_low; }
     const Vector2T<T> & low() const { return m_low; }
+    /// Returns the high X/Y vector
     Vector2T<T> & high() { return m_high; }
     const Vector2T<T> & high() const { return m_high; }
 
+    /** Returns the low x value combined with high y value. */
     Vector2T<T> lowHigh() const { return Vector2T<T>(m_low.x, m_high.y); }
+    /** Returns the high x value combined with low y value. */
     Vector2T<T> highLow() const { return Vector2T<T>(m_high.x, m_low.y); }
 
     void set(T lx, T ly, T hx, T hy)
@@ -129,9 +146,15 @@ namespace Nimble {
     inline bool contains(const RectT &b) const;
     inline T    distance(const RectT &b) const;
 
+    /// Clamps the argument vector to be inside this rectangle
     inline Vector2T<T> clamp(const Vector2T<T> &) const;
 
     inline void transform(const Matrix3T<T>& m);
+    /** Returns one quarter of the rectangle. 
+	
+	@arg row The row of the quarter (0-1)
+	@arg col The column of the quarter (0-1)
+    */
     inline RectT quarter(int row, int col) const;
   
   private:

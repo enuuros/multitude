@@ -94,6 +94,7 @@ namespace Nimble {
     template <class T>
     inline T Min(T a, T b, T c, T d) { return Min(Min(a, b), Min(c, d)); }
 
+    /// Calculates the absolute value of the argument.
     template <class T>
     inline T Abs(T x) { return x > 0 ? x : -x; }
 
@@ -150,16 +151,6 @@ namespace Nimble {
     inline int Floor(float x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999f); }
     inline int Floor(double x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999); }
 
-    /** Clamps (limits) x between low and high. */
-    
-    /* template <class T>
-    inline T Max(T v1, T v2, T v3)
-    {
-      if(v1 > v2)
-	return v1 > v3 ? v1 : v3;
-      else
-	return v2 > v3 ? v2 : v3;
-	}*/
 
     /// Clamp a value between minimum and maximum values
     /** @param x The input value to limit. 
@@ -182,7 +173,10 @@ namespace Nimble {
       return a * d - b * c;
     }
 
-
+    /** Calculates the average of arguments a and b.
+	
+	@return (a + b) * 0.5f;
+     */
     template <class T>
     inline T Average(const T & a, const T & b)
     {
