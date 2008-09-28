@@ -3,7 +3,7 @@
  *
  * This file is part of Radiant.
  *
- * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
  *
  * See file "Radiant.hpp" for authors and more details.
  *
