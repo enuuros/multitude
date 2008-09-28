@@ -26,39 +26,68 @@
 namespace Luminous {
 
   /** Class for doing key-stone correction when rendering 2D OpenGL
-      graphics. */
+      graphics. The key-stone matrix is a 4x4 trnasformation matrix
+      that is setup up to transform the corner points of all
+      polygons/lines/sprites so that they match some skewed coordinate
+      system.
+
+      This class is used to do keystone correction by applying an
+      OpenGL transformation matrix that skews the output to match
+      display geometry imperfections. It is typically used in
+      projector-based systems where aligning the projectors physically
+      is either impossible or very difficult.
+  */
   class GLKeyStone : public Valuable::HasValues
   {
   public:
+    /// Creates a new GLKeyStone object.
     GLKeyStone(Valuable::HasValues * parent, const std::string & name);
     virtual ~GLKeyStone();
 
+    /// Returns the object type name = "glkeystone"
     virtual const char * const type() const { return "glkeystone"; }
 
+    /// Reads in variables from the DOMElement and calculates the matrix
     virtual bool deserializeXML(Valuable::DOMElement e);
 
+    /// Returns the index to the closest keystone vertex
     int closestVertex(Nimble::Vector2 loc);
+    /// Sets the location of the give given keystone vertex
     void setVertex(int index, float x, float y) 
     { m_vertices[index] = Nimble::Vector2f(x, y); }
 
+    /// Moves the vertex that is closest to the the "loc", to "loc"
     bool moveVertex(Nimble::Vector2 loc);
+    /// Selects the closest vertex
+    /** This function is used to select the vertex, so that it can be
+	moved later on with moveLastVertex. This function is typically
+	used by keystone calibration GUI. */
     void selectVertex(Nimble::Vector2 loc);
+    /// Moves the index of the selected vertex by one.
     void selectNextVertex()
     { m_lastMove = (m_lastMove + 1) % 4; }
-
+    /// Moves the selected vertex by the argument vector.
     void moveLastVertex(const Nimble::Vector2 & move)
     { m_vertices[m_lastMove] += move; calculateMatrix(); }
 
+    /// Returns the index of the selected vertex.
     int lastMove() const { return m_lastMove; }
+    /// Returns the location on the selected vertex.
     Nimble::Vector2f lastMoveVertex() const
     { return m_vertices[m_lastMove].asVector(); }
 
+    /** Rotate the vertices. This function changes the indices of the
+	vertices. */
+    void rotateVertices();
+    /** Reports the number of times this keystone has been
+	rotated. This function is typically used by some GUI code to
+	determine in what orientation the whole key-stone thing is. */
     int rotations() const { return m_rotations.asInt(); }
 
-    void rotateVertices();
-
+    /** Calculates the OpenGL keystone matrix. */
     void calculateMatrix();
     
+    /** Returns the OpenGL keystone matrix. */
     const Nimble::Matrix4 & matrix() const { return m_matrix; }
     /** Projects the vector v using internal matrix, WITHOUT applying
 	perspective correction. */
@@ -67,11 +96,14 @@ namespace Luminous {
 	correction. */
     static Nimble::Vector4 projectCorrected(const Nimble::Matrix4 & m,
 					    Nimble::Vector2 v);
-    
+    /// Applies the keystone matrix to the current OpenGL context
+    /** This method is typically used as the first step in rendering,
+	before drawing anything on the screen. */
     void applyGlState();
 
+    /// Cleans up the exterior after the 
     void cleanExterior();
-
+    /// Returns the location of the vertex that is closest to the argument v.
     Nimble::Vector2 closest(Nimble::Vector2 v) const;
 
   protected:
