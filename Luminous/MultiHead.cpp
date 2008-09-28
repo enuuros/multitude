@@ -118,7 +118,7 @@ namespace Luminous {
       Nimble::Matrix4 m = m_keyStone.matrix().inverse( &dontCare);
       assert(dontCare);
 
-      loc = GlKeyStone::projectCorrected(m, loc).vector2();
+      loc = GLKeyStone::projectCorrected(m, loc).vector2();
 
       Nimble::Rectf rectangle(0.f, 0.f, 1.f, 1.f);    
       bool ok = rectangle.contains(loc);

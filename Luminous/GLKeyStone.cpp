@@ -14,7 +14,7 @@
  */
 
 #include <Luminous/Luminous.hpp>
-#include <Luminous/GlKeyStone.hpp>
+#include <Luminous/GLKeyStone.hpp>
 
 #include <Valuable/DOMElement.hpp>
 
@@ -26,7 +26,7 @@ namespace Luminous {
   using Nimble::Vector2;
   using Nimble::Vector4;
 
-  GlKeyStone::GlKeyStone(HasValues * parent, const std::string & name)
+  GLKeyStone::GLKeyStone(HasValues * parent, const std::string & name)
   : HasValues(parent, name, false),
   m_lastMove(0),
   m_rotations(this, "rotations", false, 0)
@@ -44,10 +44,10 @@ namespace Luminous {
     calculateMatrix();
   }
 
-  GlKeyStone::~GlKeyStone()
+  GLKeyStone::~GLKeyStone()
   {}
 
-  bool GlKeyStone::deserializeXML(Valuable::DOMElement e)
+  bool GLKeyStone::deserializeXML(Valuable::DOMElement e)
   {
     if(!Valuable::HasValues::deserializeXML(e))
       return false;
@@ -57,7 +57,7 @@ namespace Luminous {
     return true;
   }
 
-  int GlKeyStone::closestVertex(Nimble::Vector2 loc)
+  int GLKeyStone::closestVertex(Nimble::Vector2 loc)
   {
     int index = 0;
     float best = (m_vertices[0].asVector() - loc).length();
@@ -72,7 +72,7 @@ namespace Luminous {
     return index;
   }
 
-  bool GlKeyStone::moveVertex(Vector2 loc)
+  bool GLKeyStone::moveVertex(Vector2 loc)
   {
     selectVertex(loc);
 
@@ -86,12 +86,12 @@ namespace Luminous {
     return true;
   }
 
-  void GlKeyStone::selectVertex(Vector2 loc)
+  void GLKeyStone::selectVertex(Vector2 loc)
   {
     m_lastMove = closestVertex(loc);
   }
 
-  void GlKeyStone::rotateVertices()
+  void GLKeyStone::rotateVertices()
   {
     Vector2 v = m_vertices[0].asVector();
 
@@ -109,7 +109,7 @@ namespace Luminous {
   /** Calculates the projection matrix. See Paul Heckbert's master's
    * thesis, pages 19-21. */
 
-  void GlKeyStone::calculateMatrix()
+  void GLKeyStone::calculateMatrix()
   {
     // Formula from page 20.
     float dx1 = m_vertices[1][0] - m_vertices[2][0];
@@ -145,7 +145,7 @@ namespace Luminous {
       std::endl;
   }
 
-  Vector4 GlKeyStone::project(Vector2 v)
+  Vector4 GLKeyStone::project(Vector2 v)
   {
     Vector4 tmp(v.x, v.y, 0.5, 1.0);
     Vector4 p = m_matrix * tmp;
@@ -156,7 +156,7 @@ namespace Luminous {
     return p;
   }
 
-  Vector4 GlKeyStone::projectCorrected(const Nimble::Matrix4 & m, Nimble::Vector2 v)
+  Vector4 GLKeyStone::projectCorrected(const Nimble::Matrix4 & m, Nimble::Vector2 v)
   {
     Vector4 tmp(v.x, v.y, 0.0, 1.0);
     Vector4 p = m * tmp;
@@ -169,7 +169,7 @@ namespace Luminous {
     return p;
   }
 
-  void GlKeyStone::applyGlState()
+  void GLKeyStone::applyGlState()
   {
     /* if(*m_vertices[0] == Vector2(0, 0) &&
        *m_vertices[1] == Vector2(1, 0) &&
@@ -184,7 +184,7 @@ namespace Luminous {
     glTranslatef(1.0, 1.0, 0.0);
   }
 
-  void GlKeyStone::cleanExterior()
+  void GLKeyStone::cleanExterior()
   {
     glDisable(GL_BLEND);
     glDisable(GL_TEXTURE_2D);
@@ -222,7 +222,7 @@ namespace Luminous {
     glEnd();
   }
 
-  Vector2 GlKeyStone::closest(Vector2 loc) const
+  Vector2 GLKeyStone::closest(Vector2 loc) const
   {
     int index = 0;
     float best = (m_vertices[0].asVector() - loc).length();

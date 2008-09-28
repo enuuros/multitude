@@ -27,11 +27,11 @@ namespace Luminous {
 
   /** Class for doing key-stone correction when rendering 2D OpenGL
       graphics. */
-  class GlKeyStone : public Valuable::HasValues
+  class GLKeyStone : public Valuable::HasValues
   {
   public:
-    GlKeyStone(Valuable::HasValues * parent, const std::string & name);
-    virtual ~GlKeyStone();
+    GLKeyStone(Valuable::HasValues * parent, const std::string & name);
+    virtual ~GLKeyStone();
 
     virtual const char * const type() const { return "glkeystone"; }
 

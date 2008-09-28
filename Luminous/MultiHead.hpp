@@ -20,7 +20,7 @@
 #include <Nimble/Rect.hpp>
 #include <Nimble/Vector4.hpp>
 
-#include <Luminous/GlKeyStone.hpp>
+#include <Luminous/GLKeyStone.hpp>
 
 #include <Valuable/ValueString.hpp>
 #include <Valuable/ValueFloat.hpp>
@@ -92,7 +92,7 @@ namespace Luminous {
 
         virtual const char * const type() const { return "area"; }
 
-        GlKeyStone & keyStone() { return m_keyStone; }
+        GLKeyStone & keyStone() { return m_keyStone; }
 
         /// The pixel location of the area on the window
         const Vector2i & location() const { return m_location.asVector(); }
@@ -143,7 +143,7 @@ namespace Luminous {
 
         void updateBBox();
 
-        GlKeyStone m_keyStone;
+        GLKeyStone m_keyStone;
         Valuable::ValueVector2i   m_location;
         Valuable::ValueVector2i   m_size;
         Valuable::ValueVector2f   m_graphicsLocation;
