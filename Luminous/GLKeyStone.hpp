@@ -52,7 +52,7 @@ namespace Luminous {
 
     /// Returns the index to the closest keystone vertex
     int closestVertex(Nimble::Vector2 loc);
-    /// Sets the location of the give given keystone vertex
+    /// Sets the location of the given keystone vertex
     void setVertex(int index, float x, float y) 
     { m_vertices[index] = Nimble::Vector2f(x, y); }
 
@@ -65,16 +65,16 @@ namespace Luminous {
     void selectVertex(Nimble::Vector2 loc);
     /// Moves the index of the selected vertex by one.
     void selectNextVertex()
-    { m_lastMove = (m_lastMove + 1) % 4; }
+    { m_selected = (m_selected + 1) % 4; }
     /// Moves the selected vertex by the argument vector.
     void moveLastVertex(const Nimble::Vector2 & move)
-    { m_vertices[m_lastMove] += move; calculateMatrix(); }
+    { m_vertices[m_selected] += move; calculateMatrix(); }
 
     /// Returns the index of the selected vertex.
-    int lastMove() const { return m_lastMove; }
+    int selected() const { return m_selected; }
     /// Returns the location on the selected vertex.
-    Nimble::Vector2f lastMoveVertex() const
-    { return m_vertices[m_lastMove].asVector(); }
+    Nimble::Vector2f selectedVertex() const
+    { return m_vertices[m_selected].asVector(); }
 
     /** Rotate the vertices. This function changes the indices of the
 	vertices. */
@@ -110,7 +110,7 @@ namespace Luminous {
 //    Valuable::ValueVector2f m_vertices[4];
     Valuable::ValueVector2f m_vertices[4];    
     Nimble::Matrix4 m_matrix;
-    int     m_lastMove;
+    int     m_selected;
     Valuable::ValueInt m_rotations;
   };
 

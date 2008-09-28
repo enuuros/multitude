@@ -40,7 +40,7 @@ namespace VideoDisplay {
 
     Radiant::TimeStamp audioTime();
 
-  protected:
+  private:
     VideoIn * m_video;
     int       m_channels;
     bool      m_started;

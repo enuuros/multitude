@@ -59,7 +59,7 @@ namespace VideoDisplay {
 
     unsigned size() const { return m_texts.size(); }
     
-  protected:
+  private:
     
     std::vector<Text> m_texts;
     Text * m_current;

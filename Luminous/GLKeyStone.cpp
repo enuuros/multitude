@@ -28,7 +28,7 @@ namespace Luminous {
 
   GLKeyStone::GLKeyStone(HasValues * parent, const std::string & name)
   : HasValues(parent, name, false),
-  m_lastMove(0),
+  m_selected(0),
   m_rotations(this, "rotations", false, 0)
   {
     setVertex(0, 0, 0);
@@ -76,10 +76,10 @@ namespace Luminous {
   {
     selectVertex(loc);
 
-    if((m_vertices[m_lastMove].asVector() - loc).length() > 0.1f)
+    if((m_vertices[m_selected].asVector() - loc).length() > 0.1f)
       return false;
 
-    m_vertices[m_lastMove] = loc;
+    m_vertices[m_selected] = loc;
 
     calculateMatrix();
 
@@ -88,7 +88,7 @@ namespace Luminous {
 
   void GLKeyStone::selectVertex(Vector2 loc)
   {
-    m_lastMove = closestVertex(loc);
+    m_selected = closestVertex(loc);
   }
 
   void GLKeyStone::rotateVertices()

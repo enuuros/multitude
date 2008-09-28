@@ -69,7 +69,7 @@ namespace VideoDisplay {
         virtual void clear();
 
 
-      protected:
+      private:
 
         enum {
           PARAM_YTEX,
@@ -95,7 +95,7 @@ namespace VideoDisplay {
       
       Luminous::Texture2D & blankTex() { return m_blankTex; }
 
-    protected:
+    private:
 
       int m_frame;
       Luminous::Texture2D  m_texIds[3];
@@ -170,7 +170,7 @@ namespace VideoDisplay {
 
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
-    protected:
+    private:
 
       void clearHistogram();
       void getThumbnail(double pos);

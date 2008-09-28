@@ -81,9 +81,10 @@ namespace Screenplay {
   
     int audioSampleRate() const { return m_audioSampleRate; }
 
+    /// Turn on/off the printing of debug messages
     static void setDebug(int debug);
 
-  protected:
+  private:
 
     std::string      m_fileName;
     std::string      m_codecName;

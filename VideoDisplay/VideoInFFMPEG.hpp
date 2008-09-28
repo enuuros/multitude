@@ -38,7 +38,7 @@ namespace VideoDisplay {
     virtual double durationSeconds();
     virtual bool seekTo(double seconds);
   
-  protected:
+  private:
 
     virtual bool open(const char * filename, Radiant::TimeStamp pos);
     virtual void close();
