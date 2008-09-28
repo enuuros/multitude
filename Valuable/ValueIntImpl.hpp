@@ -13,16 +13,19 @@ namespace Valuable
   bool ValueIntT<T>::deserializeXML(DOMElement e)
   {
     Base::m_value = Radiant::StringUtils::fromString<T>(e.getTextContent().c_str());
+    
     return true;
   }
-
-  template<>
+  /*
+template<>
   bool ValueIntT<Radiant::TimeStamp>::deserializeXML(DOMElement )
   {
     Radiant::error("ValueIntT<Radiant::TimeStamp>::deserializeXML # not implemented!");
     return false;
   }
 
+  Default implementation is fine also for TimeStamps.
+  */
 }
 
 #endif

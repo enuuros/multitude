@@ -477,106 +477,21 @@ namespace Radiant {
 
     m_videodevice = device ? device : "/dev/video1394";
     m_cameraNum = camera ? atoi(camera) : 0;
-    m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
 
-    if(euid != 0)
-      trace("Video1394::open # %.8x%.8x (%s)", 
-	     (int) (m_euid >> 32), (int) m_euid, euid);
+
+    uint32_t i;
 
     m_outside = 0;
 
     const char * fname = "Video1394::initialize";
 
-    // uint channel;
-    // uint speed;
-
-    bzero( & m_camera, sizeof(m_camera));
-    // bzero( & m_features, sizeof(m_features));
-
-    if (m_initialized)
-      close();
-
-    uint32_t i;
-
-    {
-      std::vector<CameraInfo> cameras;
-    
-      if(!queryCameras(&cameras)) return false;
-    }
-  
-    if(!__infos.size()) {
-      error("%s # No FireWire cameras found", fname);
+    if(!findCamera(euid))
       return false;
-    }
 
-    struct utsname sn;
-    uname( & sn);
-
-    // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
-    bool isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
-      sn.release[0] == '9' && sn.release[1] == '.';
-
-    // Clean up in the first start:
-    static int initcount = 0;
-    if(!initcount) {
-      
-      if(isleopard)
-	trace("%s # Running Leopard, no FireWire bus reset");
-      else {
-	for(int c = 0; c < (int) __infos.size(); c++) {
-	  dc1394_reset_bus(__infos[c]);
-	  Sleep::sleepMs(20);
-	}
-      }
-    }
-    initcount++;
-
-    // Now seek the camera we are interested in:
-
-    bool foundCorrect = false;
-
-    for(i = 0; i < __infos.size() && m_euid != 0; i++) {
-      if(__infos[i]->guid == m_euid) {
-	m_cameraNum = (int) i;
-	foundCorrect = true;
-	trace("%s # Got camera %d based on euid", fname, (int) i);
-	break;
-      }
-    }
-
-    if(m_euid != 0 && !foundCorrect) {
-      error("%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
-      return false;
-    }
-
-    assert(m_cameraNum < (int) __infos.size());
-
-    m_camera = __infos[m_cameraNum];
-
-    /* int isochan = m_cameraNum + 2;
-       if(dc1394_video_specify_iso_channel(m_camera, isochan) !=DC1394_SUCCESS){
-       error(ERR_UNKNOWN, "%s # unable to set ISO channel to %d", 
-       fname, isochan);
-       }
-    */
-
-    if(dc1394_feature_get_all(m_camera, & m_features)
-       != DC1394_SUCCESS) {
-      error("%s # unable to get feature set %d", 
-	     fname, m_cameraNum);
-    }
     /* else
       dc1394_print_feature_set(& m_features);
     */
-    dc1394speed_t speed;
   
-    /* if(dc1394_video_get_iso_channel_and_speed(m_camera, &channel, &speed) 
-       != DC1394_SUCCESS) 
-       fatal(ERR_UNKNOWN, 
-       "%s # unable to get the iso channel number", fname);
-    */
-  
-    // dc1394video_mode_t video_mode = DC1394_VIDEO_MODE_640x480_MONO8;
     dc1394video_mode_t video_modes[] = {
       difmt2dcfmt(fmt, width, height),
       DC1394_VIDEO_MODE_1024x768_MONO8,
@@ -585,7 +500,6 @@ namespace Radiant {
       (dc1394video_mode_t) 0
     };
     dc1394video_mode_t video_mode = DC1394_VIDEO_MODE_640x480_MONO8;
-    // dc1394video_mode_t video_mode = DC1394_VIDEO_MODE_320x240_YUV422;
   
     dc1394framerates_t framerates;
 
@@ -617,47 +531,6 @@ namespace Radiant {
     trace("%s # The frame rate id = %d (target = %d)", 
 	   fname, (int) fps, targetfps);
     
-#ifdef __linux__
-    // controlled with environment variable:
-    bool try1394b = getenv("NO_FW800") == 0;
-    trace("%s # Try %s FW800", fname, try1394b ? "with" : "without");
-#else
-    bool try1394b = true;
-#endif
-
-    if(try1394b) {
-      bool is1394b = false;
-      
-      if(dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_1394B)
-	 != DC1394_SUCCESS) {
-	dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_LEGACY);
-      }
-      else
-	is1394b = true;
-      
-      if(is1394b) {
-	if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
-	   != DC1394_SUCCESS) {
-	  if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
-	     != DC1394_SUCCESS) {
-	    fatal("%s # dc1394_video_set_iso_speed failed",
-		  fname);
-	  }
-	}
-      }
-    }
-    else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
-	    != DC1394_SUCCESS) {
-      fatal("%s # dc1394_video_set_iso_speed failed",
-	    fname);
-    }
-
-    if (dc1394_video_get_iso_speed(m_camera, &speed) != DC1394_SUCCESS) {
-      fatal("%s # dc1394_video_get_iso_speed failed", fname);
-    }
-    else
-      trace("%s # ISO speed = %u", fname, (uint) speed);
-    
     if(dc1394_video_set_mode(m_camera, video_mode)
        != DC1394_SUCCESS) {
       fatal("%s # dc1394_video_set_mode failed",
@@ -681,22 +554,7 @@ namespace Radiant {
         error("%s # dc1394_video_set_transmission failed", fname);      
     }
   
-    if(dc1394_capture_setup
-#ifdef __linux__
-       /* On Linux, only allocate channel, no bandwidth. This way you
-	  can get more cameras into a single FW bus. */
-       (m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC)
-       //(m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
-#else
-       // On Others, allocate both channels and bandwidth.
-       (m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
-#endif
-       != DC1394_SUCCESS) {
-    
-      error("%s # unable to setup camera- check that the video mode,"
-	     "framerate and format are supported (%s)", fname, 
-	     m_videodevice.c_str());
-    }
+    captureSetup(NUM_BUFFERS);
 
     m_initialized = true;
     m_started = false;
@@ -741,6 +599,87 @@ namespace Radiant {
 
     trace("%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
 
+    return true;
+  }
+
+  bool Video1394::openFormat7(const char * cameraeuid,
+			      Nimble::Recti roi,
+			      float fps)
+  {
+    const char * fname = "Video1394::openFormat7";
+
+    if(!findCamera(cameraeuid))
+      return false;
+
+    int err;
+    unsigned minbytes, maxbytes;
+    
+    err = dc1394_video_set_mode(m_camera, DC1394_VIDEO_MODE_FORMAT7_0);
+    if(err != DC1394_SUCCESS) {
+      error("%s # Could not set mode to format7_0", fname);
+      return false;
+    }
+
+    err = dc1394_format7_get_packet_parameters
+      (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & minbytes, & maxbytes);
+
+    if(err != DC1394_SUCCESS) {
+      error("%s # Could not get packet paramters", fname);
+      return false;
+    }
+
+    /* Tricky to get the frame-rate right:
+
+      http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the_packet_size_for_a_wanted_frame_rate
+    */
+
+    float busPeriod; // Bus period in seconds
+
+    if(m_speed == DC1394_ISO_SPEED_400)
+      busPeriod = 0.000125f;
+    else if(m_speed == DC1394_ISO_SPEED_800)
+      busPeriod = 0.0000625f;
+    else {
+      error("%s # Cannot calculate bus speed as the speed (%d) is unknown",
+	    fname, (int) m_speed);
+      return false;
+    }
+    
+    int numPackets = (int) (1.0f / (busPeriod * fps) + 0.5f);
+    int denom = numPackets * 8;
+    
+    int packetSize = (roi.area() * 8 + denom - 1) / denom;
+
+    if(packetSize > (int) maxbytes) {
+      trace("%s # Limiting packet size to %u", maxbytes);
+      packetSize = maxbytes;
+    }
+
+    dc1394_format7_set_color_coding(m_camera,
+				    DC1394_VIDEO_MODE_FORMAT7_0,
+				    DC1394_COLOR_CODING_MONO8);
+
+    err = dc1394_format7_set_roi(m_camera,
+				 DC1394_VIDEO_MODE_FORMAT7_0,
+                                 DC1394_COLOR_CODING_MONO8,
+                                 packetSize,
+                                 roi.low().x, roi.low().y,
+				 roi.width(), roi.height());
+
+    if(err != DC1394_SUCCESS) {
+      error("%s # Could not set ROI", fname);
+      return false;
+    }
+
+    captureSetup(NUM_BUFFERS);
+
+    // Here we only support grayscale for the time being...
+    m_image.m_format = IMAGE_GRAYSCALE;
+    m_image.m_planes[0].m_type = PLANE_GRAYSCALE;
+    m_image.m_planes[0].m_linesize = roi.width();
+    m_image.m_width  = roi.width();
+    m_image.m_height = roi.height();
+    
     return true;
   }
 
@@ -982,6 +921,161 @@ namespace Radiant {
     return info;
   }
 
+  bool Video1394::findCamera(const char * euid)
+  {
+    const char * fname = "Video1394::findCamera";
 
+    uint32_t i;
+
+    bzero( & m_camera, sizeof(m_camera));
+    // bzero( & m_features, sizeof(m_features));
+
+    m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
+
+    if(euid != 0)
+      trace("Video1394::open # %.8x%.8x (%s)", 
+	     (int) (m_euid >> 32), (int) m_euid, euid);
+
+
+    if (m_initialized)
+      close();
+
+
+    {
+      std::vector<CameraInfo> cameras;
+    
+      if(!queryCameras(&cameras)) return false;
+    }
+  
+    if(!__infos.size()) {
+      error("%s # No FireWire cameras found", fname);
+      return false;
+    }
+
+    struct utsname sn;
+    uname( & sn);
+
+    // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
+    bool isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
+      sn.release[0] == '9' && sn.release[1] == '.';
+
+    // Clean up in the first start:
+    static int initcount = 0;
+    if(!initcount) {
+      
+      if(isleopard)
+	trace("%s # Running Leopard, no FireWire bus reset");
+      else {
+	for(int c = 0; c < (int) __infos.size(); c++) {
+	  dc1394_reset_bus(__infos[c]);
+	  Sleep::sleepMs(20);
+	}
+      }
+    }
+    initcount++;
+
+    // Now seek the camera we are interested in:
+
+    bool foundCorrect = false;
+
+    for(i = 0; i < __infos.size() && m_euid != 0; i++) {
+      if(__infos[i]->guid == m_euid) {
+	m_cameraNum = (int) i;
+	foundCorrect = true;
+	trace("%s # Got camera %d based on euid", fname, (int) i);
+	break;
+      }
+    }
+
+    if(m_euid != 0 && !foundCorrect) {
+      error("%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
+      return false;
+    }
+
+    assert(m_cameraNum < (int) __infos.size());
+
+    m_camera = __infos[m_cameraNum];
+
+    /* int isochan = m_cameraNum + 2;
+       if(dc1394_video_specify_iso_channel(m_camera, isochan) !=DC1394_SUCCESS){
+       error(ERR_UNKNOWN, "%s # unable to set ISO channel to %d", 
+       fname, isochan);
+       }
+    */
+
+    if(dc1394_feature_get_all(m_camera, & m_features)
+       != DC1394_SUCCESS) {
+      error("%s # unable to get feature set %d", 
+	     fname, m_cameraNum);
+    }
+
+#ifdef __linux__
+    // controlled with environment variable:
+    bool try1394b = getenv("NO_FW800") == 0;
+    trace("%s # Try %s FW800", fname, try1394b ? "with" : "without");
+#else
+    bool try1394b = true;
+#endif
+    
+    if(!m_camera->bmode_capable)
+      try1394b = false;
+
+    if(try1394b) {
+      bool is1394b = false;
+      
+      if(dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_1394B)
+	 != DC1394_SUCCESS) {
+	dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_LEGACY);
+      }
+      else
+	is1394b = true;
+      
+      if(is1394b) {
+	if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
+	   != DC1394_SUCCESS) {
+	  if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
+	     != DC1394_SUCCESS) {
+	    fatal("%s # dc1394_video_set_iso_speed failed",
+		  fname);
+	  }
+	}
+      }
+    }
+    else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
+	    != DC1394_SUCCESS) {
+      fatal("%s # dc1394_video_set_iso_speed failed",
+	    fname);
+    }
+
+    if (dc1394_video_get_iso_speed(m_camera, &m_speed) != DC1394_SUCCESS) {
+      fatal("%s # dc1394_video_get_iso_speed failed", fname);
+    }
+    else
+      trace("%s # ISO speed = %u", fname, (uint) m_speed);
+
+    return true;
+  }
+
+  void Video1394::captureSetup(int buffers)
+  {
+    if(dc1394_capture_setup
+#ifdef __linux__
+       /* On Linux, only allocate channel, no bandwidth. This way you
+	  can get more cameras into a single FW bus. */
+       (m_camera, buffers, DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC)
+       //(m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
+#else
+       // On Others, allocate both channels and bandwidth.
+       (m_camera, buffers, DC1394_CAPTURE_FLAGS_DEFAULT)
+#endif
+       != DC1394_SUCCESS) {
+    
+      error("Video1394::captureSetup # "
+	    "unable to setup camera- check that the video mode,"
+	    "framerate and format are supported (%s)", 
+	    m_videodevice.c_str());
+    }
+
+  }
   
 }

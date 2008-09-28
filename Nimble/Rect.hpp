@@ -23,6 +23,7 @@
 namespace Nimble {
 
   /// An axis-aligned rectangle.
+  /** The ractangle is stored as */
   template <class T>
   class RectT
   {
@@ -105,13 +106,22 @@ namespace Nimble {
     void setHighY(const T highY)
     { m_high.y = highY; }
 
+    /// Returns the center of the rectangle.
     inline Vector2T<T> center() const { return (m_low + m_high) * (T) 0.5; }
+    
     inline Vector2T<T> span() const { return m_high - m_low; }
+    /** Returns the top-center point of the rectangle. This function
+	assume that we are dealing with normal GUI-coordinates where x
+	increases from left to right, and y increases from top to
+	bottom. */
     inline Vector2T<T> topCenter() const;
-
+    
     inline T width()  const { return m_high.x - m_low.x; }
     inline T height() const { return m_high.y - m_low.y; }
+    /// Returns the size of the rectangle (= high - low)
     inline Vector2T<T> size() const { return m_high - m_low; }
+    /// Returns the surface area of the rectangle
+    inline T area() const { Vector2T<T> s(size()); return s.x * s.y; }
 
     inline bool intersects(const RectT &) const;
     inline bool contains(T x, T y) const;

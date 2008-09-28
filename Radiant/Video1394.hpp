@@ -16,6 +16,8 @@
 #ifndef RADIANT_VIDEO_1394_HPP
 #define RADIANT_VIDEO_1394_HPP
 
+#include <Nimble/Rect.hpp>
+
 #include <Radiant/VideoInput.hpp>
 
 #include <dc1394/control.h>
@@ -97,6 +99,11 @@ namespace Radiant {
 		      int width = DONT_CARE, 
 		      int height = DONT_CARE, 
 		      FrameRate framerate = FPS_IGNORE);
+
+    /// Initializes the FireWire camera to format 7 mode
+    virtual bool openFormat7(const char * cameraeuid,
+			     Nimble::Recti roi,
+			     float fps);
     
     virtual bool isInitialized() const;
     virtual bool start();
@@ -117,6 +124,9 @@ namespace Radiant {
 			     unsigned int * feature_min_value,
 			     unsigned int * feature_max_value);
 
+    bool findCamera(const char * euid);
+    void captureSetup(int buffers);
+
     std::string    m_videodevice;
 
     /** camera capture information. */
@@ -125,6 +135,7 @@ namespace Radiant {
 
     /** camera feature information. */
     dc1394featureset_t m_features;
+    dc1394speed_t      m_speed; // FW400, FW800 etc.
 
     u_int64_t m_euid;
     int m_cameraNum;
