@@ -18,6 +18,7 @@
 
 #include "ValueString.hpp"
 #include "DOMElement.hpp"
+#include "DOMDocument.hpp"
 
 #include <Radiant/StringUtils.hpp>
 
@@ -119,6 +120,29 @@ namespace Valuable
     Radiant::StringUtils::utf8ToStdWstring(m_value, v); 
     STD_EM;
     return true; 
+  }
+
+  template<>
+  DOMElement ValueStringT<std::string>::serializeXML(DOMDocument * doc)
+  {
+    return ValueObject::serializeXML(doc);
+  }
+
+  template<>
+  DOMElement ValueStringT<std::wstring>::serializeXML(DOMDocument * doc)
+  {
+    if(m_name.empty()) {
+      Radiant::error("ValueWString::serializeXML # attempt to serialize object with no name");
+      return DOMElement(0);
+    }
+
+    DOMElement elem = doc->createElement(m_name.c_str());
+    elem.setAttribute("type", type());
+  
+    const std::wstring & ws = asWString();
+    elem.setTextContent(ws);
+
+    return elem;
   }
 
   template<>

@@ -46,7 +46,8 @@ namespace Valuable
       std::string getTextContent() const;
       std::wstring getTextContentW() const;
 
-      void setTextContent(const char * content);
+      void setTextContent(const std::string & content);
+      void setTextContent(const std::wstring & content);
 
       typedef std::list<DOMElement> NodeList;
       NodeList getChildNodes() const;

@@ -4,7 +4,6 @@ SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
 SUBDIRS += Valuable
-SUBDIRS += ValueIO
 SUBDIRS += Luminous
 SUBDIRS += Dyslexic
 SUBDIRS += Resonant

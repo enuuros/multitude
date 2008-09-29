@@ -71,11 +71,18 @@ namespace Valuable
     return list;
   }
 
-  void DOMElement::setTextContent(const char * content)
+  void DOMElement::setTextContent(const std::string & s)
   {
-    XMLCh * xCont = XMLString::transcode(content);
+    XMLCh * xCont = XMLString::transcode(s.c_str());
     m_xElement->setTextContent(xCont);
     XMLString::release(&xCont);
+  }
+
+  void DOMElement::setTextContent(const std::wstring & ws)
+  {
+    std::basic_string<XMLCh> xs(ws.begin(), ws.end());
+
+    m_xElement->setTextContent(xs.c_str());
   }
 
   std::string DOMElement::getTextContent() const

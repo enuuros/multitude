@@ -30,7 +30,6 @@ LIB_GLU = -lGLU
 LIB_RADIANT = -lRadiant
 LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
-LIB_VALUEIO = -lValueIO
 LIB_VIDEODISPLAY = -lVideoDisplay
 LIB_VALUABLE = -lValuable
 
@@ -56,7 +55,6 @@ macx {
     LIB_RESONANT = -framework,Resonant
     LIB_SCREENPLAY = -framework,Screenplay
     LIB_VALUABLE = -framework,Valuable
-    LIB_VALUEIO = -framework,ValueIO
     LIB_VIDEODISPLAY = -framework,VideoDisplay
   }
 

@@ -227,7 +227,7 @@ namespace Valuable
       if(vo)
         vo->deserializeXML(elem);
       else if(!readElement(elem)) {
-        Radiant::error("HasValues::deserializeXML # don't know how to handle element '%s'", name.c_str());
+        Radiant::error("HasValues::deserializeXML # (%s) don't know how to handle element '%s'", type(), name.c_str());
         return false;
       }
     }

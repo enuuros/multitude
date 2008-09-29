@@ -14,6 +14,7 @@ HEADERS += ValueIntImpl.hpp
 HEADERS += ValueListener.hpp
 HEADERS += ValueNumeric.hpp
 HEADERS += ValueObject.hpp
+HEADERS += ValueRect.hpp
 HEADERS += ValueString.hpp
 HEADERS += ValueStringImpl.hpp
 HEADERS += ValueVector.hpp
@@ -29,6 +30,7 @@ SOURCES += ValueFloat.cpp
 SOURCES += ValueInt.cpp
 SOURCES += ValueListener.cpp
 SOURCES += ValueObject.cpp
+SOURCES += ValueRect.cpp
 SOURCES += ValueString.cpp
 SOURCES += ValueVector.cpp
 
@@ -37,6 +39,3 @@ SOURCES += ValueVector.cpp
 unix:LIBS += $$LIB_RADIANT -lxerces-c
 
 include(../library.pri)
-
-CONFIG += debug
-

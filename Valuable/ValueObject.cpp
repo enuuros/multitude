@@ -94,7 +94,7 @@ namespace Valuable
 
     DOMElement elem = doc->createElement(m_name.c_str());
     elem.setAttribute("type", type());
-    elem.setTextContent(asString().c_str());
+    elem.setTextContent(asString());
 
     return elem;   
   }

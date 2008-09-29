@@ -49,7 +49,8 @@ namespace Valuable
  
       const char * const type() const { return VO_TYPE_STRING; }
 
-      bool deserializeXML(DOMElement element);
+      DOMElement serializeXML(DOMDocument * doc);
+      bool deserializeXML(DOMElement element);      
 
     private:
       T m_value;
