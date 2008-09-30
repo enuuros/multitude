@@ -48,7 +48,8 @@ namespace FireView {
     virtual ~CamView();
 
     bool start(u_int64_t euid64, Radiant::FrameRate fps, float customFps = 0.0f,
-	       int triggerSource = -1, int triggerMode = -1);
+	       int triggerSource = -1, int triggerMode = -1,
+	       bool format7 = false);
 
     std::vector<dc1394feature_info_t> & features()
     { return m_thread.m_features; }
@@ -102,7 +103,8 @@ namespace FireView {
       virtual ~InputThread();
 
       bool start(u_int64_t euid64, Radiant::FrameRate fps, 
-		 float customFps, int triggerSource, int triggerMode);
+		 float customFps, int triggerSource, int triggerMode,
+		 bool format7);
       void stop();
 
       bool isRunning() const { return m_state == RUNNING; }
@@ -118,6 +120,7 @@ namespace FireView {
       float           m_customFps;
       int             m_triggerSource;
       int             m_triggerMode;
+      bool            m_format7;
 
       std::vector<dc1394feature_info_t> m_features;
       std::vector<bool> m_featureSend;

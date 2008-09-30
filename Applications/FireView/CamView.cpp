@@ -51,7 +51,8 @@ namespace FireView {
 
   bool CamView::InputThread::start(u_int64_t euid64, Radiant::FrameRate fps,
 				   float customFps,
-				   int triggerSource, int triggerMode)
+				   int triggerSource, int triggerMode, 
+				   bool format7)
   {
     m_video.setCameraEuid64(euid64);
     /*
@@ -67,6 +68,8 @@ namespace FireView {
     m_customFps = customFps;
     m_triggerSource = triggerSource;
     m_triggerMode = triggerMode;
+    m_format7 = format7;
+
     m_state = STARTING;
     m_continue = true;
     m_frameCount = 0;
@@ -108,7 +111,20 @@ namespace FireView {
   {
     using Radiant::StringUtils::yesNo;
     
-    bool ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, m_fps);
+    bool ok;
+    
+    if(!m_format7)
+      ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 400, m_fps);
+    else {
+
+#ifndef WIN32
+      ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 640, 480), m_customFps);
+#else
+      error("Format 7 not yet supported under Windows.";
+      ok = false;
+#endif
+
+    }
     
     if(!ok) {
       m_state = FAILED;
@@ -170,7 +186,7 @@ namespace FireView {
     if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
       error("Cannot have custom FPS combined with anything but SW trigger (%d)",
 	    (int) trig);
-
+    /*
     if(m_customFps > 0.0f || m_triggerSource > 0) {
       if(!m_video.enableTrigger(trig)) {
 	m_state = FAILED;
@@ -188,8 +204,10 @@ namespace FireView {
       }
     }
     else
-      m_video.disableTrigger();
 
+    */
+
+    m_video.disableTrigger();
     trace("Getting features");
 
     m_video.getFeatures( & m_features);
@@ -246,7 +264,7 @@ namespace FireView {
 
       // printf("<"); fflush(0);
 
-      if(m_customFps > 0.0f) {
+      if(m_customFps > 0.0f && !m_format7) {
 	sync.sleepSynchroUs((long) (1000000 / m_customFps));
 	m_video.sendSoftwareTrigger();
       }
@@ -356,8 +374,8 @@ namespace FireView {
   }
   
   bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
-						float customFps,
-		      int triggerSource, int triggerMode)
+		      float customFps,
+		      int triggerSource, int triggerMode, bool format7)
   {
     Radiant::Video1394::CameraInfo info;
     
@@ -379,7 +397,8 @@ namespace FireView {
     m_texFrame = -1;
     m_filtering = false;
 
-    ok = m_thread.start(euid64, fps, customFps, triggerSource,  triggerMode);
+    ok = m_thread.start(euid64, fps, customFps,
+			triggerSource, triggerMode, format7);
 
     if(ok) {
       Radiant::Guard g( & m_thread.m_mutex);

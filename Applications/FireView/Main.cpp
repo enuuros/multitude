@@ -60,11 +60,15 @@ int main(int argc, char ** argv)
   Radiant::FrameRate rate = Radiant::FPS_15;
   Task t = TASK_SHOW_CAMERAS;
   int i, res = 0;
+  bool format7 = false;
 
   for(i = 1; i < argc; i++) {
     const char * arg = argv[i];
 
-    if(strcmp(arg, "--fps") == 0 && (i+1) < argc) {
+    if(strcmp(arg, "--format7") == 0) {
+      format7 = true;
+    }
+    else if(strcmp(arg, "--fps") == 0 && (i+1) < argc) {
       fps = atof(argv[++i]);
     }
     else if(strcmp(arg, "--help") == 0) {
@@ -116,7 +120,7 @@ int main(int argc, char ** argv)
   else {
 
     FireView::MainWindow * mw =
-      new FireView::MainWindow(rate, fps, triggerSource, triggerMode);
+      new FireView::MainWindow(rate, fps, triggerSource, triggerMode, format7);
     
     mw->resize(800, 600);
     mw->init();

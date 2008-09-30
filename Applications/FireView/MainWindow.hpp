@@ -35,7 +35,7 @@ namespace FireView {
     Q_OBJECT;
   public:
     MainWindow(Radiant::FrameRate rate, float customFps,
-	       int triggerSource, int triggerMode);
+	       int triggerSource, int triggerMode, bool format7);
     virtual ~MainWindow();
 
     bool init();
@@ -51,7 +51,8 @@ namespace FireView {
     float m_customFps;
     int   m_triggerSource;
     int   m_triggerMode;
-    
+    bool  m_format7;
+
     std::set<QWidget *> m_displays;
   };
 }

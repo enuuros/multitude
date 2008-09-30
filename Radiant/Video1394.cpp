@@ -369,6 +369,7 @@ namespace Radiant {
   void Video1394::getFeatures(std::vector<dc1394feature_info_t> * feats)
   {
     assert(isInitialized());
+
     dc1394featureset_t features;
     dc1394_feature_get_all(m_camera, & features);
     feats->resize(DC1394_FEATURE_NUM);
@@ -624,7 +625,7 @@ namespace Radiant {
       (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & minbytes, & maxbytes);
 
     if(err != DC1394_SUCCESS) {
-      error("%s # Could not get packet paramters", fname);
+      error("%s # Could not get packet parameters", fname);
       return false;
     }
 
@@ -645,10 +646,10 @@ namespace Radiant {
       return false;
     }
     
-    int numPackets = (int) (1.0f / (busPeriod * fps) + 0.5f);
+    int numPackets = (int) (1.0f / (busPeriod * fps));
     int denom = numPackets * 8;
     
-    int packetSize = (roi.area() * 8 + denom - 1) / denom;
+    int packetSize = 2.01 * (roi.area() * 8 + denom - 1) / denom;
 
     if(packetSize > (int) maxbytes) {
       trace("%s # Limiting packet size to %u", maxbytes);
@@ -680,6 +681,9 @@ namespace Radiant {
     m_image.m_width  = roi.width();
     m_image.m_height = roi.height();
     
+
+    m_initialized = true;
+
     return true;
   }
 
@@ -1011,14 +1015,18 @@ namespace Radiant {
 
 #ifdef __linux__
     // controlled with environment variable:
-    bool try1394b = getenv("NO_FW800") == 0;
-    trace("%s # Try %s FW800", fname, try1394b ? "with" : "without");
+    bool try1394b = true;
 #else
     bool try1394b = true;
 #endif
     
+    if(getenv("NO_FW800") != 0)
+      try1394b = false;
+
     if(!m_camera->bmode_capable)
       try1394b = false;
+
+    trace("%s # Try %s FW800", fname, try1394b ? "with" : "without");
 
     if(try1394b) {
       bool is1394b = false;

@@ -33,12 +33,14 @@
 namespace FireView {
 
   MainWindow::MainWindow(Radiant::FrameRate rate, 
-                         float customFps, int triggerSource, int triggerMode)
+                         float customFps, int triggerSource, int triggerMode,
+			 bool format7)
     : m_mdi(0),
       m_rate(rate),
       m_customFps(customFps),
       m_triggerSource(triggerSource),
-      m_triggerMode(triggerMode)
+      m_triggerMode(triggerMode),
+      m_format7(format7)
   {
     QMenuBar * bar = new QMenuBar(this);
     QMenu * menu = new QMenu("&File", this);
@@ -128,7 +130,7 @@ namespace FireView {
 	layout->addWidget(cv, 100);
 	
 	if(cv->start(euid, m_rate, m_customFps,
-		     m_triggerSource, m_triggerMode)) {
+		     m_triggerSource, m_triggerMode, m_format7)) {
 
 	  base->raise();
 	  base->show();
