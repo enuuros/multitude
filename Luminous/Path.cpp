@@ -315,12 +315,9 @@ bool Path::isDegenerate() const
 
 TCBSpline2 * Path::spline() 
 {
+  if(m_points.size() < 3) return 0;
+
   size_t segments = m_points.size() - 1;
-
-  assert(segments > 0);
-
-  // Need at least two segments for the spline
-  if(segments < 2) return 0;
 
   std::vector<float> zeros(segments + 1, 0.f);
   std::vector<float> times(segments + 1);
