@@ -17,14 +17,6 @@
 #ifndef VIDEODISPLAY_SHOW_GL_HPP
 #define VIDEODISPLAY_SHOW_GL_HPP
 
-#include <GL/glew.h>
-
-#include <VideoDisplay/SubTitles.hpp>
-#include <VideoDisplay/VideoIn.hpp>
-
-#include <Radiant/VideoImage.hpp>
-#include <Radiant/TimeStamp.hpp>
-
 #include <Luminous/GLSLProgramObject.hpp>
 #include <Luminous/Texture.hpp>
 
@@ -32,9 +24,16 @@
 #include <Nimble/Matrix3.hpp>
 
 #include <Radiant/RefPtr.hpp>
+#include <Radiant/TimeStamp.hpp>
+#include <Radiant/VideoImage.hpp>
 
 #include <Resonant/DSPNetwork.hpp>
 
+#include <VideoDisplay/Export.hpp>
+#include <VideoDisplay/SubTitles.hpp>
+#include <VideoDisplay/VideoIn.hpp>
+
+#include <GL/glew.h>
 
 namespace Resonant {
   class DSPNetwork;
@@ -52,7 +51,7 @@ namespace VideoDisplay {
 
   class AudioTransfer;
 
-  class MTEXPORT ShowGL
+  class ShowGL
   {
     public:
 
@@ -112,21 +111,21 @@ namespace VideoDisplay {
         HISTOGRAM_POINTS = 256
       };
 
-      ShowGL();
-      ~ShowGL();
+      VIDEODISPLAY_API ShowGL();
+      VIDEODISPLAY_API ~ShowGL();
 
-      bool loadSubTitles(const char * filename, const char * type = 0);
+      VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
       /// Initialize the file, but does not play it.
-      bool init(const char * filename, Resonant::DSPNetwork  * dsp);
+      VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp);
       /// Opens the file for playing.
-      bool open(const char * filename, Resonant::DSPNetwork  * dsp,
+      VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
           Radiant::TimeStamp pos = 0);
       /// Stops file playback
-      bool stop();
+      VIDEODISPLAY_API bool stop();
 
       /// Toggles play/pause state
-      bool togglePause();
+      VIDEODISPLAY_API bool togglePause();
 
       State state() const { return m_state; }
 
@@ -136,7 +135,7 @@ namespace VideoDisplay {
       // bool contextCleanup();
 
       /// Update the video image from reader-thread
-      void update();
+      VIDEODISPLAY_API void update();
       /// Render the video to the specified rectangle
       /** 
         @arg topleft Top-left corner of the video image
@@ -147,21 +146,21 @@ namespace VideoDisplay {
 
         @arg ransform The coordinates can be optionally transformed
         with the "transform" matrix. */
-    void render(Luminous::GLResources * resources,
+    VIDEODISPLAY_API void render(Luminous::GLResources * resources,
 		Vector2 topleft, Vector2 bottomright,
 		const Nimble::Matrix3f * transform = 0,
 		Dyslexic::GPUFont * subtitleFont = 0,
 		float subTitleSpace = 0);
 
       /// Pixel size of the video image.
-      Nimble::Vector2i size() const;
+      VIDEODISPLAY_API Nimble::Vector2i size() const;
 
       Radiant::TimeStamp duration() { return m_duration; }
       Radiant::TimeStamp position() { return m_position; }
       double relativePosition() { return position() / (double) duration(); }
 
-      void seekTo(Radiant::TimeStamp time);
-      void seekToRelative(double relative);
+      VIDEODISPLAY_API void seekTo(Radiant::TimeStamp time);
+      VIDEODISPLAY_API void seekToRelative(double relative);
       void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
 
       /// Information on how the frames have been displayed.

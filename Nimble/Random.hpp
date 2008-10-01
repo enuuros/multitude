@@ -37,7 +37,7 @@ namespace Nimble {
     { 
       unsigned tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (float) tmp * (1.0 / (float) ((unsigned) 0xffffffff));
+      return (float) tmp * (1.0f / (float) ((unsigned) 0xffffffff));
     }
 
     /// Random numbers between 0 and x

@@ -16,6 +16,7 @@
 #ifndef VALUABLE_VALUE_INT_HPP
 #define VALUABLE_VALUE_INT_HPP
 
+#include <Valuable/Export.hpp>
 #include <Valuable/ValueNumeric.hpp>
 
 #define STD_OP this->emitChange(); return *this;
@@ -26,7 +27,7 @@ namespace Valuable
 {
 
   template<class T>
-  class ValueIntT : public ValueNumeric<T>
+  class VALUABLE_API ValueIntT : public ValueNumeric<T>
   {
     typedef ValueNumeric<T> Base;
 
@@ -38,7 +39,7 @@ namespace Valuable
 
       ValueIntT<T> & operator = (T i) { Base::m_value = i; STD_OP }
 
-      inline operator const T & () const { return Base::m_value; }
+      operator const T & () const { return Base::m_value; }
 
       // Postfix
       ValueIntT<T> & operator ++ (int) { Base::m_value++; STD_OP }
@@ -59,6 +60,14 @@ namespace Valuable
 
   typedef ValueIntT<int> ValueInt;
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
+
+#ifdef WIN32
+#ifdef VALUABLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class ValueIntT<int>;
+  template class ValueIntT<Radiant::TimeStamp>;
+#endif
+#endif
 
 }
 

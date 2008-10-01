@@ -16,6 +16,7 @@
 #ifndef VALUABLE_HASVALUES_HPP
 #define VALUABLE_HASVALUES_HPP
 
+#include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
 #include <Radiant/Color.hpp>
@@ -30,7 +31,7 @@
 namespace Valuable
 {
 
-  class HasValues : public ValueObject
+  class VALUABLE_API HasValues : public ValueObject
   {
     public:
       HasValues();
@@ -71,6 +72,15 @@ namespace Valuable
     protected: 
       container m_children;
   };
+
+#ifdef WIN32
+#ifdef VALUABLE_EXPORT
+  // In WIN32 template functions must be instantiated to be exported
+  template VALUABLE_API bool HasValues::setValue<float>(const std::string & name, const float &);
+  template VALUABLE_API bool HasValues::setValue<Nimble::Vector2T<float>>(const std::string & name, const Nimble::Vector2T<float> &);
+  template VALUABLE_API bool HasValues::setValue<Nimble::Vector4T<float>>(const std::string & name, const Nimble::Vector4T<float> &);
+#endif
+#endif
 
 }
 

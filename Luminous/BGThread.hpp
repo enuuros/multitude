@@ -16,11 +16,12 @@
 #ifndef LUMINOUS_BGTHREAD_HPP
 #define LUMINOUS_BGTHREAD_HPP
 
+#include <Luminous/Export.hpp>
 #include <Luminous/Task.hpp>
 
-#include <Radiant/Thread.hpp>
-#include <Radiant/Mutex.hpp>
 #include <Radiant/Condition.hpp>
+#include <Radiant/Mutex.hpp>
+#include <Radiant/Thread.hpp>
 
 #include <list>
 #include <map>
@@ -29,7 +30,7 @@ namespace Luminous
 {
 
   /// A class used to execute tasks in a separate thread.
-  class BGThread : public Radiant::Thread
+  class LUMINOUS_API BGThread : public Radiant::Thread
   {
 
   public:
@@ -49,7 +50,7 @@ namespace Luminous
     /// Change the priority of a task
     virtual void setPriority(Task * task, Priority p);
 
-    static BGThread * instance() { return m_instance; }
+    static BGThread * instance();
 
     typedef std::multimap<Priority, Task *, std::greater<Priority> > container;
     typedef std::pair<Priority, Task * > contained;
@@ -67,7 +68,7 @@ namespace Luminous
 
 	BGThread does not use this mutex for anything.
     */
-    Radiant::Mutex * generalMutex() { return & m_generalMutex; }
+    Radiant::Mutex * generalMutex();
 
   protected:
     virtual void childLoop();

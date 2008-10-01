@@ -54,7 +54,7 @@ namespace Radiant {
     }
   }
 
-  inline void addTimeUs(struct timeval *tspec, long us)
+  inline void addTimeUs(struct timeeval *tspec, long us)
   {
     tspec->tv_usec += us;
     if(tspec->tv_usec >= RADIANT_MILLION) {
@@ -64,7 +64,7 @@ namespace Radiant {
     }
   }
 
-  inline void addTime(struct timeval *tspec, const struct timeval *tspecAdd)
+  inline void addTime(struct timeeval *tspec, const struct timeeval *tspecAdd)
   {
     tspec->tv_sec  += tspecAdd->tv_sec;
     tspec->tv_usec += tspecAdd->tv_usec;
@@ -78,21 +78,21 @@ namespace Radiant {
   inline long timeDiffNs(const struct timespec *tspecOld,
 			 const struct timespec *tspecNew)
   {
-    return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_BILLION +
-      tspecNew->tv_nsec - tspecOld->tv_nsec;
+    return long((tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_BILLION +
+      tspecNew->tv_nsec - tspecOld->tv_nsec);
   }
 
-  inline long timeDiffUs(const struct timeval *tspecOld,
-			 const struct timeval *tspecNew)
+  inline long timeDiffUs(const struct timeeval *tspecOld,
+			 const struct timeeval *tspecNew)
   {
-    return (tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
-      tspecNew->tv_usec - tspecOld->tv_usec;
+    return long((tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
+      tspecNew->tv_usec - tspecOld->tv_usec);
   }
 
   /** Sleeping services. This class contains only static member
       functions. The constructor and destructor are included to prevent
       compiler warnings.*/
-  class Sleep
+  class RADIANT_API Sleep
   {
   public:
 
@@ -130,7 +130,7 @@ namespace Radiant {
   /// Synchronized sleeping.
   /** This class can be used to time the execution of a thread. For
       example if you want a thread not to execute too often.*/
-  class MTEXPORT SleepSync
+  class RADIANT_API SleepSync
   {
   public:
     /// The constructor resets the timing.
@@ -148,7 +148,7 @@ namespace Radiant {
     long sleepTo(const TimeStamp *stamp, Mutex *mutex = 0);
 
   private:  
-    struct timeval m_initial, m_timing;
+    struct timeeval m_initial, m_timing;
   };
 
 }

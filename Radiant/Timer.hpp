@@ -16,13 +16,14 @@
 #ifndef RADIANT_TIMER_HPP
 #define RADIANT_TIMER_HPP
 
+#include <Radiant/Export.hpp>
 #include <Radiant/TimeStamp.hpp>
 
 namespace Radiant
 {
 
   /// Timer provides a simple method of keeping track of elapsed time.
-  class MTEXPORT Timer
+  class RADIANT_API Timer
   {
     public:
       Timer();

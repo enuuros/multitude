@@ -16,8 +16,15 @@
 #ifndef RADIANT_SERIAL_PORT_HPP
 #define RADIANT_SERIAL_PORT_HPP
 
+#include <Radiant/Export.hpp>
+
+#ifdef WIN32
+#include <windows.h>
+#include <WinPort.h>
+#else
 #include <stdint.h>
 #include <unistd.h>
+#endif
 
 namespace Radiant
 {
@@ -28,16 +35,15 @@ namespace Radiant
       @author Tommi Ilmonen
   */
 
-  class SerialPort
+  class RADIANT_API SerialPort
   {
   public:
     SerialPort();
-    /// Delete the objec and close the port
+    /// Delete the object and close the port
     ~SerialPort();
   
     /// Opens a serial port for communications
-    /** If the port was open, this method will close it before opening
-	it. */
+    /** If the port was open, this method will close it before opening it. */
     bool open(const char * device, 
 	      /// Use stop bit
 	      bool stopBit, 
@@ -57,17 +63,21 @@ namespace Radiant
     /// Write bytes to the port
     /** This method returns the number of bytes written. */
     int write(const void * buf, int bytes);
-    int writeByte(uint8_t byte)
-    { return write( & byte, 1); }
+    int writeByte(uint8_t byte);
     /// Read bytes from the port
     /** This method returns the number of bytes read. */
     int read(void * buf, int bytes);
 
-    inline bool isOpen() const { return m_fd >= 0; }
+    bool isOpen() const;
   
   private:
   
-    int m_fd;
+#ifdef WIN32
+    HANDLE  m_hPort;
+#else
+    int   m_fd;
+#endif
+
   };
 
 }

@@ -17,6 +17,7 @@
 
 #include <GL/glew.h>
 
+#include <Dyslexic/Export.hpp>
 #include <Dyslexic/GPUFontBase.hpp>
 
 #include <vector>
@@ -25,7 +26,7 @@ namespace Dyslexic
 {
 
   /// A GPU font that uses textures to render the glyphs
-  class MTEXPORT GPUTextureFont : public GPUFontBase
+  class DYSLEXIC_API GPUTextureFont : public GPUFontBase
   {
   public:
     GPUTextureFont(CPUFontBase * cpuFont);

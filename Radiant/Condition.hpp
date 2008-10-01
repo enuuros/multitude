@@ -21,6 +21,7 @@
 
 #include <Patterns/NotCopyable.hpp>
 
+#include <Radiant/Export.hpp>
 #include <Radiant/Mutex.hpp>
 
 namespace Radiant {
@@ -52,58 +53,26 @@ namespace Radiant {
       condition.wakeAll(mutex);
       </PRE>
   */
-  class MTEXPORT Condition : public Patterns::NotCopyable
+  class RADIANT_API Condition : public Patterns::NotCopyable
   {
   public:
-    Condition() 
-    { pthread_cond_init(&m_cond, 0); }
+    Condition();
+
+    ~Condition();
     
-    ~Condition() { pthread_cond_destroy(&m_cond); }
+    int wait(Mutex &mutex);
+    int wait(Mutex &mutex, int millsecs);
     
-    int wait(Mutex &mutex)
-    { return pthread_cond_wait(& m_cond, & mutex.pthreadMutex()); }
-    int wait(Mutex &mutex, int millsecs)
-    { 
-      struct timespec abstime;
-      struct timeval tv;
-      gettimeofday(&tv, 0);
-      tv.tv_sec += millsecs / 1000;
-      tv.tv_usec += 1000 * (millsecs % 1000);
-      if(tv.tv_usec >= 1000000) {
-	tv.tv_sec++;
-	tv.tv_usec -= 1000000;
-      }
-      abstime.tv_sec = tv.tv_sec;
-      abstime.tv_nsec = 1000 * tv.tv_usec;
-      return pthread_cond_timedwait(& m_cond, & mutex.pthreadMutex(),
-				    & abstime);
-    }
+    int wakeAll();
+    int wakeAll(Mutex &mutex);
     
-    int wakeAll() 
-    { return pthread_cond_broadcast(& m_cond); }
-    
-    int wakeAll(Mutex &mutex) 
-    { 
-      mutex.lock();
-      int r = pthread_cond_broadcast(& m_cond); 
-      mutex.unlock();
-      return r;
-    }
-    
-    int wakeOne() 
-    { return pthread_cond_signal(& m_cond); }
-    
-    int wakeOne(Mutex &mutex) 
-    {
-      mutex.lock();
-      int r = wakeOne();
-      mutex.unlock();
-      return r;
-    }
+    int wakeOne();
+    int wakeOne(Mutex &mutex);
     
   private:
     pthread_cond_t m_cond;
   };
+
 }
 
 #endif

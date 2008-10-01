@@ -18,7 +18,7 @@
 
 #include <Radiant/Video1394.hpp>
 
-#include <QApplication>
+#include <QtGui/QApplication>
 
 enum Task {
   TASK_SHOW_CAMERAS,

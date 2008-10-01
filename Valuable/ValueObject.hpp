@@ -16,13 +16,14 @@
 #ifndef VALUABLE_VALUE_OBJECT_HPP
 #define VALUABLE_VALUE_OBJECT_HPP
 
-#include <Valuable/ValueListener.hpp>
-
-#include <Radiant/BinaryData.hpp>
+#include <Nimble/Vector4.hpp>
 
 #include <Patterns/NotCopyable.hpp>
 
-#include <Nimble/Vector4.hpp>
+#include <Radiant/BinaryData.hpp>
+
+#include <Valuable/Export.hpp>
+#include <Valuable/ValueListener.hpp>
 
 #include <string>
 
@@ -32,7 +33,7 @@ namespace Valuable
   class DOMElement;
   class DOMDocument;
 
-  class ValueObject 
+  class VALUABLE_API ValueObject
   {
     public:
       ValueObject();

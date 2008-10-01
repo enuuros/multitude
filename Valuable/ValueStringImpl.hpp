@@ -23,6 +23,7 @@
 #include <Radiant/StringUtils.hpp>
 
 #define STD_EM this->emitChange();
+#define STD_OP this->emitChange(); return *this;
 
 namespace Valuable
 {
@@ -41,7 +42,7 @@ namespace Valuable
   float ValueStringT<T>::asFloat(bool * const ok) const 
   { 
     if(ok) *ok = true; 
-    return atof(m_value.c_str()); 
+    return float(atof(m_value.c_str()));
   }
 
   template<class T>
@@ -81,12 +82,37 @@ namespace Valuable
   // Specializations for wide strings.
 
   template <>
+  ValueStringT<std::wstring>::ValueStringT()
+  : ValueObject()
+  {}
+  
+  template <>
+  ValueStringT<std::wstring>::ValueStringT(HasValues * parent, const std::string & name, std::wstring v, bool transit)
+  : ValueObject(parent, name, transit),
+  m_value(v)
+  {}
+
+  template <>
+  ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const ValueStringT<std::wstring> & i)
+  {
+    m_value = i.m_value;
+    STD_OP
+  }
+
+  template <>
+  ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const std::wstring & i)
+  {
+    m_value = i;
+    STD_OP
+  }
+
+  template <>
   float ValueStringT<std::wstring>::asFloat(bool * const ok) const 
   { 
     if(ok) *ok = true; 
     std::string tmp;
     Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
-    return atof(tmp.c_str()); 
+    return float(atof(tmp.c_str()));
   }
 
   template <>
@@ -154,5 +180,8 @@ namespace Valuable
   }
  
 }
+
+#undef STD_OP
+#undef STD_EN
 
 #endif

@@ -667,11 +667,11 @@ namespace Radiant {
   void ImageConversion::YUV420ToRGBA
   (const VideoImage *, VideoImage * )
   {
+/*
     bool implemented = false;
 
     assert(implemented);
 
-    /*
       long lw = source->m_planes[0].m_linesize;
       long w = source->m_width;
       long h = source->m_height;

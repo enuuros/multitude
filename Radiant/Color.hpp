@@ -30,7 +30,7 @@ namespace Radiant
       integer versions of the functions. For integers the valid range
       is 0-255, while for floating point values it is 0.0-1.0.
    */
-  class MTEXPORT Color : public Nimble::Vector4f
+  class RADIANT_API Color : public Nimble::Vector4f
   {
     public:
       Color();

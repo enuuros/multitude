@@ -15,6 +15,8 @@
 #ifndef LUMINOUS_TASK_HPP
 #define LUMINOUS_TASK_HPP
 
+#include <Luminous/Export.hpp>
+
 #include <Patterns/NotCopyable.hpp>
 
 #include <Radiant/TimeStamp.hpp>
@@ -30,7 +32,7 @@ namespace Luminous
   typedef float Priority;
 
   /// Task is a base class for tasks that can be executed within BGThread. 
-  class Task : Patterns::NotCopyable
+  class LUMINOUS_API Task : Patterns::NotCopyable
   {
   public:
     enum {

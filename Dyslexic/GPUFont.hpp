@@ -15,6 +15,8 @@
 #ifndef DYSLEXIC_GPU_FONT_HPP
 #define DYSLEXIC_GPU_FONT_HPP
 
+#include <Dyslexic/Export.hpp>
+
 #include <Nimble/Matrix3.hpp>
 
 namespace Dyslexic
@@ -22,7 +24,7 @@ namespace Dyslexic
   class CPUFont;
 
   /// A common interface for all fonts that reside on the GPU
-  class MTEXPORT GPUFont
+  class DYSLEXIC_API GPUFont
   {
     public:
       virtual ~GPUFont() {}

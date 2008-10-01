@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_GARBAGE_COLLECTOR_HPP
 #define LUMINOUS_GARBAGE_COLLECTOR_HPP
 
+#include <Luminous/Export.hpp>
+
 #include <set>
 
 namespace Luminous
@@ -26,7 +28,7 @@ namespace Luminous
   /** The objects are represented by simple void pointers. This should
       be enough to find the objects from stogare tables, in particular
       from GLResources. */
-  class GarbageCollector
+  class LUMINOUS_API GarbageCollector
   {
   public:
 

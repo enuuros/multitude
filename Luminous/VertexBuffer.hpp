@@ -2,7 +2,7 @@
  *
  * This file is part of Luminous.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "Luminous.hpp" for authors and more details.
  *
@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_VERTEX_BUFFER_HPP
 #define LUMINOUS_VERTEX_BUFFER_HPP
 
+#include <Luminous/Export.hpp>
+
 #include <GL/glew.h>
 
 #define BUFFER_OFFSET(bytes) ((GLubyte *)0 + (bytes))
@@ -27,7 +29,7 @@ namespace Luminous
   /// BufferObject provides an abstraction for the Buffer Objects (vertex
   /// buffers, index buffers) in OpenGL.
   template<GLenum type>
-    class BufferObject 
+    class LUMINOUS_API BufferObject 
     {
       public:
 
@@ -104,6 +106,15 @@ namespace Luminous
 
   typedef BufferObject<GL_ARRAY_BUFFER> VertexBuffer;
   typedef BufferObject<GL_ELEMENT_ARRAY_BUFFER> IndexBuffer;
+
+#ifdef WIN32
+#ifdef LUMINOUS_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class BufferObject<GL_ARRAY_BUFFER>;
+  template class BufferObject<GL_ELEMENT_ARRAY_BUFFER>;
+#endif
+#endif
+
 }
 
 #endif

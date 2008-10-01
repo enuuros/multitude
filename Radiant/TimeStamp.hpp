@@ -18,7 +18,11 @@
 
 #include <Radiant/Export.hpp>
 
-#include <stdint.h>
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
+#include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
 #include <string>
@@ -30,7 +34,7 @@ namespace Radiant {
      clock: 1.1.1970 the counter was zero. */
 
   /// @todo remove suffix from create* functions
-  class MTEXPORT TimeStamp
+  class RADIANT_API TimeStamp
   {
   public:
     typedef int64_t type;
@@ -97,7 +101,7 @@ namespace Radiant {
     int64_t days() const { return m_val / ticksPerDay(); }
     double  daysD() const { return m_val / (double) ticksPerDay(); }
     int64_t seconds() const { return m_val >> 24; }
-    int32_t fractions() const { return m_val >> 24; }
+    int64_t fractions() const { return m_val >> 24; }
     double secondsD()  const { return m_val / (double) FRACTIONS_PER_SECOND; }
     double subSecondsD() const 
     { return (m_val & 0xFFFFFF) / (double) FRACTIONS_PER_SECOND; }
@@ -115,7 +119,7 @@ namespace Radiant {
 
     static type getTime()
     {
-      struct timeval tv;
+      struct timeeval tv;
       gettimeofday(& tv, 0);
       int64_t tmp = tv.tv_sec;
       tmp <<= 24;
@@ -125,7 +129,16 @@ namespace Radiant {
 
     std::string asString() const {
       time_t t = (m_val >> 24);
+      
+#ifdef WIN32
+      const int   bufSize = 32;
+      char  buf[bufSize] = "";
+      ctime_s(buf, bufSize, & t);
+      return std::string(buf);
+#else
       return std::string(ctime(&t));
+#endif
+
     }
 
   private:

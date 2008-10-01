@@ -15,7 +15,7 @@
 
 #ifndef RESONANT_MODULE_OUT_COLLECT_HPP
 #define RESONANT_MODULE_OUT_COLLECT_HPP
-
+#include <string>
 #include <Resonant/Module.hpp>
 
 #include <vector>

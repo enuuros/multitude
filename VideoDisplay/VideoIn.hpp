@@ -24,13 +24,15 @@
 #include <Radiant/Thread.hpp>
 #include <Radiant/TimeStamp.hpp>
 
+#include <VideoDisplay/Export.hpp>
+
 #include <sys/types.h>
 
 #include <vector>
 
 namespace VideoDisplay {
 
-  class MTEXPORT VideoIn : public Radiant::Thread
+  class VIDEODISPLAY_API VideoIn : public Radiant::Thread
   {
   public:
 

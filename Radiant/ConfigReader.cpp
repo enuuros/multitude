@@ -94,6 +94,11 @@ namespace Radiant {
     return def;
   }
 
+  float Variant::getFloat(float def) const
+  {
+    return (float)getDouble(def);
+  } 
+
   int Variant::getInt(int def) const
   {
     const char * str = m_var.c_str();
@@ -113,6 +118,11 @@ namespace Radiant {
       return m_var;
 
     return def;
+  }
+
+  const std::string & Variant::getString() const
+  {
+    return m_var;
   }
 
   /** Reads a number of floats from the string. Returns the number of
@@ -135,7 +145,7 @@ namespace Radiant {
 
       // printf("Val %d = %lf ", i, tmp);
       
-      *p++ = tmp;
+      *p++ = float(tmp);
       i++;
     }
     
@@ -169,6 +179,11 @@ namespace Radiant {
     return i;
   }
 
+  void Variant::set(const std::string &s)
+  {
+    m_var = s;
+  }
+
   Variant::operator int () const
   {
     return getInt(0);
@@ -179,9 +194,29 @@ namespace Radiant {
     return getDouble(0.0);
   }
 
+  Variant::operator const std::string & () const
+  {
+    return m_var;
+  }
+
   void Variant::dump(std::ostream & os) const
   {
     os << m_var;
+  }
+
+  bool Variant::isEmpty() const 
+  {
+    return m_var.size() ? m_var[0] == '\0' : true;
+  }
+
+  bool Variant::hasDocumentation() const 
+  {
+    return m_doc.size() ? m_doc[0] != '\0' : false;
+  }
+    
+  const std::string & Variant::documentation() const
+  {
+    return m_doc;
   }
 
   /////////////////////////////////////////////////////////////////////////////

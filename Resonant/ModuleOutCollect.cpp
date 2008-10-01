@@ -92,7 +92,8 @@ namespace Resonant {
     assert((int) m_interleaved.size() >= (n * chans));
 
     // Set to zero
-    bzero( & m_interleaved[0], sizeof(float) * n * chans);
+    if(!m_interleaved.empty())
+      bzero( & m_interleaved[0], sizeof(float) * n * chans);
     
     for(uint i = 0; i < m_map.size(); i++) {
 

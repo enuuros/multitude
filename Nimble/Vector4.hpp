@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,20 +16,21 @@
 #ifndef NIMBLE_VECTOR4T_HPP
 #define NIMBLE_VECTOR4T_HPP
 
-#include <iostream>
-
+#include <Nimble/Export.hpp>
 #include <Nimble/Vector3.hpp>
+
+#include <iostream>
 
 namespace Nimble {
 
   template <class T>
-  class Vector4T
+  class NIMBLE_API Vector4T
   {
   public:
     T		x;										// x-component of the vector
     T		y;										// y-component of the vector
     T		z;										// z-component of the vector
-    T       w;
+    T   w;
     Vector4T	()					       {}
     Vector4T	(T cx, T cy, T cz, T cw)                       { x = cx;       y = cy;	     z = cz;      w =  cw; }
     template <class S> Vector4T(const Vector4T<S>& v)	       { x = (T)v.x;   y = (T)v.y;  z = (T)v.z;  w = (T) v.w; }
@@ -44,13 +45,12 @@ namespace Nimble {
     Vector4T&	operator/=  (T s)		               { s = 1.0/s; x = (x*s), y = (y*s); z = (z*s); w = (w*s); return *this; }
     bool		isOne	    (void) const		       { return (x == 1.0f && y == 1.0f && z == 1.0f && w == 1.0f); }
     bool		isZero	    (void) const		       { return (x == 0.0f && y == 0.0f && z == 0.0f && w == 0.0f); }
-    double	length	    (void) const		       { return sqrt(x*x+y*y+z*z+w*w); }
+    double	length	    (void) const		       { return sqrt(double(x*x+y*y+z*z+w*w)); }
     double	lengthSqr   (void) const		       { return x*x+y*y+z*z+w*w; }
     Vector4T&	normalize   (double len = 1.0)		       { double l = length(); if (l!=0.0) *this *= (len/l); return *this; }
-    Vector4T&	normalize3   (double len = 1.0)		       { vector3().normalize(); return *this; }
+    Vector4T&	normalize3   (double len = 1.0)		       { vector3().normalize(len); return *this; }
     Vector4T&	scale		(const Vector4T& v)	       { x *= v.x; y *= v.y; z *= v.z; w *= v.w; return *this; }
     Vector4T&	descale		(const Vector4T& v)	       { x /= v.x; y /= v.y; z /= v.z; w /= v.w; return *this; }
-
 
     /// Returns a vector with components reordered.
     Vector4T    shuffle         (int i1, int i2, int i3, int i4) const { return Vector4T(get(i1), get(i2), get(i3), get(i4)); }
@@ -61,7 +61,7 @@ namespace Nimble {
     void 	        make(T cx, T cy, T cz, T cw)                   { x = cx; y = cy; z = cz; w = cw; }
 
     T *           data() { return &x; }
-    const T *      data() const { return &x; }
+    const T *     data() const { return &x; }
 
     T&            get(int i)        { return ((T*)this)[i]; }
     const T&      get(int i) const  { return ((T*)this)[i]; }
@@ -90,12 +90,21 @@ namespace Nimble {
   template <class T> inline	Vector4T<T>	operator/	(const Vector4T<T>& v, const double s)		{ double r = 1.0/s; return v*r; }
   template <class T> inline	Vector4T<T>	operator-	(const Vector4T<T>& v)						{ return Vector4T<T>(-v.x, -v.y, -v.z, -v.w); }
 
-
-  typedef Vector4T<unsigned char>   Vector4ub;
-  typedef Vector4T<float>  Vector4; 
-  typedef Vector4T<float>  Vector4f;
+  typedef Vector4T<float> Vector4; 
+  typedef Vector4T<float> Vector4f;
+  typedef Vector4T<unsigned char> Vector4ub;
+  typedef Vector4T<int> Vector4i;
   typedef Vector4T<double> Vector4d;
-  typedef Vector4T<int>    Vector4i;
+
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Vector4T<float>;
+  template class Vector4T<unsigned char>;
+  template class Vector4T<int>;
+  template class Vector4T<double>;
+#endif
+#endif
 
 } // namespace
 

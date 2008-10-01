@@ -16,7 +16,11 @@
 #ifndef RESONANT_AUDIO_DEVICE_HPP
 #define RESONANT_AUDIO_DEVICE_HPP
 
+#ifdef WIN32
+#include <WinPort.h>
+#else
 #include <alsa/asoundlib.h>
+#endif
 
 #include <string>
 #include <vector>

@@ -19,6 +19,7 @@
 #include <Patterns/NotCopyable.hpp>
 
 #include <Radiant/Config.hpp>
+#include <Radiant/Export.hpp>
 
 #include <pthread.h>
 
@@ -27,7 +28,7 @@ namespace Radiant {
 #ifdef RADIANT_HAVE_PTHREAD
 
   /** Mutex class. The mutex must be initialized explicitly. */
-  class MTEXPORT Mutex : public Patterns::NotCopyable
+  class RADIANT_API Mutex : public Patterns::NotCopyable
   {
   public:
     ///
@@ -98,7 +99,7 @@ namespace Radiant {
 #endif
 
   /// Mutex that initializes automatically.
-  class MTEXPORT MutexAuto : public Mutex
+  class RADIANT_API MutexAuto : public Mutex
   {
   public:
     /// Calls init.

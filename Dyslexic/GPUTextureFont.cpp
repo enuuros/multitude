@@ -49,7 +49,7 @@ namespace Dyslexic
      work in all conditions (sigh). */
   inline GLuint nextSize(GLuint in)
   {
-    if(in & 0x3 == 0)
+    if((in & 0x3) == 0)
       return in;
     
     return in + 4 - (in & 0x3);
@@ -119,7 +119,9 @@ namespace Dyslexic
     
     int totalMemory = m_texWidth * m_texHeight;
     std::vector<uint8_t> bytes(totalMemory);
-    bzero( & bytes[0], totalMemory);
+
+    if(!bytes.empty())
+      bzero( & bytes[0], totalMemory);
 
     GLuint texID;
     glGenTextures(1, & texID);

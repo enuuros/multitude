@@ -17,7 +17,9 @@
 
 #include <Luminous/Luminous.hpp>
 
-#include <QApplication>
+#include <Radiant/Trace.hpp>
+
+#include <QtGui/QApplication>
 
 int main(int argc, char ** argv)
 {

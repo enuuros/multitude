@@ -28,7 +28,7 @@ int main(int , char ** )
 	glLoadIdentity();
 
 	Magick::Image image;
-	image.read("test.jpg");
+	image.read("..\\test.jpg");
 
 	Luminous::Texture2D * tex = Luminous::Texture2D::fromImage(image);
 	tex->bind();

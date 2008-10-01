@@ -2,7 +2,7 @@
  *
  * This file is part of Radiant.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "Radiant.hpp" for authors and more details.
  *
@@ -16,18 +16,20 @@
 #ifndef RADIANT_FIXED_STR_HPP
 #define RADIANT_FIXED_STR_HPP
 
-#include <stdio.h>
-#include <cassert>
-
 #include <Nimble/Matrix3.hpp>
 #include <Nimble/Vector4.hpp>
+
+#include <Radiant/Export.hpp>
+
+#include <stdio.h>
+#include <cassert>
 
 namespace Radiant {
 
   /** Template class for fixed-capacity strings. */
 
   template <int N>
-  class FixedStrT
+  class RADIANT_API FixedStrT
   {
   public:
 
@@ -55,7 +57,7 @@ namespace Radiant {
     }
     ~FixedStrT() {}
 
-    void writeFloats(float * ptr, int n, int digits)
+    void writeFloats(const float * ptr, int n, int digits)
     {
       char tmp[6];
 
@@ -97,10 +99,18 @@ namespace Radiant {
       return * this;
     }
 
-  private:
+  protected:
     char m_buf[N+1];
   };
 
+#ifdef WIN32
+#ifdef RADIANT_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class FixedStrT<32>;
+  template class FixedStrT<256>;
+  template class FixedStrT<512>;
+#endif
+#endif
   
 }
 

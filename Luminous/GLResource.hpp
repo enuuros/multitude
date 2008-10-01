@@ -16,7 +16,7 @@
 #ifndef LUMINOUS_GLRESOURCE_HPP
 #define LUMINOUS_GLRESOURCE_HPP
 
-#include <Radiant/Export.hpp>
+#include <Luminous/Export.hpp>
 
 namespace Luminous
 {
@@ -110,7 +110,7 @@ namespace Luminous
       };
      </PRE>
   */
-  class MTEXPORT GLResource
+  class LUMINOUS_API GLResource
   {
   public:
     friend class GLResources;

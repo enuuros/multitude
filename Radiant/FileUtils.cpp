@@ -14,7 +14,9 @@
  */
 
 #include "FileUtils.hpp"
+#include "PlatformUtils.hpp"
 #include "StringUtils.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -41,11 +43,7 @@ namespace Radiant
 
     bool fileReadable(const char* filename)
     {
-      FILE * f = fopen(filename, "r");
-      if(!f)
-        return false;
-      fclose(f);
-      return true;
+      return PlatformUtils::fileReadable(filename);
     }
 
     bool fileAppendable(const char* filename)
@@ -132,10 +130,7 @@ namespace Radiant
     {
       StringList pathList;
       split(paths, ";", pathList, true);
-      if(pathList.size() == 1) {
-	pathList.clear();
-        split(paths, ":", pathList, true);
-      }
+
       for(StringList::iterator it = pathList.begin();
 	  it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
@@ -153,8 +148,6 @@ namespace Radiant
     {
       StringList pathList;
       split(paths, ";", pathList, true);
-      if(pathList.size() == 1)
-        split(paths, ":", pathList, true);
 
       for(StringList::iterator it = pathList.begin();
 	  it != pathList.end(); it++) {

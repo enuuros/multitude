@@ -2,7 +2,7 @@
  *
  * This file is part of Radiant.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "Radiant.hpp" for authors and more details.
  *
@@ -34,7 +34,12 @@ namespace Radiant {
   {
     time_t secs = t.seconds();
     struct tm tms;
+
+#ifdef WIN32
+    localtime_s(& tms, & secs);
+#else
     localtime_r(& secs, & tms);
+#endif
 
     m_year     = tms.tm_year + 1900;
     m_month    = tms.tm_mon;
@@ -43,7 +48,7 @@ namespace Radiant {
     m_hour     = tms.tm_hour;
     m_minute   = tms.tm_min;
     m_second   = tms.tm_sec;
-    m_summerTime = tms.tm_isdst;
+    m_summerTime = (tms.tm_isdst == 0) ? false : true;
   }
 
   DateTime::~DateTime()

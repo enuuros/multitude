@@ -15,6 +15,8 @@
 #ifndef RADIANT_PLATFORM_UTILS_HPP
 #define RADIANT_PLATFORM_UTILS_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <string>
 
 namespace Radiant 
@@ -23,18 +25,25 @@ namespace Radiant
 
   namespace PlatformUtils
   {
+    
     /// Return absolute path to the executable that was used to launch the process.
-    std::string getExecutablePath();
+    RADIANT_API std::string getExecutablePath();
 
     /// Return absolute path to the user's home directory.
-    std::string getUserHomePath();
+    RADIANT_API std::string getUserHomePath();
 
     /// Return path to the global data directory of the given module.
-    std::string getModuleGlobalDataPath(const char * module, bool isapplication);
-    std::string getModuleUserDataPath(const char * module, bool isappliction);
+    RADIANT_API std::string getModuleGlobalDataPath(const char * module, bool isapplication);
+
+    /// Return path to the user data directory of the given module.
+    RADIANT_API std::string getModuleUserDataPath(const char * module, bool isapplication);
+
+    /// Determine whether file or directory is readable.
+    RADIANT_API bool fileReadable(const char * filename);
 
     /// Open a dynamic library, return 0 if failed.
-    void * openPlugin(const char * path);
+    RADIANT_API void * openPlugin(const char * path);
+
   }
 
 }

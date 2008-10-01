@@ -15,15 +15,13 @@
 #ifndef PATTERNS_NOTCOPYABLE_HPP
 #define PATTERNS_NOTCOPYABLE_HPP
 
-
-#include <Radiant/Export.hpp>
-
+#include <Patterns/Export.hpp>
 
 namespace Patterns
 {
   /// Base class for classes that cannot be copied. By inheriting this
   /// class you can disable copying of your classes.
-  class MTEXPORT NotCopyable
+  class PATTERNS_API NotCopyable
   {
     protected:
       NotCopyable() {}
@@ -32,7 +30,6 @@ namespace Patterns
     private:
       NotCopyable(const NotCopyable &);
       const NotCopyable & operator = (const NotCopyable &);
-
   };
 
 }

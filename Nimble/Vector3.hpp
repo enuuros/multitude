@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,6 +16,7 @@
 #ifndef NIMBLE_VECTOR3T_HPP
 #define NIMBLE_VECTOR3T_HPP
 
+#include <Nimble/Export.hpp>
 #include <Nimble/Vector2.hpp>
 
 #include <iostream>
@@ -25,7 +26,7 @@ namespace Nimble {
   /** Three-dimensional vector class for 3D mathematics. */
 
   template <class T>
-  class Vector3T
+  class NIMBLE_API Vector3T
   {
   public:
     T		x;										// x-component of the vector
@@ -61,7 +62,8 @@ namespace Nimble {
 
     bool		isOne		(void) const			   { return (x == 1.0f && y == 1.0f && z == 1.0f); }
     bool		isZero		(void) const			   { return (x == 0.0f && y == 0.0f && z == 0.0f); }
-    bool          isFinite        (void) const { return finite(x) && finite(y) && finite(z); }
+/// @todo Replace this - finite() is obsolete
+//  bool isFinite (void) const { return finite(x) && finite(y) && finite(z); }
     double	length		(void) const			   { return Math::Sqrt(x*x+y*y+z*z); }
     double	lengthSqr	(void) const			   { return x*x+y*y+z*z; }
     Vector3T&	negate		(void)				   { x=-x; y=-y; z=-z; return *this; }
@@ -99,12 +101,23 @@ namespace Nimble {
   };
 
   typedef Vector3T<float> Vector3;
-  typedef Vector3T<int> Vector3i;
   typedef Vector3T<float> Vector3f;
+  typedef Vector3T<unsigned char> Vector3ub;
+  typedef Vector3T<int> Vector3i;
   typedef Vector3T<double> Vector3d;
 
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Vector3T<float>;
+  template class Vector3T<unsigned char>;
+  template class Vector3T<int>;
+  template class Vector3T<double>;
+#endif
+#endif
+
   template <class T> 
-  inline Nimble::Vector3T<T> operator* (T s, const Nimble::Vector3T<T>& v)
+  Nimble::Vector3T<T> operator* (T s, const Nimble::Vector3T<T>& v)
   { return v * s; }
   
 } // namespace
@@ -162,4 +175,3 @@ inline std::istream &operator>>(std::istream &is, Nimble::Vector3T<T> &t)
 using Nimble::operator *;
 
 #endif
-

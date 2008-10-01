@@ -49,7 +49,9 @@ namespace Dyslexic
   FT_Library * freetype()
   {
     if(!g_library) {
+#ifndef NDEBUG
       bool result = initialize();
+#endif
       assert(result);
     }
 

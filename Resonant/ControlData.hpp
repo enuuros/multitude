@@ -18,11 +18,20 @@
 
 #include <Radiant/BinaryData.hpp>
 
+#include <Resonant/Export.hpp>
+
+#include <string>
+
 namespace Resonant {
 
-  
-  class ControlData : public Radiant::BinaryData
-  {};
+  class RESONANT_API ControlData : public Radiant::BinaryData
+  {
+
+  public:
+
+      ControlData();
+  };
+
 }
 
 #endif

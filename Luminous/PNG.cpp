@@ -14,7 +14,7 @@
  */
 
 #include <Luminous/Image.hpp>
-#include <png.h>
+#include <png/png.h>
 #include <iostream>
 
 using namespace std;

@@ -30,7 +30,7 @@ namespace Nimble {
       m_extra(0, 0, 0, 0),
       m_containedPixelCount(m_width * m_height),
       m_version(0)
-  { 
+  {
     m_matrix.identity();
     m_matrixOut.identity();
     m_matrixExtension.identity();
@@ -56,7 +56,7 @@ namespace Nimble {
     int i;
     
     for(i = 0; i < 8; i++)
-      corners[i] = strtod(ptr, & ptr);
+      corners[i] = float(strtod(ptr, & ptr));
     
     setVertices(vertices, w, h, dpyw, dpyh, dpyx, dpyy);
   }

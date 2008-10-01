@@ -29,7 +29,7 @@
 
 //int __cdecl gettimeofday(struct timeval *__restrict__ tp,
 //			 void *__restrict__ tzp __attribute__((unused)))
-int __cdecl gettimeofday(struct timeval *tp, void *tzp)
+int __cdecl gettimeofday(struct timeeval *tp, void *tzp)
 {
   union {
     unsigned long long ns100; /*time since 1 Jan 1601 in 100ns units */

@@ -12,12 +12,14 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "StringUtils.hpp"
 
 #include <sstream>
 #include <cassert>
 
 #ifdef WIN32
+#include <windows.h>
 #include <WinPort.h>
 #endif
 
@@ -333,6 +335,19 @@ namespace Radiant
       return yes ? "yes" : "no";
     }
 
+#ifdef WIN32
+    string getLastErrorMessage()
+    {
+      const int   errStrSize = 1024;
+      char  szErrStr[errStrSize] = "";
+      FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 0,
+        GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), szErrStr, errStrSize, 0);
+
+      return string(szErrStr);
+    }
+#endif
+
   }
 
 }
+

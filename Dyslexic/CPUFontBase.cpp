@@ -37,6 +37,21 @@ namespace Dyslexic
     delete m_face;
   }
 
+  Face * CPUFontBase::face()
+  {
+    return m_face;
+  }
+
+  const Size & CPUFontBase::size() const
+  {
+    return m_size;
+  }
+
+  int CPUFontBase::error() const
+  {
+    return m_error;
+  }
+
   void CPUFontBase::detach(GPUFontBase * gpuFont)
   {
     assert(gpuFont->cpuFont() == this);
@@ -102,7 +117,7 @@ namespace Dyslexic
 
   float CPUFontBase::lineHeight() const
   {
-    return m_size.charSize();
+    return float(m_size.charSize());
   }
 
   float CPUFontBase::ascender() const

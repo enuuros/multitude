@@ -56,7 +56,7 @@ namespace Radiant {
 
     bzero( & server_address, sizeof(server_address));
     server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(port);
+    server_address.sin_port = htons(unsigned short(port));
 
     if(!host || strlen(host) == 0)
       server_address.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -117,18 +117,20 @@ namespace Radiant {
     poll(&pfd, 1, waitMicroSeconds / 1000);
     return pfd.revents & POLLIN;
 #else
-	// -- emulate using select()
-	struct timeval timeout;
-	timeout.tv_sec = 0;
-	timeout.tv_usec = waitMicroSeconds;
-	fd_set readfds;
-	FD_ZERO(&readfds);
-	FD_SET(m_fd, &readfds);
-	int status = select(m_fd, &readfds, 0,0, &timeout);
-	if (status < 0)
-		return false;
-	char data;
-	return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
+	  // -- emulate using select()
+	  struct timeval timeout;
+	  timeout.tv_sec = 0;
+	  timeout.tv_usec = waitMicroSeconds;
+	  fd_set readfds;
+	  FD_ZERO(&readfds);
+#pragma warning (disable:4127 4389)  
+	  FD_SET(m_fd, &readfds);
+#pragma warning (default:4127 4389)
+	  int status = select(m_fd, &readfds, 0,0, &timeout);
+	  if (status < 0)
+		  return false;
+	  char data;
+	  return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
 #endif
   }
 

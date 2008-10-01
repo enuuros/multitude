@@ -18,9 +18,11 @@
 
 #define PTHREAD
 
-#include <pthread.h>
-
 #include <Patterns/NotCopyable.hpp>
+
+#include <Radiant/Export.hpp>
+
+#include <pthread.h>
 
 namespace Radiant {
 
@@ -33,7 +35,7 @@ namespace Radiant {
       At the moment there is only POSIX-threads -based implementation,
       that works on various UNIX-like systems.
       */
-  class MTEXPORT Thread : public Patterns::NotCopyable
+  class RADIANT_API Thread : public Patterns::NotCopyable
   {
   public:
     /// Thread id type.
@@ -149,7 +151,7 @@ namespace Radiant {
   /////////////////////////////////////////////////////////////////////////////
 
   /// A simple thread test that does nothing important.
-  class ThreadTest : public Thread
+  class RADIANT_API ThreadTest : public Thread
   {
   public:
     ThreadTest();

@@ -15,6 +15,7 @@
 #ifndef PATTERNS_FACTORY_HPP
 #define PATTERNS_FACTORY_HPP
 
+#include <Patterns/Export.hpp>
 #include <Patterns/NotCopyable.hpp>
 #include <Patterns/Singleton.hpp>
 
@@ -31,7 +32,7 @@ namespace Patterns
       factories that create objects that inherit from the basic
       template type "T". */
   template<class T>
-  class Factory : NotCopyable
+  class PATTERNS_API Factory : NotCopyable
   {
     public:
       /// Produce a new object, using a factory object that matches the name

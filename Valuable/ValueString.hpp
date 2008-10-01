@@ -16,9 +16,10 @@
 #ifndef VALUABLE_VALUE_STRING_HPP
 #define VALUABLE_VALUE_STRING_HPP
 
-#include <Valuable/ValueNumeric.hpp>
-
 #include <Radiant/StringUtils.hpp>
+
+#include <Valuable/Export.hpp>
+#include <Valuable/ValueNumeric.hpp>
 
 #define STD_OP this->emitChange(); return *this;
 
@@ -28,7 +29,7 @@ namespace Valuable
 {
 
   template<class T>
-  class ValueStringT : public ValueObject
+  class VALUABLE_API ValueStringT : public ValueObject
   {
     public:
       ValueStringT() : ValueObject() {}
@@ -57,7 +58,12 @@ namespace Valuable
   };
 
   typedef ValueStringT<std::string> ValueString;  
-  typedef ValueStringT<std::wstring> ValueWString;  
+  typedef ValueStringT<std::wstring> ValueWString;
+
+  // Instantiation of template classes
+  // See ValueStringImpl.hpp for std::wstring member specializations
+  template class ValueStringT<std::string>;
+
 }
 
 #undef STD_OP

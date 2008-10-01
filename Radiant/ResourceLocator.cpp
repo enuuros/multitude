@@ -24,6 +24,8 @@
 namespace Radiant
 {
 
+  std::string   ResourceLocator::separator = ";";
+
   ResourceLocator::ResourceLocator()
   {}
 
@@ -40,9 +42,9 @@ namespace Radiant
       std::ostringstream os;
 
       if(front)
-	os << path << ":" << m_paths;
+	os << path << separator << m_paths;
       else
-	os << m_paths << ":" << path;
+	os << m_paths << separator << path;
       
       m_paths = os.str();
     }
@@ -56,7 +58,7 @@ namespace Radiant
     std::string p2 =
       PlatformUtils::getModuleGlobalDataPath(module.c_str(), false);
 
-    addPath(p1 + ":" + p2, front);
+    addPath(p1 + separator + p2, front);
   }
 
   std::string ResourceLocator::locate(const std::string & file) const

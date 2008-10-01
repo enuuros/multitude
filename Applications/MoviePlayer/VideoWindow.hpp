@@ -29,8 +29,8 @@
 
 #include <VideoDisplay/ShowGL.hpp>
 
-#include <QGLWidget>
-#include <QTimer>
+#include <QtOpenGL/QGLWidget>
+#include <QtCore/QTimer>
 
 class VideoWindow : public QGLWidget
 {

@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,8 +16,10 @@
 #ifndef NIMBLE_MATRIX2T_HPP
 #define NIMBLE_MATRIX2T_HPP
 
+#include <Nimble/Export.hpp>
 #include <Nimble/Math.hpp>
 #include <Nimble/Vector2.hpp>
+
 #include <assert.h>
 
 namespace Nimble {
@@ -25,7 +27,7 @@ namespace Nimble {
   /// 2x2 row-major matrix class
   /** The rows of this matrix are of type Nimble::Vector2T<T>. */
   template <class T>
-  class Matrix2T
+  class NIMBLE_API Matrix2T
   {
   public:
     /// Create a matrix without initializing the elements
@@ -37,8 +39,8 @@ namespace Nimble {
     { m[0] = r1; m[1] = r2; }
     /// Empty destructor
     /** This method is defined because otherwise so compilers might
-	complain. We expect that a decent compiler knows how to
-	eliminate this function. */
+	  complain. We expect that a decent compiler knows how to
+	  eliminate this function. */
     ~Matrix2T() {}
 
     void make(T v11, T v12, T v21, T v22) { m[0].make(v11, v12); m[1].make(v21, v22); }
@@ -60,7 +62,7 @@ namespace Nimble {
     /// Returns a pointer to the matrix data.
     T *                data() { return m[0].data(); }
     /// Returns a constant pointer to the matrix data.
-    const T *           data() const { return m[0].data(); }
+    const T *          data() const { return m[0].data(); }
 
     /// Transpose this matrix
     void               transpose()            { swap(m[0][1],m[1][0]); }
@@ -72,17 +74,17 @@ namespace Nimble {
     /// Create an identity matrix
     void               identity()             { m[0].make(1.0, 0.0); m[1].make(0.0, 1.0);}
     /// Create a rotation matrix
-    void               rotate(T);
+    inline void        rotate(T);
     /// Create a scaling matrix
     void               scale(T s)             { m[0].make(s, 0.0); m[1].make(0.0, s); }
 
-    void               add(T v) { m[0][0]+=v;m[0][1]+=v;m[1][0]+=v;m[1][1]+=v; }
+    void               add(T v)        { m[0][0]+=v;m[0][1]+=v;m[1][0]+=v;m[1][1]+=v; }
 
     inline Matrix2T inverse() const;
 
-    inline float det() const { return m[0][0]*m[1][1] - m[0][1] * m[1][0]; }
+    float det() const                  { return m[0][0]*m[1][1] - m[0][1] * m[1][0]; }
 
-    inline Matrix2T operator *= (T s) { m[0] *= s; m[1] *= s; return * this; }
+    Matrix2T operator *= (T s)         { m[0] *= s; m[1] *= s; return * this; }
 
     /// Returns the number of rows in this matrix type
     static int         rows() { return 2; }
@@ -92,14 +94,15 @@ namespace Nimble {
     /// Returns a rotation matrix
     static Matrix2T rotation(T r) { T c = Math::Cos(r); T s = Math::Sin(r); return Matrix2T(c, -s, s, c); }
     /// Returns a scaling matrix
-    static Matrix2T scaling(T s) { Matrix2T m; m.identity(); m.set(0, 0, s); m.set(1, 1, s); return m; }
+    static Matrix2T scaling(T s)  { Matrix2T m; m.identity(); m.set(0, 0, s); m.set(1, 1, s); return m; }
     
   private:
-    static void swap(T &a, T& b);
-    Vector2T<T> m[2];
-    };
+    inline static void swap(T &a, T& b);
 
-    template <class T>
+    Vector2T<T> m[2];
+  };
+
+  template <class T>
   inline void Matrix2T<T>::swap(T &a, T& b)
   {
     T t = a;
@@ -187,6 +190,14 @@ namespace Nimble {
   }
 
   typedef Matrix2T<float> Matrix2;
+  typedef Matrix2T<float> Matrix2f;
+
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Matrix2T<float>;
+#endif
+#endif
 
 }
 
@@ -208,4 +219,3 @@ inline Nimble::Matrix2T<T> mulColByRowVector
 
 
 #endif
-

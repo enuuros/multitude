@@ -17,15 +17,16 @@
 #ifndef LUMINOUS_MULTIHEAD_HPP
 #define LUMINOUS_MULTIHEAD_HPP
 
+#include <Luminous/Export.hpp>
+#include <Luminous/GlKeyStone.hpp>
+
 #include <Nimble/Rect.hpp>
 #include <Nimble/Vector4.hpp>
 
-#include <Luminous/GLKeyStone.hpp>
+#include <Radiant/RefPtr.hpp>
 
 #include <Valuable/ValueString.hpp>
 #include <Valuable/ValueFloat.hpp>
-
-#include <Radiant/RefPtr.hpp>
 
 #include <vector>
 
@@ -35,7 +36,7 @@ namespace Luminous {
   using Nimble::Vector2f;
   using Nimble::Vector2i;
   using Nimble::Vector4f;
-  using Radiant::RefPtr;
+//  using Radiant::RefPtr;
 
   /// Class for managing information on multiple OpenGL vindows/viewports.
   /** This class stores information about the layout of multiple
@@ -53,10 +54,10 @@ namespace Luminous {
       class Area : public Valuable::HasValues
     {
       public:
-        Area();
-        virtual ~Area();
+        LUMINOUS_API Area();
+        LUMINOUS_API virtual ~Area();
 
-        bool deserializeXML(Valuable::DOMElement element);
+        LUMINOUS_API bool deserializeXML(Valuable::DOMElement element);
 
         void setGeometry(int x, int y, int w, int h, bool copyToGraphics = true)
         {
@@ -87,8 +88,8 @@ namespace Luminous {
 
         float maxSeam() { return m_seams.asVector().maximum(); }
 
-        void applyGlState();
-        void cleanEdges();
+        LUMINOUS_API void applyGlState();
+        LUMINOUS_API void cleanEdges();
 
         virtual const char * const type() const { return "area"; }
 
@@ -132,7 +133,7 @@ namespace Luminous {
           false.
           @return The vector in graphics coordinates.
           */
-        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & insideArea);
+        LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & insideArea);
 
         int active() const { return m_active.asInt(); }
 
@@ -158,10 +159,10 @@ namespace Luminous {
       /// One OpenGL window.
       /** A window is responsible for one OpenGL context. */
       class Window : public Valuable::HasValues
-    {
+      {
       public:
-        Window();
-        ~Window();
+        LUMINOUS_API Window();
+        LUMINOUS_API ~Window();
 
         const char * const type() const { return "window"; }
 
@@ -177,14 +178,14 @@ namespace Luminous {
           area, and automatially changes the size of the area to match
           the area of the window. */
 
-        void resizeEvent(Vector2i size);
+        LUMINOUS_API void resizeEvent(Vector2i size);
 
         /// Number of areas that this window holds
         unsigned areaCount() const { return m_areas.size(); }
         /// Get one of the areas
         Area & area(unsigned i) { return * m_areas[i].ptr(); }
 
-        void setSeam(float seam);
+        LUMINOUS_API void setSeam(float seam);
 
         void addArea(Area * a) { m_areas.push_back(a); }
 
@@ -204,16 +205,16 @@ namespace Luminous {
           @param convOk set to true or false depending on whether the 
           conversion could be carried out.
           */
-        Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk);
+        LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk);
 
         /// Should the window be frameless
-        bool frameless() const { return m_frameless.asInt(); }
+        bool frameless() const { return ((m_frameless.asInt() == 0) ? false : true); }
         /// Should the window be full-screen
-        bool fullscreen() const { return m_fullscreen.asInt(); }
+        bool fullscreen() const { return ((m_fullscreen.asInt() == 0) ? false : true); }
         /// Should the window be resizeable
-        bool resizeable() const { return m_resizeable.asInt(); }
+        bool resizeable() const { return ((m_resizeable.asInt() == 0) ? false : true); }
 
-        void setPixelSizeCm(float sizeCm);
+        LUMINOUS_API void setPixelSizeCm(float sizeCm);
 
       protected:
         virtual bool readElement(Valuable::DOMElement ce);
@@ -226,45 +227,45 @@ namespace Luminous {
         /// Pixel size in centimeters
         float      m_pixelSizeCm;
 
-        std::vector<RefPtr<Area> > m_areas;
+        std::vector<Radiant::RefPtr<Area> > m_areas;
     };
 
-      MultiHead();
-      virtual ~MultiHead();
+      LUMINOUS_API MultiHead();
+      LUMINOUS_API virtual ~MultiHead();
 
     /// The number of areas
-    unsigned areaCount();
+    LUMINOUS_API unsigned areaCount();
     /// Access the areas
     /** This method traverses all the windows to find the area with
 	given index. */
-    Area & area(unsigned i, Window ** winptr = 0);
+    LUMINOUS_API Area & area(unsigned i, Window ** winptr = 0);
       /// Create 1 window with 1 area.
-      void makeSingle(int x, int y, int w, int h);
+      LUMINOUS_API void makeSingle(int x, int y, int w, int h);
       /// Create 1 window with 2 areas horizontally side by side.
-      void makeDouble(int x, int y, int w, int h, float seam);    
+      LUMINOUS_API void makeDouble(int x, int y, int w, int h, float seam);    
       /// Create 1 window with 4 rotated areas
       /** This is useful for making a setup with four
         projectors/displays that are aligned in portrait mode. */
-      void makeQuadSideways(int x, int y, int w, int h, float seam);
+      LUMINOUS_API void makeQuadSideways(int x, int y, int w, int h, float seam);
 
       /// The number of windows
       unsigned windowCount() const { return m_windows.size(); }
       /// Access one of the windows
-    Window & window(unsigned i);
+    LUMINOUS_API Window & window(unsigned i);
 
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }
     
-      float seam();
-      void setSeam(float seam);
+      LUMINOUS_API float seam();
+      LUMINOUS_API void setSeam(float seam);
 
       /** Total width of the display area, in graphics pixels. */
-      int width();
+      LUMINOUS_API int width();
       /** Total height of the display area, in graphics pixels. */
-      int height();
+      LUMINOUS_API int height();
 
-      bool deserializeXML(Valuable::DOMElement element);
+      LUMINOUS_API bool deserializeXML(Valuable::DOMElement element);
       
       void addWindow(Window * w) { m_windows.push_back(w); }
 
@@ -274,7 +275,7 @@ namespace Luminous {
     protected:
       virtual bool readElement(Valuable::DOMElement ce);
 
-      std::vector<RefPtr<Window> > m_windows;
+      std::vector<Radiant::RefPtr<Window> > m_windows;
       Valuable::ValueFloat m_widthcm;
     bool m_edited;
   };

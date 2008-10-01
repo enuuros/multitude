@@ -31,11 +31,13 @@
     </UL>
  */
 
+#include <Valuable/Export.hpp>
+
 namespace Valuable
 {
 
-  void initialize();
-  void terminate();
+  void VALUABLE_API initialize();
+  void VALUABLE_API terminate();
 
 }
 

@@ -16,6 +16,8 @@
 #ifndef RADIANT_CONFIG_READER_HPP
 #define RADIANT_CONFIG_READER_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <string>
 #include <map>
 
@@ -36,7 +38,7 @@ namespace Radiant {
       Kontkanen)
   */
 
-  class Variant
+  class RADIANT_API Variant
   {
   public:
 
@@ -53,28 +55,26 @@ namespace Radiant {
 
     operator int () const;
     operator double () const;
-    operator const std::string & () const { return m_var; }
+    operator const std::string & () const;
 
     double              getDouble(double def = 0.0f) const;
-    float               getFloat(float def = 0.f) const { return (float)getDouble(def); } 
+    float               getFloat(float def = 0.f) const;
     int                 getInt(int def = 0) const;
     const std::string & getString(const std::string & def) const;
-    const std::string & getString() const { return m_var; }
+    const std::string & getString() const;
 
     int                 getFloats(float *, int);
     int                 getDoubles(double *, int);
 
-    void                set(const std::string &s) { m_var = s; }
+    void                set(const std::string &s);
 
     void                dump(std::ostream& os) const;
 
-    bool                isEmpty() const 
-    { return m_var.size() ? m_var[0] == '\0' : true; }
+    bool                isEmpty() const;
 
-    bool                hasDocumentation() const 
-    { return m_doc.size() ? m_doc[0] != '\0' : false; }
+    bool                hasDocumentation() const;
     
-    const std::string & documentation() const { return m_doc; }
+    const std::string & documentation() const;
 
   private:
     std::string m_var;
@@ -114,7 +114,7 @@ namespace Radiant {
 
   /// @internal
   template <class T>
-  class ChunkT {
+  class RADIANT_API ChunkT {
   public:
     /// Iterator for traversing all elements
     typedef typename std::multimap<std::string, T>::iterator iterator;
@@ -174,8 +174,8 @@ namespace Radiant {
   typedef ChunkT<Variant> Chunk;
   typedef ChunkT<Chunk>   Config;
 
-  bool readConfig(Config *, const char *filename);
-  bool writeConfig(Config *, const char *filename);
+  bool RADIANT_API readConfig(Config *c, const char *filename);
+  bool RADIANT_API writeConfig(Config *c, const char *filename);
   
 } // namespace
 

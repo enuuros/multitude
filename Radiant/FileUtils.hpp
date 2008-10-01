@@ -26,48 +26,47 @@ namespace Radiant
   /// FileUtils contains functions for platform independent file-handing
   namespace FileUtils
   {
+    
+    /// Get the size of a file.
+    RADIANT_API unsigned long getFileLen(std::ifstream& file);
 
-    /// Get the size of a file
-    MTEXPORT unsigned long getFileLen(std::ifstream& file);
-    /** Load a text file. The contens of the file are returned as a
-     * zero-terminated string. 
-     */ 
-    MTEXPORT char* loadTextFile(const char* filename);
-    /// Check if a given file is readable
-    MTEXPORT bool fileReadable(const char* filename);
-    /// Check if the user can append to a given file
-    /** This function is useful if you want to overwrite a file, and
-	want to check beforehand, that it is possible. 
-	
-	@return Returns true if the file exists and can be written
-	to. Otherwise returns false.
-    */
-    MTEXPORT bool fileAppendable(const char* filename);
+    /// Load a text file. The contents of the file are returned as a
+    /// zero-terminated string.
+    RADIANT_API char * loadTextFile(const char* filename);
 
-    /// Rename a file
-    MTEXPORT bool renameFile(const char * from, const char * to);
+    /// Check if a given file is readable.
+    RADIANT_API bool fileReadable(const char* filename);
 
-    /// Extract path
-    MTEXPORT std::string path(const std::string & filepath);
-    /// Extract filename
-    MTEXPORT std::string filename(const std::string & filepath);
-    /// Extract filename without suffix
-    MTEXPORT std::string baseFilename(const std::string & filepath);
-    /// Extract full path (including filename) without suffix
-    MTEXPORT std::string withoutSuffix(const std::string & filepath);
-    /// Extract suffix
-    MTEXPORT std::string suffix(const std::string & filepath);
+    /// Check if the user can append to a given file.
+    /// This function is useful if you want to overwrite a file,
+    /// and want to check beforehand that it is possible.
+    /// @return true if the file exists and can be written.
+	  /// to. Otherwise false.
+    RADIANT_API bool fileAppendable(const char* filename);
 
-    /** Find a file given a list of paths to search. The directory names are
-     * separated by colon or semicolon in typical Windows or UNIX fashion
-     * (/usr/foo:/home/user/foo etc.).
-     */
-    MTEXPORT std::string findFile(const std::string & filename, const std::string & paths);
+    /// Rename a file.
+    RADIANT_API bool renameFile(const char * from, const char * to);
 
-    /** Tries to find a file that could be over-written. If such
-	cannot be found, then returns filename. */
-    MTEXPORT std::string findOverWritable(const std::string & filename,
-                                          const std::string & paths);
+    /// Extract path.
+    RADIANT_API std::string path(const std::string & filepath);
+    /// Extract filename.
+    RADIANT_API std::string filename(const std::string & filepath);
+    /// Extract filename without suffix.
+    RADIANT_API std::string baseFilename(const std::string & filepath);
+    /// Extract full path (including filename) without suffix.
+    RADIANT_API std::string withoutSuffix(const std::string & filepath);
+    /// Extract suffix.
+    RADIANT_API std::string suffix(const std::string & filepath);
+
+    /// Find a file given a list of paths to search. The directory names are
+    /// separated by colon or semicolon in typical Windows or UNIX fashion
+    /// (/usr/foo:/home/user/foo etc.).
+    RADIANT_API std::string findFile(const std::string & filename, const std::string & paths);
+
+    /// Try to find a file that could be over-written. If such
+    /// cannot be found, then return filename.
+    RADIANT_API std::string findOverWritable(const std::string & filename,
+                                             const std::string & paths);
 
   }
 }

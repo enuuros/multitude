@@ -2,19 +2,25 @@
 #include <math.h>
 #include <Windows.h>
 
+int sleep(unsigned secs)
+{
+	Sleep(secs*1000);
+	return 0;
+}
+
 long round(double x)
 {
 	return (long)floor(x + 0.5);
 }
 
-int setenv(const char *envname, const char *envval, int overwrite_ignored)
+int setenv(const char *envname, const char *envval, int /*overwrite_ignored*/)
 {
-	return SetEnvironmentVariable(envname, envval);
+	return SetEnvironmentVariableA(envname, envval);
 }
 
 int unsetenv(const char *name)
 {
-	return SetEnvironmentVariable(name, NULL);
+	return SetEnvironmentVariableA(name, NULL);
 }
 
 namespace WinPort
@@ -30,4 +36,6 @@ namespace WinPort
 	{
 		WSACleanup();
 	}
+
+  int tmp() { return 0; }
 }

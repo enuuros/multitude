@@ -25,7 +25,7 @@
 namespace Radiant {
 
   /// Abstract base class for binary streams
-  class MTEXPORT BinaryStream
+  class RADIANT_API BinaryStream
   {
   public:
     BinaryStream() {}

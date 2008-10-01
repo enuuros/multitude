@@ -16,7 +16,7 @@
 #ifndef LUMINOUS_LUMINOUS_HPP
 #define LUMINOUS_LUMINOUS_HPP
 
-#include <Radiant/Export.hpp>
+#include <Luminous/Export.hpp>
 
 #include <GL/glew.h>
 
@@ -45,7 +45,7 @@ namespace Luminous
       initialized, false if something was left missing (for example
       too low OpenGL version).
   */
-  MTEXPORT bool initLuminous();
+  LUMINOUS_API bool initLuminous();
 
 }
 

@@ -54,11 +54,14 @@ static unsigned _tGetFileAttributes (const _TCHAR * tPath)
 {
 #ifdef _UNICODE
   /* GetFileAttributesW does not work on W9x, so convert to ANSI */
-  if (_osver & 0x8000)
+  OSVERSIONINFO   osvi;
+  ZeroMemory(& osvi, sizeof(OSVERSIONINFO));
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  GetVersionEx(& osvi);
+  if(osvi.dwBuildNumber & 0x8000)
     {
       char aPath [MAX_PATH];
-      WideCharToMultiByte (CP_ACP, 0, tPath, -1, aPath, MAX_PATH, NULL,
-			   NULL);
+      WideCharToMultiByte (CP_ACP, 0, tPath, -1, aPath, MAX_PATH, NULL, NULL);
       return GetFileAttributesA (aPath);
     }
   return GetFileAttributesW (tPath);
@@ -157,7 +160,9 @@ _topendir (const _TCHAR *szPath)
   nd->dd_dir.d_namlen = 0;
   memset (nd->dd_dir.d_name, 0, FILENAME_MAX);
 
+#ifndef _UNICODE
 	nd->dd_dir.d_type = DT_DIR;		// JJK 080407
+#endif
 
 	return nd;
 }
@@ -232,16 +237,18 @@ _treaddir (_TDIR * dirp)
       /* Successfully got an entry. Everything about the file is
        * already appropriately filled in except the length of the
        * file name. */
-      dirp->dd_dir.d_namlen = _tcslen (dirp->dd_dta.name);
+      dirp->dd_dir.d_namlen = (short int)(_tcslen (dirp->dd_dta.name));
       _tcscpy (dirp->dd_dir.d_name, dirp->dd_dta.name);
 
 		// -- JJK 080407 (oversimplification)
+#ifndef _UNICODE
 		if (dirp->dd_dta.attrib & _A_SUBDIR)
 			dirp->dd_dir.d_type = DT_DIR;
 		else dirp->dd_dir.d_type = DT_REG;
 
       return &dirp->dd_dir;
     }
+#endif
 
   return (struct _tdirent *) 0;
 }

@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,6 +16,12 @@
 #ifndef NIMBLE_HISTOGRAM_HPP
 #define NIMBLE_HISTOGRAM_HPP
 
+#include <Nimble/Export.hpp>
+
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 #include <strings.h>
 
 namespace Nimble {
@@ -26,7 +32,7 @@ namespace Nimble {
 
     @author Tommi Ilmonen */
   template <class T, int N> 
-    class Histogram
+    class NIMBLE_API Histogram
     {
       public:
         Histogram() : m_count(0) {}
@@ -99,7 +105,7 @@ namespace Nimble {
           return 0;
         }
 
-        /// Add the values from another hisogram to this histogram
+        /// Add the values from another histogram to this histogram
         void add(const Histogram & that)
         {
           for(int i = 0; i < N; i++)
@@ -110,12 +116,23 @@ namespace Nimble {
         /// Returns the sum of all bin counts
         int count() const { return m_count; }
 
-      private:
+      protected:
 
         T   m_data[N];
         int m_count;
     };
 
-}
+  typedef Histogram<unsigned int,256> Histogramu256;
+  typedef Histogram<int,256> Histogrami256;
+
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Histogram<unsigned int, 256>;
+  template class Histogram<int, 256>;
+#endif
+#endif
+
+} // namespace
 
 #endif

@@ -16,13 +16,14 @@
 #ifndef RADIANT_DATETIME_HPP
 #define RADIANT_DATETIME_HPP
 
+#include <Radiant/Export.hpp>
 #include <Radiant/TimeStamp.hpp>
 
 namespace Radiant {
 
   /** Combination of date and time information. */
   
-  class MTEXPORT DateTime
+  class RADIANT_API DateTime
   {
   public:
     DateTime();

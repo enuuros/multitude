@@ -17,8 +17,9 @@
 #ifndef NIMBLE_RECT_HPP
 #define NIMBLE_RECT_HPP
 
-#include <Nimble/Vector2.hpp>
+#include <Nimble/Export.hpp>
 #include <Nimble/Matrix3.hpp>
+#include <Nimble/Vector2.hpp>
 
 namespace Nimble {
 
@@ -33,7 +34,7 @@ namespace Nimble {
       is using normal GUI coordinates (Y increases from top to
       bottom). */
   template <class T>
-  class RectT
+  class NIMBLE_API RectT
   {
   public:
     RectT()
@@ -142,7 +143,7 @@ namespace Nimble {
 
     inline bool intersects(const RectT &) const;
     inline bool contains(T x, T y) const;
-    bool contains(Vector2T<T> v) const;
+    inline bool contains(Vector2T<T> v) const;
     inline bool contains(const RectT &b) const;
     inline T    distance(const RectT &b) const;
 
@@ -232,6 +233,13 @@ namespace Nimble {
   }
 
   template <class T> 
+  inline bool RectT<T>::contains(Vector2T<T> v) const
+  {
+    return ((v[0] >= m_low[0]) && (v[0] <= m_high[0])
+      && (v[1] >= m_low[1]) && (v[1] <= m_high[1]));  
+  }
+
+  template <class T> 
   inline bool RectT<T>::contains(const RectT &b) const
   {
     return ((b.m_low[0] >= m_low[0]) && (b.m_high[0] <= m_high[0]) &&
@@ -272,7 +280,6 @@ namespace Nimble {
     return r;
   }
 
-  
   template <>
   inline Vector2T<int> RectT<int>::center() const
   {
@@ -318,7 +325,8 @@ namespace Nimble {
   {
     RectT<T> res;
 
-    Vector2T<T> size = span() / T(2);
+    const Vector2T<T> sp(span());
+    Vector2T<T> size(sp.x / T(2), sp.y / T(2));
     if(row)
       res.m_low.y = m_low.y + size.y;
     if(col)
@@ -332,6 +340,16 @@ namespace Nimble {
   typedef RectT<int> Recti;
   typedef RectT<double> Rectd;
 
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated here to be exported
+  template class RectT<float>;
+  template class RectT<int>;
+  template class RectT<double>;
+#endif
+#endif
+
+  /// @todo Remove this?
   /** Multiplies the location vectors with some matrix. */
   /*
     template <class M>
@@ -357,4 +375,3 @@ namespace Nimble {
 }
 
 #endif
-

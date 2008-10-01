@@ -17,16 +17,15 @@
 
 #include "CamView.hpp"
 
-#include <QMenu>
-#include <QMenuBar>
-#include <QVBoxLayout>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
 
-#include <Radiant/Video1394.hpp>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QVBoxLayout>
 
 #include <Radiant/Trace.hpp>
-
-#include <QCoreApplication>
-#include <QTimer>
+#include <Radiant/Video1394.hpp>
 
 #include <assert.h>
 

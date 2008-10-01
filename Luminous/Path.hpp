@@ -16,19 +16,22 @@
 #ifndef FP_PATH_HPP
 #define FP_PATH_HPP
 
-#include <Valuable/HasValues.hpp>
+#include <Luminous/Export.hpp>
+#include <Luminous/GLSLProgramObject.hpp>
+#include <Luminous/TCBSpline.hpp>
 
 #include <Nimble/Matrix3.hpp>
 #include <Nimble/Vector2.hpp>
 
-#include <Luminous/GLSLProgramObject.hpp>
-#include <Luminous/TCBSpline.hpp>
+#include <Valuable/DOMDocument.hpp>
+#include <Valuable/DOMElement.hpp>
+#include <Valuable/HasValues.hpp>
 
 #include <vector>
 
 namespace Luminous {
 
-  class Path : public Valuable::HasValues
+  class LUMINOUS_API Path : public Valuable::HasValues
   {
     public:
       Path();

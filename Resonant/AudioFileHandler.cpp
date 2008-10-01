@@ -231,7 +231,8 @@ namespace Resonant {
 
     m_data.resize(buffersamples);
 
-    bzero(& m_data[0], buffersamples * sizeof(float));
+    if(!m_data.empty())
+      bzero( & m_data[0], buffersamples * sizeof(float));
 
     m_fileFrames = 0;
     m_userFrames = 0;
@@ -269,7 +270,7 @@ namespace Resonant {
     float * data = ptr(m_fileFrames);
   
     long blockleft = m_blockSize - (m_fileFrames % m_blockSize);
-    long avail = m_info.frames - m_fileFrames;
+    long avail = long(m_info.frames - m_fileFrames);
 
     if(avail > blockleft)
       avail = blockleft;
@@ -336,8 +337,8 @@ namespace Resonant {
     trace("AudioFileHandler::Handle::moveReadHead # %s %ld ", 
 	  m_fileName.c_str(), frame);
 
-    if(clear)
-      bzero(& m_data[0], m_data.size() * sizeof(float));
+    if(!m_data.empty() && clear)
+      bzero( & m_data[0], m_data.size() * sizeof(float));
 
     if(sf_seek(m_file, frame, SEEK_SET) != frame) {
       error("AudioFileHandler::Handle::moveReadHead");

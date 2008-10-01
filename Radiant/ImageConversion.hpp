@@ -28,7 +28,7 @@ namespace Radiant {
 
       New format conversion functions will be written as needed. */
 
-  class MTEXPORT ImageConversion
+  class RADIANT_API ImageConversion
   {
   public:
     /// Convert from a random format to another random format

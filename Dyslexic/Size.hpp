@@ -15,6 +15,8 @@
 #ifndef DYSLEXIC_SIZE_HPP
 #define DYSLEXIC_SIZE_HPP
 
+#include <Dyslexic/Export.hpp>
+
 struct FT_SizeRec_;
 struct FT_FaceRec_;
 
@@ -22,11 +24,11 @@ namespace Dyslexic
 {
 
   /// Size provides access to the size information in a font.
-  class Size
+  class DYSLEXIC_API Size
   {
     public:
       Size();
-      ~Size();
+//      ~Size();
 
       bool charSize(FT_FaceRec_ ** face, int pointSize, int xRes, int yRes);
 

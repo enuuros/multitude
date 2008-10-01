@@ -18,6 +18,8 @@
 
 #include <Radiant/RefPtr.hpp>
 
+#include <Valuable/Export.hpp>
+
 #include <vector>
 
 namespace xercesc_2_8 {
@@ -30,7 +32,7 @@ namespace Valuable
   class DOMElement;
 
   /// Wrapper for xercesc::DOMDocument
-  class DOMDocument
+  class VALUABLE_API DOMDocument
   {
     public:
       ~DOMDocument();

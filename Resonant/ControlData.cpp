@@ -17,9 +17,12 @@
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/BinaryData.hpp>
 #include <Radiant/Trace.hpp>
 
 namespace Resonant {
 
-
+  ControlData::ControlData() :
+    BinaryData()
+    {}
 }

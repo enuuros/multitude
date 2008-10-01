@@ -28,9 +28,9 @@
 #include <Dyslexic/CPUBitmapFont.hpp>
 #include <Dyslexic/GPUTextureFont.hpp>
 
-#include <QCoreApplication>
-#include <QKeyEvent>
-#include <QMouseEvent>
+#include <QtCore/QCoreApplication>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QMouseEvent>
 
 using Radiant::error;
 using Radiant::trace;
@@ -155,9 +155,9 @@ void VideoWindow::paintGL()
   
   glDisable(GL_LIGHTING);
   
-  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glColor4f(1, 1, 1, 1);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   gluOrtho2D(0, width(), height(), 0);
   
   ALL_MOVIES(update());
@@ -185,7 +185,7 @@ void VideoWindow::paintGL()
   
     VideoDisplay::ShowGL & show = (*it)->m_show;
 
-    glColor4f(1, 1, 1, 1);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Aspect ratios
     float wa = itemw / (float) itemh;
@@ -211,7 +211,7 @@ void VideoWindow::paintGL()
     span *= 0.5f;
 
     Luminous::MatrixStep mstep;
-    glTranslatef((index % cols) * itemw, (index / cols) * itemh, 0);
+    glTranslatef(float((index % cols) * itemw), float((index / cols) * itemh), 0.0f);
     index++;
 
     show.render(& m_glResources,
@@ -247,22 +247,22 @@ void VideoWindow::paintGL()
 	float a = 1.0f - 0.7f *
 	  powf(delta / (float) VideoDisplay::ShowGL::HISTOGRAM_POINTS, 0.25);
       
-	glColor4f(a, 0, 0, a * mainAlpha);
+	glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
 	
-	glVertex2f(i * sscale, itemh - 1 - show.histogramPoint(i) * 35 * 0.5f);
+	glVertex2f(float(i) * sscale, float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
       }
       
       glEnd();
     }
     
-    glColor4f(0.3, 0.3, 0.3, 0.7 * mainAlpha);
-    glRectf(0, itemh - 35, itemw, itemh);
+    glColor4f(0.3f, 0.3f, 0.3f, 0.7f * mainAlpha);
+    glRectf(0.0f, float(itemh) - 35.0f, float(itemw), float(itemh));
     
-    glColor4f(1, 1, 1, 0.7 * mainAlpha);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.7f * mainAlpha);
     
     float relative = show.relativePosition();
 
-    glRectf(0, itemh - 30, itemw * relative, itemh - 5);
+    glRectf(0.0f, float(itemh) - 30.0f, float(itemw) * relative, float(itemh) - 5.0f);
   }
 }
 

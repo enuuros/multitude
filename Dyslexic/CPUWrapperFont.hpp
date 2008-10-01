@@ -17,6 +17,7 @@
 #define DYSLEXIC_CPU_WRAPPER_FONT_HPP
 
 #include <Dyslexic/CPUFont.hpp>
+#include <Dyslexic/Export.hpp>
 
 #include <Luminous/GLResources.hpp>
 
@@ -26,7 +27,7 @@ namespace Dyslexic
   class GPUWrapperFont;
 
   /// A font on the CPU that wraps the point size of the font for convenience.
-  class CPUWrapperFont : public CPUFont
+  class DYSLEXIC_API CPUWrapperFont : public CPUFont
   {
     public:
       CPUWrapperFont(CPUManagedFont * mfont);

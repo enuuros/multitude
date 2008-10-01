@@ -19,6 +19,7 @@
 
 #include <Luminous/GLResource.hpp>
 
+#include <Dyslexic/Export.hpp>
 #include <Dyslexic/GPUFont.hpp>
 #include <Dyslexic/CPUFontBase.hpp>
 
@@ -28,7 +29,7 @@ namespace Dyslexic
   class Glyph;
 
   /// A base class for different fonts that reside on the GPU
-  class MTEXPORT GPUFontBase : public GPUFont, public Luminous::GLResource
+  class DYSLEXIC_API GPUFontBase : public GPUFont, public Luminous::GLResource
   {
     public:
       GPUFontBase(CPUFontBase * font);

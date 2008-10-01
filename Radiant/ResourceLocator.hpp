@@ -15,6 +15,8 @@
 #ifndef RADIANT_RESOURCE_LOCATOR_HPP
 #define RADIANT_RESOURCE_LOCATOR_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <string>
 
 namespace Radiant
@@ -23,11 +25,17 @@ namespace Radiant
   /// Class for locating resources. Basically it searches for a given filename
   /// through a set of paths and returns the first path that contains the given
   /// file.
-  class ResourceLocator 
+  class RADIANT_API ResourceLocator 
   {
     public:
       ResourceLocator();
       ~ResourceLocator();
+
+    /// Character that separates paths.
+      static std::string  separator;
+
+    /// Return the paths.
+    const std::string & paths() const { return  m_paths; }
 
     /// Add a path to the list to search though
     /** @param front If front is true, then the new path is put to the

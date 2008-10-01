@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,8 +16,10 @@
 #ifndef NIMBLE_MATRIX3T_HPP
 #define NIMBLE_MATRIX3T_HPP
 
-#include <Nimble/Vector3.hpp>
+#include <Nimble/Export.hpp>
 #include <Nimble/Matrix2.hpp>
+#include <Nimble/Vector3.hpp>
+
 #include <assert.h>
 
 namespace Nimble {
@@ -26,7 +28,7 @@ namespace Nimble {
   /** This class is a row-major 3x3 matrix. The matrix functions
       (rotations etc.) assume right-handed coordinate system. */
   template <class T>
-  class Matrix3T
+  class NIMBLE_API Matrix3T
   {
   public:
     /// Constructs the matrix without initializing any values.
@@ -53,52 +55,52 @@ namespace Nimble {
     const Vector3T<T>& operator[](int i) const{ return row(i); }
     void               set(int r, int c, T v) { m[r][c] = v; }
     /// Gets one element from the matrix
-    T &                get(int r, int c) { return m[r][c]; }
+    T &                get(int r, int c)       { return m[r][c]; }
     /// Gets one constant element from the matrix
     const T &          get(int r, int c) const { return m[r][c]; }
     /// Gets a pointer to the data
-    T *                data() { return m[0].data(); }
+    T *                data()       { return m[0].data(); }
     /// Gets a constant pointer to the data
     const T *          data() const { return m[0].data(); }
     /// Copy argument values into this matrix
     void               make(T v11, T v12, T v13, T v21, T v22, T v23, T v31, T v32, T v33)
     { m[0].make(v11, v12, v13); m[1].make(v21, v22, v23); m[2].make(v31, v32, v33); }
 
-    void               transpose();
-    void               clear()                { m[0].clear(); m[1].clear(); m[2].clear(); } 
-    void               identity(); 
+    inline void               transpose();
+    void                      clear() { m[0].clear(); m[1].clear(); m[2].clear(); } 
+    inline void               identity(); 
     /// Create a rotation matrix, around X axis
-    void               rotateX(T a);
+    inline void               rotateX(T a);
     /// Create a rotation matrix, around Y axis
-    void               rotateY(T a);
+    inline void               rotateY(T a);
     /// Create a rotation matrix, around Z axis
-    void               rotateZ(T a);
+    inline void               rotateZ(T a);
     /// Assuming that this a rotation matrix, calvulate rotation axis and angle
-    void               getRotateAroundAxis(Vector3T<T>& axis, T & radians);
+    inline void               getRotateAroundAxis(Vector3T<T>& axis, T & radians);
     /// Create a rotation axis, based on rotation axis and angle
-    void               rotateAroundAxis(const Vector3T<T>& axis, T radians);
+    inline void               rotateAroundAxis(const Vector3T<T>& axis, T radians);
     /// Assuming that this a rotation matrix, calvulate rotation around XYZ axis
-    bool               getRotationXYZ (T & xa, T & ya, T & za);
-    Matrix3T<T>&       operator*=(const Matrix3T<T>& that);
-    bool               operator==(const Matrix3T<T>& that) const;
-    bool               operator!=(const Matrix3T<T>& that) const;
+    inline bool               getRotationXYZ (T & xa, T & ya, T & za);
+    inline Matrix3T<T>&       operator*=(const Matrix3T<T>& that);
+    inline bool               operator==(const Matrix3T<T>& that) const;
+    inline bool               operator!=(const Matrix3T<T>& that) const;
     /// Run internal test function.
-    static void        test();
+    inline static void        test();
     /// Returns the number of rows in the matrix (=3)
     /** This function can be used when you build template-based
 	functions. */
-    static int         rows() { return 3; }
+    static int                rows() { return 3; }
     /// Returns the number of columns in the matrix (=3)
     /** This function can be used when you build template-based
 	functions. */
-    static int         columns() { return 3; }
+    static int                columns() { return 3; }
     /// Inserts the argument matrix into the top-left corner of this matrix
-    void               insert(const Matrix2T<T>& m);
+    inline void               insert(const Matrix2T<T>& m);
     /** Calculates the inverse of this matrix.
       @param ok Returns the success value of the inversion operation
       @param tolerance if determinant smaller than tolerance, abort
       @return the inverted matrix */
-    Matrix3T<T>        inverse(bool * ok = 0, T tolerance = 1.0e-8) const;
+    inline Matrix3T<T>        inverse(bool * ok = 0, T tolerance = 1.0e-8) const;
 
     /// Create a matrix that performs 2D translation
     static Matrix3T<T> translation(const Vector2T<T> & t) { Matrix3T<T> m; m.identity(); m.set(0, 2, t.x); m.set(1, 2, t.y); return m; }
@@ -111,10 +113,11 @@ namespace Nimble {
     inline static Matrix3T<T> rotate2D(T radians);
 
     /// Extract the scaling factor from a homogenous 2D transformation matrix
-    T extractScale() const;
+    inline T extractScale() const;
 
   private:
-    static void swap(T &a, T& b);
+    inline static void swap(T &a, T& b);
+
     Vector3T<T> m[3];
   };
 
@@ -191,6 +194,13 @@ namespace Nimble {
 
   typedef Matrix3T<float> Matrix3;
   typedef Matrix3T<float> Matrix3f;
+
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Matrix3T<float>;
+#endif
+#endif
 
   template <class T>
   inline void Matrix3T<T>::swap(T &a, T& b)

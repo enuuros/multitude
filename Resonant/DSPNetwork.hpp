@@ -42,7 +42,7 @@ namespace Resonant {
       trouble...
   */
 
-  class MTEXPORT DSPNetwork : public AudioLoop
+  class RESONANT_API DSPNetwork : public AudioLoop
   {
   public:
 
@@ -71,7 +71,7 @@ namespace Resonant {
       int     m_size;
     };
     
-    class MTEXPORT Connection
+    class RESONANT_API Connection
     {
     public:
       Connection() : m_channel(0),m_buf(0) { m_moduleId[0] = '\0'; }
@@ -83,8 +83,14 @@ namespace Resonant {
       
       void setModuleId(const char * id)
       {
-	if(id) strcpy(m_moduleId, id);
-	else m_moduleId[0] = '\0';
+	if(id)
+#ifdef WIN32
+    strcpy_s(m_moduleId, id);
+#else
+    strcpy(m_moduleId, id);
+#endif
+	else
+    m_moduleId[0] = '\0';
       }
 
       inline bool operator == (const Connection & that) const
@@ -98,7 +104,7 @@ namespace Resonant {
       Buf        *m_buf;
     };
 
-    class MTEXPORT NewConnection
+    class RESONANT_API NewConnection
     {
     public:
       NewConnection() : m_sourceChannel(0), m_targetChannel(0) {}
@@ -109,7 +115,7 @@ namespace Resonant {
       int         m_targetChannel;
     };
 
-    class MTEXPORT Item
+    class RESONANT_API Item
     {
     public:
       Item();
@@ -118,7 +124,8 @@ namespace Resonant {
       inline void process(int n)
       {
 	assert(m_compiled != false);
-	m_module->process(& m_ins[0], & m_outs[0], n);
+  if(!m_ins.empty() && !m_outs.empty())
+	  m_module->process(& m_ins[0], & m_outs[0], n);
       }
 
       void eraseInput(const Connection & c);
@@ -152,8 +159,14 @@ namespace Resonant {
 
     void send(ControlData & control);
 
+#ifdef WIN32
+    // not inline because of linkage issues
+    static DSPNetwork * instance();
+#else
+    // inline
     static DSPNetwork * instance() { return m_instance; }
-    
+#endif
+
   private:
 
     virtual int callback(const void *in, void *out,

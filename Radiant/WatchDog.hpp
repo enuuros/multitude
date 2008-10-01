@@ -16,11 +16,12 @@
 #ifndef RADIANT_WATCHDOG_HPP
 #define RADIANT_WATCHDOG_HPP
 
+#include <Radiant/Export.hpp>
 #include <Radiant/Thread.hpp>
 
 namespace Radiant {
 
-  class WatchDog : public Radiant::Thread
+  class RADIANT_API WatchDog : public Radiant::Thread
   {
   public:
     WatchDog();

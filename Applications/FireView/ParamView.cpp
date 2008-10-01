@@ -19,10 +19,10 @@
 
 #include <Radiant/Video1394.hpp>
 
-#include <QComboBox>
-#include <QGridLayout>
-#include <QLabel>
-#include <QSlider>
+#include <QtGui/QComboBox>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QSlider>
 
 namespace FireView {
   

@@ -165,7 +165,7 @@ namespace Radiant {
 
     Sleep sleep;
 
-    std::cout << name << " pid: " << getpid() << " test 1" << std::endl;
+    std::cout << name << " pid: " << _getpid() << " test 1" << std::endl;
     {
       std::cout << name << "creating thread that runs for 4 seconds" << std::endl;
       ThreadTest t;
@@ -209,7 +209,7 @@ namespace Radiant {
   void Thread::mainLoop()
   {
     if(m_threadDebug) {
-      std::cout << "Thread::mainLoop " << this <<  " pid: " << getpid() << std::endl;
+      std::cout << "Thread::mainLoop " << this <<  " pid: " << _getpid() << std::endl;
     }
 
     childLoop();

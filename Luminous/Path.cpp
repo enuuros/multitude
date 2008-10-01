@@ -25,6 +25,11 @@
 
 #include <Nimble/Random.hpp>
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#include <math.h>
+#endif
+
 #include <numeric>
 
 namespace {
@@ -245,7 +250,7 @@ void Path::simplifyAngular(float degrees)
     v0.normalize();
     v1.normalize();
 
-    cuma += acos(dot(v0, v1)) * 180.f / M_PI;
+    cuma += float(acos(dot(v0, v1)) * 180.0 / M_PI);
 
     if(cuma < degrees) {
       m_points.erase(m_points.begin() + i + 1);

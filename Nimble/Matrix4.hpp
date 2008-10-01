@@ -2,7 +2,7 @@
  *
  * This file is part of ConfigReader.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "ConfigReader.hpp" for authors and more details.
  *
@@ -16,13 +16,14 @@
 #ifndef NIMBLE_MATRIX4T_HPP
 #define NIMBLE_MATRIX4T_HPP
 
-#include <Nimble/Vector4.hpp>
+#include <Nimble/Export.hpp>
 #include <Nimble/Matrix3.hpp>
+#include <Nimble/Vector4.hpp>
 
 namespace Nimble {
 
   template <class T>
-  class Matrix4T
+  class NIMBLE_API Matrix4T
   {
   public:		
     template <class S>
@@ -56,14 +57,14 @@ namespace Nimble {
 
     Vector4T<T>&       operator[](int i)      { return row(i); }
     const Vector4T<T>& operator[](int i) const{ return row(i); }
-    void               setRotation(const Nimble::Matrix3T<T>& that);
-    Matrix3T<T>        getRotation() const;
+    inline void               setRotation(const Nimble::Matrix3T<T>& that);
+    inline Matrix3T<T>        getRotation() const;
 
-    Matrix4T<T>&       transpose();
-    void               clear()                { m[0].clear(); m[1].clear(); m[2].clear(); m[3].clear(); } 
-    void               identity(); 
-    void               scalingMatrix(const Vector3T<T> &);
-    void               make(T x11, T x12, T x13, T x14, 
+    inline Matrix4T<T>&       transpose();
+    void                      clear()         { m[0].clear(); m[1].clear(); m[2].clear(); m[3].clear(); } 
+    inline void               identity();
+    inline void               scalingMatrix(const Vector3T<T> &);
+    void                      make(T x11, T x12, T x13, T x14, 
 			    T x21, T x22, T x23, T x24,
 			    T x31, T x32, T x33, T x34,
 			    T x41, T x42, T x43, T x44)
@@ -72,18 +73,17 @@ namespace Nimble {
 	m[1].make(x21, x22, x23, x24); 
 	m[2].make(x31, x32, x33, x34); 
 	m[3].make(x41, x42, x43, x44); 
-	
       }
-    Matrix4T<T>        inverse(bool * ok) const;
+    inline Matrix4T<T>        inverse(bool * ok) const;
 
-    Matrix4T<T>&       operator*=(const Matrix4T<T>& that);
-    Matrix4T<T>&       operator *= (T s) { T * p = data(); for(unsigned i=0; i < 16; i++) p[i] *= s; return * this; }
-    bool               operator==(const Matrix4T<T>& that) const;
-    bool               operator!=(const Matrix4T<T>& that) const;
+    inline Matrix4T<T>&       operator*=(const Matrix4T<T>& that);
+    Matrix4T<T>&              operator *= (T s) { T * p = data(); for(unsigned i=0; i < 16; i++) p[i] *= s; return * this; }
+    inline bool               operator==(const Matrix4T<T>& that) const;
+    inline bool               operator!=(const Matrix4T<T>& that) const;
 
-    static int         rows() { return 4; }
-    static int         columns() { return 4; }
-    static void        test();
+    static int                rows() { return 4; }
+    static int                columns() { return 4; }
+    inline static void        test();
 
     T *       data()       { return m[0].data(); }
     const T * data() const { return m[0].data(); }	
@@ -95,7 +95,7 @@ namespace Nimble {
 
   
   private:
-    static void swap(T &a, T& b);
+    inline static void swap(T &a, T& b);
 
     Vector4T<T> m[4];
   };
@@ -308,6 +308,14 @@ namespace Nimble {
   }
 
   typedef Matrix4T<float> Matrix4;
+  typedef Matrix4T<float> Matrix4f;
+
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class Matrix4T<float>;
+#endif
+#endif
 
 }
 

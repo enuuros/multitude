@@ -16,6 +16,8 @@
 #ifndef VALUABLE_VALUE_LISTENER_HPP
 #define VALUABLE_VALUE_LISTENER_HPP
 
+#include <Valuable/Export.hpp>
+
 #include <list>
 
 namespace Valuable
@@ -23,7 +25,7 @@ namespace Valuable
   class ValueObject;
   class ValueListeners;
 
-  class ValueListener
+  class VALUABLE_API ValueListener
   {
   public:
     
@@ -46,7 +48,7 @@ namespace Valuable
     vlcontainer m_listening;
   };
 
-  class ValueListeners
+  class VALUABLE_API ValueListeners
   {
   public:
     typedef std::list<ValueListener *> container;

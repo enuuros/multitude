@@ -277,7 +277,7 @@ _CRTIMP intptr_t __cdecl __MINGW_NOTHROW _wfindfirst64(const wchar_t*, struct __
 _CRTIMP intptr_t __cdecl __MINGW_NOTHROW _wfindnext64(intptr_t, struct __wfinddata64_t*);
 #endif
 #endif /* defined (__MSVCRT__) */
-#define _WIO_DEFINED
+//#define _WIO_DEFINED
 #endif /* _WIO_DEFINED */
 
 #ifndef	_NO_OLDNAMES

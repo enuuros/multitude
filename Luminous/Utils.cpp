@@ -62,26 +62,26 @@ namespace Luminous {
     float p = 2.2f;
 
     for(i = 0; i < 5; i++) {
-      float rel = i / (float) 5;
+      float rel = i / (float)5;
       float x = left + seamWidth * rel;
-      glColor4f(0, 0, 0, powf(rel, p));
-      glVertex2f(x, 0);
-      glVertex2f(x, h);
+      glColor4f(0.0f, 0.0f, 0.0f, powf(rel, p));
+      glVertex2f(x, 0.0f);
+      glVertex2f(x, float(h));
     }
 
-    glColor4f(0, 0, 0, 1);
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glVertex2i(center, 0);
     glVertex2i(center, h);
     
     for(i = 1; i <= 5; i++) {
-      float rel = i / (float) 5;
+      float rel = i / (float)5;
       float x = center + seamWidth * rel;
-      glColor4f(0, 0, 0, powf(1.0f - rel, p));
-      glVertex2f(x, 0);
-      glVertex2f(x, h);
+      glColor4f(0.0f, 0.0f, 0.0f, powf(1.0f - rel, p));
+      glVertex2f(x, 0.0f);
+      glVertex2f(x, float(h));
     }
 
-    /* glColor4f(0, 0, 0, 0);
+    /* glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
        glVertex2i(right, 0);
        glVertex2i(right, h);
     */
@@ -102,43 +102,43 @@ namespace Luminous {
     glBegin(GL_LINES);
 
     int n = 10;
-    float first = 1.5;
-    float last = center - 1.5;
+    float first = 1.5f;
+    float last = center - 1.5f;
     float ampl = last - first;
 
     for(i = 0; i <= n; i++) {
-      float x = first + ampl * i / (float) n;
-      glColor3f(1, 0, 0);
+      float x = first + ampl * i / (float)n;
+      glColor3f(1.0f, 0.0f, 0.0f);
       glVertex2f(x, 0);
-      glVertex2f(x, h);
+      glVertex2f(x, float(h));
 
       x += center;
-      glColor3f(0, 1, 0);
-      glVertex2f(x, 0);
-      glVertex2f(x, h);
+      glColor3f(0.0f, 1.0f, 0.0f);
+      glVertex2f(x, 0.0f);
+      glVertex2f(x, float(h));
     }
 
-    last = h - 1.5;
+    last = float(h) - 1.5f;
     ampl = last - first;
 
     
-    glColor3f(1, 0, 0);
-    glVertex2f(left, 0);
-    glVertex2f(left, h);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex2f(float(left), 0.0f);
+    glVertex2f(float(left), float(h));
 
-    glColor3f(0, 1, 0);
-    glVertex2f(right, 0);
-    glVertex2f(right, h);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex2f(float(right), 0.0f);
+    glVertex2f(float(right), float(h));
 
     for(i = 0; i <= n; i++) {
       float y = first + ampl * i / (float) n;
-      glColor3f(1, 0, 0);
-      glVertex2f(0, y);
-      glVertex2f(center, y);
+      glColor3f(1.0f, 0.0f, 0.0f);
+      glVertex2f(0.0f, y);
+      glVertex2f(float(center), y);
 
-      glColor3f(0, 1, 0);
-      glVertex2f(center, y);
-      glVertex2f(w, y);
+      glColor3f(0.0f, 1.0f, 0.0f);
+      glVertex2f(float(center), y);
+      glVertex2f(float(w), y);
     }
     
     glEnd();
@@ -171,15 +171,15 @@ namespace Luminous {
 
     glBegin(GL_QUAD_STRIP);
     
-    // glColor4f(0, 0, 0, 1);
+    // glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 
     for(i = 0; i <= n; i++) {
 
-      float rel = i / (float) n;
+      float rel = i / (float)n;
       float x = left + seam * rel;
       
-      glColor4f(0, 0, 0, powf(rel, gamma));
-      glVertex2f(x, 0);
+      glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
+      glVertex2f(x, 0.0f);
       glVertex2f(x, h);
     }
 
@@ -201,37 +201,37 @@ namespace Luminous {
     glBegin(GL_LINES);
 
     n = 10;
-    float first = 1.5;
-    float last = w - 1.5;
+    float first = 1.5f;
+    float last = w - 1.5f;
     float ampl = last - first;
 
     for(i = 0; i <= n; i++) {
-      float x = first + ampl * i / (float) n;
-      glVertex2f(x, 0);
+      float x = first + ampl * i / (float)n;
+      glVertex2f(x, 0.0f);
       glVertex2f(x, h);
     }
 
-    last = h - 1.5;
+    last = h - 1.5f;
     ampl = last - first;
     
     glVertex2f(left, 0);
     glVertex2f(left, h);
 
     for(i = 0; i <= n; i++) {
-      float y = first + ampl * i / (float) n;
-      glVertex2f(0, y);
+      float y = first + ampl * i / (float)n;
+      glVertex2f(0.0f, y);
       glVertex2f(w, y);
     }
 
-    glVertex2f(0, 0);
+    glVertex2f(0.0f, 0.0f);
     glVertex2f(w, h);
 
-    glVertex2f(w, 0);
-    glVertex2f(0, h);
+    glVertex2f(w, 0.0f);
+    glVertex2f(0.0f, h);
 
-    glColor3f(0, 0, 0);
+    glColor3f(0.0f, 0.0f, 0.0f);
     
-    glVertex2f(left + seam * 0.5f, 0);
+    glVertex2f(left + seam * 0.5f, 0.0f);
     glVertex2f(left + seam * 0.5f, h);
 
     glEnd();
@@ -241,16 +241,16 @@ namespace Luminous {
   {
     glBegin(GL_QUADS);
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2f(x1, y1);
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2f(x2, y1);
 
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2f(x2, y2);
 
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2f(x1, y2);
 
     glEnd();
@@ -267,16 +267,16 @@ namespace Luminous {
 
     glBegin(GL_QUADS);
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv(v[0].data());
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2fv(v[1].data());
   
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2fv(v[2].data());
     
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2fv(v[3].data());
 
     /*
@@ -285,16 +285,16 @@ namespace Luminous {
     coordinate, and it should be 1 (usually).  Consider using
     glVertex4f if you really want to pass the value somewhere.
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3fv(static_cast<const GLfloat *> (&v[0].x));
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3fv(static_cast<const GLfloat *> (&v[1].x));
   
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3fv(static_cast<const GLfloat *> (&v[2].x));
     
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3fv(static_cast<const GLfloat *> (&v[3].x));
     */
 
@@ -334,16 +334,16 @@ namespace Luminous {
 
     glBegin(GL_QUADS);
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv(v[0].data());
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2fv(v[1].data());
   
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2fv(v[2].data());
     
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2fv(v[3].data());
 
     glEnd();
@@ -362,31 +362,31 @@ namespace Luminous {
     htxuv.low().descale(as);
     htxuv.high().descale(as);
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv(area.low().data());
 
     glTexCoord2fv(htxuv.low().data());
     glVertex2fv(hole.low().data());
 
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2fv(area.lowHigh().data());
 
     glTexCoord2fv(htxuv.lowHigh().data());
     glVertex2fv(hole.lowHigh().data());
 
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2fv(area.high().data());
 
     glTexCoord2fv(htxuv.high().data());
     glVertex2fv(hole.high().data());
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2fv(area.highLow().data());
 
     glTexCoord2fv(htxuv.highLow().data());
     glVertex2fv(hole.highLow().data());
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv(area.low().data());
 
     glTexCoord2fv(htxuv.low().data());
@@ -409,31 +409,31 @@ namespace Luminous {
     htxuv.low().descale(as);
     htxuv.high().descale(as);
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv((m * area.low()).data());
 
     glTexCoord2fv(htxuv.low().data());
     glVertex2fv((m * hole.low()).data());
 
-    glTexCoord2f(0, 1);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2fv((m * area.lowHigh()).data());
 
     glTexCoord2fv(htxuv.lowHigh().data());
     glVertex2fv((m * hole.lowHigh()).data());
 
-    glTexCoord2f(1, 1);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2fv((m * area.high()).data());
 
     glTexCoord2fv(htxuv.high().data());
     glVertex2fv((m * hole.high()).data());
 
-    glTexCoord2f(1, 0);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2fv((m * area.highLow()).data());
 
     glTexCoord2fv(htxuv.highLow().data());
     glVertex2fv((m * hole.highLow()).data());
 
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex2fv((m * area.low()).data());
 
     glTexCoord2fv(htxuv.low().data());
@@ -514,7 +514,7 @@ namespace Luminous {
 
     glBegin(GL_QUAD_STRIP);
     
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((begin - up).data());
     glVertex2fv((end - up).data());
 
@@ -522,7 +522,7 @@ namespace Luminous {
     glVertex2fv(begin.data());
     glVertex2fv(end.data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((begin + up).data());
     glVertex2fv((end + up).data());
 
@@ -571,32 +571,32 @@ namespace Luminous {
     glColor4f(r, g, b, a);
     glVertex2fv((begin - up).data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((begin - up - up2 - dir2).data());
 
     glColor4f(r, g, b, a);
     glVertex2fv((end - up).data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((end - up - up2 + dir2).data());
 
     glColor4f(r, g, b, a);
     glVertex2fv((end + up).data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((end + up + up2 + dir2).data());
 
     glColor4f(r, g, b, a);
     glVertex2fv((begin + up).data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((begin + up + up2 - dir2).data());
 
     // Repeat final points:
     glColor4f(r, g, b, a);
     glVertex2fv((begin - up).data());
 
-    glColor4f(r, g, b, 0);
+    glColor4f(r, g, b, 0.0f);
     glVertex2fv((begin - up - up2 - dir2).data());
 
     glEnd();
@@ -680,7 +680,7 @@ namespace Luminous {
       glColor4f(r, g, b, a);
       glVertex2f(sa * radius + centerx,
 		 ca * radius + centery);
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
       glVertex2f(sa * outrad + centerx,
 		 ca * outrad + centery);
     }
@@ -698,7 +698,7 @@ namespace Luminous {
       glColor4f(r, g, b, a);
       glVertex2f(sa * radius + centerx,
 		 ca * radius + centery);
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
       glVertex2f(sa * inrad + centerx,
 		 ca * inrad + centery);
     }
@@ -736,7 +736,7 @@ namespace Luminous {
 
       glBegin(GL_QUAD_STRIP);
       
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
 
       glVertex2f(sa1 * rs[0] + centerx, ca1 * rs[0] + centery);
       glVertex2f(sa2 * rs[0] + centerx, ca2 * rs[0] + centery);
@@ -749,7 +749,7 @@ namespace Luminous {
       glVertex2f(sa1 * rs[2] + centerx, ca1 * rs[2] + centery);
       glVertex2f(sa2 * rs[2] + centerx, ca2 * rs[2] + centery);
 
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
 
       glVertex2f(sa1 * rs[3] + centerx, ca1 * rs[3] + centery);
       glVertex2f(sa2 * rs[3] + centerx, ca2 * rs[3] + centery);
@@ -800,7 +800,7 @@ namespace Luminous {
       glVertex2f(sa1 * radius + centerx, ca1 * radius + centery);
       glVertex2f(sa2 * radius + centerx, ca2 * radius + centery);
 
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
       glVertex2f(sa1 * r2 + centerx, ca1 * r2 + centery);
       glVertex2f(sa2 * r2 + centerx, ca2 * r2 + centery);
 
@@ -812,7 +812,7 @@ namespace Luminous {
   void Utils::glCircle(float centerx, float centery, float radius,
     int linesegments)
   {
-    glArc(centerx, centery, radius, 0.0f, Nimble::Math::TWO_PI, linesegments);
+    glArc(centerx, centery, radius, 0.0f, float(Nimble::Math::TWO_PI), linesegments);
   }
 
   void Utils::glFilledCirclef(float centerx, float centery, float radius,
@@ -820,7 +820,7 @@ namespace Luminous {
   {
     assert(lineSegments >= 3);
 
-    const float    delta = Nimble::Math::TWO_PI / lineSegments;
+    const float    delta = float(Nimble::Math::TWO_PI) / float(lineSegments);
 
     glBegin(GL_TRIANGLE_FAN);
 
@@ -838,7 +838,7 @@ namespace Luminous {
                            float width,
                            int linesegments, const float * color)
   {
-    glSoftArc(centerx, centery, radius, 0, Nimble::Math::TWO_PI,
+    glSoftArc(centerx, centery, radius, 0.0f, float(Nimble::Math::TWO_PI),
 	      width, linesegments, color);
   }
 
@@ -846,7 +846,7 @@ namespace Luminous {
 				 float width, float blendwidth,
 				 int linesegments, const float * color)
   {
-    glFilledSoftArc(centerx, centery, radius, 0, Nimble::Math::TWO_PI,
+    glFilledSoftArc(centerx, centery, radius, 0.0f, float(Nimble::Math::TWO_PI),
 		    width, blendwidth, linesegments, color);
   }
 
@@ -854,7 +854,7 @@ namespace Luminous {
 				 float width, float blendwidth,
 				 int linesegments, const float * color)
   {
-    glFilledSoftArc(center[0], center[1], radius, 0, Nimble::Math::TWO_PI,
+    glFilledSoftArc(center[0], center[1], radius, 0.0f, float(Nimble::Math::TWO_PI),
 		    width, blendwidth, linesegments, color);
   }
 
@@ -862,7 +862,7 @@ namespace Luminous {
 				float blendwidth,
 				int linesegments, const float * color)
   {
-    glSolidSoftArc(centerx, centery, radius, 0, Nimble::Math::TWO_PI, 
+    glSolidSoftArc(centerx, centery, radius, 0.0f, float(Nimble::Math::TWO_PI),
 		   blendwidth, linesegments, color);
   }
 
@@ -968,7 +968,7 @@ namespace Luminous {
 
       glBegin(GL_QUAD_STRIP);
       
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
       glVertex2fv((cnow + p12 * fullw).data());
       glVertex2fv((cnext + p01 * fullw).data());
 
@@ -979,7 +979,7 @@ namespace Luminous {
       glVertex2fv((cnow - p12 * width).data());
       glVertex2fv((cnext - p01 * width).data());
 
-      glColor4f(r, g, b, 0);
+      glColor4f(r, g, b, 0.0f);
       glVertex2fv((cnow - p12 * fullw).data());
       glVertex2fv((cnext - p01 * fullw).data());
 
@@ -1025,7 +1025,7 @@ namespace Luminous {
       Vector2(x1 + cornerRadius, y1 + cornerRadius)
     };
 
-    const float   delta = Math::HALF_PI / float(cornerLineSegments);
+    const float   delta = float(Math::HALF_PI) / float(cornerLineSegments);
 
     glBegin(GL_LINE_LOOP);
 
@@ -1040,7 +1040,7 @@ namespace Luminous {
         y = -cosf(angle) * cornerRadius + arcCenters[i].y;
         glVertex2f(x, y);
       }
-      fromRadians += Math::HALF_PI;
+      fromRadians += float(Math::HALF_PI);
     }
 
     glEnd();
@@ -1065,7 +1065,7 @@ namespace Luminous {
       Vector2(x1 + cornerRadius, y1 + cornerRadius)
     };
 
-    const float   delta = Math::HALF_PI / float(cornerLineSegments);
+    const float   delta = float(Math::HALF_PI) / float(cornerLineSegments);
 
     glBegin(GL_POLYGON);
 
@@ -1080,7 +1080,7 @@ namespace Luminous {
         y = -cosf(angle) * cornerRadius + arcCenters[i].y;
         glVertex2f(x, y);
       }
-      fromRadians += Math::HALF_PI;
+      fromRadians += float(Math::HALF_PI);
     }
 
     glEnd();
@@ -1161,8 +1161,8 @@ namespace Luminous {
 
       float rel1 = ring / (float) rings;
       float rel2 = (ring + 1) / (float) rings;
-      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
-      float a2 = a * (0.5f + 0.5f * cosf(rel2 * Math::PI));
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * float(Math::PI)));
+      float a2 = a * (0.5f + 0.5f * cosf(rel2 * float(Math::PI)));
 
       float rad1 = ring * spanstep + inside;
       float rad2 = (ring+1) * spanstep + inside;
@@ -1193,9 +1193,9 @@ namespace Luminous {
 			       int rings, int sectors,
 			       const float * rgba)
   {
-    glCircularHalo(x2, y2, inside, outside, Math::PI * 0.0f, Math::PI * 1.0f,
+    glCircularHalo(x2, y2, inside, outside, float(Math::PI) * 0.0f, float(Math::PI) * 1.0f,
 		   rings, sectors / 2, rgba);
-    glCircularHalo(x1, y1, inside, outside, Math::PI * 1.0, Math::PI * 2.0f,
+    glCircularHalo(x1, y1, inside, outside, float(Math::PI) * 1.0f, float(Math::PI) * 2.0f,
 		   rings, sectors / 2, rgba);
 
     Vector2 p1(x1, y1);
@@ -1223,7 +1223,7 @@ namespace Luminous {
 
       float rel1 = ring / (float) rings;
 
-      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * float(Math::PI)));
 
       float d = rel1 * span - inside;
       
@@ -1236,7 +1236,7 @@ namespace Luminous {
 
       float rel1 = ring / (float) rings;
 
-      float a1 = a * (0.5f + 0.5f * cosf(rel1 * Math::PI));
+      float a1 = a * (0.5f + 0.5f * cosf(rel1 * float(Math::PI)));
 
       float d = rel1 * span + inside;
       

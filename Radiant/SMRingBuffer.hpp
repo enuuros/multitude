@@ -16,14 +16,14 @@
 #ifndef SHARED_MEMORY_HPP
 #define SHARED_MEMORY_HPP
 
-#include <Radiant/Trace.hpp>
+#include <Radiant/Export.hpp>
 
-#include <cassert>
-#include <memory>
+#ifdef WIN32
+#include <windows.h>
+#include <WinPort.h>
+#endif
 
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/types.h>
+#include <string>
 
 namespace Radiant
 {
@@ -55,7 +55,7 @@ namespace Radiant
     *    prepending size or type information.
     * 6. The SMRingBuffer destructor handles deallocation of the shared memory.
     */
-  class SMRingBuffer
+  class RADIANT_API SMRingBuffer
   {
 
 
@@ -92,10 +92,17 @@ namespace Radiant
       /// Construction / destruction.
 
       /// Constructor.
+#ifdef WIN32
+      /// @param smName User-defined name for shared memory.
+      /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
+      /// of that size; if size == 0, references the existing buffer identified by smKey.
+      SMRingBuffer::SMRingBuffer(const std::string smName, const uint32_t size);
+#else
       /// @param smKey User-defined key to shared memory.
       /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
       /// of that size; if size == 0, references the existing buffer identified by smKey.
       SMRingBuffer(const key_t smKey, const uint32_t size = 0);
+#endif
 
       /// Destructor.
       virtual ~SMRingBuffer();
@@ -223,8 +230,10 @@ namespace Radiant
 
       /// Diagnostics.
 
+#ifndef WIN32
       /// Return error message for the most recent shared memory function error.
       static std::string shmError();
+#endif
 
       /// Return true if the ring buffer is valid, false otherwise.
       bool isValid() const;
@@ -257,11 +266,19 @@ namespace Radiant
       /// true if this is the creator object, false if it is a reference object.
       bool    m_isCreator;
 
+#ifdef WIN32
+      /// User-defined name for the shared memory area.
+      std::string   m_smName;
+
+      /// Handle to shared memory area.
+      HANDLE  m_hMapFile;
+#else
       /// User-defined key to the shared memory area.
       key_t   m_smKey;
 
       /// ID of the shared memory area.
       int     m_id;
+#endif
 
       /// Pointer to the start of the ring buffer.
       /// @note The first smHeaderSize bytes of the shared memory area (SMA) are used

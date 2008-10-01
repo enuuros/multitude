@@ -18,7 +18,7 @@
 
 #include <Radiant/VideoInput.hpp>
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 #include <set>
 

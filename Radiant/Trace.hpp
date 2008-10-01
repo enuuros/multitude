@@ -25,13 +25,13 @@ namespace Radiant {
   
   /* Global functions for output to console/file. */
 
-  extern MTEXPORT void setAppName(const char *name);
+  extern RADIANT_API void setAppName(const char *name);
 
-  extern MTEXPORT void trace(const char *msg, ...);
+  extern RADIANT_API void trace(const char *msg, ...);
 
-  extern MTEXPORT void error(const char *msg, ...);
+  extern RADIANT_API void error(const char *msg, ...);
 
-  extern MTEXPORT void fatal(const char *msg, ...);
+  extern RADIANT_API void fatal(const char *msg, ...);
 
 }
 

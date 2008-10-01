@@ -28,7 +28,7 @@ namespace Dyslexic
 
   /// An abstract base class providing a common interface for all fonts residing
   /// in CPU memory.
-  class MTEXPORT CPUFont
+  class DYSLEXIC_API CPUFont
   {
     public:
       virtual ~CPUFont() {}

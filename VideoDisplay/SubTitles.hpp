@@ -19,12 +19,14 @@
 
 #include <Radiant/TimeStamp.hpp>
 
+#include <VideoDisplay/Export.hpp>
+
 #include <string>
 #include <vector>
 
 namespace VideoDisplay {
   
-  class SubTitles 
+  class VIDEODISPLAY_API SubTitles 
   {
   public:
 

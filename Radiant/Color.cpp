@@ -20,7 +20,7 @@ namespace Radiant
 {
   
   Color::Color()
-  : Nimble::Vector4f(0.f, 0.f, 0.f, 1.f)
+  : Nimble::Vector4f(0.0f, 0.0f, 0.0f, 1.0f)
   {}
 
   Color::Color(const char * color)

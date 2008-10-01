@@ -16,7 +16,7 @@
 #ifndef FIREVIEW_PARAMVIEW_HPP
 #define FIREVIEW_PARAMVIEW_HPP
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 class QLabel;
 class QSlider;

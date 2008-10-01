@@ -12,10 +12,13 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "FontManager.hpp"
 
 #include "CPUManagedFont.hpp"
+
 #include <map>
+#include <string>
 
 namespace Dyslexic
 {

@@ -21,7 +21,10 @@
 #include <windows.h>
 #include <1394Camera.h>
 #include "cmu_dc1394.hpp"
+
+#ifdef WIN32
 #include <WinPort.h>
+#endif
 
 
 // ----------------------------------------------------------------------------

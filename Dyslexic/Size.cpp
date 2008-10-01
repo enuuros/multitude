@@ -29,9 +29,8 @@ namespace Dyslexic
     m_error(0)
   {}
 
-  Size::~Size()
-  {
-  }
+//  Size::~Size()
+//  {}
 
   bool Size::charSize(FT_FaceRec_ ** face, int pointSize, int xRes, int yRes)
   {

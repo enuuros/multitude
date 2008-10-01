@@ -13,13 +13,8 @@
  * 
  */
 
+// The purpose of this file is to include ValueString.hpp and ValueStringImpl.hpp in the
+// Valuable build, thereby including any template instantiations defined in those files
+
 #include "ValueStringImpl.hpp"
-
-namespace Valuable
-{
-
-  template class ValueStringT<std::string>;
-  template class ValueStringT<std::wstring>;
-
-}
 

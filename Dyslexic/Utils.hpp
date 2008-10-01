@@ -17,6 +17,7 @@
 #define DYSLEXIC_UTILS_HPP
 
 #include <Dyslexic/CPUBitmapFont.hpp>
+#include <Dyslexic/Export.hpp>
 
 #include <Radiant/StringUtils.hpp>
 
@@ -42,7 +43,7 @@ namespace Dyslexic
       * @note Newline characters are retained in the output.
       * @param afterSpace true to break lines after inter-word spaces.
       */
-    void breakToLines(const std::wstring & ws, const float width,
+    void DYSLEXIC_API breakToLines(const std::wstring & ws, const float width,
       CPUFont & bitmapFont, Radiant::StringUtils::WStringList & lines,
       const bool afterSpace = true);
 
@@ -53,7 +54,7 @@ namespace Dyslexic
       * @param out Reference to list to receive the tokens.
       * @param afterDelim true to split string after delimiter.
       */
-    void split(const std::wstring & ws, const std::wstring & delim,
+    void DYSLEXIC_API split(const std::wstring & ws, const std::wstring & delim,
       Radiant::StringUtils::WStringList & out, const bool afterDelim = true);
 
   }

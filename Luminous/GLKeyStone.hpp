@@ -17,6 +17,8 @@
 #ifndef LUMINOUS_GL_KEYSTONE_HPP
 #define LUMINOUS_GL_KEYSTONE_HPP
 
+#include <Luminous/Export.hpp>
+
 #include <Nimble/Matrix4.hpp>
 
 #include <Valuable/HasValues.hpp>
@@ -37,7 +39,7 @@ namespace Luminous {
       projector-based systems where aligning the projectors physically
       is either impossible or very difficult.
   */
-  class GLKeyStone : public Valuable::HasValues
+  class LUMINOUS_API GLKeyStone : public Valuable::HasValues
   {
   public:
     /// Creates a new GLKeyStone object.

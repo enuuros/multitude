@@ -16,16 +16,17 @@
 #ifndef VALUABLE_VALUE_COLOR_HPP
 #define VALUABLE_VALUE_COLOR_HPP
 
-#include <Valuable/ValueObject.hpp>
-
 #include <Radiant/Color.hpp>
+
+#include <Valuable/Export.hpp>
+#include <Valuable/ValueObject.hpp>
 
 #define STD_OP this->emitChange(); return *this;
 
 namespace Valuable
 {
 
-  class ValueColor : public ValueObject
+  class VALUABLE_API ValueColor : public ValueObject
   {
     public:
       ValueColor(HasValues * parent, const std::string & name, const Radiant::Color & c, bool transit = false);

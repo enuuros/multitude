@@ -1,6 +1,7 @@
 #ifndef VALUABLE_VALUE_RECT_HPP
 #define VALUABLE_VALUE_RECT_HPP
 
+#include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
 #include <Nimble/Rect.hpp>
@@ -10,7 +11,7 @@
 namespace Valuable
 {
 
-  class ValueRect : public ValueObject
+  class VALUABLE_API ValueRect : public ValueObject
   {
     public:
       ValueRect(HasValues * parent, const std::string & name, const Nimble::Rect & r, bool transit = false);

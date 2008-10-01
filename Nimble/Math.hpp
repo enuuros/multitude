@@ -16,6 +16,8 @@
 #ifndef NIMBLE_MATH_HPP
 #define NIMBLE_MATH_HPP
 
+#include <Nimble/Export.hpp>
+
 #include <math.h>
 
 namespace Nimble {
@@ -69,7 +71,7 @@ namespace Nimble {
     inline double ATan(double v)  { return atan(v); }
     inline double ATan2(double x, double y)  { return atan2(x, y); }
 
-    inline float Sqrt(int v) { return sqrtf(v); }
+    inline float Sqrt(int v) { return sqrtf(float(v)); }
 
     inline double degToRad(const double degrees) { return (degrees * PI / 180.0); }
     inline double radToDeg(const double radians) { return (radians * 180.0 / PI); }

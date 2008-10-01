@@ -16,12 +16,16 @@
 #ifndef RADIANT_VIDEO_1394_HPP
 #define RADIANT_VIDEO_1394_HPP
 
+#include <Radiant/Export.hpp>
 #include <Radiant/VideoInput.hpp>
 
 #include <dc1394/control.h>
 
 #include <string>
+
+#ifdef WIN32
 #include <WinPort.h>
+#endif
 
 class C1394Camera;
 #define _WINSOCKAPI_		// timeval redefinition
@@ -35,7 +39,7 @@ namespace Radiant {
 
       For more information on libdc1394, see:
       http://www-2.cs.cmu.edu/~iwan/1394/ */
-class MTEXPORT Video1394 : public VideoInput
+class RADIANT_API Video1394 : public VideoInput
 {
 public:
   

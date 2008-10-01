@@ -16,6 +16,8 @@
 #ifndef TCB_SPLINE_HPP
 #define TCB_SPLINE_HPP
 
+#include <Luminous/Export.hpp>
+
 #include <Nimble/Vector2.hpp>
 #include <Nimble/Matrix3.hpp>
 
@@ -23,7 +25,7 @@
 
 namespace Luminous {
 
-class TCBSpline2 
+class LUMINOUS_API TCBSpline2 
 {
   public:
     TCBSpline2() {}

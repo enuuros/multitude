@@ -134,7 +134,7 @@ namespace Luminous
 	    float val = 
 	      (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 +  (*v11) * fw11;
 
-	    *dest = Nimble::Math::Min((int) (val + 0.5f), 255);
+      *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 	    
 	    dest++;
 
@@ -209,7 +209,7 @@ namespace Luminous
 	      ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
 	       (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
 
-	    *dest = Nimble::Math::Min((int) (val + 0.5f), 255);
+	    *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 	    
 	    if(c == 0)
 	      ; // trace("d = %d (%d)", (int) *dest, (int) v00);
@@ -222,7 +222,7 @@ namespace Luminous
 	    v11++;
 	  }
 
-	  *dest = Nimble::Math::Min((int) asum, 255);
+	  *dest = uint8_t(Nimble::Math::Min((int) asum, 255));
 
 	  /* if(*dest > 128)
 	     printf("."); */
@@ -281,7 +281,7 @@ namespace Luminous
 	  tmp += l1[0];
 	  tmp += l1[1];
 
-	  *dest = tmp >> 2;
+	  *dest = uint8_t(tmp >> 2);
 
 	  l0 += 2;
 	  l1 += 2;
@@ -314,7 +314,7 @@ namespace Luminous
             tmp += l1[0];
             tmp += l1[3];
 
-            *dest = tmp >> 2;
+            *dest = uint8_t(tmp >> 2);
 
             l0++;
             l1++;
@@ -366,14 +366,14 @@ namespace Luminous
             tmp += (unsigned) l1[0] * a01;
             tmp += (unsigned) l1[4] * a11;
 
-            *dest = tmp / asum;
+            *dest = uint8_t(tmp / asum);
 
             l0++;
             l1++;
             dest++;
           }
 
-	  *dest = asum >> 2;
+	  *dest = uint8_t(asum >> 2);
 	  // *dest = 255;
 	  dest++;
 

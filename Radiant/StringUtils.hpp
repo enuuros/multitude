@@ -22,6 +22,10 @@
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Radiant
 {
 
@@ -33,44 +37,44 @@ namespace Radiant
     typedef std::list<std::wstring>   WStringList;
 
     /// Remove non-visible characters from std::string.
-    MTEXPORT void eraseNonVisibles(std::string & s);
+    RADIANT_API void eraseNonVisibles(std::string & s);
 
     /// Convert std::string to double.
-    MTEXPORT double stdStringToDouble(const std::string & str, const int precision = 12);
+    RADIANT_API double stdStringToDouble(const std::string & str, const int precision = 12);
 
     /// Convert double to std::string.
-    MTEXPORT std::string doubleToStdString(const double value, const int precision = 12);
+    RADIANT_API std::string doubleToStdString(const double value, const int precision = 12);
 
     /// Convert std::string to std::wstring.
-    MTEXPORT std::wstring stdStringToStdWstring(const std::string & str);
+    RADIANT_API std::wstring stdStringToStdWstring(const std::string & str);
 
     /// Convert std::wstring to std::string
     /// @warning: non-ASCII characters may be lost in conversion.
-    MTEXPORT std::string stdWstringToStdString(const std::wstring & wstr);
+    RADIANT_API std::string stdWstringToStdString(const std::wstring & wstr);
 
     /// Split std::string into sub-strings.
-    MTEXPORT void split(const std::string & s, const std::string & delim, StringList & out, bool skipEmpty = true);
+    RADIANT_API void split(const std::string & s, const std::string & delim, StringList & out, bool skipEmpty = true);
     /// Split std::wstring into sub-strings.
-    MTEXPORT void split(const std::wstring & ws, const std::wstring & delim, WStringList & out);
+    RADIANT_API void split(const std::wstring & ws, const std::wstring & delim, WStringList & out);
 
     /// Count the number of lines in the string.
-    MTEXPORT int lineCount(const char * s);
+    RADIANT_API int lineCount(const char * s);
 
     /// Convert utf8 string to wide string.
-    MTEXPORT void utf8ToStdWstring(std::wstring & dest, const std::string & src);
+    RADIANT_API void utf8ToStdWstring(std::wstring & dest, const std::string & src);
     /// Convert wide string to utf8 string.
-    MTEXPORT void stdWstringToUtf8(std::string & dest, const std::wstring & src);
+    RADIANT_API void stdWstringToUtf8(std::string & dest, const std::wstring & src);
     /// Count the number of decoded unicode characters in a utf8 string.
-    MTEXPORT int utf8DecodedLength(const std::string & src);
+    RADIANT_API int utf8DecodedLength(const std::string & src);
     /// Count the number of encoded utf8 bytes characters in a wide string.
-    MTEXPORT int utf8EncodedLength(const std::wstring & src);
+    RADIANT_API int utf8EncodedLength(const std::wstring & src);
     // Returns the lower-case version of the ascii string
-    MTEXPORT std::string lowerCase(const std::string & src);
+    RADIANT_API std::string lowerCase(const std::string & src);
 
     /** Finds the str in strings and return the index. The
 	strings-variable is terminated by null string. If the str is
 	not found in the strings, then -1 is returned. */
-    int which(const char ** strings, const char * str);
+    RADIANT_API int which(const char ** strings, const char * str);
 
     template<class T>
     inline std::string stringify(T x) {
@@ -81,7 +85,7 @@ namespace Radiant
     
     template <class T>
     inline T fromString(const char * str)
-    { return atoll(str); }
+    { return T(atoll(str)); }
 
     template <long>
     inline long fromString(const char * str)
@@ -97,7 +101,12 @@ namespace Radiant
     { return atoll(str); }
     */
 
-    MTEXPORT const char * yesNo(bool yes);
+    RADIANT_API const char * yesNo(bool yes);
+
+#ifdef WIN32
+    RADIANT_API std::string getLastErrorMessage();
+#endif
+
   }
 }
 

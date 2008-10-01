@@ -1,4 +1,4 @@
-EXTDIR = "C:\IPCity\CityWall\develop\ext"
+EXTDIR = "C:\develop\ext"
 DESTDIR = ../../Win32/lib/debug
 #
 INC_CMUCAM = $$join(EXTDIR,,,"\cmucam\1394camera")

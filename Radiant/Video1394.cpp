@@ -31,7 +31,9 @@
 
 #include <dc1394/camera.h>
 
+#ifndef WIN32
 #include <sys/utsname.h>
+#endif
 
 #define NUM_BUFFERS 10
 
@@ -503,6 +505,7 @@ namespace Radiant {
     dc1394video_mode_t video_mode = DC1394_VIDEO_MODE_640x480_MONO8;
   
     dc1394framerates_t framerates;
+    framerates.num = 0;
 
     for(i = 0; video_modes[i] != 0; i++) {
       video_mode = video_modes[i];
@@ -849,11 +852,10 @@ namespace Radiant {
       start();
 
     m_frame = 0;
-    int err;
+    int err = dc1394_capture_dequeue(m_camera,
+              DC1394_CAPTURE_POLICY_WAIT, & m_frame);
 
-    if((err = dc1394_capture_dequeue(m_camera,
-				     DC1394_CAPTURE_POLICY_WAIT,
-				     & m_frame))) {
+    if(err ) {
       error("Video1394::captureImage # Unable to capture a frame!");
       close();
       return 0;
@@ -956,12 +958,16 @@ namespace Radiant {
       return false;
     }
 
+    bool isleopard = false;
+
+#ifndef WIN32
     struct utsname sn;
-    uname( & sn);
+    uname(& sn);
 
     // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
     bool isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
       sn.release[0] == '9' && sn.release[1] == '.';
+#endif
 
     // Clean up in the first start:
     static int initcount = 0;

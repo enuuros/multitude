@@ -86,7 +86,7 @@ namespace Radiant {
     getRef<int32_t>() = FLOAT_MARKER;
     getRef<float>()   = v;
   }
-  
+
   void BinaryData::writeInt32(int32_t v)
   {
     ensure(8);
@@ -148,7 +148,7 @@ namespace Radiant {
     if(marker == FLOAT_MARKER)
       return getRef<float>();
     else if(marker == INT32_MARKER)
-      return getRef<int32_t>();
+      return float(getRef<int32_t>());
     else if(ok)
       *ok = false;
 
@@ -170,7 +170,7 @@ namespace Radiant {
     if(marker == INT32_MARKER)
       return getRef<int32_t>();
     else if(marker == INT64_MARKER)
-      return getRef<int64_t>();
+      return int32_t(getRef<int64_t>());
     else if(marker == FLOAT_MARKER)
       return Nimble::Math::Round(getRef<float>());
     else if(ok) {
@@ -199,11 +199,11 @@ namespace Radiant {
     else if(marker == FLOAT_MARKER)
       return Nimble::Math::Round(getRef<float>());
     else if(ok) {
-      badmarker("BinaryData::readInt64", marker);
+      badmarker("BinaryData::readInt64", int32_t(marker));
       *ok = false;
     }
 
-    skipParameter(marker);
+    skipParameter(int(marker));
     return 0;
   }
 

@@ -324,7 +324,7 @@ namespace Screenplay {
     Radiant::trace("VideoInputFFMPEG::fps # %d %d -> %.2lf",
 		time_base.den, time_base.num, r);
 
-    return r;
+    return float(r);
     // return 30;
   }
 
@@ -519,12 +519,12 @@ namespace Screenplay {
 
   bool VideoInputFFMPEG::start()
   {
-    return m_vcodec;
+    return ((m_vcodec == 0) ? false : true);
   }
 
   bool VideoInputFFMPEG::isStarted() const
   {  
-    return m_vcodec;
+    return ((m_vcodec == 0) ? false : true);
   }
 
   bool VideoInputFFMPEG::stop()

@@ -178,14 +178,14 @@ namespace Luminous {
 
       if(aspect >= 1.0f) {
         w = maxdim;
-        h = maxdim / aspect;
+        h = int(maxdim / aspect);
 
         while(h & 0x3F)
           h++;
       }
       else {
         h = maxdim;
-        w = maxdim * aspect;
+        w = int(maxdim * aspect);
 
         while(w & 0x3F)
           w++;

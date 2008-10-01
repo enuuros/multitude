@@ -16,16 +16,17 @@
 #ifndef LUMINOUS_IMAGE_HPP
 #define LUMINOUS_IMAGE_HPP
 
+#include <Luminous/Export.hpp>
 #include <Luminous/PixelFormat.hpp>
-#include <cstdio>
 
+#include <cstdio>
 #include <vector>
 
 namespace Luminous
 {
 
   /// Simple image handling class
-  class Image
+  class LUMINOUS_API Image
   {
   public:
     enum ImageType {

@@ -16,6 +16,7 @@
 #ifndef LUMINOUS_GPU_MIPMAPS_HPP
 #define LUMINOUS_GPU_MIPMAPS_HPP
 
+#include <Luminous/Export.hpp>
 #include <Luminous/GLResource.hpp>
 #include <Luminous/Texture.hpp>
 
@@ -30,7 +31,7 @@ namespace Luminous {
   /** A set of image mipmaps in the GPU memory. This class is used to
       load images from the CPUMipmaps object to the GPU as
       required and available. */
-  class GPUMipmaps : public GLResource
+  class LUMINOUS_API GPUMipmaps : public GLResource
   {
   public:
     GPUMipmaps(CPUMipmaps *, GLResources * resources = 0);

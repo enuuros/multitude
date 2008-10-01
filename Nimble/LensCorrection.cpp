@@ -22,7 +22,7 @@ namespace Nimble {
       m_radiusInv(1.0f / sqrtf(320 * 320 + 240 * 240)),
       m_params(0, 0, 0, 1)
   {
-    setParams(0, 0.1, 0); // Some trash...
+    setParams(0.0f, 0.1f, 0.0f); // Some trash...
   }
 
   void LensCorrection::setCameraResolution(int w, int h)

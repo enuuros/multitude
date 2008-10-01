@@ -19,6 +19,7 @@
 #include <Nimble/Math.hpp>
 #include <Nimble/Vector3.hpp>
 
+#include <Radiant/Export.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <assert.h>
@@ -32,10 +33,10 @@ namespace Radiant
 
     // Conversion between RGB and HSV using code published in Hearn, D. and Baker, M.
     // (1997) "Computer Graphics", New Jersey: Prentice Hall Inc. (pp. 578-579.).
-    void rgbTohsv(float r, float g, float b, float & h, float & s, float & v);
-    void rgbTohsv(Nimble::Vector3f & rgb, Nimble::Vector3f & hsv);
-    void hsvTorgb(float h, float s, float v, float & r, float & g, float & b);
-    void hsvTorgb(Nimble::Vector3f & hsv, Nimble::Vector3f & rgb);
+    RADIANT_API void rgbTohsv(float r, float g, float b, float & h, float & s, float & v);
+    RADIANT_API void rgbTohsv(Nimble::Vector3f & rgb, Nimble::Vector3f & hsv);
+    RADIANT_API void hsvTorgb(float h, float s, float v, float & r, float & g, float & b);
+    RADIANT_API void hsvTorgb(Nimble::Vector3f & hsv, Nimble::Vector3f & rgb);
 
   }
 

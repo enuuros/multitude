@@ -23,9 +23,13 @@ namespace Valuable
 {
 
   template<class VectorType, typename ElementType, int N>
-  const char * const ValueVector<VectorType, ElementType, N>::type() const { return "unknown_vector"; }
+  const char * const ValueVector<VectorType, ElementType, N>::type() const { return "vector"; }
 
-  template<> 
+  /// @todo Under WIN32 these specializations conflict with the class instantiation
+  /// in ValueVector.hpp. Remove them and if possible modify the template function 
+  /// above to handle all types.
+/*
+  template<>
   const char * const ValueVector<Nimble::Vector2f, float, 2>::type() const { return "vec2f"; }
 
   template<> 
@@ -42,6 +46,7 @@ namespace Valuable
 
   template<> 
   const char * const ValueVector<Nimble::Vector4i, int, 4>::type() const { return "vec4i"; }
+*/
 
   template<class VectorType, typename ElementType, int N>
   bool ValueVector<VectorType, ElementType, N>::deserializeXML(DOMElement element) {
@@ -75,4 +80,3 @@ namespace Valuable
 }
 
 #endif
-

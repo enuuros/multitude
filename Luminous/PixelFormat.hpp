@@ -18,7 +18,7 @@
 
 #include <GL/glew.h>
 
-#include <Radiant/Export.hpp>
+#include <Luminous/Export.hpp>
 
 namespace Luminous
 {
@@ -26,7 +26,7 @@ namespace Luminous
   /** This class tells what typy values there are in the pixels, and
       how they are aligned. It is implemented in away that makes it
       easy to convert the pixel formats*/
-  class MTEXPORT PixelFormat
+  class LUMINOUS_API PixelFormat
   {
     public:
 

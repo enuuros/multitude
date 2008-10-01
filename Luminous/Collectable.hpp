@@ -16,14 +16,14 @@
 #ifndef LUMINOUS_COLLECTABLE_HPP
 #define LUMINOUS_COLLECTABLE_HPP
 
-#include <Radiant/Export.hpp>
+#include <Luminous/Export.hpp>
 
 namespace Luminous
 {
   class GarbageCollector;
 
   /// A utility class to make the work of GarbageCollector easier.
-  class MTEXPORT Collectable
+  class LUMINOUS_API Collectable
   {
   public:
     Collectable(GarbageCollector * collector = 0);

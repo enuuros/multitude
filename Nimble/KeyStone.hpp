@@ -16,10 +16,10 @@
 #ifndef NIMBLE_KEYSTONE_HPP
 #define NIMBLE_KEYSTONE_HPP
 
-#include <Nimble/Rect.hpp>
+#include <Nimble/Export.hpp>
 #include <Nimble/LensCorrection.hpp>
-
 #include <Nimble/Matrix3.hpp>
+#include <Nimble/Rect.hpp>
 #include <Nimble/Vector4.hpp>
 
 #include <vector>
@@ -68,10 +68,12 @@ namespace Nimble {
 
       @author Tommi Ilmonen
   */
-  class KeyStone
+  class NIMBLE_API KeyStone
   {
   public:
     KeyStone();
+
+    virtual ~KeyStone() {}
 
     /// Set vertices, and other parameters.
     void setVertices(const char * str, 
@@ -125,14 +127,14 @@ namespace Nimble {
     int closestCorner(Nimble::Vector2) const;
 
     Nimble::Vector2 topLeft() const
-    { return m_originals[closestCorner(Nimble::Vector2(0,0))]; }
+    { return m_originals[closestCorner(Nimble::Vector2(0.0f, 0.0f))]; }
     Nimble::Vector2 topRight() const
-    { return m_originals[closestCorner(Nimble::Vector2(m_width, 0))]; }
+    { return m_originals[closestCorner(Nimble::Vector2(float(m_width), 0.0f))]; }
 
     Nimble::Vector2 bottomLeft() const
-    { return m_originals[closestCorner(Nimble::Vector2(0, m_height))]; }
+    { return m_originals[closestCorner(Nimble::Vector2(0.0f, float(m_height)))]; }
     Nimble::Vector2 bottomRight() const
-    { return m_originals[closestCorner(Nimble::Vector2(m_width, m_height))]; }
+    { return m_originals[closestCorner(Nimble::Vector2(float(m_width), float(m_height)))]; }
 
     /// Flips the corner points horizontally.
     void flipHorizontal();

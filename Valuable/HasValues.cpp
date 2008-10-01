@@ -17,6 +17,8 @@
 #include <Valuable/DOMDocument.hpp>
 #include <Valuable/DOMElement.hpp>
 
+#include <Valuable/HasValues.hpp>
+
 #include <Radiant/Trace.hpp>
 #include <Radiant/RefPtr.hpp>
 
@@ -132,6 +134,10 @@ namespace Valuable
     return doc->save();
   }
 
+#ifdef WIN32
+#pragma warning (disable:4702)
+#endif
+
   bool HasValues::saveXML(const char * filename)
   {
     try {
@@ -141,9 +147,13 @@ namespace Valuable
     catch(...) {
       return false;
     }
-    
-    return false; // Unreachable
+
+	  return false; // Unreachable
   }
+
+#ifdef WIN32
+#pragma warning (default:4702)
+#endif
 
   bool HasValues::saveInMemoryXML(std::vector<char> & buffer)
   {
@@ -256,8 +266,5 @@ namespace Valuable
   {
     return false;
   }
-
-  template bool HasValues::setValue<Nimble::Vector2T<float> >(const std::string & name, const Nimble::Vector2T<float> &);
-  template bool HasValues::setValue<Nimble::Vector4T<float> >(const std::string & name, const Nimble::Vector4T<float> &);
 
 }

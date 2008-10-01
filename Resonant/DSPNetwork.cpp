@@ -140,6 +140,13 @@ namespace Resonant {
     m_incoming.append(control);
   }
 
+#ifdef WIN32
+  DSPNetwork * DSPNetwork::instance()
+  {
+    return m_instance;
+  }
+#endif
+
   int DSPNetwork::callback(const void *in, void *out,
 			   unsigned long framesPerBuffer,
 			   const PaStreamCallbackTimeInfo* time,
@@ -413,10 +420,13 @@ namespace Resonant {
     assert(ins == (int) item.m_inputs.size());
 
     item.m_ins.resize(ins);
-    bzero( & item.m_ins[0], item.m_ins.size() * sizeof(float *));
+
+    if(!item.m_ins.empty())
+      bzero( & item.m_ins[0], item.m_ins.size() * sizeof(float *));
 
     item.m_outs.resize(outs);
-    bzero( & item.m_outs[0], item.m_outs.size() * sizeof(float *));
+    if(!item.m_outs.empty())
+      bzero( & item.m_outs[0], item.m_outs.size() * sizeof(float *));
 
     for(i = 0; i < ins; i++) {
       Connection & conn = item.m_inputs[i];

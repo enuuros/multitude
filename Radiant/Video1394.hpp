@@ -23,6 +23,7 @@
 #include <dc1394/control.h>
 
 #include <string>
+#include <WinPort.h>
 
 
 namespace Radiant {

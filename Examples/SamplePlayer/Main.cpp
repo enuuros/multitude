@@ -19,9 +19,11 @@
 #include <Resonant/DSPNetwork.hpp>
 #include <Resonant/ModuleSamplePlayer.hpp>
 
+#include <conio.h>
+
 int main(int argc, char ** argv)
 {
-  const char * file = "test.wav";
+  const char * file = "../test.wav";
 
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
@@ -63,6 +65,8 @@ int main(int argc, char ** argv)
   Radiant::Sleep::sleepS(3);
 
   dsp.stop();
+
+  _getch();
 
   return 0;
 }

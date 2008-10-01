@@ -16,6 +16,8 @@
 #ifndef RADIANT_DIRECTORY_HPP
 #define RADIANT_DIRECTORY_HPP
 
+#include <Radiant/Export.hpp>
+
 #include <string>
 #include <vector>
 
@@ -31,7 +33,7 @@ namespace Radiant
     @author Esa Nuuros
     */ 
 
-  class Directory
+  class RADIANT_API Directory
   {
     public:
       enum FilterFlags

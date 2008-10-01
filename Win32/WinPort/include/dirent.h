@@ -8,6 +8,8 @@
 #ifndef _DIRENT_H_
 #define _DIRENT_H_
 
+#include <WinPort/Export.hpp>
+
 /* All the headers include this file. */
 #include <_mingw.h>
 
@@ -67,12 +69,12 @@ typedef struct
 	char			dd_name[1];
 } DIR;
 
-DIR* __cdecl __MINGW_NOTHROW opendir (const char*);
-struct dirent* __cdecl __MINGW_NOTHROW readdir (DIR*);
-int __cdecl __MINGW_NOTHROW closedir (DIR*);
-void __cdecl __MINGW_NOTHROW rewinddir (DIR*);
-long __cdecl __MINGW_NOTHROW telldir (DIR*);
-void __cdecl __MINGW_NOTHROW seekdir (DIR*, long);
+WINPORT_API DIR * __cdecl __MINGW_NOTHROW opendir (const char *);
+WINPORT_API struct dirent * __cdecl __MINGW_NOTHROW readdir (DIR *);
+WINPORT_API int __cdecl __MINGW_NOTHROW closedir (DIR *);
+WINPORT_API void __cdecl __MINGW_NOTHROW rewinddir (DIR *);
+WINPORT_API long __cdecl __MINGW_NOTHROW telldir (DIR *);
+WINPORT_API void __cdecl __MINGW_NOTHROW seekdir (DIR *, long);
 
 
 /* wide char versions */
@@ -113,7 +115,6 @@ typedef struct
 	/* given path for dir with search pattern (struct is extended) */
 	wchar_t			dd_name[1];
 } _WDIR;
-
 
 
 _WDIR* __cdecl __MINGW_NOTHROW _wopendir (const wchar_t*);

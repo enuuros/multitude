@@ -34,7 +34,7 @@ namespace Patterns {
     static T & instance() {
       static T * obj = 0;
 
-      if(!obj) 
+      if(!obj)
         obj = new T();
 
       return *obj;
@@ -42,8 +42,8 @@ namespace Patterns {
 
   protected:
     Singleton() {}
-    virtual ~Singleton() {}  
-  };   
+    virtual ~Singleton() {}
+  };
 
 }
 

@@ -18,8 +18,9 @@
 
 #include <Nimble/Vector2.hpp>
 
-#include <stdint.h>
+#include <Radiant/Export.hpp>
 
+#include <stdint.h>
 #include <vector>
 
 namespace Radiant {
@@ -66,7 +67,7 @@ namespace Radiant {
       so you must do that in our own code.
       
   */
-  class BinaryData
+  class RADIANT_API BinaryData
   {
   public:
     BinaryData();
@@ -97,6 +98,7 @@ namespace Radiant {
     float readFloat32(bool * ok = 0);
     /// Reads a 32-bit integer from the data buffer
     int32_t readInt32(bool * ok = 0);
+
     /// Reads a 64-bit integer from the data buffer
     int64_t readInt64(bool * ok = 0);
     /// Reads a 64-bit time-stamp from the data buffer

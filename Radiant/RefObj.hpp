@@ -16,11 +16,13 @@
 #ifndef RADIANT_REF_OBJ_HPP
 #define RADIANT_REF_OBJ_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant {
   
   /// Utility for RefObj
   template <typename T>
-  class RefObjInt
+  class RADIANT_API RefObjInt
   {
   public:
     RefObjInt() : m_count(1) {}
@@ -33,7 +35,7 @@ namespace Radiant {
   /** This class can be used to share an object between several
       holders, using reference counters. */
   template <typename T>
-  class RefObj
+  class RADIANT_API RefObj
   {
   public:
     RefObj() : m_holder(0) {}

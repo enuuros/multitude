@@ -19,13 +19,15 @@
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/VideoInput.hpp>
 
+#include <ScreenPlay/Export.hpp>
+
 #include <string>
 
 extern "C" {
 
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/avutil.h>
+#include </*libavformat/*/avformat.h>
+#include </*libavcodec/*/avcodec.h>
+#include </*libavutil/*/avutil.h>
 
   struct AVCodec;
   struct AVCodecContext;
@@ -35,7 +37,7 @@ extern "C" {
 
 namespace Screenplay {
 
-  class MTEXPORT VideoInputFFMPEG : public Radiant::VideoInput
+  class SCREENPLAY_API VideoInputFFMPEG : public Radiant::VideoInput
   {
   public:
 

@@ -26,12 +26,13 @@
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Trace.hpp>
 
-#include <QAction>
-#include <QCoreApplication>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QTimer>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
+
+#include <QtGui/QAction>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QPainter>
 
 namespace FireView {
 
@@ -120,7 +121,7 @@ namespace FireView {
 #ifndef WIN32
       ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 640, 480), m_customFps);
 #else
-      error("Format 7 not yet supported under Windows.";
+      error("Format 7 not yet supported under Windows.");
       ok = false;
 #endif
 
@@ -525,7 +526,8 @@ namespace FireView {
 	
         // puts("subimage");
 
-	// bzero(frame.m_planes[0].m_data, 640 * 20); // black strip
+  //  if(!frame.m_planes.empty())
+	//    bzero(frame.m_planes[0].m_data, 640 * 20); // black strip
         
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
 			frame.width(), frame.height(),
@@ -546,7 +548,7 @@ namespace FireView {
     int dh = height();
 
     glViewport (0, 0, dw, dh);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode (GL_PROJECTION);
@@ -560,7 +562,7 @@ namespace FireView {
     if(m_texFrame >= 0) {
       glEnable(GL_TEXTURE_2D);
       m_tex->bind();
-      glColor3f(1, 1, 1);
+      glColor3f(1.0f, 1.0f, 1.0f);
       
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     
@@ -598,7 +600,7 @@ namespace FireView {
 
       float phase = (m_texFrame % 60) / 60.0f;
       float green = sinf(phase * Math::TWO_PI) * 0.5f + 0.5f;
-      glColor3f(green * 0.5f, green, 0);
+      glColor3f(green * 0.5f, green, 0.0f);
 
       glLineWidth(1);
       glBegin(GL_LINE_STRIP);
@@ -624,16 +626,16 @@ namespace FireView {
         tmp.sprintf("%.1f", an.average);
       
         if(an.average < 128)
-          glColor3f(1, 1, 1);
+          glColor3f(1.0f, 1.0f, 1.0f);
         else
-          glColor3f(0, 0, 0);
+          glColor3f(0.0f, 0.0f, 0.0f);
 
         float w = foo.boundingRect(0, 0, 500, 500, Qt::AlignLeft, tmp).width();
         renderText((int) (an.center.x - w * 0.5f), (int) an.center.y, tmp);
       }
 
       if(m_texFrame < 0) {
-        glColor3f(1, 1, 1);
+        glColor3f(1.0f, 1.0f, 1.0f);
         const char * warningtext = "Waiting for camera frames";
         float w = foo.boundingRect(0, 0, 500, 500,
                                    Qt::AlignLeft, warningtext).width();
@@ -641,7 +643,7 @@ namespace FireView {
                    warningtext);
       }
     }
-    glColor3f(1, 1, 1);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     char state[64];
     sprintf(state, "%.4f FPS %d frames", m_thread.m_lastCheckFps,

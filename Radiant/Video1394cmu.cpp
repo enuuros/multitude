@@ -288,7 +288,7 @@ void Video1394::setWhiteBalance(float u_to_blue, float v_to_red)
 	pcc->GetRange(&low, &high);
 	if(low != high)
 	{
-		float s = high - low;
+		float s = float(high - low);
 		ublue = (unsigned short) (s * u_to_blue + low);
 		vred  = (unsigned short) (s * v_to_red  + low);
 		if (ublue > high)	ublue = high;
@@ -354,7 +354,7 @@ void Video1394::cmu_setFeature1394(CAMERA_FEATURE feature, float value)
 			value = high;
 	}
 
-	pcc->SetValue(value);
+	pcc->SetValue(unsigned short(value));
 }
 
 // ---------------------------------------------------------------------------
@@ -363,14 +363,14 @@ void Video1394::setFeature1394Raw(dc1394feature_t feature, int32_t value)
 {
 	// const char * fname = "Video1394::setFeature1394";
 	CAMERA_FEATURE cmu_feature = cmu_dc1394_convertFeatureID(feature);
-	cmu_setFeature1394(cmu_feature, value);
+	cmu_setFeature1394(cmu_feature, float(value));
 
 	assert(cmu_camera);
 	C1394CameraControl * pcc = cmu_camera->GetCameraControl(cmu_feature);
 	if (pcc)
 	{
 		pcc->SetAutoMode(FALSE);
-		pcc->SetValue(value);
+		pcc->SetValue(unsigned short(value));
 	}
 }
 
@@ -432,7 +432,7 @@ void Video1394::getFeatures(std::vector<dc1394feature_info_t> * feats)
 					info.trigger_modes.num = 0;
 					unsigned short uMode;
 					for (int uMode = 0; uMode <= 5; uMode++)
-						if (pcct->HasMode(uMode))
+						if (pcct->HasMode(unsigned short(uMode)))
 							info.trigger_modes.modes[info.trigger_modes.num++] = (dc1394trigger_mode_t)(DC1394_TRIGGER_MODE_0 + uMode);
 					if (pcct->HasMode(14))	info.trigger_modes.modes[info.trigger_modes.num++] = DC1394_TRIGGER_MODE_14;
 					if (pcct->HasMode(15))	info.trigger_modes.modes[info.trigger_modes.num++] = DC1394_TRIGGER_MODE_15;
@@ -508,7 +508,7 @@ bool Video1394::enableTrigger(dc1394trigger_source_t source)
 			return false;
 			} */
 
-		unsigned short src = source - DC1394_TRIGGER_SOURCE_MIN;
+		unsigned short src = unsigned short(source - DC1394_TRIGGER_SOURCE_MIN);
 		if (source == DC1394_TRIGGER_SOURCE_SOFTWARE)
 			src = 7;
 		if (pcct->SetTriggerSource(src) == CAM_SUCCESS)
@@ -833,7 +833,7 @@ void Video1394::sendSoftwareTrigger()
 	bool Video1394::isInitialized() const	{ return m_initialized;	}
 	int Video1394::width() const				{ return m_image.m_width; }
 	int Video1394::height() const				{ return m_image.m_height; }
-	float Video1394::fps() const				{ return m_fps; }
+	float Video1394::fps() const				{ return float(m_fps); }
 
 	/** -------------------------------------------------------------------------
 	* Starts the camera data transmission. 

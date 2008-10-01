@@ -42,7 +42,7 @@ int main(int, char **)
 
   float shutter = 0.2f;
   float gain = 0.5f;
-  float step = 0.01;
+  float step = 0.01f;
 
   video.setGain(gain);
   video.setShutter(shutter);
@@ -77,7 +77,7 @@ int main(int, char **)
       system(buf2);
 
       // Adjust camera:
-      Nimble::Histogram<int, 256> hist;
+      Nimble::Histogrami256 hist;
       hist.clear();
 
       for(const uint8_t * sentinel = ptr + pn; ptr < sentinel; ptr++)

@@ -16,8 +16,9 @@
 #ifndef RADIANT_VIDEO_INPUT_H
 #define RADIANT_VIDEO_INPUT_H
 
-#include <Radiant/VideoImage.hpp>
+#include <Radiant/Export.hpp>
 #include <Radiant/IODefs.hpp>
+#include <Radiant/VideoImage.hpp>
 
 #include <vector>
 
@@ -42,8 +43,8 @@ namespace Radiant {
     WITH_AUDIO = 0x2
   };
 
-  MTEXPORT float asFloat(FrameRate);
-  MTEXPORT FrameRate closestFrameRate(float fps);
+  RADIANT_API float asFloat(FrameRate);
+  RADIANT_API FrameRate closestFrameRate(float fps);
 
   /// Base class for video input classes. 
 
@@ -53,7 +54,7 @@ namespace Radiant {
       @authors Tommi Ilmonen and Juha Laitinen
   */
 
-  class MTEXPORT VideoInput
+  class RADIANT_API VideoInput
   {
   public:
 

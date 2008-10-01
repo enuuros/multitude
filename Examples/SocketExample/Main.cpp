@@ -31,11 +31,13 @@ void runServer(const char * host, int port, bool withBlocking)
   char buf[1024];
 
   TCPServerSocket server;
-  int err;
-  if((err = server.open(host, port, 5))) {
-  // if((err = server.open(0, port, 5))) {
+  int err = server.open(host, port, 5);
+// err = server.open(0, port, 5)
+  if(err) {
+    const int  msgSize = 128;
+    char  msgBuf[msgSize] = "";
     printf("%s cannot open server socket to %s:%d -> %s\n", 
-	   appname, host, port, strerror(err));
+	   appname, host, port, strerror_s(msgBuf, msgSize, err));
     return;
   }
   
@@ -68,10 +70,12 @@ void runClient(const char * host, int port, const char * message)
   printf("Setting up a client socket to %s:%d\n", host, port);
 
   TCPSocket socket;
-  int err;
-  if((err = socket.open(host, port)) != 0) {
+  int err = socket.open(host, port);
+  if(err) {
+    const int  msgSize = 128;
+    char  msgBuf[msgSize] = "";
     printf("%s cannot open client socket to %s:%d -> %s\n", 
-	   appname, host, port, strerror(err));
+	   appname, host, port, strerror_s(msgBuf, msgSize, err));
     return;
   }
 

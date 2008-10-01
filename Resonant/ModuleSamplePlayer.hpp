@@ -29,9 +29,13 @@
 #include <string>
 #include <vector>
 
+#ifdef WIN32
+#include <WinPort.h>
+#endif
+
 namespace Resonant {
 
-  class ModuleSamplePlayer : public Module
+  class RESONANT_API ModuleSamplePlayer : public Module
   {
   public:
 
@@ -46,7 +50,7 @@ namespace Resonant {
     {
     public:
       Sample();
-      ~Sample();
+//      ~Sample();
 
       bool load(const char * filename, const char * name);
 
@@ -191,7 +195,7 @@ namespace Resonant {
     unsigned m_channels;
     unsigned m_active;
 
-    BGLoader m_loader;
+    BGLoader * m_loader;
   };
 
 }

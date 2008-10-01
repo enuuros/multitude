@@ -16,6 +16,7 @@
 #ifndef VALUABLE_VALUE_VECTOR_HPP
 #define VALUABLE_VALUE_VECTOR_HPP
 
+#include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
 #include <Nimble/Vector4.hpp>
@@ -30,7 +31,7 @@ namespace Valuable
 {
 
   template<class VectorType, typename ElementType, int N>
-  class ValueVector : public ValueObject
+  class VALUABLE_API ValueVector : public ValueObject
   {
     public:
       ValueVector() : ValueObject() {}
@@ -74,8 +75,16 @@ namespace Valuable
   typedef ValueVector<Nimble::Vector3f, float, 3> ValueVector3f;
   typedef ValueVector<Nimble::Vector4f, float, 4> ValueVector4f;
 
-}
+  // Instantiations of template classes
+  template class ValueVector<Nimble::Vector2f, float, 2>;
+  template class ValueVector<Nimble::Vector3f, float, 3>;
+  template class ValueVector<Nimble::Vector4f, float, 4>;
 
+  template class ValueVector<Nimble::Vector2i, int, 2>;
+  template class ValueVector<Nimble::Vector3i, int, 3>;
+  template class ValueVector<Nimble::Vector4i, int, 4>;
+
+}
 
 #undef STD_OP
 

@@ -16,6 +16,8 @@
 #ifndef RADIANT_REF_PTR_HPP
 #define RADIANT_REF_PTR_HPP
 
+#include <Radiant/Export.hpp>
+
 namespace Radiant {
   
   /// Helper class for RefPtr

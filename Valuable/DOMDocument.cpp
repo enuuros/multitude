@@ -152,7 +152,7 @@ namespace Valuable
       m_xDoc->release();
 
     if(parsed)
-      m_xDoc = (xercesc::DOMDocument *)parsed->cloneNode(parsed);
+      m_xDoc = (xercesc::DOMDocument *)parsed->cloneNode((parsed == 0) ? false: true);
     else
       m_xDoc = 0;
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9.00"
 	Name="WinPort"
 	ProjectGUID="{1E6B9A55-975B-4AAC-874B-31113A72C0EE}"
 	RootNamespace="WinPort"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -18,7 +19,8 @@
 			Name="Debug|Win32"
 			OutputDirectory="..\lib\debug"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="2"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -37,60 +39,17 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="./include;&quot;C:\IPCity\CityWall\develop\ext\GraphicsMagick-1.1.11\Magick++\lib&quot;;&quot;..\..\..\ext\pthreads\Pre-built.2\include&quot;"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="kernel32.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;WINPORT_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
+				TreatWChar_tAsBuiltInType="true"
+				WarningLevel="4"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4100,4985"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -103,6 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="wsock32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -123,7 +83,77 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="release\"
+			ConfigurationType="2"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;WINPORT_EXPORT;NDEBUG;QT_NO_DEBUG;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="true"
+				WarningLevel="4"
+				DisableSpecificWarnings="4100,4985"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="wsock32.lib"
+				OutputFile="..\..\Win32\lib\release\WinPort.dll"
+				LinkIncremental="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -161,15 +191,49 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\include\_mingw.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\dirent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Export.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\getopt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\inttypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\io.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\stdint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\strings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\unistd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\unixstuff.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\WinPort.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>

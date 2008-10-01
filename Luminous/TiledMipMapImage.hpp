@@ -18,7 +18,6 @@
 
 #include <Luminous/BGThread.hpp>
 #include <Luminous/Image.hpp>
-#include <Luminous/Loadable.hpp>
 #include <Luminous/Texture.hpp>
 
 #include <Nimble/Rect.hpp>

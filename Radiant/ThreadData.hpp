@@ -41,7 +41,7 @@ namespace Radiant {
       @author Tommi Ilmonen
   */
 
-  template <class T> class ThreadData
+  template <class T> RADIANT_API class ThreadData
   {
   public:
 

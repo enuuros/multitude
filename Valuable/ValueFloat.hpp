@@ -16,9 +16,10 @@
 #ifndef VALUABLE_VALUE_FLOAT_HPP
 #define VALUABLE_VALUE_FLOAT_HPP
 
-#include <Valuable/ValueNumeric.hpp>
-
 #include <Radiant/StringUtils.hpp>
+
+#include <Valuable/Export.hpp>
+#include <Valuable/ValueNumeric.hpp>
 
 #define STD_OP this->emitChange(); return *this;
 
@@ -28,7 +29,7 @@ namespace Valuable
 {
 
   template<class T>
-  class ValueFloatT : public ValueNumeric<T>
+  class VALUABLE_API ValueFloatT : public ValueNumeric<T>
   {
     typedef ValueNumeric<T> Base;
 
@@ -48,6 +49,14 @@ namespace Valuable
   };
 
   typedef ValueFloatT<float> ValueFloat;
+
+#ifdef WIN32
+#ifdef VALUABLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class ValueFloatT<float>;
+#endif
+#endif
+
 }
 
 #undef STD_OP

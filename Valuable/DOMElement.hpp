@@ -16,6 +16,8 @@
 #ifndef VALUABLE_DOM_ELEMENT_HPP
 #define VALUABLE_DOM_ELEMENT_HPP
 
+#include <Valuable/Export.hpp>
+
 #include <string>
 #include <list>
 
@@ -27,7 +29,7 @@ namespace Valuable
 {
 
   /// Wrapper for xercesc::DOMElement
-  class DOMElement
+  class VALUABLE_API DOMElement
   {
     public:
       DOMElement(xercesc_2_8::DOMElement * xElement);

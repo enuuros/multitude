@@ -16,6 +16,7 @@
 #ifndef NIMBLE_LENS_CORRECTION_HPP
 #define NIMBLE_LENS_CORRECTION_HPP
 
+#include <Nimble/Export.hpp>
 #include <Nimble/Vector4.hpp>
 
 namespace Nimble {
@@ -35,7 +36,7 @@ namespace Nimble {
 
       @author Tommi Ilmonen
   */
-  class LensCorrection
+  class NIMBLE_API LensCorrection
   {
   public:
     LensCorrection();

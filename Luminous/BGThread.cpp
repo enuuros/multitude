@@ -117,6 +117,12 @@ namespace Luminous
 
     m_mutex.unlock();
   }
+
+   BGThread * BGThread::instance()
+   {
+     return m_instance;
+   }
+
 /*
   static bool g_deleteMarkedPred(Task * x)
   {
@@ -133,6 +139,11 @@ namespace Luminous
   {
     Radiant::Guard guard(&m_mutex);
     return m_taskQueue.size();
+  }
+
+  Radiant::Mutex * BGThread::generalMutex()
+  {
+    return & m_generalMutex;
   }
 
 /*

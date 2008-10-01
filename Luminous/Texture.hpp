@@ -39,7 +39,7 @@ namespace Luminous
 #ifndef WIN32
   template<GLenum TextureType>
 #endif
-  class MTEXPORT TextureT : public GLResource, public Patterns::NotCopyable
+  class LUMINOUS_API TextureT : public GLResource, public Patterns::NotCopyable
   {
     friend class Framebuffer;
 
@@ -91,7 +91,7 @@ namespace Luminous
 
     virtual long consumesBytes() 
     { 
-      float used = m_width * m_height * m_pf.bytesPerPixel();
+      float used = float(m_width) * m_height * m_pf.bytesPerPixel();
       // Mipmaps used 33% more memory
       used *= (m_haveMipmaps ? (4.f / 3.f) : 1.f);
       return (long)used;
@@ -122,7 +122,7 @@ namespace Luminous
   public:
     Texture1D(GLResources * resources = 0) : TextureT<GL_TEXTURE_1D> (resources) {}
 #else
-  class MTEXPORT Texture1D : public TextureT
+  class LUMINOUS_API Texture1D : public TextureT
   {
   public:
 	  Texture1D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_1D; }
@@ -139,7 +139,7 @@ namespace Luminous
   public:
     Texture2D(GLResources * resources = 0) : TextureT<GL_TEXTURE_2D>(resources) {}
 #else
-  class MTEXPORT Texture2D : public TextureT
+  class LUMINOUS_API Texture2D : public TextureT
   {
   public:
     Texture2D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_2D; }
@@ -173,14 +173,14 @@ namespace Luminous
 
 #else
   /// A 3D texture
-  class MTEXPORT Texture3D : public TextureT
+  class LUMINOUS_API Texture3D : public TextureT
   {
   public:
 	  Texture3D(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_3D; }
   };
 	
   /// A cubemap texture
-  class MTEXPORT TextureCube : public TextureT
+  class LUMINOUS_API TextureCube : public TextureT
   {
   public:
 	  TextureCube(GLResources * resources = 0) : TextureT(resources) { TextureType = GL_TEXTURE_CUBE_MAP; }

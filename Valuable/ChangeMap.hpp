@@ -16,6 +16,8 @@
 #ifndef VALUABLE_CHANGEMAP_HPP
 #define VALUABLE_CHANGEMAP_HPP
 
+#include <Valuable/Export.hpp>
+
 #include <set>
 
 namespace Valuable
@@ -23,7 +25,7 @@ namespace Valuable
 
   class ValueObject;
 
-  class ChangeMap 
+  class VALUABLE_API ChangeMap 
   {
     public:
       ChangeMap();

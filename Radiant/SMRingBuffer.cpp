@@ -2,7 +2,7 @@
  *
  * This file is part of Radiant.
  *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
  *
  * See file "Radiant.hpp" for authors and more details.
  *
@@ -15,11 +15,22 @@
 
 #include "SMRingBuffer.hpp"
 
-#include "Nimble/Math.hpp"
+#include <Nimble/Math.hpp>
 
-#include <errno.h>
+#include <Radiant/StringUtils.hpp>
+#include <Radiant/Trace.hpp>
+
+#include <cassert>
+#include <cerrno>
 #include <iostream>
+#include <memory>
 #include <sstream>
+
+#ifndef WIN32
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
+#endif
 
 namespace Radiant
 {
@@ -29,24 +40,31 @@ namespace Radiant
 
   // Static data initialization.
 
+#ifdef WIN32
+  uint32_t  SMRingBuffer::smDefaultPermissions = PAGE_EXECUTE_READWRITE;
+#else
   // rw-rw-rw-.
   uint32_t  SMRingBuffer::smDefaultPermissions = 0666;
+#endif
 
   uint32_t  SMRingBuffer::smHeaderSize = sizeof(uint32_t) * 4;
 
   // Set maximum buffer size to the largest possible value of a 32-bit integer less (header size + 1).
-  uint32_t  SMRingBuffer::maxSize = 4294967295u - (smHeaderSize + 1);
+  uint32_t  SMRingBuffer::maxSize = 4294967295 - (smHeaderSize + 1);
 
 
   // Construction / destruction.
 
-  SMRingBuffer::SMRingBuffer(const key_t smKey, const uint32_t size)
+#ifdef WIN32
+  SMRingBuffer::SMRingBuffer(const std::string smName, const uint32_t size)
   : m_isCreator(false)
-  , m_smKey(smKey)
-  , m_id(-1)
+  , m_smName(smName)
+  , m_hMapFile(0)
   , m_startPtr(0)
   {
-    trace("SMRingBuffer::SMRingBuffer");
+    const char * const  fnName = "SMRingBuffer::SMRingBuffer";
+
+    trace(fnName);
 
     if(size > 0)
     // Create new shared memory area (SMA)
@@ -55,69 +73,66 @@ namespace Radiant
 
       if(size > maxSize)
       {
-        error("SMRingBuffer::SMRingBuffer: requested size %ul is greater than maximum size %ul.",
-          (unsigned long)(size), (unsigned long)(maxSize));
+        error("%s # Requested size %ul is greater than maximum size %ul.",
+          fnName, (unsigned long)(size), (unsigned long)(maxSize));
         assert(0);
       }
 
-      // Clear any existing SMA with this key
+      // Clear any existing SMA with this name
 
-      const int   id = shmget(m_smKey, 0, smDefaultPermissions);
-      if(id != -1)
+      const HANDLE  hMapFile = ::OpenFileMappingA(FILE_MAP_ALL_ACCESS, false, m_smName.c_str());
+      if(hMapFile)
       {
-        if(shmctl(id, IPC_RMID, 0) != -1)
+        if(::CloseHandle(hMapFile))
         {
-          trace("SMRingBuffer::SMRingBuffer: successfully removed existing shared memory area with same key.");
+          trace("%s # Successfully removed existing shared memory area with same name.", fnName);
         }
         else
         {
-          error("SMRingBuffer::SMRingBuffer: unable to remove existing shared memory area with same key (%s).", shmError().c_str());
+          error("%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
           assert(0);
         }
       }
 
       // Create the new SMA
 
-      // shmget() rounds up size to nearest page size, so actual size of area may be greater
-      // than requested size - however, this does not affect anything, the extra will simply
-      // remain unused
-      m_id = shmget(m_smKey, smHeaderSize + size + 1, smDefaultPermissions | IPC_EXCL | IPC_CREAT);
-      if(m_id != -1)
+      m_hMapFile = ::CreateFileMappingA(INVALID_HANDLE_VALUE, 0, smDefaultPermissions, 0, size, m_smName.c_str());
+      if(m_hMapFile)
       {
         m_isCreator = true;
-        trace("SMRingBuffer::SMRingBuffer: successfully created new shared memory area.");
+        trace("%s # Successfully created new shared memory area (%s).", fnName);
       }
       else
       {
-        error("SMRingBuffer::SMRingBuffer: unable to create new shared memory area (%s).", shmError().c_str());
+        error("%s # Failed to create new shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       }
     }
     else
     // Try to reference existing SMA
     {
-      m_id = shmget(m_smKey, 0, smDefaultPermissions);
-      if(m_id != -1)
+      m_hMapFile = ::OpenFileMappingA(FILE_MAP_ALL_ACCESS, false, m_smName.c_str());
+      if(m_hMapFile)
       {
-        trace("SMRingBuffer::SMRingBuffer: successfully accessed existing shared memory area.");
+        trace("%s # Successfully accessed existing shared memory area (%s).", fnName);
       }
       else
       {
-        error("SMRingBuffer::SMRingBuffer: unable to access existing shared memory area (%s).", shmError().c_str());
+        error("%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
-      }
+      } 
     }
 
     // Get pointer to SMA
 
-    char * const    smPtr = (char *)(shmat(m_id, 0, 0));
-    if(smPtr != (char *)(-1))
+    char * const  smPtr = (char *)(::MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, size));
+    if(smPtr)
     {
-      trace("SMRingBuffer::SMRingBuffer: successfully obtained pointer to shared memory area.");
+      trace("%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else
     {
-      error("SMRingBuffer::SMRingBuffer: unable to obtain pointer to shared memory area (%s)", shmError().c_str());
+      error("%s # Failed to obtain pointer to shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       assert(0);
     }
 
@@ -136,10 +151,149 @@ namespace Radiant
 
     assert(isValid());
   }
+#else
+  SMRingBuffer::SMRingBuffer(const key_t smKey, const uint32_t size)
+  : m_isCreator(false)
+  , m_smKey(smKey)
+  , m_id(-1)
+  , m_startPtr(0)
+  {
+    const char * const  fnName = "SMRingBuffer::SMRingBuffer";
 
+    trace(fnName);
+
+    if(size > 0)
+    // Create new shared memory area (SMA)
+    {
+      // Validate requested size
+
+      if(size > maxSize)
+      {
+        error("%s # Requested size %ul is greater than maximum size %ul.",
+          fnName, (unsigned long)(size), (unsigned long)(maxSize));
+        assert(0);
+      }
+
+      // Clear any existing SMA with this key
+
+      const int   id = shmget(m_smKey, 0, smDefaultPermissions);
+      if(id != -1)
+      {
+        if(shmctl(id, IPC_RMID, 0) != -1)
+        {
+          trace("%s # Successfully removed existing shared memory area with same key.", fnName);
+        }
+        else
+        {
+          error("%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
+          assert(0);
+        }
+      }
+
+      // Create the new SMA
+
+      // shmget() rounds up size to nearest page size, so actual size of area may be greater
+      // than requested size - however, this does not affect anything, the extra will simply
+      // remain unused
+      m_id = shmget(m_smKey, smHeaderSize + size + 1, smDefaultPermissions | IPC_EXCL | IPC_CREAT);
+      if(m_id != -1)
+      {
+        m_isCreator = true;
+        trace("%s # Successfully created new shared memory area.", fnName);
+      }
+      else
+      {
+        error("%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
+        assert(0);
+      }
+    }
+    else
+    // Try to reference existing SMA
+    {
+      m_id = shmget(m_smKey, 0, smDefaultPermissions);
+      if(m_id != -1)
+      {
+        trace("%s # Successfully accessed existing shared memory area.", fnName);
+      }
+      else
+      {
+        error("%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
+        assert(0);
+      }
+    }
+
+    // Get pointer to SMA
+
+    char * const  smPtr = (char *)(shmat(m_id, 0, 0));
+    if(smPtr != (char *)(-1))
+    {
+      trace("%s # Successfully obtained pointer to shared memory area.", fnName);
+    }
+    else
+    {
+      error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
+      assert(0);
+    }
+
+    if(m_isCreator)
+    // This is the creating object
+    {
+      // initialize header
+      memset(smPtr, 0, smHeaderSize);
+      // write size to header
+      memcpy(smPtr, & size, sizeof(uint32_t));
+    }
+
+    // Set ring buffer pointer - buffer starts after header information
+
+    m_startPtr = ((unsigned char *)(smPtr)) + smHeaderSize;
+
+    assert(isValid());
+  }
+#endif
+
+#ifdef WIN32
   SMRingBuffer::~SMRingBuffer()
   {
-    trace("SMRingBuffer::~SMRingBuffer");
+    const char * const  fnName = "SMRingBuffer::~SMRingBuffer";
+
+    trace(fnName);
+
+    assert(isValid());
+
+    // Detach the SMA
+
+    char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
+    if(::UnmapViewOfFile(smPtr))
+    {
+      trace("%s # Successfully detached shared memory area.", fnName);
+    }
+    else
+    {
+      error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+    }
+
+    // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
+    // objects are referencing it.
+
+    if(m_isCreator)
+    {
+      if(::CloseHandle(m_hMapFile))
+      {
+        trace("%s # Successfully destroyed shared memory area.", fnName);
+      }
+      else
+      {
+        error("%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      }
+    }
+  }
+#else
+  SMRingBuffer::~SMRingBuffer()
+  {
+    const char * const  fnName = "SMRingBuffer::~SMRingBuffer";
+
+    trace(fnName);
 
     assert(isValid());
 
@@ -148,11 +302,11 @@ namespace Radiant
     char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
     if(shmdt(smPtr) != -1)
     {
-      trace("SMRingBuffer::~SMRingBuffer: successfully detached shared memory area.");
+      trace("%s # Successfully detached shared memory area.", fnName);
     }
     else
     {
-      error("SMRingBuffer::~SMRingBuffer: unable to detach shared memory area (%s).", shmError().c_str());
+      error("%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -162,14 +316,15 @@ namespace Radiant
     {
       if(shmctl(m_id, IPC_RMID, 0) != -1)
       {
-        trace("SMRingBuffer::~SMRingBuffer: successfully destroyed shared memory area.");
+        trace("%s # Successfully destroyed shared memory area.", fnName);
       }
       else
       {
-        error("SMRingBuffer::SMRingBuffer: unable to destroy shared memory area (%s).", shmError().c_str());
+        error("%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
       }
     }
   }
+#endif
 
 
   // Properties.
@@ -241,7 +396,7 @@ namespace Radiant
 
     if(numBytes > totalAvl)
     {
-//      error("SMRingBuffer::place: insufficient space, %ul requested, %ul available.",
+//      error("SMRingBuffer::write # Insufficient space, %ul requested, %ul available.",
 //        (unsigned long)(numBytes), (unsigned long)(totalAvl));
       return 0;
     }
@@ -369,7 +524,7 @@ namespace Radiant
     const uint32_t   totalUsd = used(& firstUsd);
     if(numBytes > totalUsd)
     {
-//     error("SMRingBuffer::peek: insufficient data, %ul requested, %ul in use.",
+//     error("SMRingBuffer::peek # Insufficient data, %ul requested, %ul in use.",
 //        (unsigned long)(numBytes), (unsigned long)(totalUsd));
       return 0;
     }
@@ -558,7 +713,7 @@ namespace Radiant
     const uint32_t   totalUsd = used();
     if(numBytes > totalUsd)
     {
-      error("SMRingBuffer::discard: insufficient data.");
+      error("SMRingBuffer::discard # Insufficient data.");
       return 0;
     }
 
@@ -576,6 +731,7 @@ namespace Radiant
 
   // Diagnostics.
 
+#ifndef WIN32
   std::string SMRingBuffer::shmError()
   {
     std::string   errMsg;
@@ -612,19 +768,29 @@ namespace Radiant
 
     return errMsg;
   }
+#endif
 
   bool SMRingBuffer::isValid() const
   {
-    return (m_smKey > 0 && m_startPtr && writePos() < size() && readPos() < size() && readWriteState() <= RWS_WRITING);
+#ifdef WIN32
+    return (!m_smName.empty() && m_hMapFile && m_startPtr && writePos() < size()
+      && readPos() < size() && readWriteState() <= RWS_WRITING);
+#else
+    return (m_smKey > 0 && m_startPtr && writePos() < size()
+      && readPos() < size() && readWriteState() <= RWS_WRITING);
+#endif
   }
 
   void SMRingBuffer::dump() const
   {
-    trace("SMRingBuffer::dump()");
-
     trace("m_isCreator = %s", m_isCreator ? "true" : "false");
+#ifdef WIN32
+    trace("m_smName = %s", m_smName.c_str());
+    trace("m_hMapFile = %p", m_hMapFile);
+#else
     trace("m_smKey = %ul", (unsigned long)(m_smKey));
     trace("m_id = %d", m_id);
+#endif
     trace("size() = %ul", (unsigned long)(size()));
     trace("m_startPtr = %p", m_startPtr);
 

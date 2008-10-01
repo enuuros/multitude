@@ -242,7 +242,7 @@ namespace Luminous {
 
   MultiHead::MultiHead()
   : HasValues(0, "MultiHead", false),
-    m_widthcm(this, "widthcm", false, 100.f),
+    m_widthcm(this, "widthcm", false, 100.0f),
     m_edited(false)
   {}
 

@@ -16,6 +16,7 @@
 #define DYSLEXIC_CPU_FONT_BASE_HPP
 
 #include <Dyslexic/CPUFont.hpp>
+#include <Dyslexic/Export.hpp>
 
 #include <Luminous/Collectable.hpp>
 
@@ -25,11 +26,16 @@ namespace Dyslexic
   class GPUFont;
 
   /// A base class for all CPU fonts.
-  class MTEXPORT CPUFontBase : public CPUFont, public Luminous::Collectable
+  class DYSLEXIC_API CPUFontBase : public CPUFont, public Luminous::Collectable
   {
     public:
       CPUFontBase(Luminous::GarbageCollector * gc = 0);
       virtual ~CPUFontBase();
+
+      Face * face();
+      const Size & size() const;
+
+      int error() const;
 
       float advance(const char * str);
       float advance(const wchar_t * str);
@@ -50,11 +56,6 @@ namespace Dyslexic
       const Glyph * getGlyph(unsigned int charCode);
 
       virtual bool load(const char * fontFilePath);
-
-      Face * face() { return m_face; }
-      const Size & size() const { return m_size; }
-
-      int error() const { return m_error; }
 
       virtual GPUFontBase * createGPUFont() = 0;
       GPUFont * getGPUFont(Luminous::GLResources * resources);

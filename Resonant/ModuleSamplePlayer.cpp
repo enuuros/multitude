@@ -37,8 +37,8 @@ namespace Resonant {
     bzero(&m_info, sizeof(m_info));
   }
 
-  ModuleSamplePlayer::Sample::~Sample()
-  {}
+//  ModuleSamplePlayer::Sample::~Sample()
+//  {}
 
   bool ModuleSamplePlayer::Sample::load(const char * filename,
 					const char * name)
@@ -56,7 +56,8 @@ namespace Resonant {
       return false;
 
     m_data.resize(m_info.channels * m_info.frames);
-    bzero( & m_data[0], m_data.size() * sizeof(float));
+    if(!m_data.empty())
+      bzero( & m_data[0], m_data.size() * sizeof(float));
     
     uint block = 1000;
 
@@ -121,7 +122,7 @@ namespace Resonant {
 
 	int base = (int) dpos;
 	double w2 = dpos - (double) base;
-	*b1++ = (src[base] * (1.0 - w2) + src[base+1] * w2) * gain;
+	*b1++ = float((src[base] * (1.0 - w2) + src[base+1] * w2) * gain);
 	dpos += pitch;
       }
 
@@ -296,13 +297,16 @@ namespace Resonant {
   ModuleSamplePlayer::ModuleSamplePlayer(Application * a)
     : Module(a),
       m_channels(1),
-      m_active(0),
-      m_loader(this)
+      m_active(0)
+//      m_loader(this)
   {
     m_voices.resize(256);
     m_voiceptrs.resize(m_voices.size());
-    bzero( & m_voiceptrs[0], m_voiceptrs.size() * sizeof(SampleVoice *));
+    if(!m_voiceptrs.empty())
+      bzero( & m_voiceptrs[0], m_voiceptrs.size() * sizeof(SampleVoice *));
     m_samples.resize(2048);
+
+    m_loader = new BGLoader(this);
   }
 
   ModuleSamplePlayer::~ModuleSamplePlayer()
@@ -353,7 +357,7 @@ namespace Resonant {
       if(sampleind < 0) {
         trace("ModuleSamplePlayer::control # No sample \"%s\"", buf);
 	
-	m_loader.addLoadable(buf, & voice);
+	m_loader->addLoadable(buf, & voice);
 
         // return;
       }
