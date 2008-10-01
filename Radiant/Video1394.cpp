@@ -968,7 +968,7 @@ namespace Radiant {
     if(!initcount) {
       
       if(isleopard)
-	trace("%s # Running Leopard, no FireWire bus reset");
+	trace("%s # Running Leopard, no FireWire bus reset", fname);
       else {
 	for(int c = 0; c < (int) __infos.size(); c++) {
 	  dc1394_reset_bus(__infos[c]);

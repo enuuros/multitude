@@ -61,7 +61,7 @@ namespace FireView {
 		   triggerSource, triggerMode);
     */
     while(customFps > Radiant::asFloat(fps) && fps < Radiant::FPS_60) {
-      puts("Adjusting the core FPS");
+      // puts("Adjusting the core FPS");
       fps = (Radiant::FrameRate) (fps + 1);
     }
     m_fps = fps;
@@ -180,20 +180,28 @@ namespace FireView {
       fflush(0);
     }
 
-    dc1394trigger_source_t trig = m_triggerSource > 0 ?
-      (dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
+    dc1394trigger_source_t trig = (dc1394trigger_source_t) 0;
 
-    if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-      error("Cannot have custom FPS combined with anything but SW trigger (%d)",
-	    (int) trig);
-    /*
-    if(m_customFps > 0.0f || m_triggerSource > 0) {
+    if(!m_format7) {
+      trig = (m_customFps) < 0 ?
+	(dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
+      
+      if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
+	error("Cannot have custom FPS combined with anything but SW trigger (%d)",
+	      (int) trig);
+    }
+    else if((int) m_triggerSource > 0) {
+      trig = (dc1394trigger_source_t) m_triggerSource;
+    }
+
+    if((int) trig > 0) {
       if(!m_video.enableTrigger(trig)) {
 	m_state = FAILED;
 	return;
       }
       else
-	trace("Enabled trigger source %d", m_triggerSource);
+	trace("Enabled trigger source %d (%d) %f %d",
+	      trig, m_triggerSource, m_customFps, (int) m_format7);
 
       if(m_triggerMode >= 0) {
 	if(!m_video.setTriggerMode
@@ -204,10 +212,8 @@ namespace FireView {
       }
     }
     else
+      m_video.disableTrigger();
 
-    */
-
-    m_video.disableTrigger();
     trace("Getting features");
 
     m_video.getFeatures( & m_features);
