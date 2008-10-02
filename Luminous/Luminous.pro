@@ -63,6 +63,8 @@ SOURCES += VertexBuffer.cpp
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE
 
+CONFIG += debug
+
 PKGCONFIG += GraphicsMagick++
 
 include(../library.pri)

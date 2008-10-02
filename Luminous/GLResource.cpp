@@ -30,8 +30,14 @@ namespace Luminous
 
   void GLResource::setResources(GLResources * resources)
   {
-    assert(m_resources == 0 || resources == m_resources);
+    if(resources == m_resources)
+      return;
+
+    assert(m_resources == 0);
+
+
     m_resources = resources;
+    changeByteConsumption(0, consumesBytes());
   }
 
   long GLResource::consumesBytes()

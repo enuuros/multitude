@@ -24,6 +24,23 @@ using namespace std;
 
 namespace Luminous
 {
+#ifndef WIN32
+  template <GLenum TextureType>
+  TextureT<TextureType>::~TextureT()
+#else
+  TextureT::~TextureT()
+#endif
+  {
+    if(m_textureId) glDeleteTextures(1, &m_textureId);
+    changeByteConsumption(consumesBytes(), 0);
+  }
+
+  template class TextureT<GL_TEXTURE_1D>;
+  template class TextureT<GL_TEXTURE_2D>;
+  template class TextureT<GL_TEXTURE_3D>;
+
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   Texture1D* Texture1D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)

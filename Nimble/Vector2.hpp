@@ -117,9 +117,9 @@ namespace Nimble {
   {
     return t1.x * t2.x + t1.y * t2.y;
   }
-
-/*
-  /// @todo Remove these redundant overloads
+  
+  /* Note that these overload are NOT redundant, integer math is
+     different from floating point math. */
   inline Vector2T<short> operator / (const Vector2T<short>& v, const short s)
   {
     return Vector2T<short>(v.x / s, v.y / s);
@@ -149,7 +149,7 @@ namespace Nimble {
   {
     return Vector2T<long>(v.x * s, v.y * s);
   }
-*/
+
 
   template <class T>
   inline std::ostream &operator<<(std::ostream &os, const Nimble::Vector2T<T> &t)

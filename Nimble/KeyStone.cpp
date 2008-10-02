@@ -408,9 +408,9 @@ namespace Nimble {
 	last = m_width - 1;
 
       int wid = last - first;
-      /* v = project(Vector2(640, y));
-	 printf("Projection limits[%d] = %d - %d (%d %.3f %.3f)\n", y, 
-	 first, last, wid, v.x, v.y);
+      /* Vector2 v = project(Vector2(640, y));
+      printf("Projection limits[%d] = %d - %d (%d %.3f %.3f)\n", y, 
+             first, last, wid, v.x, v.y);
       */
       limits[y].make(first, wid);
     }

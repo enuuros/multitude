@@ -52,7 +52,7 @@ namespace Luminous
       m_pf(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
       m_haveMipmaps(false)
     {}
-    virtual ~TextureT() { if(m_textureId) glDeleteTextures(1, &m_textureId);}
+    virtual ~TextureT();
 
     void allocate()
     {

@@ -34,6 +34,11 @@ namespace Luminous
   {
     while(m_resources.size())
       eraseResource((*m_resources.begin()).first);
+
+    if(m_consumingBytes != 0)
+      Radiant::error("GLResources::~GLResources # The GPU memory is left at %ld -> "
+                     "there is a bug in your application.",
+                     m_consumingBytes);
   }
 
   GLResource * GLResources::getResource(void * key)
@@ -74,11 +79,11 @@ namespace Luminous
 
     GLResource * resource = (*it).second;
 
-    long bytes = resource->consumesBytes();
+    /* long bytes = resource->consumesBytes();
 
     m_consumingBytes  -= bytes;
     m_deallocationSum += bytes;
-
+    */
     delete resource;
     m_resources.erase(it);
 
