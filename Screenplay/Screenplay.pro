@@ -1,5 +1,6 @@
 include(../multitude.pri)
 
+HEADERS += Export.hpp
 HEADERS += VideoFFMPEG.hpp
 
 SOURCES += VideoFFMPEG.cpp

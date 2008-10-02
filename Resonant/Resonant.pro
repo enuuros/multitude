@@ -5,6 +5,7 @@ HEADERS += AudioFileHandler.hpp
 HEADERS += AudioLoop.hpp 
 HEADERS += ControlData.hpp 
 HEADERS += DSPNetwork.hpp 
+HEADERS += Export.hpp
 HEADERS += Module.hpp 
 HEADERS += ModuleFilePlay.hpp 
 HEADERS += ModuleGain.hpp 

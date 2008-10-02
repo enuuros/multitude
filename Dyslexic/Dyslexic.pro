@@ -9,6 +9,7 @@ HEADERS += CPUFont.hpp
 HEADERS += CPUManagedFont.hpp
 HEADERS += CPUWrapperFont.hpp
 HEADERS += Dyslexic.hpp
+HEADERS += Export.hpp
 HEADERS += Face.hpp
 HEADERS += FontManager.hpp
 HEADERS += GlyphContainer.hpp

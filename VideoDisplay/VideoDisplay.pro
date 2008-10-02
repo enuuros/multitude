@@ -1,6 +1,7 @@
 include(../multitude.pri)
 
 HEADERS += AudioTransfer.hpp
+HEADERS += Export.hpp
 HEADERS += ShowGL.hpp
 HEADERS += SubTitles.hpp
 HEADERS += VideoIn.hpp

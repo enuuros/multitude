@@ -3,6 +3,7 @@ include(../multitude.pri)
 HEADERS += ChangeMap.hpp
 HEADERS += DOMDocument.hpp
 HEADERS += DOMElement.hpp
+HEADERS += Export.hpp
 HEADERS += HasValues.hpp
 HEADERS += HasValuesImpl.hpp
 HEADERS += Valuable.hpp

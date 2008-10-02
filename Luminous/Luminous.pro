@@ -6,6 +6,7 @@ HEADERS += CPUMipmaps.hpp
 HEADERS += DynamicTexture.hpp
 HEADERS += EnableStep.hpp
 HEADERS += Error.hpp
+HEADERS += Export.hpp
 HEADERS += FramebufferObject.hpp
 HEADERS += GarbageCollector.hpp
 HEADERS += GLKeyStone.hpp
