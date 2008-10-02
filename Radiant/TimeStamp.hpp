@@ -117,15 +117,7 @@ namespace Radiant {
     inline operator type & () { return m_val; }
     inline operator const type & () const { return m_val; }
 
-    static type getTime()
-    {
-      struct timeeval tv;
-      gettimeofday(& tv, 0);
-      int64_t tmp = tv.tv_sec;
-      tmp <<= 24;
-      tmp |= (int64_t) (tv.tv_usec * (FRACTIONS_PER_SECOND * 0.000001));
-      return tmp;
-    }
+    static type getTime();
 
     std::string asString() const {
       time_t t = (m_val >> 24);

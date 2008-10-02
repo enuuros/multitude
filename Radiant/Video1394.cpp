@@ -965,7 +965,7 @@ namespace Radiant {
     uname(& sn);
 
     // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
-    bool isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
+    isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
       sn.release[0] == '9' && sn.release[1] == '.';
 #endif
 

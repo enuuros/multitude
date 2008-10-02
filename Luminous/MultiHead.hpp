@@ -18,7 +18,7 @@
 #define LUMINOUS_MULTIHEAD_HPP
 
 #include <Luminous/Export.hpp>
-#include <Luminous/GlKeyStone.hpp>
+#include <Luminous/GLKeyStone.hpp>
 
 #include <Nimble/Rect.hpp>
 #include <Nimble/Vector4.hpp>

@@ -54,7 +54,7 @@ namespace Radiant {
     }
   }
 
-  inline void addTimeUs(struct timeeval *tspec, long us)
+  inline void addTimeUs(struct timeval *tspec, long us)
   {
     tspec->tv_usec += us;
     if(tspec->tv_usec >= RADIANT_MILLION) {
@@ -64,7 +64,7 @@ namespace Radiant {
     }
   }
 
-  inline void addTime(struct timeeval *tspec, const struct timeeval *tspecAdd)
+  inline void addTime(struct timeval *tspec, const struct timeval *tspecAdd)
   {
     tspec->tv_sec  += tspecAdd->tv_sec;
     tspec->tv_usec += tspecAdd->tv_usec;
@@ -82,8 +82,8 @@ namespace Radiant {
       tspecNew->tv_nsec - tspecOld->tv_nsec);
   }
 
-  inline long timeDiffUs(const struct timeeval *tspecOld,
-			 const struct timeeval *tspecNew)
+  inline long timeDiffUs(const struct timeval *tspecOld,
+			 const struct timeval *tspecNew)
   {
     return long((tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
       tspecNew->tv_usec - tspecOld->tv_usec);
@@ -148,7 +148,7 @@ namespace Radiant {
     long sleepTo(const TimeStamp *stamp, Mutex *mutex = 0);
 
   private:  
-    struct timeeval m_initial, m_timing;
+    struct timeval m_initial, m_timing;
   };
 
 }

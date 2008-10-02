@@ -25,6 +25,8 @@
 #define NIMBLE_API __declspec(dllimport)
 #endif
 
+#else
+#define NIMBLE_API
 #endif  
 
 #endif

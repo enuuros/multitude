@@ -25,6 +25,8 @@
 #define PATTERNS_API __declspec(dllimport)
 #endif
 
+#else
+#define PATTERNS_API
 #endif  
 
 #endif

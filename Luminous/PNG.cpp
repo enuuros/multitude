@@ -14,7 +14,13 @@
  */
 
 #include <Luminous/Image.hpp>
+
+#ifdef WIN32
 #include <png/png.h>
+#else
+#include <png.h>
+#endif
+
 #include <iostream>
 
 using namespace std;

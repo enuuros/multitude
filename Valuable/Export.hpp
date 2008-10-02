@@ -25,6 +25,8 @@
 #define VALUABLE_API __declspec(dllimport)
 #endif
 
+#else
+#define VALUABLE_API
 #endif  
 
 #endif

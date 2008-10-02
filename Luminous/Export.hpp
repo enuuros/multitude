@@ -25,6 +25,8 @@
 #define LUMINOUS_API __declspec(dllimport)
 #endif
 
+#else
+#define LUMINOUS_API
 #endif  
 
 #endif

@@ -25,6 +25,8 @@
 #define RADIANT_API __declspec(dllimport)
 #endif
 
+#else
+#define RADIANT_API
 #endif  
 
 #endif

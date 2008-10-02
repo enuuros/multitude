@@ -109,4 +109,13 @@ namespace Radiant {
     return createDate(date, delim, yearfirst) + createTime(time, timedelim);
   }
 
+  TimeStamp::type TimeStamp::getTime()
+  {
+	  struct timeval tv;
+	  gettimeofday(& tv, 0);
+	  int64_t tmp = tv.tv_sec;
+	  tmp <<= 24;
+	  tmp |= (int64_t) (tv.tv_usec * (FRACTIONS_PER_SECOND * 0.000001));
+	  return tmp;
+  }
 }

@@ -30,7 +30,7 @@ namespace Radiant {
       locked again.  */
   long SleepSync::sleepTo(const TimeStamp *stamp, Mutex *mutex)
   {
-    struct timeeval tmp;
+    struct timeval tmp;
 
     gettimeofday(&tmp, 0);
     m_timing.tv_sec = (long) stamp->seconds();
@@ -56,7 +56,7 @@ namespace Radiant {
       values indicate the call returned too late. */
   long SleepSync::sleepSynchroUs(long us)
   {
-    struct timeeval tmp;
+    struct timeval tmp;
 
     addTimeUs(&m_timing, us);
     gettimeofday(&tmp, 0);
