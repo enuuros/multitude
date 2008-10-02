@@ -18,3 +18,5 @@
 
 #include "ValueStringImpl.hpp"
 
+template class Valuable::ValueStringT<std::string>;
+template class Valuable::ValueStringT<std::wstring>;

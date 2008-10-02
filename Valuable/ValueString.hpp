@@ -62,7 +62,6 @@ namespace Valuable
 
   // Instantiation of template classes
   // See ValueStringImpl.hpp for std::wstring member specializations
-  template class ValueStringT<std::string>;
 
 }
 

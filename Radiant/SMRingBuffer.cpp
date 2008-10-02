@@ -50,7 +50,7 @@ namespace Radiant
   uint32_t  SMRingBuffer::smHeaderSize = sizeof(uint32_t) * 4;
 
   // Set maximum buffer size to the largest possible value of a 32-bit integer less (header size + 1).
-  uint32_t  SMRingBuffer::maxSize = 4294967295 - (smHeaderSize + 1);
+  uint32_t  SMRingBuffer::maxSize = 4294967295u - (smHeaderSize + 1);
 
 
   // Construction / destruction.

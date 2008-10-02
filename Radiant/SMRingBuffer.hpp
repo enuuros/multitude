@@ -24,6 +24,10 @@
 #include <WinPort.h>
 #endif
 
+#ifndef WIN32
+#include <sys/ipc.h> // key_t on OSX
+#endif
+
 #include <string>
 
 namespace Radiant
@@ -102,7 +106,7 @@ namespace Radiant
       /// @param smKey User-defined key to shared memory.
       /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
       /// of that size; if size == 0, references the existing buffer identified by smKey.
-      SMRingBuffer(const key_t smKey, const uint32_t size = 0);
+      SMRingBuffer(const key_t smKey, const uint32_t size);
 #endif
 
       /// Destructor.
