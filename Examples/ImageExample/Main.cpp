@@ -8,68 +8,68 @@
 
 int main(int , char ** )
 {
-	SDL_Init(SDL_INIT_VIDEO);
+  SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1 );
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16 );
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
+  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1 );
 
-	SDL_SetVideoMode(400 , 400, 0, SDL_OPENGL);
+  SDL_SetVideoMode(400 , 400, 0, SDL_OPENGL);
 
-	Luminous::initLuminous();
+  Luminous::initLuminous();
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, 1, 0, 1, 0, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, 1, 0, 1, 0, 1);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 
-	Magick::Image image;
-	image.read("..\\test.jpg");
+  Magick::Image image;
+  image.read("..\\test.jpg");
 
-	Luminous::Texture2D * tex = Luminous::Texture2D::fromImage(image);
-	tex->bind();
+  Luminous::Texture2D * tex = Luminous::Texture2D::fromImage(image);
+  tex->bind();
 
   bool running = true;
 
-	while(running) {
+  while(running) {
     SDL_Event event;
-
+    
     if(SDL_PollEvent(&event)) {
       switch(event.type) {
-        case SDL_QUIT:
-          running = false;
-          break;
+      case SDL_QUIT:
+        running = false;
+        break;
       };
     }
 
-		glClearColor(1.f, 0.f, 0.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(1.f, 0.f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-		glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
 			
-		glColor3f(1.f, 1.f, 1.f);
-		glBegin(GL_QUADS);
+    glColor3f(1.f, 1.f, 1.f);
+    glBegin(GL_QUADS);
 
-		glTexCoord2f(0.f, 1.f);
-		glVertex2f(0.f, 0.f);
+    glTexCoord2f(0.f, 1.f);
+    glVertex2f(0.f, 0.f);
 
-		glTexCoord2f(1.f, 1.f);
-		glVertex2f(1.f, 0.f);
+    glTexCoord2f(1.f, 1.f);
+    glVertex2f(1.f, 0.f);
 
-		glTexCoord2f(1.f, 0.f);
-		glVertex2f(1.f, 1.f);
+    glTexCoord2f(1.f, 0.f);
+    glVertex2f(1.f, 1.f);
 
-		glTexCoord2f(0.f, 0.f);
-		glVertex2f(0.f, 1.f);
+    glTexCoord2f(0.f, 0.f);
+    glVertex2f(0.f, 1.f);
 	
-		glEnd();
+    glEnd();
 	
-		SDL_GL_SwapBuffers();
-	}
+    SDL_GL_SwapBuffers();
+  }
 
-	return 0;
+  return 0;
 }

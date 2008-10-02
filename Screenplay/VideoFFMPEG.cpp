@@ -17,7 +17,6 @@
 
 #include <Radiant/Trace.hpp>
 #include <Radiant/Types.hpp>
-#include "VideoFFMPEG.hpp"
 
 
 #include <strings.h>

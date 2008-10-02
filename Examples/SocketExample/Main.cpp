@@ -20,6 +20,16 @@
 #include <WinPort.h>
 #endif
 
+#ifndef WIN32
+
+const char * strerror_s(const char *, int, int err)
+{
+  return strerror(err);
+}
+
+#endif
+
+
 using namespace Radiant;
 
 const char * appname = 0;

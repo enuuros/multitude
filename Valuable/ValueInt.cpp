@@ -14,3 +14,5 @@
  */
 
 #include "ValueIntImpl.hpp"
+
+template class Valuable::ValueIntT<int>;

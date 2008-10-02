@@ -22,19 +22,21 @@
 
 #include <vector>
 
-namespace xercesc_2_8 {
-  class DOMDocument;
-  class XMLFormatTarget;
-}
-
 namespace Valuable
 {
+
+  namespace mxercesc {
+    class DOMDocument;
+    class XMLFormatTarget;
+  }
+
   class DOMElement;
 
   /// Wrapper for xercesc::DOMDocument
   class VALUABLE_API DOMDocument
   {
-    public:
+  public:
+
       ~DOMDocument();
 
       static DOMDocument * createDocument();
@@ -50,12 +52,14 @@ namespace Valuable
 
       DOMElement getDocumentElement();
 
-    private:
-      DOMDocument(xercesc_2_8::DOMDocument * doc);
-  
-      xercesc_2_8::DOMDocument * m_xDoc;
+    mxercesc::DOMDocument * document() { return m_xDoc; }
 
-      friend bool writeDom(DOMDocument *, xercesc_2_8::XMLFormatTarget &);
+    private:
+      DOMDocument(mxercesc::DOMDocument * doc);
+  
+    mxercesc::DOMDocument * m_xDoc;
+
+    friend bool writeDom(DOMDocument *, mxercesc::XMLFormatTarget &);
   };
 
 }

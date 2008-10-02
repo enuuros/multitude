@@ -25,6 +25,10 @@
 #define RESONANT_API __declspec(dllimport)
 #endif
 
+#else
+
+#define RESONANT_API
+
 #endif  
 
 #endif

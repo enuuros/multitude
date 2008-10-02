@@ -210,10 +210,7 @@ namespace Luminous
 	       (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
 
 	    *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
-	    
-	    if(c == 0)
-	      ; // trace("d = %d (%d)", (int) *dest, (int) v00);
-	    
+	    	    
 	    dest++;
 
 	    v00++;

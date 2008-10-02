@@ -25,6 +25,10 @@
 #define DYSLEXIC_API __declspec(dllimport)
 #endif
 
+#else
+
+#define DYSLEXIC_API
+
 #endif  
 
 #endif

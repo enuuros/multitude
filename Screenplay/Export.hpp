@@ -25,6 +25,10 @@
 #define SCREENPLAY_API __declspec(dllimport)
 #endif
 
+#else
+
+#define SCREENPLAY_API
+
 #endif  
 
 #endif

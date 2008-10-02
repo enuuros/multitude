@@ -15,6 +15,12 @@
 
 #include <Radiant/Condition.hpp>
 
+#ifndef WIN32
+
+#define timeeval timeval
+
+#endif
+
 namespace Radiant
 {
 

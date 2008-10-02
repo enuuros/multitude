@@ -21,18 +21,23 @@
 
 #include <Radiant/Trace.hpp>
 
+#define MXERCESDOC(x) ((mxercesc::DOMDocument *) x)
+#define XERCESDOC(x) ((xercesc::DOMDocument *) x)
+#define MXERCESELEM(x) ((mxercesc::DOMElement *) x)
+#define XERCESELEM(x) ((xercesc::DOMElement *) x)
+
 using namespace xercesc;
 
 namespace Valuable
 {
 
-  DOMElement::DOMElement(xercesc::DOMElement * xElement)
+  DOMElement::DOMElement(mxercesc::DOMElement * xElement)
   : m_xElement(xElement)
   {}
   
   std::string DOMElement::getTagName() const
   {
-    char * name = XMLString::transcode(m_xElement->getTagName());
+    char * name = XMLString::transcode(XERCESELEM(m_xElement)->getTagName());
     std::string str(name);
     XMLString::release(&name);
 
@@ -41,7 +46,7 @@ namespace Valuable
 
   void DOMElement::appendChild(DOMElement element)
   {
-    m_xElement->appendChild(element.m_xElement);
+    XERCESELEM(m_xElement)->appendChild(XERCESELEM(element.m_xElement));
   }
 
   void DOMElement::setAttribute(const char * name, const char * value)
@@ -49,7 +54,7 @@ namespace Valuable
     XMLCh * xName = XMLString::transcode(name);
     XMLCh * xValue = XMLString::transcode(value);
 
-    m_xElement->setAttribute(xName, xValue);
+    XERCESELEM(m_xElement)->setAttribute(xName, xValue);
 
     XMLString::release(&xName);
     XMLString::release(&xValue);
@@ -59,13 +64,13 @@ namespace Valuable
   {
     NodeList list; 
 
-    DOMNodeList * xList = m_xElement->getChildNodes();
+    DOMNodeList * xList = XERCESELEM(m_xElement)->getChildNodes();
 
     for(XMLSize_t i = 0; i < xList->getLength(); i++) {
       xercesc::DOMElement * xe = dynamic_cast<xercesc::DOMElement *> (xList->item(i));
       if(!xe) continue;
 
-      list.push_back(DOMElement(xe));    
+      list.push_back(DOMElement(MXERCESELEM(xe)));    
     }
     
     return list;
@@ -74,7 +79,7 @@ namespace Valuable
   void DOMElement::setTextContent(const std::string & s)
   {
     XMLCh * xCont = XMLString::transcode(s.c_str());
-    m_xElement->setTextContent(xCont);
+    XERCESELEM(m_xElement)->setTextContent(xCont);
     XMLString::release(&xCont);
   }
 
@@ -82,12 +87,12 @@ namespace Valuable
   {
     std::basic_string<XMLCh> xs(ws.begin(), ws.end());
 
-    m_xElement->setTextContent(xs.c_str());
+    XERCESELEM(m_xElement)->setTextContent(xs.c_str());
   }
 
   std::string DOMElement::getTextContent() const
   {
-    const XMLCh * xContent = m_xElement->getTextContent();
+    const XMLCh * xContent = XERCESELEM(m_xElement)->getTextContent();
     char * content = XMLString::transcode(xContent);
 
     std::string result(content);
@@ -98,7 +103,7 @@ namespace Valuable
 
   std::wstring DOMElement::getTextContentW() const
   {
-    const XMLCh * xContent = m_xElement->getTextContent();
+    const XMLCh * xContent = XERCESELEM(m_xElement)->getTextContent();
     size_t len = XMLString::stringLen(xContent);
       
     std::wstring result;
@@ -113,7 +118,7 @@ namespace Valuable
   bool DOMElement::hasAttribute(const char * name) const
   {
     XMLCh * xName = XMLString::transcode(name);
-    bool r = m_xElement->hasAttribute(xName);
+    bool r = XERCESELEM(m_xElement)->hasAttribute(xName);
     XMLString::release(&xName);
 
     return r;
@@ -123,7 +128,7 @@ namespace Valuable
   {
     XMLCh * xName = XMLString::transcode(name);
 
-    const XMLCh * xValue = m_xElement->getAttribute(xName);
+    const XMLCh * xValue = XERCESELEM(m_xElement)->getAttribute(xName);
     char * value = XMLString::transcode(xValue);
 
     std::string r(value);

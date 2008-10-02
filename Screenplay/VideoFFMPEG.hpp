@@ -19,15 +19,25 @@
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/VideoInput.hpp>
 
-#include <ScreenPlay/Export.hpp>
+#include <Screenplay/Export.hpp>
 
 #include <string>
 
 extern "C" {
 
-#include </*libavformat/*/avformat.h>
-#include </*libavcodec/*/avcodec.h>
-#include </*libavutil/*/avutil.h>
+#ifdef WIN32
+
+#include <avformat.h>
+#include <avcodec.h>
+#include <avutil.h>
+
+#else
+
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
+
+#endif
 
   struct AVCodec;
   struct AVCodecContext;

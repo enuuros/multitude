@@ -25,6 +25,10 @@
 #define VIDEODISPLAY_API __declspec(dllimport)
 #endif
 
+#else
+
+#define VIDEODISPLAY_API
+
 #endif  
 
 #endif

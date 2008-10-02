@@ -49,6 +49,7 @@ HEADERS += WatchDog.hpp
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
+SOURCES += Condition.cpp
 SOURCES += ConfigReader.cpp
 SOURCES += DateTime.cpp
 SOURCES += Directory.cpp

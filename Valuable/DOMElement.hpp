@@ -21,18 +21,19 @@
 #include <string>
 #include <list>
 
-namespace xercesc_2_8 {
-  class DOMElement;
-}
-
 namespace Valuable
 {
+
+  namespace mxercesc {
+    class DOMElement;
+  }
+
 
   /// Wrapper for xercesc::DOMElement
   class VALUABLE_API DOMElement
   {
     public:
-      DOMElement(xercesc_2_8::DOMElement * xElement);
+      DOMElement(mxercesc::DOMElement * xElement);
       ~DOMElement() {}
 
       bool null() const { return (m_xElement == 0);  }
@@ -55,7 +56,7 @@ namespace Valuable
       NodeList getChildNodes() const;
 
     private:
-      xercesc_2_8::DOMElement * m_xElement;
+       mxercesc::DOMElement * m_xElement;
 
       friend class DOMDocument;
   };

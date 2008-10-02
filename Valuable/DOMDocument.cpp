@@ -25,16 +25,21 @@
 
 using namespace xercesc;
 
+#define MXERCESDOC(x) ((mxercesc::DOMDocument *) x)
+#define XERCESDOC(x) ((xercesc::DOMDocument *) x)
+#define MXERCESELEM(x) ((mxercesc::DOMElement *) x)
+#define XERCESELEM(x) ((xercesc::DOMElement *) x)
+
 namespace Valuable
 {
-  DOMDocument::DOMDocument(xercesc::DOMDocument * doc)
+  DOMDocument::DOMDocument(mxercesc::DOMDocument * doc)
     : m_xDoc(doc)
   {}
 
   DOMDocument::~DOMDocument()
   {
     if(m_xDoc)
-      m_xDoc->release();
+      XERCESDOC(m_xDoc)->release();
   }
 
   void DOMDocument::appendChild(DOMElement element)
@@ -43,7 +48,7 @@ namespace Valuable
 
     assert(m_xDoc != 0);
 
-    m_xDoc->appendChild(element.m_xElement);
+    XERCESDOC(m_xDoc)->appendChild(XERCESELEM(element.m_xElement));
   }
 
   DOMDocument * DOMDocument::createDocument()
@@ -53,7 +58,7 @@ namespace Valuable
 
     // Create a document & writer
     xercesc::DOMDocument * doc = impl->createDocument();
-    return new DOMDocument(doc);
+    return new DOMDocument(MXERCESDOC(doc));
   }
 
   DOMElement DOMDocument::createElement(const char * name)
@@ -62,7 +67,7 @@ namespace Valuable
     xercesc::DOMElement * elem = 0;
 
     try {
-      elem = m_xDoc->createElement(xName);
+      elem = XERCESDOC(m_xDoc)->createElement(xName);
     } catch(const DOMException & e) {
       char * msg = XMLString::transcode(e.getMessage());
       Radiant::error("DOMDocument::createElement # %s", msg);
@@ -71,7 +76,7 @@ namespace Valuable
 
     XMLString::release(&xName);
 
-    return DOMElement(elem);
+    return DOMElement(MXERCESELEM(elem));
   }
 
   bool writeDom(DOMDocument * doc, XMLFormatTarget & target)
@@ -88,7 +93,7 @@ namespace Valuable
     try {
       // Output pretty XML
       writer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-      writer->writeNode(&target, *doc->m_xDoc);
+      writer->writeNode(&target, *XERCESDOC(doc->document()));
 
       // Flush the target just to be sure all contents are written
       target.flush();
@@ -149,10 +154,10 @@ namespace Valuable
    
     // Clone the document because the parsed
     if(m_xDoc)
-      m_xDoc->release();
+      XERCESDOC(m_xDoc)->release();
 
     if(parsed)
-      m_xDoc = (xercesc::DOMDocument *)parsed->cloneNode((parsed == 0) ? false: true);
+      m_xDoc = MXERCESDOC(parsed->cloneNode((parsed == 0) ? false: true));
     else
       m_xDoc = 0;
 
@@ -163,8 +168,8 @@ namespace Valuable
    
   DOMElement DOMDocument::getDocumentElement()
   {
-    xercesc::DOMElement * de = m_xDoc->getDocumentElement();
-    return DOMElement(de);
+    xercesc::DOMElement * de = XERCESDOC(m_xDoc)->getDocumentElement();
+    return DOMElement(MXERCESELEM(de));
   }
 
 }
