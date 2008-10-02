@@ -21,15 +21,26 @@
 
 #include <Radiant/Trace.hpp>
 
-#define MXERCESDOC(x) ((mxercesc::DOMDocument *) x)
-#define XERCESDOC(x) ((xercesc::DOMDocument *) x)
-#define MXERCESELEM(x) ((mxercesc::DOMElement *) x)
-#define XERCESELEM(x) ((xercesc::DOMElement *) x)
 
-using namespace xercesc;
 
 namespace Valuable
 {
+  // using namespace xercesc;
+  using xercesc::XMLString;
+
+  /*
+  inline mxercesc::DOMDocument * 
+  MXERCESDOC(xercesc::DOMDocument * x)
+  { return (mxercesc::DOMDocument *) x; }
+  */
+  inline mxercesc::DOMElement * 
+  MXERCESELEM(xercesc::DOMElement * x)
+  { return (mxercesc::DOMElement *) x; }
+
+  inline xercesc::DOMElement * 
+  XERCESELEM(mxercesc::DOMElement * x)
+  { return (xercesc::DOMElement *) x; }
+
 
   DOMElement::DOMElement(mxercesc::DOMElement * xElement)
   : m_xElement(xElement)
@@ -64,7 +75,7 @@ namespace Valuable
   {
     NodeList list; 
 
-    DOMNodeList * xList = XERCESELEM(m_xElement)->getChildNodes();
+    xercesc::DOMNodeList * xList = XERCESELEM(m_xElement)->getChildNodes();
 
     for(XMLSize_t i = 0; i < xList->getLength(); i++) {
       xercesc::DOMElement * xe = dynamic_cast<xercesc::DOMElement *> (xList->item(i));

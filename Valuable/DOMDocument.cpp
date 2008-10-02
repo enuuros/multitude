@@ -25,13 +25,25 @@
 
 using namespace xercesc;
 
-#define MXERCESDOC(x) ((mxercesc::DOMDocument *) x)
-#define XERCESDOC(x) ((xercesc::DOMDocument *) x)
-#define MXERCESELEM(x) ((mxercesc::DOMElement *) x)
-#define XERCESELEM(x) ((xercesc::DOMElement *) x)
 
 namespace Valuable
 {
+  inline mxercesc::DOMDocument * 
+  MXERCESDOC(xercesc::DOMDocument * x)
+  { return (mxercesc::DOMDocument *) x; }
+
+  inline xercesc::DOMDocument * 
+  XERCESDOC(mxercesc::DOMDocument * x)
+  { return (xercesc::DOMDocument *) x; }
+
+  inline mxercesc::DOMElement * 
+  MXERCESELEM(xercesc::DOMElement * x)
+  { return (mxercesc::DOMElement *) x; }
+
+  inline xercesc::DOMElement * 
+  XERCESELEM(mxercesc::DOMElement * x)
+  { return (xercesc::DOMElement *) x; }
+
   DOMDocument::DOMDocument(mxercesc::DOMDocument * doc)
     : m_xDoc(doc)
   {}
@@ -157,7 +169,7 @@ namespace Valuable
       XERCESDOC(m_xDoc)->release();
 
     if(parsed)
-      m_xDoc = MXERCESDOC(parsed->cloneNode((parsed == 0) ? false: true));
+      m_xDoc = MXERCESDOC((xercesc::DOMDocument *) parsed->cloneNode((parsed == 0) ? false: true));
     else
       m_xDoc = 0;
 
