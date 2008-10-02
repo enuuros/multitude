@@ -124,7 +124,7 @@ namespace Resonant {
       inline void process(int n)
       {
 	assert(m_compiled != false);
-  if(!m_ins.empty() && !m_outs.empty())
+        if(!m_ins.empty() || !m_outs.empty())
 	  m_module->process(& m_ins[0], & m_outs[0], n);
       }
 

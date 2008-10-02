@@ -39,6 +39,8 @@ namespace VideoDisplay {
 
   bool AudioTransfer::prepare(int & channelsIn, int & channelsOut)
   {
+    Radiant::trace("AudioTransfer::prepare");
+    
     if(!m_video) {
       Radiant::error("AudioTransfer::prepare # No video source");
       m_stopped = true;
@@ -63,6 +65,8 @@ namespace VideoDisplay {
 
   void AudioTransfer::process(float **, float ** out, int n)
   {
+    // Radiant::trace("AudioTransfer::process");
+
     int m = n;
     const void * audio = m_video->getAudio( & m, false);
 
@@ -97,7 +101,7 @@ namespace VideoDisplay {
 
   bool AudioTransfer::stop()
   {
-    // Radiant::error("AudioTransfer::stop # UNIMPLEMENTED");
+    Radiant::error("AudioTransfer::stop # UNIMPLEMENTED");
     if(m_video)
       m_video->stopDecoding();
     m_stopped = true;

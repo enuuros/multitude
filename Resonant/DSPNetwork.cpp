@@ -177,8 +177,10 @@ namespace Resonant {
 
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Item & item = (*it);
-      // Module * m = item.m_module;
-      // trace("DSPNetwork::doCycle # Processing %p %s", m, typeid(*m).name());
+      /*
+        Module * m = item.m_module;
+        trace("DSPNetwork::doCycle # Processing %p %s", m, typeid(*m).name());
+      */
       item.process(cycle);
     }
 

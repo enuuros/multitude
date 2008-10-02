@@ -134,8 +134,9 @@ namespace VideoDisplay {
     if(n >= untilWrap)
       n = untilWrap;
 
-    /* qDebug("VideoIn::getAudio # n = %u dec = %u cons = %u cont = %d", 
-       n, m_decodedAuFrames, m_consumedAuFrames, (int) m_continue); */
+    if(m_debug)
+      trace("VideoIn::getAudio # n = %u dec = %u cons = %u cont = %d", 
+            n, m_decodedAuFrames, m_consumedAuFrames, (int) m_continue);
     m_amutex.lock();
 
     if(block) {
@@ -179,6 +180,7 @@ namespace VideoDisplay {
   void VideoIn::setDebug(int level)
   {
     m_debug = level;
+
   }
 
 
@@ -276,8 +278,14 @@ namespace VideoDisplay {
 
     if(!audio_frames)
       return;
-  
-    assert(audio_frames < (int) m_auBufferSize);
+
+    while(audio_frames >= (int) m_auBufferSize) {
+      const char * abuf = (const char *) audio_data;
+      unsigned take = m_auBufferSize / 2;
+      putAudio(abuf, take);
+      audio_data = abuf + take * m_auFrameBytes;
+      audio_frames -= take;
+    }
 
     m_amutex.lock();
     m_breakBack = false;
