@@ -1,0 +1,178 @@
+/* COPYRIGHT
+ *
+ * This file is part of Radiant.
+ *
+ * Copyright: Helsinki University of Technology, MultiTouch Oy and others.
+ *
+ * See file "Radiant.hpp" for authors and more details.
+ *
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
+ */
+
+#include <Radiant/SerialPort.hpp>
+#include <Radiant/StringUtils.hpp>
+#include <Radiant/Trace.hpp>
+
+#include <cassert>
+#include <string>
+
+namespace Radiant
+{
+
+  SerialPort::SerialPort()
+  : m_hPort(0)
+  {}
+
+  SerialPort::~SerialPort()
+  {
+    close();
+  }
+
+  bool SerialPort::open(const char * device, bool /*stopBit*/, bool parityBit,
+    int baud, int bits, int /*waitBytes*/, int waitTimeUS)
+  {
+    // First make sure serial port is closed
+
+    close();
+
+    // Open serial port
+
+    const char * fName = "SerialPort::open";
+
+    m_hPort = CreateFileA(device, GENERIC_READ | GENERIC_WRITE,
+      0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    
+    if(m_hPort == INVALID_HANDLE_VALUE)
+    {
+      const std::string   strErr = StringUtils::getLastErrorMessage();
+      error("%s # Failed to open serial port (%s): %s", fName, device, strErr.c_str());
+
+      m_hPort = 0;
+      return false;
+    }
+
+    // Obtain current parameters of serial port
+
+    DCB   dcbParams;
+    memset(& dcbParams, 0, sizeof(DCB));
+    dcbParams.DCBlength = sizeof(DCB);
+
+    if(!GetCommState(m_hPort, & dcbParams))
+    {
+      error("%s # Failed to get serial port state (%s)", fName, device);
+      close();
+      return false;
+    }
+
+    // Set parameters for serial port
+
+    int   cbr = 0;
+    switch(baud)
+    {
+      case 110:     cbr = CBR_110;    break;
+      case 300:     cbr = CBR_300;    break;
+      case 600:     cbr = CBR_600;    break;
+      case 1200:    cbr = CBR_1200;   break;
+      case 2400:    cbr = CBR_2400;   break;
+      case 4800:    cbr = CBR_4800;   break;
+      case 9600:    cbr = CBR_9600;   break;
+      case 14400:   cbr = CBR_14400;  break;
+      case 19200:   cbr = CBR_19200;  break;
+      case 38400:   cbr = CBR_38400;  break;
+      case 56000:   cbr = CBR_56000;  break;
+      case 57600:   cbr = CBR_57600;  break;
+      case 115200:  cbr = CBR_115200; break;
+      case 128000:  cbr = CBR_128000; break;
+      case 256000:  cbr = CBR_256000; break;
+      default:
+      {
+        error("%s # Invalid baud rate (%d)", fName, baud);
+        close();
+        return false;
+      }
+    }
+    dcbParams.BaudRate = cbr;
+    dcbParams.ByteSize = BYTE(bits);
+    dcbParams.StopBits = ONESTOPBIT;
+    dcbParams.Parity = parityBit ? EVENPARITY : NOPARITY;
+
+    if(!SetCommState(m_hPort, & dcbParams))
+    {
+      error("%s # Failed to set serial port state (%s)", fName, device);
+      close();
+      return false;
+    }
+
+    // Set timeouts
+
+    const int   waitTimeMS = waitTimeUS / 1000;
+    COMMTIMEOUTS  timeouts;
+    memset(& timeouts, 0, sizeof(COMMTIMEOUTS));
+    timeouts.ReadIntervalTimeout = waitTimeMS;
+    timeouts.ReadTotalTimeoutConstant = waitTimeMS;
+    timeouts.ReadTotalTimeoutMultiplier = waitTimeMS / 5;
+    timeouts.WriteTotalTimeoutConstant = waitTimeMS;
+    timeouts.WriteTotalTimeoutMultiplier = waitTimeMS / 5;
+
+    if(!SetCommTimeouts(m_hPort, & timeouts))
+    {
+      error("%s # Failed to set serial port timeouts (%s)", fName, device);
+      close();
+      return false;
+    }
+
+    return true;
+  }
+
+  bool SerialPort::close()
+  {
+    if(!isOpen())
+    {
+      return true;
+    }
+
+    bool  closed = false;
+    if(CloseHandle(m_hPort))
+    {
+      closed = true;
+      m_hPort = 0;
+    }
+
+    return closed;
+  }
+
+  int SerialPort::write(const void * buf, int bytes)
+  {
+    assert(isOpen());
+
+    DWORD   bytesWritten = 0;
+    WriteFile(m_hPort, buf, bytes, & bytesWritten, 0);
+
+    return int(bytesWritten);
+  }
+
+  int SerialPort::writeByte(uint8_t byte)
+  {
+    return write(& byte, 1);
+  }
+
+  int SerialPort::read(void * buf, int bytes)
+  {
+    assert(isOpen());
+
+    DWORD   bytesRead = 0;
+    ReadFile(m_hPort, buf, bytes, & bytesRead, 0);
+
+    return int(bytesRead);
+  }
+
+  bool SerialPort::isOpen() const
+  {
+    return (m_hPort != 0);
+  }
+
+}
