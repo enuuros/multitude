@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Dyslexic"
 	ProjectGUID="{91100E0D-7088-341E-A1AD-B974640EFBD9}"
 	RootNamespace="Dyslexic"
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;QT_LARGEFILE_SUPPORT;DYSLEXIC_FLIP_Y;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -141,7 +141,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"

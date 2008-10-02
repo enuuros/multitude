@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="VideoDisplay"
 	ProjectGUID="{0DB171AA-74BB-3AEE-9848-8DC18D3DDB77}"
 	RootNamespace="VideoDisplay"
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;VIDEODISPLAY_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;__STDC_CONSTANT_MACROS"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -141,7 +141,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;VIDEODISPLAY_EXPORT;QT_NO_DEBUG;NDEBUG;VIDEODISPLAY_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;__STDC_CONSTANT_MACROS"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
