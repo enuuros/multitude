@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Patterns"
 	ProjectGUID="{845F9044-BCBA-3A37-BD67-0A24B54F93BA}"
 	Keyword="Qt4VSv1.0"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;PATTERNS_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -139,7 +139,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,PATTERNS_EXPORT;NDEBUG,QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"

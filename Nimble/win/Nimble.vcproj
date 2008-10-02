@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Nimble"
 	ProjectGUID="{D1312DBF-02D6-398D-BD55-1303AFC17EFC}"
 	Keyword="Qt4VSv1.0"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;NIMBLE_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -138,7 +138,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;NIMBLE_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"

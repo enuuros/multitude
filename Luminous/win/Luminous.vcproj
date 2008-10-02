@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Luminous"
 	ProjectGUID="{F91B8F93-F19C-36B1-A191-63802587D0EE}"
 	RootNamespace="Luminous"
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;LUMINOUS_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -140,7 +140,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;LUMINOUS_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"

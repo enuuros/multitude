@@ -23,6 +23,7 @@
 #include <Radiant/Trace.hpp>
 
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <WinPort.h>
 #endif
 

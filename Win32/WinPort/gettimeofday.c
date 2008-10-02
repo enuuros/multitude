@@ -20,16 +20,16 @@
  *  Danny Smith <dannysmith@users.sourceforge.net>
  */
 
-#include <sys/time.h>
+#include "include/sys/time.h"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 /* Offset between 1/1/1601 and 1/1/1970 in 100 nanosec units */
 #define _W32_FT_OFFSET (116444736000000000ULL)
 
-int __cdecl gettimeofday(struct timeval *__restrict__ tp,
-			 void *__restrict__ tzp __attribute__((unused)))
-//int __cdecl gettimeofday(struct timeeval *tp, void *tzp)
+//int __cdecl gettimeofday(struct timeval *__restrict__ tp,
+//			 void *__restrict__ tzp __attribute__((unused)))
+int __cdecl gettimeofday(struct timeval *tp, void *tzp)
 {
   union {
     unsigned long long ns100; /*time since 1 Jan 1601 in 100ns units */

@@ -8,7 +8,7 @@
 #ifndef _DIRENT_H_
 #define _DIRENT_H_
 
-#include <WinPort/Export.hpp>
+#include <Export.hpp>
 
 /* All the headers include this file. */
 #include <_mingw.h>

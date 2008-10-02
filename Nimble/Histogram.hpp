@@ -19,10 +19,10 @@
 #include <Nimble/Export.hpp>
 
 #ifdef WIN32
-#include <WinPort.h>
+#include <Win32/WinPort/include/WinPort.h>
 #endif
 
-#include <strings.h>
+#include <string>
 
 namespace Nimble {
 

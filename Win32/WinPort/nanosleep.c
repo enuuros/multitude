@@ -1,4 +1,4 @@
-#include <sys/time.h>
+#include "include/sys/time.h"
 #include <stdint.h>
 #include <pthread.h>
 #define _WINSOCKAPI_		// avoid redefining struct timeval

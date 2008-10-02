@@ -42,7 +42,7 @@ namespace Radiant
   int Condition::wait(Mutex &mutex, int millsecs)
   { 
     struct timespec abstime;
-    struct timeeval tv;
+    struct timeval tv;
     gettimeofday(&tv, 0);
     tv.tv_sec += millsecs / 1000;
     tv.tv_usec += 1000 * (millsecs % 1000);

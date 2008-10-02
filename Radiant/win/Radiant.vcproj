@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Radiant"
 	ProjectGUID="{410D922A-8FD9-363D-99ED-2607E09E3A78}"
 	RootNamespace="Radiant"
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../multitude&quot;;&quot;$(SolutionDir)../multitude/Win32/WinPort/include&quot;"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -80,7 +80,7 @@
 				AdditionalDependencies="1394camerad.lib pthreadVC2.lib ShLwApi.lib wsock32.lib WinPortD.lib"
 				OutputFile="..\..\Win32\lib\debug\RadiantD.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="0"
@@ -140,7 +140,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../multitude&quot;;&quot;$(SolutionDir)../multitude/Win32/WinPort/include&quot;"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;NDEBUG;QT_NO_DEBUG;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -171,6 +171,7 @@
 				AdditionalDependencies="1394camera.lib pthreadVC2.lib ShLwApi.lib wsock32.lib"
 				OutputFile="..\..\Win32\lib\release\Radiant.dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 			/>

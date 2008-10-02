@@ -1,9 +1,8 @@
 #ifndef _WinPort_h_
 #define _WinPort_h_
 
-#include <WinPort/Export.hpp>
-
-#include <stdint.h>
+#include <Win32/WinPort/include/Export.hpp>
+#include <Win32/WinPort/include/stdint.h>
 
 typedef int				  socklen_t;
 typedef unsigned		uint;

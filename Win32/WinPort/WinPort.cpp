@@ -1,6 +1,6 @@
-#include "WinPort.h"
+#include "include/WinPort.h"
 #include <math.h>
-#include <Windows.h>
+#include <windows.h>
 
 int sleep(unsigned secs)
 {
