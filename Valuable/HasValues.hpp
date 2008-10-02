@@ -73,6 +73,7 @@ namespace Valuable
       container m_children;
   };
 
+  /*
 #ifdef WIN32
 #ifdef VALUABLE_EXPORT
   // In WIN32 template functions must be instantiated to be exported
@@ -81,7 +82,7 @@ namespace Valuable
   template VALUABLE_API bool HasValues::setValue<Nimble::Vector4T<float>>(const std::string & name, const Nimble::Vector4T<float> &);
 #endif
 #endif
-
+  */
 }
 
 #endif

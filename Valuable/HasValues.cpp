@@ -267,4 +267,10 @@ namespace Valuable
     return false;
   }
 
+  // Template functions must be instantiated to be exported
+  template VALUABLE_API bool HasValues::setValue<float>(const std::string & name, const float &);
+  template VALUABLE_API bool HasValues::setValue<Nimble::Vector2T<float> >(const std::string & name, const Nimble::Vector2T<float> &);
+  template VALUABLE_API bool HasValues::setValue<Nimble::Vector4T<float> >(const std::string & name, const Nimble::Vector4T<float> &);
+
+
 }

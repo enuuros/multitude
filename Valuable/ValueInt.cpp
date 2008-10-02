@@ -13,6 +13,8 @@
  * 
  */
 
+#include "ValueInt.hpp"
 #include "ValueIntImpl.hpp"
 
 template class Valuable::ValueIntT<int>;
+template class Valuable::ValueIntT<Radiant::TimeStamp>;
