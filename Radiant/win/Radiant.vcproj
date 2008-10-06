@@ -77,7 +77,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies="1394camerad.lib pthreadVC2.lib ShLwApi.lib wsock32.lib WinPortD.lib"
+				AdditionalDependencies="1394camerad.lib pthreadVC2.lib ShLwApi.lib wsock32.lib"
 				OutputFile="..\..\Win32\lib\debug\RadiantD.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
