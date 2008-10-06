@@ -35,9 +35,11 @@ namespace Luminous
     changeByteConsumption(consumesBytes(), 0);
   }
 
+#ifndef WIN32
   template class TextureT<GL_TEXTURE_1D>;
   template class TextureT<GL_TEXTURE_2D>;
   template class TextureT<GL_TEXTURE_3D>;
+#endif
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
