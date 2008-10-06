@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -78,7 +78,7 @@
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="pthreadVC2.lib xerces-c_2D.lib"
-				OutputFile="..\..\Win32\lib\debug\ValuableD.dll"
+				OutputFile="ValuableD.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
@@ -111,7 +111,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -172,7 +172,7 @@
 				IgnoreImportLibrary="false"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
 				AdditionalDependencies="pthreadVC2.lib xerces-c_2.lib"
-				OutputFile="..\..\Win32\lib\release\Valuable.dll"
+				OutputFile="Valuable.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"

@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -76,7 +76,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libsndfile-1.lib portaudio_x86d.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\debug\ResonantD.dll"
+				OutputFile="ResonantD.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
@@ -108,7 +108,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libsndfile-1.lib portaudio_x86d.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\release\Resonant.dll"
+				OutputFile="Resonant.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"

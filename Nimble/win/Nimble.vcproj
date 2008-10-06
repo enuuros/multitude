@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="Nimble"
 	ProjectGUID="{D1312DBF-02D6-398D-BD55-1303AFC17EFC}"
+	RootNamespace="Nimble"
 	Keyword="Qt4VSv1.0"
 	TargetFrameworkVersion="0"
 	>
@@ -17,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="..\..\..\Win32"
 			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -77,7 +78,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/FORCE:MULTIPLE"
-				OutputFile="..\..\Win32\lib\debug\NimbleD.dll"
+				OutputFile="NimbleD.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
@@ -107,7 +108,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -166,7 +167,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\Win32\lib\release\Nimble.dll"
+				OutputFile="Nimble.dll"
 				LinkIncremental="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

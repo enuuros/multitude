@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -79,7 +79,7 @@
 				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib glew32.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\debug\VideoDisplayD.dll"
+				OutputFile="VideoDisplayD.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
@@ -110,7 +110,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -170,7 +170,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib glew32.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\release\VideoDisplay.dll"
+				OutputFile="VideoDisplay.dll"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 			/>

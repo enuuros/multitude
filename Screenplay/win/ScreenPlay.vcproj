@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="debug\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -76,7 +76,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\debug\ScreenPlayD.dll"
+				OutputFile="ScreenPlayD.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
@@ -110,7 +110,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin"
 			IntermediateDirectory="release\"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -172,7 +172,7 @@
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
 				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib pthreadVC2.lib"
-				OutputFile="..\..\Win32\lib\release\ScreenPlay.dll"
+				OutputFile="ScreenPlay.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
