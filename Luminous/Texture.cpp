@@ -120,8 +120,8 @@ namespace Luminous
 	return true;
       }
     }
-    catch(...) {
-      
+	catch(Magick::Exception & e) {
+		Radiant::error("Texture2D::loadImage # %s", e.what());      
     }
     return false;
   }

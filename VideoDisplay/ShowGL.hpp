@@ -53,7 +53,7 @@ namespace VideoDisplay {
 
   class ShowGL
   {
-    public:
+  public:
 
     class YUVProgram : public Luminous::GLSLProgramObject
     {
@@ -199,6 +199,5 @@ namespace VideoDisplay {
   };
 
 }
-
 
 #endif
