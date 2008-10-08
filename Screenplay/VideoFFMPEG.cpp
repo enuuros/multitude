@@ -432,11 +432,19 @@ namespace Screenplay {
     float ratio = m_vcontext ? 
       (float) av_q2d(m_vcontext->sample_aspect_ratio) : 0.0f;
 
-    trace("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", 
-	  fname, filename, width(), height(), vcname, acname, m_audioSampleRate,
-	  (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
-
     m_lastSeek = 0;
+
+    if(!vcname) {
+	error("%s # File %s has unsupported video codec.", fname, filename);
+	return false;
+ }
+
+	if(!acname) {
+		error("%s # File %s has unsupported audio codec.", fname, filename);
+		return false;
+	}
+	
+    trace("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;
   }
