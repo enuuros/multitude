@@ -160,6 +160,20 @@ namespace Radiant {
 
   };
 
+  class GuardStatic : public Patterns::NotCopyable
+  {
+  public:
+    /// Locks the mutex
+    GuardStatic(MutexStatic * mutex) : m_mutex(mutex) { m_mutex->lock(); }
+    
+    /// Unlocks the mutex
+    ~GuardStatic() { m_mutex->unlock(); }
+
+  private:
+    MutexStatic * m_mutex;
+
+  };
+
   /** A guard class that only releases a locked mutex. This class is
       used to automatically unlock a mutex within some function.
 

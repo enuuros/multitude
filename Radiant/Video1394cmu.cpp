@@ -547,6 +547,35 @@ bool Video1394::disableTrigger()
 	return false;
 }
 
+void checkCamError(const char * what, int err) {
+	switch(err) {
+			case CAM_SUCCESS:
+				trace("%s : success", what);
+				break;
+			case CAM_ERROR_NOT_INITIALIZED:
+				error("%s : no camera selected/camera not initialized", what);
+				break;
+			case CAM_ERROR_BUSY:
+				error("%s : camera is busy", what);
+				break;
+			case CAM_ERROR:
+				error("%s : camera error", what);
+				break;
+			case CAM_ERROR_INVALID_VIDEO_SETTINGS:
+				error("%s : invalid video settings", what);
+				break;
+			case CAM_ERROR_INSUFFICIENT_RESOURCES:
+				error("%s : insufficient resources", what);
+				break;
+			case ERROR_OUTOFMEMORY:
+				error("%s : out of memory", what);
+				break;
+			default:
+				error("%s : unknown error (%d)", what, err);
+				break;
+	};
+}
+
 // ---------------------------------------------------------------------------
 //
 void Video1394::sendSoftwareTrigger()
@@ -569,13 +598,14 @@ void Video1394::sendSoftwareTrigger()
 				 int height, 
 				 FrameRate framerate)
 	{
+		static MutexAuto mutex;
+
+		// Only one thread at a time, just to make things sure.
+		Guard guard(&mutex);
+
 		width = width;
 		height = height;
 		framerate = framerate;
-
-		// Only one thread at a time, just to make things sure.
-		static MutexAuto mutex;
-		Guard guard(&mutex);
 
 		m_videodevice = device ? device : "/dev/video1394";		// needed ?? 
 		m_cameraNum = camera ? atoi(camera) : 0;
@@ -824,6 +854,18 @@ void Video1394::sendSoftwareTrigger()
 			error("%s # unsupported image format", fname);
 		}
 
+		int mbps = cmu_camera->GetMaxSpeed();
+		trace("CAMERA MAX SPEED %d", mbps);
+		
+		int err = cmu_camera->SetVideoFormat(0);
+		checkCamError("setVideoFormat", err);
+
+		err = cmu_camera->SetVideoMode(5);
+		checkCamError("setVideoMode", err);
+
+		err = cmu_camera->SetVideoFrameRate(5);
+		checkCamError("setVideoFrameRate", err);
+
 		trace("%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
 		return true;
 	}
@@ -843,8 +885,11 @@ void Video1394::sendSoftwareTrigger()
 		assert(isInitialized());
 		assert(m_started == false);
 		assert(cmu_camera);
-
-		int status = cmu_camera->StartImageCapture();
+	
+		//unsigned long flags = ACQ_START_VIDEO_STREAM | ACQ_SUBSCRIBE_ONLY /*| ACQ_ALLOW_PGR_DUAL_PACKET*/;
+		//int status = cmu_camera->StartImageAcquisitionEx(1, 0, flags);
+		int status = cmu_camera->StartImageAcquisitionEx(1, 1000, ACQ_START_VIDEO_STREAM);
+		//int status = cmu_camera->StartImageCapture();
 		//int status = cmu_camera->StartImageAcquisition();
 		if (status != CAM_SUCCESS)
 		{
@@ -872,8 +917,8 @@ void Video1394::sendSoftwareTrigger()
 		assert(m_started);
 		assert(cmu_camera);
 	  
-		if (cmu_camera->StopImageCapture() != CAM_SUCCESS)
-		//if (cmu_camera->StopImageAcquisition() != CAM_SUCCESS)
+		//if (cmu_camera->StopImageCapture() != CAM_SUCCESS)
+		if (cmu_camera->StopImageAcquisition() != CAM_SUCCESS)
 		{
 			error("Video1394::stop # unable to stop iso transmission");
 			return false;
@@ -894,9 +939,52 @@ void Video1394::sendSoftwareTrigger()
 
 		if (!m_started)
 			start();
+/*
+		DWORD ret = 0;
+		do {
+		HANDLE hFrameEvent = cmu_camera->GetFrameEvent();
+		if(hFrameEvent == NULL) {
+			trace("MEEP");
+			if(cmu_camera->AcquireImageEx(FALSE, NULL) != CAM_ERROR_FRAME_TIMEOUT) {
+				error("Video1394::captureImage # Meh, AcquireImageEx failed.");
+			}
+			hFrameEvent = cmu_camera->GetFrameEvent();
+		}
 
-		int status = cmu_camera->CaptureImage();
-		// int status = cmu_camera->AcquireImage();
+		ret = MsgWaitForMultipleObjects(1, &hFrameEvent, FALSE, 1000, QS_ALLINPUT);
+		switch(ret) {
+			case WAIT_OBJECT_0:
+				{
+				trace("WAIT_OBJECT_0");
+				int rc = cmu_camera->AcquireImageEx(FALSE, NULL);
+				switch(rc) {
+					case CAM_SUCCESS:
+						trace("Whee!");
+						break;
+					case CAM_ERROR_NOT_INITIALIZED:
+						error("Camera not initialized");
+						return 0;
+						break;
+					default:
+						DWORD err = GetLastError();
+						error("WAT? System error code: %d", err);
+						break;
+				};
+				}
+				break;
+			case WAIT_OBJECT_0 + 1:
+				trace("WAIT_OBJECT_1");
+				break;
+			case WAIT_TIMEOUT:
+				trace("WAIT_TIMEOUT");
+				break;
+		};
+		} while(ret == WAIT_OBJECT_0);
+*/
+
+		//int status = cmu_camera->CaptureImage();
+		int status = cmu_camera->AcquireImageEx(TRUE, NULL);
+		//checkCamError("captureImage", status);
 		if (status != CAM_SUCCESS)
 		{
 			error("Video1394::captureImage # Unable to capture a frame!");
@@ -904,12 +992,21 @@ void Video1394::sendSoftwareTrigger()
 			return 0;
 		}
 
+		
 		unsigned long len = 0;
 		m_image.m_planes[0].m_data = cmu_camera->GetRawData(&len);
-		cmu_camera->getRGB(m_image.m_planes[0].m_data, m_image.size());
+/*
+		trace("CAM IMG SIZE %dx%d (raw frame was %u bytes)", m_image.m_width, m_image.m_height, len);
+
+		unsigned long w, h;
+		unsigned short bpp;
+		cmu_camera->GetVideoFrameDimensions(&w, &h);
+		cmu_camera->GetVideoDataDepth(&bpp);
+		trace("CAM TRUE SIZE %ux%u (%u bits) %d", w, h, bpp, (w * h * bpp / 8));
+		//cmu_camera->getRGB(m_image.m_planes[0].m_data, m_image.size());
 
 		// trace("Video1394::captureImage # EXIT");
-
+*/
 		return & m_image;
 	}
 
@@ -977,11 +1074,12 @@ void Video1394::sendSoftwareTrigger()
 
 		C1394Camera cmucam;
 		cmucam.CheckLink();
+		int numCams = cmucam.RefreshCameraList();
 
 		// -- enumerate cameras
 		dc1394camera_list_t camlist;
 		camlist.ids = 0;
-		int numCams = cmucam.GetNumberCameras();
+		//int numCams = cmucam.GetNumberCameras();
 		for (int i = 0; i < numCams; i++)
 		{
 			LARGE_INTEGER guid;

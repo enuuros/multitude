@@ -228,7 +228,7 @@ namespace Radiant {
 
   static void cleardocs()
   {
-    Radiant::Guard g( & __mutex);
+    Radiant::GuardStatic g( & __mutex);
 
     __writtenDocs.clear();
   }
