@@ -27,11 +27,10 @@ int main(int , char ** )
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  Magick::Image image;
-  image.read("..\\test.jpg");
+  Luminous::Texture2D tex;
+  if(!tex.loadImage("test.png")) return 1;
 
-  Luminous::Texture2D * tex = Luminous::Texture2D::fromImage(image);
-  tex->bind();
+  tex.bind();
 
   bool running = true;
 
