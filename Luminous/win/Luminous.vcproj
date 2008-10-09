@@ -167,7 +167,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdi32.lib glew32.lib glu32.lib opengl32.lib libjpeg-static-mt.lib libpng13d.lib pthreadVC2.lib xerces-c_2.lib xerces-depdom_2.lib"
+				AdditionalDependencies="gdi32.lib glew32.lib glu32.lib opengl32.lib libjpeg-static-mt.lib libpng13.lib pthreadVC2.lib xerces-c_2.lib xerces-depdom_2.lib"
 				OutputFile="$(OutDir)Luminous.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"

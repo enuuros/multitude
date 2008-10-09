@@ -142,7 +142,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include;$(SolutionDir)../multitude/Win32/WinPort/include/freetype2"
-				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;DYSLEXIC_FLIP_Y"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
