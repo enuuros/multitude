@@ -27,6 +27,76 @@ using namespace std;
 
 namespace Luminous
 {
+	bool Image::readPNGHeader(FILE * file)
+	{
+    // Initialize IO stuff
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
+    if(png_ptr == NULL) {
+        cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
+        return false;
+    }
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if(info_ptr == NULL) {
+      png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+      cerr << "Image::readPNG # couldn't create PNG info struct" << endl;
+      return false;
+    }
+
+    if(setjmp(png_jmpbuf(png_ptr))) {
+      png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+      cerr << "Image::readPNG # couldn't set png_jumpbuf" << endl;
+      return false;
+    }
+
+    png_init_io(png_ptr, file);
+    png_read_info(png_ptr, info_ptr);
+
+    int bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+    int color_type = png_get_color_type(png_ptr, info_ptr);
+
+    // Convert palette color to RGB
+    if(color_type == PNG_COLOR_TYPE_PALETTE)
+      png_set_palette_to_rgb(png_ptr);
+
+    // Convert grayscale with less than 8 bpp to 8 bpp
+    if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) 
+      png_set_gray_1_2_4_to_8(png_ptr);
+
+    // Add full alpha channel if there's transparency
+    if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+      png_set_tRNS_to_alpha(png_ptr);
+
+    // If there's more than one pixel per byte, expand to 1 pixel / byte
+    if(bit_depth < 8)
+      png_set_packing(png_ptr);
+  
+    png_read_update_info(png_ptr, info_ptr);
+
+    m_width = png_get_image_width(png_ptr, info_ptr);
+    m_height = png_get_image_height(png_ptr, info_ptr);
+    int channels = png_get_channels(png_ptr, info_ptr);
+
+	switch(channels) {
+      case 4:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGBA, PixelFormat::TYPE_UBYTE);
+        break;
+      case 3:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
+        break;
+      case 2:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE_ALPHA, PixelFormat::TYPE_UBYTE);
+        break;
+      case 1:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);  
+        break;
+      default:
+        cerr << "Image::readPNGHeader # unsupported number of channels (" << channels << ") found" << endl;
+        return false; 
+    };
+
+	return true;
+}
   
   bool Image::readPNG(FILE* file)
   {

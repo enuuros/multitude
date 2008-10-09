@@ -445,6 +445,20 @@ namespace Luminous
 	m_data = 0;
     }
   }
+   
+  // Guess the filetype from the extension
+  static Image::ImageType typeFromFileExt(const std::string & filename) 
+  {
+	  Image::ImageType type = Image::IMAGE_TYPE_UNKNOWN;
+    string ext = filename.substr(filename.rfind(".") + 1);
+
+	if(strcasecmp(ext.c_str(), "tga") == 0) type = Image::IMAGE_TYPE_TGA;
+	else if(strcasecmp(ext.c_str(), "png") == 0) type = Image::IMAGE_TYPE_PNG;
+    else if(strcasecmp(ext.c_str(), "jpg") == 0 ||
+		strcasecmp(ext.c_str(), "jpeg") == 0) type = Image::IMAGE_TYPE_JPG;
+
+	return type;
+  }
 
   bool Image::read(const char* filename, ImageType* pType)
   {
@@ -452,17 +466,7 @@ namespace Luminous
 
     bool ret = false;
 
-    // Guess the filetype from the extension
-    string s(filename);
-
-    string ext = s.substr(s.rfind(".") + 1);
-
-    ImageType type = IMAGE_TYPE_UNKNOWN;
-
-    if(strcasecmp(ext.c_str(), "tga") == 0) type = IMAGE_TYPE_TGA;
-    else if(strcasecmp(ext.c_str(), "png") == 0) type = IMAGE_TYPE_PNG;
-    else if(strcasecmp(ext.c_str(), "jpg") == 0 ||
-        strcasecmp(ext.c_str(), "jpeg") == 0) type = IMAGE_TYPE_JPG;
+    ImageType type = typeFromFileExt(filename);
 
     // Figure out the file type
     FILE* file = fopen(filename, "rb");
@@ -636,6 +640,24 @@ namespace Luminous
     float ey = (y < y2 ? y : y2);
 
     return (ex - sx) * (ey - sy);
+  }
+
+  bool Image::ping(const char * filename) {
+	  Image::ImageType type = typeFromFileExt(filename);
+
+	  switch(type) {
+		  case Image::IMAGE_TYPE_JPG:
+			  return true;
+			  break;
+		  case Image::IMAGE_TYPE_PNG:
+			  return true;
+			  break;
+		  case Image::IMAGE_TYPE_TGA:
+			  return true;
+			  break;
+	  };
+
+	  return false;
   }
 
 }

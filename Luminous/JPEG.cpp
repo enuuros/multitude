@@ -24,13 +24,40 @@ using namespace std;
 
 namespace Luminous
 {
+	bool Image::readJPGHeader(FILE * file)
+	{
+	struct jpeg_error_mgr jerr;
+    struct jpeg_decompress_struct cinfo;
+    
+    // Set error handler
+    cinfo.err = jpeg_std_error(&jerr);
+
+    // Init decompression object
+    jpeg_create_decompress(&cinfo);
+
+    // Set source
+    jpeg_stdio_src(&cinfo, file);
+
+    // Read header
+    jpeg_read_header(&cinfo, TRUE);
+
+	m_width = cinfo.output_width;
+	m_height = cinfo.output_height;
+	
+
+	if(cinfo.output_components == 1) {
+		m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
+    } else if(cinfo.output_components == 3) {
+		m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
+	}
+	
+	jpeg_destroy_decompress(&cinfo);
+	
+	return true;
+	}
+
   bool Image::readJPG(FILE* file)
   {
-#if 0
-  allocate(500, 300, PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE));
-  memset(m_data, 255, 500*300*3);
-  return true;
-#else
     struct jpeg_error_mgr jerr;
     struct jpeg_decompress_struct cinfo;
     
@@ -77,7 +104,6 @@ namespace Luminous
     jpeg_destroy_decompress(&cinfo);
 
     return true;
-#endif
   }
 
   bool Image::writeJPG(FILE* file)

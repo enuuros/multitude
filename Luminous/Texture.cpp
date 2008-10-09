@@ -24,26 +24,21 @@ using namespace std;
 
 namespace Luminous
 {
-#ifndef WIN32
   template <GLenum TextureType>
   TextureT<TextureType>::~TextureT()
-#else
-  TextureT::~TextureT()
-#endif
   {
     if(m_textureId) glDeleteTextures(1, &m_textureId);
     changeByteConsumption(consumesBytes(), 0);
   }
 
-#ifndef WIN32
+
   template class TextureT<GL_TEXTURE_1D>;
   template class TextureT<GL_TEXTURE_2D>;
   template class TextureT<GL_TEXTURE_3D>;
-#endif
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-
+/*
   Texture1D* Texture1D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)
   {
@@ -60,7 +55,7 @@ namespace Luminous
                                  PixelFormat::TYPE_UBYTE) ,
                      buildMipmaps, resources);
   }
-
+*/
   Texture1D* Texture1D::fromBytes(GLenum internalFormat, int h,
 				  const void* data,
 				  const PixelFormat& srcFormat,
@@ -108,13 +103,24 @@ namespace Luminous
 
     return tex;
   }
+  
+  bool Texture2D::loadImage(const char * filename, bool buildMipmaps) {
+	  Luminous::Image img;
 
+	  if(!img.read(filename)) return false;
+	  
+	  return loadImage(img, buildMipmaps);
+  }
+
+/*
   bool Texture2D::loadImage(const char * filename, bool buildMipmaps)
   {
+	  Radiant::trace("Texture2D::LoadImage");
     try {
       Magick::Image im;
-      
-      im.read(filename);
+      Radiant::trace("MUUUUUUUUUUU %s", filename);
+	  im.read(filename);
+	  Radiant::trace("MOOOOOOOOO");
       if(im.columns()) {
         loadImage(im, buildMipmaps);
 	return true;
@@ -122,9 +128,10 @@ namespace Luminous
     }
 	catch(Magick::Exception & e) {
 		Radiant::error("Texture2D::loadImage # %s", e.what());      
-    }
+	} catch(...) {}
     return false;
   }
+*/
 
   bool Texture2D::loadImage(Luminous::Image & image, bool buildMipmaps)
   {
@@ -133,7 +140,7 @@ namespace Luminous
 		     image.bytes(),
 		     image.pixelFormat(), buildMipmaps);
   }
-
+/*
   bool Texture2D::loadImage(Magick::Image & image, bool buildMipmaps)
   {
     Magick::Blob blob;
@@ -163,7 +170,7 @@ namespace Luminous
 
     loadSubBytes(x, y, subImage.columns(), subImage.rows(), blob.data());
   }
-
+*/
   bool Texture2D::loadBytes(GLenum internalFormat, int w, int h,
 			    const void * data, 
 			    const PixelFormat& srcFormat,
@@ -237,7 +244,7 @@ namespace Luminous
     return fromBytes(GL_RGBA, image.width(), image.height(), image.bytes(), image.pixelFormat(),
                      buildMipmaps, resources);
   }
-
+/*
   Texture2D* Texture2D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)
   {
@@ -251,7 +258,7 @@ namespace Luminous
 				 PixelFormat::TYPE_UBYTE),
                      buildMipmaps, resources);
   }
-
+*/
   Texture2D* Texture2D::fromBytes(GLenum internalFormat, int w, int h,
 				  const void* data,
 				  const PixelFormat& srcFormat,

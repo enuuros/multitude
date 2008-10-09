@@ -24,7 +24,7 @@
 #include <Radiant/Trace.hpp>
 
 // We use Magick++ just for the "ping" function to check image size.
-#include <Magick++.h>
+//#include <Magick++.h>
 
 #include <assert.h>
 
@@ -409,16 +409,14 @@ namespace Luminous {
     for(int i = 0; i < MAX_MAPS; i++) {
       m_stack[i].clear();
     }
-    
-    Magick::Image img;
-    try {
-      img.ping(filename);
-    } catch(...) {
+
+	Luminous::Image img;
+	if(!img.ping(filename)) {
       Radiant::error("CPUMipmaps::startLoading # failed to query image size");
       return false;
     }
 
-    m_nativeSize.make(img.columns(), img.rows());
+	m_nativeSize.make(img.width(), img.height());
 
     if(!m_nativeSize.minimum())
       return false;

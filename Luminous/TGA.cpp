@@ -42,12 +42,41 @@ namespace Luminous
     unsigned char descriptor;
   } TGAHeader;
 
+  bool Image::readTGAHeader(FILE * file)
+  {
+	TGAHeader header;
+
+	size_t r = fread(&header, sizeof(TGAHeader), 1, file);
+	if(r != 1) return false;
+
+	m_width = header.widthLo + (header.widthHi << 8);
+    m_height = header.heightLo + (header.heightHi << 8);
+    int bytesPerPixel = (header.bpp >> 3);
+
+    switch(bytesPerPixel) {
+      case 4:
+		  m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_BGRA, PixelFormat::TYPE_UBYTE);
+        break;
+      case 3:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_BGR, PixelFormat::TYPE_UBYTE);
+        break;
+      case 1:
+        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
+        break;
+      default:
+        cerr << "Image::readTGAHeader # unsupported bit depth (" << header.bpp << ")" << endl;
+        return false;
+    };
+
+	return true;
+  }
+
   bool Image::readTGA(FILE* file)
   {
     TGAHeader header;
 
     // Read header
-    fread(&header, 1, sizeof(TGAHeader), file);
+    fread(&header, sizeof(TGAHeader), 1, file);
 
     // Check image type
     bool typeGood = false;

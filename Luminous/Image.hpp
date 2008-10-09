@@ -52,6 +52,8 @@ namespace Luminous
     unsigned char* bytes() { return & m_data[0]; }
     const unsigned char* bytes() const { return & m_data[0]; }
 
+	bool ping(const char * filename);
+
     bool read(const char* filename, ImageType* type = 0);
     bool write(const char* filename, ImageType type);
 
@@ -84,13 +86,16 @@ namespace Luminous
 
     void sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const;
     float computeWeight(int x, int y, float x1, float y1, float x2, float y2) const;
-  
+
+	bool readPNGHeader(FILE * file);
     bool readPNG(FILE* file);
     bool writePNG(FILE* file);
 
+	bool readJPGHeader(FILE * file);
     bool readJPG(FILE* file);
     bool writeJPG(FILE* file);
 
+	bool readTGAHeader(FILE * file);
     bool readTGA(FILE* file);
     bool writeTGA(FILE* file);
 
