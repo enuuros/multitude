@@ -16,7 +16,6 @@
 #include <Luminous/Luminous.hpp>
 #include <Radiant/Trace.hpp>
 #include <string>
-#include <Magick++.h>
 
 namespace Luminous
 {

@@ -76,7 +76,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="1394camerad.lib pthreadVC2.lib ShLwApi.lib wsock32.lib"
 				OutputFile="$(OutDir)RadiantD.dll"
 				LinkIncremental="1"

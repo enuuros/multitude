@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="SamplePlayer"
 	ProjectGUID="{F83C5918-6E0C-3BC3-92A6-D28757A4B1E2}"
 	RootNamespace="SamplePlayer"
@@ -170,7 +170,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
 				AdditionalDependencies="ws2_32.lib Radiant.lib Resonant.lib"
 				OutputFile="..\..\Win32\app\release\SamplePlayer.exe"
 				LinkIncremental="1"

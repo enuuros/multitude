@@ -76,7 +76,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
-				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="pthreadVC2.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)ValuableD.dll"
 				LinkIncremental="1"
@@ -170,7 +169,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
-				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
 				AdditionalDependencies="pthreadVC2.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)Valuable.dll"
 				LinkIncremental="1"

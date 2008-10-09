@@ -77,7 +77,6 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				UseLibraryDependencyInputs="false"
-				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib glew32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)VideoDisplayD.dll"
 				LinkIncremental="1"
@@ -169,6 +168,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="&quot;..\..\..\win32\bin\screenplay.lib&quot;"
 				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib glew32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)VideoDisplay.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"

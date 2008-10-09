@@ -15,11 +15,7 @@
 
 #include <Luminous/Image.hpp>
 
-#ifdef WIN32
-#include <png/png.h>
-#else
 #include <png.h>
-#endif
 
 #include <iostream>
 
@@ -29,6 +25,13 @@ namespace Luminous
 {
 	bool Image::readPNGHeader(FILE * file)
 	{
+		char header[8];
+		fread(header, 1, 8, file);
+		if(png_sig_cmp((png_bytep)header, 0, 8)) {
+			cerr << "Image::readPNGHeader # not a PNG file" << endl;
+			return false;
+		}
+
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
@@ -50,6 +53,8 @@ namespace Luminous
     }
 
     png_init_io(png_ptr, file);
+	png_set_sig_bytes(png_ptr, 8);
+
     png_read_info(png_ptr, info_ptr);
 
     int bit_depth = png_get_bit_depth(png_ptr, info_ptr);
@@ -100,6 +105,13 @@ namespace Luminous
   
   bool Image::readPNG(FILE* file)
   {
+	  char header[8];
+	  fread(header, 1, 8, file);
+	  if(png_sig_cmp((png_bytep)header, 0, 8)) {
+		  cerr << "Image::readPNG # not a PNG file" << endl;
+		  return false;
+	  }
+
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
@@ -121,6 +133,8 @@ namespace Luminous
     }
 
     png_init_io(png_ptr, file);
+	png_set_sig_bytes(png_ptr, 8);
+
     png_read_info(png_ptr, info_ptr);
 
     int bit_depth = png_get_bit_depth(png_ptr, info_ptr);

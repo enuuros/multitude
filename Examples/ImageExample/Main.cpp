@@ -1,8 +1,5 @@
-#ifndef WIN32
 #include <SDL/SDL.h>
-#else
-#include <SDL.h>
-#endif
+
 #include <Luminous/Luminous.hpp>
 #include <Luminous/Texture.hpp>
 
@@ -28,7 +25,7 @@ int main(int , char ** )
   glLoadIdentity();
 
   Luminous::Texture2D tex;
-  if(!tex.loadImage("test.png")) return 1;
+  if(!tex.loadImage("test.png", false)) return 1;
 
   tex.bind();
 

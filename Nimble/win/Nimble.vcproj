@@ -77,7 +77,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
-				AdditionalOptions="/FORCE:MULTIPLE"
 				OutputFile="$(OutDir)NimbleD.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
