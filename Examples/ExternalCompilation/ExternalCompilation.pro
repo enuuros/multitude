@@ -10,6 +10,6 @@ macx:LIBS += -framework,Nimble -framework,Radiant -framework,VideoDisplay
 
 CONFIG += link_pkgconfig
 
-PKGCONFIG += GraphicsMagick++ libavutil
+PKGCONFIG += libavutil
 
 

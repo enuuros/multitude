@@ -1,9 +1,0 @@
-#!/bin/sh
-
-
-COUNTER=0
-while [  $COUNTER -lt 10 ]; do
-  echo "One round"
-  ./Watcher
-  sleep 2
-done

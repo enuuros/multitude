@@ -244,6 +244,15 @@ namespace Luminous
     return fromBytes(GL_RGBA, image.width(), image.height(), image.bytes(), image.pixelFormat(),
                      buildMipmaps, resources);
   }
+
+  Texture2D * Texture2D::fromFile(const char * filename, bool buildMipmaps, GLResources * rs)
+  {
+    Luminous::Image img;
+    if(!img.read(filename)) return 0;
+
+    return fromImage(img, buildMipmaps, rs);
+  }
+
 /*
   Texture2D* Texture2D::fromImage
   (Magick::Image & image, bool buildMipmaps, GLResources * resources)

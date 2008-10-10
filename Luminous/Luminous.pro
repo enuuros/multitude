@@ -19,7 +19,7 @@ HEADERS += Image.hpp
 HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
 HEADERS += MatrixStep.hpp
-HEADERS += MipmapTask.hpp
+#HEADERS += MipmapTask.hpp
 HEADERS += MultiHead.hpp
 HEADERS += Path.hpp
 HEADERS += PixelFormat.hpp
@@ -47,7 +47,7 @@ SOURCES += GPUMipmaps.cpp
 SOURCES += Image.cpp
 SOURCES += JPEG.cpp
 SOURCES += Luminous.cpp
-SOURCES += MipmapTask.cpp
+#SOURCES += MipmapTask.cpp
 SOURCES += MultiHead.cpp
 SOURCES += Path.cpp
 SOURCES += PixelFormat.cpp
@@ -63,19 +63,15 @@ SOURCES += VertexBuffer.cpp
 LIBS += $$LIB_RADIANT -lGLEW -ljpeg -lpng $$LIB_OPENGL
 LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE
 
-CONFIG += debug
-
-PKGCONFIG += GraphicsMagick++
-
 include(../library.pri)
 
 win32 {
-	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_MAGICK $$INC_LIBPNG $$INC_ZLIB $$INC_LIBJPEG  
+	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_LIBPNG $$INC_ZLIB $$INC_LIBJPEG  
 	INCLUDEPATH += $$INC_XERCES $$INC_PTHREADS
-	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_GLEW $$LNK_JPEG $$LNK_MAGICK $$LNK_XERCES
+	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_GLEW $$LNK_JPEG $$LNK_XERCES
 	LIBPATH += $$LNK_PNG 
 	LIBS += $$LIB_WINPORT
-	LIBS += $$LIB_PTHREADS $$LIB_OPENGL $$LIB_GLU $$LIB_GLEW $$LIB_JPEG $$LIB_MAGICK $$LIB_XERCES
+	LIBS += $$LIB_PTHREADS $$LIB_OPENGL $$LIB_GLU $$LIB_GLEW $$LIB_JPEG $$LIB_XERCES
 	LIBS += $$LIB_PNG
 	LIBS -= -lGLEW -ljpeg -lpng -lGL
 	QMAKE_CXXFLAGS += -Zc:wchar_t	# treat wchar_t as a builtin type

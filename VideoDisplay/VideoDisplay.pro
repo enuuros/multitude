@@ -13,10 +13,7 @@ SOURCES += SubTitles.cpp
 SOURCES += VideoIn.cpp
 SOURCES += VideoInFFMPEG.cpp
 
-# $${BASEPATH}/include/ffmpeg
-#INCLUDEPATH += $${BASEPATH}/include/GraphicsMagick
-
-PKGCONFIG += GraphicsMagick++ libavutil
+PKGCONFIG += libavutil
 
 DEFINES += __STDC_CONSTANT_MACROS 
 
@@ -27,7 +24,7 @@ macx:LIBS += -framework,OpenGL
 include(../library.pri)
 
 win32 {
-	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_PTHREADS $$INC_FFMPEG $$INC_MAGICK $$INC_PORTAUDIO
+	INCLUDEPATH += $$INC_WINPORT $$INC_GLEW $$INC_PTHREADS $$INC_FFMPEG $$INC_PORTAUDIO
 	LIBPATH += $$LNK_MULTITUDE $$LNK_GLEW $$LNK_PTHREADS $$LNK_MULTITUDE
 	LIBS += $$LIB_GLEW $$LIB_OPENGL $$LIB_WINPORT $$LIB_PTHREADS
 	LIBS -= -lGL

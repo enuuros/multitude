@@ -121,15 +121,15 @@ namespace Luminous
 
     bool loadImage(const char * filename, bool buildMipmaps = true);
     bool loadImage(Luminous::Image & image, bool buildMipmaps = true);
-    //bool loadImage(Magick::Image & image, bool buildMipmaps = true);
-    //void loadSubImage(Magick::Image & subImage, int x, int y);
+
     bool loadBytes(GLenum internalFormat, int w, int h,
 		   const void* data, 
 		   const PixelFormat& srcFormat,
 		   bool buildMipmaps = true);
     void loadSubBytes(int x, int y, int w, int h, const void * subData);
+  
+    static Texture2D * fromFile(const char * filename, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromImage(Luminous::Image & img, bool buildMipmaps = true, GLResources * resources = 0);
-    //static Texture2D * fromImage(Magick::Image& image, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromBytes(GLenum internalFormat, int w, int h,
 				const void * data, 
 				const PixelFormat& srcFormat,

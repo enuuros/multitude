@@ -2,7 +2,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += FireView
 SUBDIRS += MoviePlayer
-SUBDIRS += Watcher
 
 linux-* {
   stuff.path = /src/MultiTouch/multitude/Applications
