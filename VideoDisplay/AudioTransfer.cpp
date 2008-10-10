@@ -69,7 +69,7 @@ namespace VideoDisplay {
 
     int m = n;
     const void * audio = m_video->getAudio( & m, false);
-
+ 
     int chans = m_channels;
 
     // Radiant::trace("AudioTransfer::process # %ld + %d", m_frames, m);
@@ -77,7 +77,7 @@ namespace VideoDisplay {
     if(m_sampleFmt == Radiant::ASF_INT16) {
 
       const int16_t * data = (const int16_t *) audio;
-      const float scale = 0.3f / 32768.0f;
+      const float scale = 0.7f / 32768.0f;
 
       for(int i = 0; i < m_channels; i++) {
 	const int16_t * src = data + i;

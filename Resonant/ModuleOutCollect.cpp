@@ -94,6 +94,8 @@ namespace Resonant {
     // Set to zero
     if(!m_interleaved.empty())
       bzero( & m_interleaved[0], sizeof(float) * n * chans);
+
+    float sum = 0.0f;
     
     for(uint i = 0; i < m_map.size(); i++) {
 
@@ -106,11 +108,15 @@ namespace Resonant {
 
       while(src < sentinel) {
 	*dest += * src;
+
+	sum += Nimble::Math::Abs(*src);
+
 	src++;
 	dest += chans;
       }
     }
 
+    // printf("ModuleOutCollect::process # %f\n", sum / n);
   }
     
     
