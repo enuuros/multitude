@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin\"
 			IntermediateDirectory="debug\"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -76,11 +76,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="glew32.lib glu32.lib openGL32.lib pthreadVC2.lib SDL.lib SDLmain.lib"
-				OutputFile="..\..\Win32\app\debug\ImageExampleD.exe"
+				AdditionalDependencies="glew32.lib glu32.lib openGL32.lib pthreadVC2.lib SDLmain.lib SDL.lib"
+				OutputFile="$(OutDir)ImageExampleD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="1"
@@ -110,7 +111,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin\"
 			IntermediateDirectory="release\"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -171,11 +172,12 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
-				AdditionalDependencies="glu32.lib openGL32.lib pthreadVC2.lib SDL.lib SDLmain.lib ws2_32.lib Luminous.lib Radiant.lib Valuable.lib"
-				OutputFile="..\..\Win32\app\release\ImageExample.exe"
+				AdditionalDependencies="glew32.lib glu32.lib openGL32.lib pthreadVC2.lib SDLmain.lib SDL.lib"
+				OutputFile="$(OutDir)ImageExample.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
