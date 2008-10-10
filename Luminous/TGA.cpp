@@ -26,14 +26,14 @@ namespace Luminous
     unsigned char identSize;
     unsigned char colormapType;
     unsigned char imageType;
-    
+
     unsigned char ignored[5]; 
-    
+
     unsigned char xStartLo;
     unsigned char xStartHi;
     unsigned char yStartLo;
     unsigned char yStartHi;
-  
+
     unsigned char widthLo;
     unsigned char widthHi;
     unsigned char heightLo;
@@ -42,33 +42,33 @@ namespace Luminous
     unsigned char descriptor;
   } TGAHeader;
 
-  bool Image::readTGAHeader(FILE * file)
+  bool Image::readTGAHeader(FILE * file, ImageInfo & info)
   {
-	TGAHeader header;
+    TGAHeader header;
 
-	size_t r = fread(&header, sizeof(TGAHeader), 1, file);
-	if(r != 1) return false;
+    size_t r = fread(&header, sizeof(TGAHeader), 1, file);
+    if(r != 1) return false;
 
-	m_width = header.widthLo + (header.widthHi << 8);
-    m_height = header.heightLo + (header.heightHi << 8);
+    info.width = header.widthLo + (header.widthHi << 8);
+    info.height = header.heightLo + (header.heightHi << 8);
     int bytesPerPixel = (header.bpp >> 3);
 
     switch(bytesPerPixel) {
       case 4:
-		  m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_BGRA, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_BGRA, PixelFormat::TYPE_UBYTE);
         break;
       case 3:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_BGR, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_BGR, PixelFormat::TYPE_UBYTE);
         break;
       case 1:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
         break;
       default:
         cerr << "Image::readTGAHeader # unsupported bit depth (" << header.bpp << ")" << endl;
         return false;
     };
 
-	return true;
+    return true;
   }
 
   bool Image::readTGA(FILE* file)
@@ -215,7 +215,7 @@ namespace Luminous
       int size = m_width * m_height * m_pixelFormat.numChannels();
       fwrite( &m_data[0], 1, size, file);
     } else {
-      
+
       int pixels = m_width * m_height;
       int bytesPerPixel = m_pixelFormat.numChannels();
       int currentPixel = 0;
@@ -224,19 +224,19 @@ namespace Luminous
       unsigned char * pixel = new unsigned char [bytesPerPixel];
 
       do {
-        
+
         memcpy(pixel, &m_data[currentByte], bytesPerPixel);
-        
+
         pixel[0] = m_data[currentByte + 2];
         pixel[2] = m_data[currentByte + 0];
 
         fwrite(pixel, 1, bytesPerPixel, file);
-    
+
         currentPixel++;
         currentByte += bytesPerPixel;
-      
+
       } while(currentPixel < pixels);
-    
+
       delete [] pixel;
     }
 

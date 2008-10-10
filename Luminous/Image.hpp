@@ -24,6 +24,13 @@
 
 namespace Luminous
 {
+  /// Simple struct containing basic image information that can be quickly
+  /// queried (with Image::ping) without loading the full image.
+  struct ImageInfo {
+    int width;
+    int height;
+    PixelFormat pf;
+  };
 
   /// Simple image handling class
   class LUMINOUS_API Image
@@ -52,7 +59,7 @@ namespace Luminous
     unsigned char* bytes() { return & m_data[0]; }
     const unsigned char* bytes() const { return & m_data[0]; }
 
-	bool ping(const char * filename);
+    static bool ping(const char * filename, ImageInfo & info);
 
     bool read(const char* filename, ImageType* type = 0);
     bool write(const char* filename, ImageType type);
@@ -87,15 +94,15 @@ namespace Luminous
     void sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const;
     float computeWeight(int x, int y, float x1, float y1, float x2, float y2) const;
 
-	bool readPNGHeader(FILE * file);
+    static bool readPNGHeader(FILE * file, ImageInfo & info);
     bool readPNG(FILE* file);
     bool writePNG(FILE* file);
 
-	bool readJPGHeader(FILE * file);
+    static bool readJPGHeader(FILE * file, ImageInfo & info);
     bool readJPG(FILE* file);
     bool writeJPG(FILE* file);
 
-	bool readTGAHeader(FILE * file);
+    static bool readTGAHeader(FILE * file, ImageInfo & info);
     bool readTGA(FILE* file);
     bool writeTGA(FILE* file);
 

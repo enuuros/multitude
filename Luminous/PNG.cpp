@@ -23,20 +23,20 @@ using namespace std;
 
 namespace Luminous
 {
-	bool Image::readPNGHeader(FILE * file)
-	{
-		char header[8];
-		fread(header, 1, 8, file);
-		if(png_sig_cmp((png_bytep)header, 0, 8)) {
-			cerr << "Image::readPNGHeader # not a PNG file" << endl;
-			return false;
-		}
+  bool Image::readPNGHeader(FILE * file, ImageInfo & info)
+  {
+    char header[8];
+    fread(header, 1, 8, file);
+    if(png_sig_cmp((png_bytep)header, 0, 8)) {
+      cerr << "Image::readPNGHeader # not a PNG file" << endl;
+      return false;
+    }
 
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
-        cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
-        return false;
+      cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
+      return false;
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
@@ -53,7 +53,7 @@ namespace Luminous
     }
 
     png_init_io(png_ptr, file);
-	png_set_sig_bytes(png_ptr, 8);
+    png_set_sig_bytes(png_ptr, 8);
 
     png_read_info(png_ptr, info_ptr);
 
@@ -75,48 +75,50 @@ namespace Luminous
     // If there's more than one pixel per byte, expand to 1 pixel / byte
     if(bit_depth < 8)
       png_set_packing(png_ptr);
-  
+
     png_read_update_info(png_ptr, info_ptr);
 
-    m_width = png_get_image_width(png_ptr, info_ptr);
-    m_height = png_get_image_height(png_ptr, info_ptr);
+    info.width = png_get_image_width(png_ptr, info_ptr);
+    info.height = png_get_image_height(png_ptr, info_ptr);
     int channels = png_get_channels(png_ptr, info_ptr);
 
-	switch(channels) {
+    switch(channels) {
       case 4:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGBA, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_RGBA, PixelFormat::TYPE_UBYTE);
         break;
       case 3:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
         break;
       case 2:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE_ALPHA, PixelFormat::TYPE_UBYTE);
+        info.pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE_ALPHA, PixelFormat::TYPE_UBYTE);
         break;
       case 1:
-        m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);  
+        info.pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);  
         break;
       default:
         cerr << "Image::readPNGHeader # unsupported number of channels (" << channels << ") found" << endl;
         return false; 
     };
 
-	return true;
-}
-  
+    png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+
+    return true;
+  }
+
   bool Image::readPNG(FILE* file)
   {
-	  char header[8];
-	  fread(header, 1, 8, file);
-	  if(png_sig_cmp((png_bytep)header, 0, 8)) {
-		  cerr << "Image::readPNG # not a PNG file" << endl;
-		  return false;
-	  }
+    char header[8];
+    fread(header, 1, 8, file);
+    if(png_sig_cmp((png_bytep)header, 0, 8)) {
+      cerr << "Image::readPNG # not a PNG file" << endl;
+      return false;
+    }
 
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
-        cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
-        return false;
+      cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
+      return false;
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
@@ -133,7 +135,7 @@ namespace Luminous
     }
 
     png_init_io(png_ptr, file);
-	png_set_sig_bytes(png_ptr, 8);
+    png_set_sig_bytes(png_ptr, 8);
 
     png_read_info(png_ptr, info_ptr);
 
@@ -161,7 +163,7 @@ namespace Luminous
     // If there's more than one pixel per byte, expand to 1 pixel / byte
     if(bit_depth < 8)
       png_set_packing(png_ptr);
-  
+
     png_read_update_info(png_ptr, info_ptr);
 
     int width      = png_get_image_width(png_ptr, info_ptr);
@@ -195,7 +197,7 @@ namespace Luminous
 
     for(int i = 0; i < m_height; i++)
       row_pointers[i] = &m_data[0] + i * rowsize;
-  
+
     png_read_image(png_ptr, row_pointers);
 
     delete[] row_pointers;
@@ -268,7 +270,7 @@ namespace Luminous
     png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
     delete[] row_pointers;
-  
+
     png_destroy_write_struct(&png_ptr, &info_ptr);
 
     return true;

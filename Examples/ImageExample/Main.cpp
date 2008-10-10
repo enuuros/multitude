@@ -3,8 +3,20 @@
 #include <Luminous/Luminous.hpp>
 #include <Luminous/Texture.hpp>
 
-int main(int , char ** )
+int main(int argc, const char * argv[])
 {
+  if(argc != 2) {
+    printf("Usage: %s <file>\n", argv[0]);
+    return 1;
+  }
+  argc--; argv++;
+  const char * file = argv[0];
+
+  Luminous::ImageInfo info;
+  if(Luminous::Image::ping(file, info)) {
+    printf("%s : %d x %d\n", file, info.width, info.height); 
+  }
+
   SDL_Init(SDL_INIT_VIDEO);
 
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
@@ -25,7 +37,7 @@ int main(int , char ** )
   glLoadIdentity();
 
   Luminous::Texture2D tex;
-  if(!tex.loadImage("test.png", false)) return 1;
+  if(!tex.loadImage(file, false)) return 1;
 
   tex.bind();
 

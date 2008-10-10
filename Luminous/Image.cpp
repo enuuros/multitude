@@ -642,22 +642,38 @@ namespace Luminous
     return (ex - sx) * (ey - sy);
   }
 
-  bool Image::ping(const char * filename) {
+  bool Image::ping(const char * filename, ImageInfo & info) {
+    FILE * file = fopen(filename, "rb");
+    if(!file) {
+      Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
+      return false;
+    }
+
 	  Image::ImageType type = typeFromFileExt(filename);
+
+    bool ok = false;
 
 	  switch(type) {
 		  case Image::IMAGE_TYPE_JPG:
-			  return true;
+        ok = readJPGHeader(file, info);
+        goto exitping;
 			  break;
 		  case Image::IMAGE_TYPE_PNG:
-			  return true;
+			  ok = readPNGHeader(file, info);
+        goto exitping;
 			  break;
 		  case Image::IMAGE_TYPE_TGA:
-			  return true;
-			  break;
+        ok = readTGAHeader(file, info);
+			  goto exitping;
+        break;
+      default:
+        Radiant::error("Image::ping # '%s' has unsupported image type.", filename);
+        break;
 	  };
 
-	  return false;
+exitping:;
+    fclose(file);
+	  return ok;
   }
 
 }

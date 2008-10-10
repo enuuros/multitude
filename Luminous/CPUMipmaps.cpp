@@ -410,13 +410,13 @@ namespace Luminous {
       m_stack[i].clear();
     }
 
-	Luminous::Image img;
-	if(!img.ping(filename)) {
-      Radiant::error("CPUMipmaps::startLoading # failed to query image size");
-      return false;
-    }
+	Luminous::ImageInfo info;
+	if(!Luminous::Image::ping(filename, info)) {
+    Radiant::error("CPUMipmaps::startLoading # failed to query image size");
+    return false;
+  }
 
-	m_nativeSize.make(img.width(), img.height());
+  m_nativeSize.make(info.width, info.height);
 
     if(!m_nativeSize.minimum())
       return false;

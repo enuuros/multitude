@@ -14,6 +14,9 @@
  */
 
 #include <Luminous/Image.hpp>
+
+#include <Radiant/Trace.hpp>
+
 #include <iostream>
 
 extern "C" {
@@ -24,11 +27,11 @@ using namespace std;
 
 namespace Luminous
 {
-	bool Image::readJPGHeader(FILE * file)
-	{
-	struct jpeg_error_mgr jerr;
+  bool Image::readJPGHeader(FILE * file, ImageInfo & info)
+  {
+    struct jpeg_error_mgr jerr;
     struct jpeg_decompress_struct cinfo;
-    
+
     // Set error handler
     cinfo.err = jpeg_std_error(&jerr);
 
@@ -41,20 +44,22 @@ namespace Luminous
     // Read header
     jpeg_read_header(&cinfo, TRUE);
 
-	m_width = cinfo.output_width;
-	m_height = cinfo.output_height;
-	
+    // Decompress the header
+    jpeg_start_decompress(&cinfo);
 
-	if(cinfo.output_components == 1) {
-		m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
+    info.width = cinfo.output_width;
+    info.height = cinfo.output_height;
+
+    if(cinfo.output_components == 1) {
+      info.pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);
     } else if(cinfo.output_components == 3) {
-		m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
-	}
-	
-	jpeg_destroy_decompress(&cinfo);
-	
-	return true;
-	}
+      info.pf = PixelFormat(PixelFormat::LAYOUT_RGB, PixelFormat::TYPE_UBYTE);
+    }
+
+    jpeg_destroy_decompress(&cinfo);
+
+    return true;
+  }
 
   bool Image::readJPG(FILE* file)
   {
