@@ -72,6 +72,13 @@ namespace FireView {
 
   protected:
     
+    enum HalfToThird {
+      AS_HALF,
+      AS_VGA_THIRD,
+      AS_WIDE_VGA_THIRD,
+      AS_COUNT
+    };
+
     virtual void mouseMoveEvent(QMouseEvent * e);
     virtual void mousePressEvent(QMouseEvent * e);
 
@@ -159,7 +166,7 @@ namespace FireView {
     ParamView  *m_params;
 
     bool        m_showAverages;
-    bool        m_halfToThird;
+    HalfToThird m_halfToThird;
     bool        m_doAnalysis;
     float       m_imageScale;
 

@@ -32,7 +32,20 @@ namespace Luminous
       This object also keeps track of change history in
       allocation/deallocation sums. This information is handy when you
       want to make sure that you do not push too many texture pixels
-      to the GPU during one frame etc. */
+      to the GPU during one frame etc.
+      
+      The GLResource objects are deleted if they are too old -
+      i.e. not used for some time. The old objects are only deleted
+      when the GPU RAM usage exceeds given threshold. By default the
+      threshold is 70MB, but it can be changed by setting environment
+      variable MULTI_GPU_RAM to a numeric value that represents the
+      number of GPU megabytes that one allowed to use. The value can
+      also be changed programmatically, using the setComfortableGPURAM
+      function.
+
+      For example setting MULTI_GPU_RAM to 200, GLResources starts to
+      drop old resources from GPU as the GPU RAM usage exceeds 200MB.
+  */
   class LUMINOUS_API GLResources
   {
   public:
@@ -73,7 +86,10 @@ namespace Luminous
     void resetSumCounters() { m_deallocationSum = m_allocationSum = 0; }
 
     void deleteAfter(GLResource * resource, int frames);
-
+    /** Sets the threshold for deleting old objects from GPU memory. */
+    void setComfortableGPURAM(long bytes)
+    { m_comfortableGPURAM = bytes; }
+ 
  protected:
 
     container m_resources;
@@ -84,6 +100,9 @@ namespace Luminous
     /** This number is likely to be quite approximate as we cannot
 	estimate exactly much GPU memory a particular object uses. */
     long m_consumingBytes;
+    /** The maximum amount of GPU RAM to use before starting to erase
+	objects. */
+    long m_comfortableGPURAM;
 
     long m_frame;
   };

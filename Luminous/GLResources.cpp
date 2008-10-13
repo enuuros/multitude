@@ -17,7 +17,10 @@
 #include "GarbageCollector.hpp"
 #include "GLResource.hpp"
 
+#include <Nimble/Math.hpp>
+
 #include <Radiant/Trace.hpp>
+
 #include <cassert>
 
 namespace Luminous
@@ -27,8 +30,17 @@ namespace Luminous
     : m_deallocationSum(0),
       m_allocationSum(0),
       m_consumingBytes(0),
+      m_comfortableGPURAM((1 << 20) * 70), // 70 MB
       m_frame(0)
-  {}
+  {
+    const char * envgp = getenv("MULTI_GPU_RAM");
+
+    if(envgp) {
+
+      m_comfortableGPURAM = Nimble::Math::Max(atol(envgp) * (1 << 20),
+					      m_comfortableGPURAM);
+    }
+  }
 
   GLResources::~GLResources()
   {
@@ -102,7 +114,9 @@ namespace Luminous
 
     m_frame++;
     
-    for(iterator it = m_resources.begin(); it != m_resources.end(); ) {
+    for(iterator it = m_resources.begin();
+	(m_consumingBytes >= m_comfortableGPURAM) && 
+	  (it != m_resources.end()); ) {
       
       GLResource * r = (*it).second;
 

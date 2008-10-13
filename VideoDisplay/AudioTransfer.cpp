@@ -101,7 +101,6 @@ namespace VideoDisplay {
 
   bool AudioTransfer::stop()
   {
-    Radiant::error("AudioTransfer::stop # UNIMPLEMENTED");
     if(m_video)
       m_video->stopDecoding();
     m_stopped = true;

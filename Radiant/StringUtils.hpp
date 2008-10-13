@@ -72,6 +72,8 @@ namespace Radiant
     // Returns the lower-case version of the ascii string
     RADIANT_API std::string lowerCase(const std::string & src);
 
+    RADIANT_API char upperCaseASCII(char c);
+
     /** Finds the str in strings and return the index. The
 	strings-variable is terminated by null string. If the str is
 	not found in the strings, then -1 is returned. */

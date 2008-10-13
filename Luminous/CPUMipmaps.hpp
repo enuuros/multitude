@@ -73,6 +73,8 @@ namespace Luminous {
 	level, preventing it from being dropped from the memory in the
 	near future. */
     LUMINOUS_API void markImage(int i);
+    /** Starts to load given file, and build the mipmaps. */
+    LUMINOUS_API bool isReady();
 
     /** Starts to load given file, and build the mipmaps. */
     LUMINOUS_API bool startLoading(const char * filename, bool immediate);
@@ -216,6 +218,7 @@ namespace Luminous {
     // What level files are available as mip-maps.
     uint32_t         m_fileMask;
     bool             m_hasAlpha;
+    Radiant::TimeStamp m_startedLoading;
   };
 
 

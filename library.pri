@@ -34,6 +34,11 @@ macx {
       TAKE_HEADERS = $$EXPORT_HEADERS
     }
 
+    !isEmpty($$EXTRA_HEADERS) {
+
+      TAKE_HEADERS += $$EXTRA_HEADERS
+    }
+
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.files = $$TAKE_HEADERS
     FRAMEWORK_HEADERS.path = Headers

@@ -402,8 +402,32 @@ namespace Luminous {
       item->m_unUsed = 0.0f;
   }
 
+  bool CPUMipmaps::isReady()
+  {
+    // return true;
+    
+    float dt = Radiant::TimeStamp
+      (Radiant::TimeStamp::getTime() - m_startedLoading).secondsD();
+
+    if(dt > 3.0f)
+      return true;
+    
+    for(int i = lowestLevel(); i < m_maxLevel; i++) {
+      CPUItem * ci = m_stack[i].ptr();
+      if(!ci)
+	return false;
+
+      if(ci->working())
+	return false;
+    }
+    
+    return true;
+  }
+
   bool CPUMipmaps::startLoading(const char * filename, bool immediate)
   {
+    m_startedLoading = Radiant::TimeStamp::getTime();
+
     m_filename = filename;
 
     for(int i = 0; i < MAX_MAPS; i++) {

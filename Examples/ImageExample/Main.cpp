@@ -3,7 +3,7 @@
 #include <Luminous/Luminous.hpp>
 #include <Luminous/Texture.hpp>
 
-int main(int argc, const char ** argv)
+int main(int argc, char ** argv)
 {
   if(argc != 2) {
     printf("Usage: %s <file>\n", argv[0]);

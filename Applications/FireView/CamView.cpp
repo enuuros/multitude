@@ -356,7 +356,7 @@ namespace FireView {
       m_tex(0),
       m_params(0),
       m_showAverages(false),
-      m_halfToThird(false),
+      m_halfToThird(AS_HALF),
       m_doAnalysis(false),
       m_imageScale(1),
       m_foo(300, 100, QImage::Format_ARGB32)
@@ -439,7 +439,7 @@ namespace FireView {
   
   void CamView::toggleHalfInchToThirdInch()
   {
-    m_halfToThird = !m_halfToThird;
+    m_halfToThird = (HalfToThird) ((m_halfToThird + 1) % AS_COUNT);
     m_doAnalysis = true;
   }
  
@@ -709,7 +709,7 @@ namespace FireView {
     int w = m_tex->width() - 1;
     int h = m_tex->height() - 1;
     
-    if(m_halfToThird) {
+    if(m_halfToThird == AS_VGA_THIRD) {
       /* We assume that the pixels in half inch sensor are 9.9f / 7.4f times
 	 the size of pixels in third-inch sensor. Half-inch sensor has
 	 9.9um pixels (for VGA) and third-inch comes with 7.4um
@@ -722,6 +722,29 @@ namespace FireView {
       int ly = Nimble::Math::Round(remove * h);
       int hx = Nimble::Math::Round(keep * w);
       int hy = Nimble::Math::Round(keep * h);
+
+      return Rect(lx, ly, hx, hy);
+    }
+    else if(m_halfToThird == AS_WIDE_VGA_THIRD) {
+      /* Assume that one is using a camera with 1/2 inch sensor (Sony
+	 IXC 414) or the like, and the we wish to show the area with
+	 wide VGA sensor.
+
+	 0,0061875um pixels in the wide VGA sensor, resolution
+	 750x480.
+      */
+      float scale_y = 9.9f / 6.1875f;
+      float remove_y = (scale_y - 1.0f) * 0.5f;
+      float keep_y = 1.0f - remove_y;
+
+      float scale_x = 9.9f / 6.1875f * (750.0f / 640.0f);
+      float remove_x = (scale_x - 1.0f) * 0.5f;
+      float keep_x = 1.0f - remove_x;
+      
+      int lx = Nimble::Math::Round(remove_x * w);
+      int ly = Nimble::Math::Round(remove_y * h);
+      int hx = Nimble::Math::Round(keep_x * w);
+      int hy = Nimble::Math::Round(keep_y * h);
 
       return Rect(lx, ly, hx, hy);
     }

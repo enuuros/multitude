@@ -320,6 +320,14 @@ namespace Radiant
       return res;
     }
 
+    char upperCaseASCII(char c)
+    {
+      if(c < 'a' || c > 'z')
+	return c;
+      
+      return c + ('A' - 'a');
+    }
+
     int which(const char ** strings, const char * str)
     {
       const char * tmp;
