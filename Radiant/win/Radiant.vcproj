@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="Radiant"
 	ProjectGUID="{410D922A-8FD9-363D-99ED-2607E09E3A78}"
 	RootNamespace="Radiant"
@@ -234,7 +234,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Directory.cpp"
+				RelativePath="..\DirectoryBoost.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\DirectoryCommon.cpp"
 				>
 			</File>
 			<File

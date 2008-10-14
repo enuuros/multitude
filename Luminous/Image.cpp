@@ -643,10 +643,9 @@ namespace Luminous
   }
 
   bool Image::ping(const char * filename, ImageInfo & info) {
-
 	  Radiant::trace("TRYING TO OPEN %s", filename);
 
-	  FILE * file = fopen(filename, "rb");
+	  FILE * file = fopen(filename, "r");
 	  if(!file) {
 		  Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
 		  return false;

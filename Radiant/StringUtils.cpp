@@ -306,19 +306,19 @@ namespace Radiant
       return bytes;
     }
 
-    std::string lowerCase(const std::string & src)
-    {
-      std::string res(src);
+	std::string lowerCase(const std::string & src)
+	{
+		std::string res(src);
 
-      for(unsigned i = 0; i < res.size(); i++) {
-	int c = res[i];
+		for(unsigned i = 0; i < res.size(); i++) {
+			int c = res[i];
 
-	if(c >= 'A' && c <= 'Z')
-	  res[i] = c + ('a' - 'A');
-      }
+			if(c >= 'A' && c <= 'Z')
+				res[i] = c + ('a' - 'A');
+		}
 
-      return res;
-    }
+		return res;
+	}
 
     char upperCaseASCII(char c)
     {

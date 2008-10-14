@@ -20,6 +20,7 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
+#include <xercesc/util/RuntimeException.hpp>
 
 #include <Radiant/Trace.hpp>
 
@@ -158,11 +159,23 @@ namespace Valuable
     const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
     DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
 
+	
     // Create a parser
     DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder
       (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
-    xercesc::DOMDocument * parsed = parser->parseURI(filename);
+	xercesc::DOMDocument * parsed = 0;
+
+	try {
+		parsed = parser->parseURI(filename);
+	} catch(xercesc::RuntimeException e) {
+		char * msg = XMLString::transcode(e.getMessage());
+		
+		Radiant::error("DOMDocument::readFromFile # %s", msg);
+		parser->release();
+		XMLString::release(&msg);
+		return false;
+	}
    
     // Clone the document because the parsed
     if(m_xDoc)
