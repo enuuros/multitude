@@ -52,7 +52,8 @@ SOURCES += ColorUtils.cpp
 SOURCES += Condition.cpp
 SOURCES += ConfigReader.cpp
 SOURCES += DateTime.cpp
-SOURCES += Directory.cpp
+SOURCES += DirectoryCommon.cpp
+SOURCES += DirectoryBoost.cpp
 SOURCES += FileUtils.cpp
 SOURCES += ImageConversion.cpp
 SOURCES += Mutex.cpp
@@ -77,7 +78,7 @@ linux-*:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 
-unix:LIBS += -lpthread $$LIB_RT -ldl
+unix:LIBS += -lpthread $$LIB_RT -ldl -lboost_filesystem
 
 macx:LIBS += -framework,CoreFoundation
 PKGCONFIG += libdc1394-2

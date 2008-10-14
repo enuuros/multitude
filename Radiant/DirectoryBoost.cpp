@@ -33,10 +33,10 @@ namespace Radiant
 
 	static bool applyFilters(const fs::directory_iterator & it, int filterFlags, const std::vector<std::string> & suffixes) 
 	{
-		const std::string name = it->filename();
+		const std::string name = it->leaf();
 
 		if(fs::is_directory(it->status()) && !(filterFlags & Directory::Dirs)) return false;
-		if(fs::is_regular_file(it->status()) && !(filterFlags & Directory::Files)) return false;
+		if(fs::is_regular(it->status()) && !(filterFlags & Directory::Files)) return false;
 		if((name == DOT || name == DOTDOT) && (filterFlags & Directory::NoDotAndDotDot)) return false;
 
 
@@ -75,7 +75,7 @@ namespace Radiant
 		for(fs::directory_iterator it(path); it != end; it++) {
 
 			if(applyFilters(it, m_filterFlags, m_suffixes))
-				m_entries.push_back(it->filename());			
+				m_entries.push_back(it->leaf());
 		}
 
 		if(m_sortFlags == Name)
