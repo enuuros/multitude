@@ -33,7 +33,11 @@ namespace Radiant
 
 	static bool applyFilters(const fs::directory_iterator & it, int filterFlags, const std::vector<std::string> & suffixes) 
 	{
+#ifdef WIN32
+		const std::string name = it->filename();
+#else
 		const std::string name = it->leaf();
+#endif
 
 		if(fs::is_directory(it->status()) && !(filterFlags & Directory::Dirs)) return false;
 		if(fs::is_regular(it->status()) && !(filterFlags & Directory::Files)) return false;
@@ -75,7 +79,11 @@ namespace Radiant
 		for(fs::directory_iterator it(path); it != end; it++) {
 
 			if(applyFilters(it, m_filterFlags, m_suffixes))
+#ifdef WIN32
+				m_entries.push_back(it->filename());
+#else
 				m_entries.push_back(it->leaf());
+#endif
 		}
 
 		if(m_sortFlags == Name)
