@@ -21,11 +21,12 @@
 #include <Radiant/IODefs.hpp>
 #include <Radiant/Thread.hpp>
 
-#include <sndfile.h>
-
 #include <list>
 #include <string>
 #include <vector>
+
+struct SNDFILE_tag;
+struct SF_INFO;
 
 namespace Resonant {
 
@@ -63,9 +64,9 @@ namespace Resonant {
       int readFrames(int * data, int frames)
       { return readFrames((float *) data, frames); }
 
-      int channels()   const { return m_info.channels; }
-      int sampleRate() const { return m_info.samplerate; }
-      long frames()    const { return (long) m_info.frames; }
+      int channels()   const;
+      int sampleRate() const;
+      long frames()    const;
       long currentFrame() const { return m_userFrames; }
 
       void rewind(long frame);
@@ -111,8 +112,8 @@ namespace Resonant {
       volatile long       m_userFrames;
       volatile bool       m_ready;
 
-      SNDFILE * m_file;
-      SF_INFO   m_info;
+      SNDFILE_tag * m_file;
+      SF_INFO * m_info;
       Radiant::AudioSampleFormat m_userFormat;
       std::vector<float>   m_data;
       bool m_userDone;

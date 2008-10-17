@@ -18,10 +18,12 @@
 #include <Radiant/Trace.hpp>
 #include <Radiant/Sleep.hpp>
 
+#include <sndfile.h>
+
 #include <sched.h>
 #include <strings.h>
 
-#include <assert.h>
+#include <cassert>
 
 namespace Resonant {
   
@@ -41,15 +43,18 @@ namespace Resonant {
       m_status(OPEN_NOT),
       m_ready(false),
       m_file(0),
+      m_info(0),
       m_userFormat(userFormat),
       m_userDone(false)
   {
-    bzero( & m_info, sizeof(m_info));
+    m_info = new SF_INFO();
+    bzero( m_info, sizeof(SF_INFO));
   }
 
   AudioFileHandler::Handle::~Handle()
   {
     close();
+    delete m_info;
   }
 
   bool AudioFileHandler::Handle::waitOpen()
@@ -219,15 +224,15 @@ namespace Resonant {
 
     int mode = (m_ioMode == IO_INPUT) ? SFM_READ : SFM_WRITE;
 
-    m_file = sf_open(m_fileName.c_str(), mode, & m_info);
+    m_file = sf_open(m_fileName.c_str(), mode, m_info);
 
     if(!m_file)
       return false;
 
     m_blocks = 6;
-    m_blockSize = m_info.samplerate / m_blocks;
+    m_blockSize = m_info->samplerate / m_blocks;
 
-    int buffersamples = m_info.channels * m_blockSize * m_blocks;
+    int buffersamples = m_info->channels * m_blockSize * m_blocks;
 
     m_data.resize(buffersamples);
 
@@ -270,7 +275,7 @@ namespace Resonant {
     float * data = ptr(m_fileFrames);
   
     long blockleft = m_blockSize - (m_fileFrames % m_blockSize);
-    long avail = long(m_info.frames - m_fileFrames);
+    long avail = long(m_info->frames - m_fileFrames);
 
     if(avail > blockleft)
       avail = blockleft;
@@ -282,7 +287,7 @@ namespace Resonant {
 
     m_fileFrames += avail;
 
-    if(m_fileFrames == m_info.frames)
+    if(m_fileFrames == m_info->frames)
       m_status = OPEN_EOF;
 
     return true;
@@ -409,9 +414,9 @@ namespace Resonant {
 
     Handle * h = new Handle(this, filename, IO_OUTPUT, 0, userFormat);
 
-    h->m_info.channels   = channels;
-    h->m_info.samplerate = samplerate;
-    h->m_info.format     = sfFormat;
+    h->m_info->channels   = channels;
+    h->m_info->samplerate = samplerate;
+    h->m_info->format     = sfFormat;
 
     m_mutex2.lock();
     m_files.push_back(h);
@@ -538,4 +543,18 @@ namespace Resonant {
     return something;
   }
 
+  int AudioFileHandler::Handle::channels() const 
+  {
+    return m_info->channels;
+  }
+
+  int AudioFileHandler::Handle::sampleRate() const 
+  {
+    return m_info->samplerate;
+  }
+
+  long AudioFileHandler::Handle::frames() const
+  {
+    return (long)m_info->frames;
+  }
 }

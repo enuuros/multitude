@@ -23,12 +23,6 @@ SOURCES += ModuleGain.cpp
 SOURCES += ModuleOutCollect.cpp
 SOURCES += ModuleSamplePlayer.cpp
 
-# Obsolete code, never used:
-#unix {
-#  HEADERS += AudioDevice.hpp 
-#  SOURCES += AudioDevice.cpp
-#}
-
 LIBS += $$LIB_RADIANT 
 
 PKGCONFIG += portaudio-2.0 sndfile
