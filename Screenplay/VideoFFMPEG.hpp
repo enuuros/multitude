@@ -25,24 +25,11 @@
 
 extern "C" {
 
-#ifdef WIN32
-
-#include <avformat.h>
-#include <avcodec.h>
-#include <avutil.h>
-
-#else
-
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/avutil.h>
-
-#endif
-
   struct AVCodec;
   struct AVCodecContext;
   struct AVFormatContext;
   struct AVFrame;
+  struct AVPacket;
 }
 
 namespace Screenplay {
@@ -119,7 +106,7 @@ namespace Screenplay {
 
     AVFormatContext *m_ic;
 
-    AVPacket         m_pkt;
+    AVPacket       * m_pkt;
 
     enum { BUFFER_SIZE = 4096 };
 
