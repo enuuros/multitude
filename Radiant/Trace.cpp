@@ -39,8 +39,8 @@ namespace Radiant {
       fprintf(stdout, fatalmsg);
     else if(isError)
       fprintf(stdout, errmsg);
-    else
-      fprintf(stdout, tracemsg);
+//    else
+//      fprintf(stdout, tracemsg);
 
     fprintf(stdout, str);
     fprintf(stdout, "\n");
