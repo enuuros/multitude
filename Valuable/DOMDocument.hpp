@@ -48,7 +48,7 @@ namespace Valuable
       bool writeToFile(const char * filename);
       bool writeToMem(std::vector<char> & buf);
 
-      bool readFromFile(const char * filename);
+      bool readFromFile(const char * filename, bool validate = false);
 
       DOMElement getDocumentElement();
 

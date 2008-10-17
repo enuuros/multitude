@@ -5,3 +5,4 @@ SUBDIRS += PlatformExample
 SUBDIRS += SocketExample
 SUBDIRS += VertexBuffers
 SUBDIRS += ValueTest
+SUBDIRS += ValidatingXML

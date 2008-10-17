@@ -16,16 +16,17 @@
 #include "DOMDocument.hpp"
 #include "DOMElement.hpp"
 
+#include <Radiant/Trace.hpp>
+
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/dom/DOMErrorHandler.hpp>
+#include <xercesc/dom/DOMLocator.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <xercesc/util/RuntimeException.hpp>
-
-#include <Radiant/Trace.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
 
 using namespace xercesc;
-
 
 namespace Valuable
 {
@@ -153,16 +154,46 @@ namespace Valuable
     return true;
   }
 
-  bool DOMDocument::readFromFile(const char * filename)
+  class ErrorHandler : public DOMErrorHandler
+  {
+    public:
+      ErrorHandler() {}
+
+      // return false = stop processing, return true = keep processing
+      virtual bool handleError(const DOMError & e) {
+
+        char * uri = XMLString::transcode(e.getLocation()->getURI());
+        int line = e.getLocation()->getLineNumber();
+        char * msg = XMLString::transcode(e.getMessage());
+
+        Radiant::trace("[XML ERROR] %s:%d: %s", uri, line, msg);
+
+        XMLString::release(&uri);
+        XMLString::release(&msg);
+
+        return true;
+      }
+  };
+
+  bool DOMDocument::readFromFile(const char * filename, bool validate)
   {
     // Get implementation of the Load-Store (LS) interface
     const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
     DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
-
 	
     // Create a parser
     DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder
       (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
+
+  if(validate) {
+    parser->setFeature(XMLUni::fgDOMNamespaces, true);
+    parser->setFeature(XMLUni::fgXercesSchema, true);
+    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
+    parser->setFeature(XMLUni::fgDOMValidation, true);
+    parser->setFeature(XMLUni::fgDOMDatatypeNormalization, true);    
+  }
+
+  parser->setErrorHandler(new ErrorHandler);
 
 	xercesc::DOMDocument * parsed = 0;
 
