@@ -63,6 +63,12 @@ namespace Nimble {
       m_val = tmp;
       return (float) tmp * (2.0f * x / (float) ((unsigned) 0xffffffff)) - x;
     }
+
+    /// Random numbers between min and max
+    inline float randMinMax(float min, float max) 
+    { 
+      return rand0X(max - min) + min;
+    }
     
     inline unsigned rand() 
     { 
