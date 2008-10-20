@@ -102,6 +102,9 @@ namespace Resonant {
       const float * src = in[i];
       const float * sentinel = src + n;
 
+      if(!src)
+        continue; // Should output a warning ;-)
+
       float * dest = & m_interleaved[to];
 
       while(src < sentinel) {
