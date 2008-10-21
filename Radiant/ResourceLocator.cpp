@@ -18,6 +18,7 @@
 #include <Radiant/Trace.hpp>
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/PlatformUtils.hpp>
+#include <Radiant/StringUtils.hpp>
 
 #include <sstream>
 
@@ -65,9 +66,29 @@ namespace Radiant
   {
     std::string r = FileUtils::findFile(file, m_paths);
 
-    trace("ResourceLocator::locate # using %s", r.c_str());
+    if(r.empty()) 
+      Radiant::trace("ResourceLocator::locate # couldn't locate %s", file.c_str());
+//    trace("ResourceLocator::locate # using %s", r.c_str());
 
     return r;
+  }
+
+  std::string ResourceLocator::locateWriteable(const std::string & file) const
+  {
+    StringUtils::StringList list;
+    StringUtils::split(m_paths, ";", list, true);
+
+    for(StringUtils::StringList::iterator it = list.begin(); it != list.end(); it++) {
+      const std::string path = (*it) + "/" + file;
+
+      FILE * file = fopen(path.c_str(), "w");
+      if(file) {
+        fclose(file);
+        return path;
+      }      
+    }
+
+    return std::string();
   }
 
   std::string ResourceLocator::locateOverWriteable(const std::string & file)

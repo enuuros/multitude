@@ -16,6 +16,7 @@
 #include "FileUtils.hpp"
 #include "PlatformUtils.hpp"
 #include "StringUtils.hpp"
+#include "Directory.hpp"
 
 #include <iostream>
 
@@ -135,13 +136,13 @@ namespace Radiant
 	  it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
 
-	trace("Testing %s for %s", (*it).c_str(), filename.c_str());
+        //trace("Testing %s for %s", (*it).c_str(), filename.c_str());
 
         if(fileReadable(fullPath.c_str()))
           return fullPath;
       }
 
-      return string("");
+      return std::string();
     }
 
     string findOverWritable(const string & filename, const string & paths)
@@ -158,6 +159,31 @@ namespace Radiant
       }
 
       return filename;
+    }
+
+    FILE * createFilePath(const std::string & filePath)
+    {
+      if(filePath.empty()) return 0;
+
+      StringList pieces;
+      split(filePath, "/", pieces, true);
+
+      const string file(pieces.back());
+      pieces.pop_back();
+
+      string soFar("");
+
+      for(StringList::iterator it = pieces.begin(); it != pieces.end(); it++) {
+        soFar += string("/") + *it;
+
+        if(!Directory::exists(soFar)) {
+          Directory::mkdir(soFar);
+        }
+      }
+
+      soFar += string("/") + file;
+
+      return fopen(soFar.c_str(), "w");
     }
 
   }

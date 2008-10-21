@@ -104,6 +104,7 @@ namespace Radiant
 		/// Creates a new directory.
 		static bool mkdir(const char * dirname);
 		static bool mkdir(const std::string & dirname);
+    static bool exists(const std::string & dir);
 
 	private:
 

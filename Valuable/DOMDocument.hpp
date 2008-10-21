@@ -35,7 +35,7 @@ namespace Valuable
   /// Wrapper for xercesc::DOMDocument
   class VALUABLE_API DOMDocument
   {
-  public:
+    public:
 
       ~DOMDocument();
 
@@ -48,18 +48,23 @@ namespace Valuable
       bool writeToFile(const char * filename);
       bool writeToMem(std::vector<char> & buf);
 
+      /// Parse a document from a file.
+      /// @param filename name of the file to read from
+      /// @param validate if set to true, the XML must validate (it must have a
+      /// schema)
+      /// @return true if there were no errors
       bool readFromFile(const char * filename, bool validate = false);
 
       DOMElement getDocumentElement();
 
-    mxercesc::DOMDocument * document() { return m_xDoc; }
+      mxercesc::DOMDocument * document() { return m_xDoc; }
 
     private:
       DOMDocument(mxercesc::DOMDocument * doc);
-  
-    mxercesc::DOMDocument * m_xDoc;
 
-    friend bool writeDom(DOMDocument *, mxercesc::XMLFormatTarget &);
+      mxercesc::DOMDocument * m_xDoc;
+
+      friend bool writeDom(DOMDocument *, mxercesc::XMLFormatTarget &);
   };
 
 }

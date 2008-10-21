@@ -31,22 +31,22 @@ namespace Radiant
       ResourceLocator();
       ~ResourceLocator();
 
-    /// Character that separates paths.
+      /// Character that separates paths.
       static std::string  separator;
 
-    /// Return the paths.
-    const std::string & paths() const { return  m_paths; }
+      /// Return the paths.
+      const std::string & paths() const { return  m_paths; }
 
-    /// Add a path to the list to search though
-    /** @param front If front is true, then the new path is put to the
-	front of the list, otherwise it is put at the end of the
-	list.  */
-    void addPath(const std::string & path, bool front = false);
-    void addModuleDataPath(const std::string & module,
-			   bool front = false);
+      /** Add a path to the list to search though
+        @param front If front is true, then the new path is put to the
+        front of the list, otherwise it is put at the end of the
+        list. **/
+      void addPath(const std::string & path, bool front = false);
+      void addModuleDataPath(const std::string & module, bool front = false);
 
       /// Locate a file
       std::string locate(const std::string & file) const;
+      std::string locateWriteable(const std::string & file) const;
       std::string locateOverWriteable(const std::string & file) const;
 
     private:

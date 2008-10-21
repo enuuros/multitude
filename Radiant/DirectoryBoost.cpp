@@ -89,5 +89,11 @@ namespace Radiant
 		if(m_sortFlags == Name)
 			std::sort(m_entries.begin(), m_entries.end());
 	}
+
+  bool Directory::exists(const std::string & filename)
+  {
+    return fs::exists(filename);
+  }
+
 }
 

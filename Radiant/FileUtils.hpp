@@ -68,6 +68,8 @@ namespace Radiant
     RADIANT_API std::string findOverWritable(const std::string & filename,
                                              const std::string & paths);
 
+    RADIANT_API FILE * createFilePath(const std::string & filePath);
+
   }
 }
 

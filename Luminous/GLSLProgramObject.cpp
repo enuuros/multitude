@@ -184,6 +184,10 @@ namespace Luminous
   GLSLProgramObject* GLSLProgramObject::fromFiles
   (const char* vsFile, const char* fsFile)
   {
+    if(vsFile == 0 && fsFile == 0) { 
+      return 0;
+    }
+
     // Load & compile vertex shader
     GLSLShaderObject* vs = 0;
     if(vsFile) {
