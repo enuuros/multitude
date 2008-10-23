@@ -30,6 +30,8 @@
 #include <WinPort.h>
 #endif
 
+#include <Radiant/Trace.hpp>
+
 namespace Radiant {
 
 
@@ -70,7 +72,7 @@ namespace Radiant {
       // server_address.sin_addr.s_addr = inet_addr(host);
     }
 
-    puts("Binding");
+    //puts("Binding");
 
     if(bind(m_fd, ( struct sockaddr * ) & server_address,
 	     sizeof ( server_address ) ) < 0 ){
@@ -78,7 +80,7 @@ namespace Radiant {
       return errno;
     }
 
-    puts("Listenging");
+    //puts("Listenging");
     
     if(::listen(m_fd, maxconnections) != 0) {
       close();
