@@ -79,7 +79,8 @@ linux-*:SOURCES += PlatformUtilsLinux.cpp
 
 macx:SOURCES += PlatformUtilsOSX.cpp
 
-unix:LIBS += -lpthread $$LIB_RT -ldl -lboost_filesystem
+unix:LIBS += -lpthread $$LIB_RT -ldl
+linux-*:LIBS += -lboost_filesystem
 
 macx:LIBS += -framework,CoreFoundation
 PKGCONFIG += libdc1394-2

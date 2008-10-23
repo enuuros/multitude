@@ -76,6 +76,16 @@ namespace Radiant
     return mkdir(dirname.c_str());
   }
 
+  bool Directory::exists(const std::string & dir)
+  {
+    DIR * d = opendir(dir.c_str());
+    if(!d)
+      return false;
+    
+    closedir(d);
+    return true;
+  }
+      
   void Directory::populate()
   {
     // Try to open the directory
