@@ -888,9 +888,10 @@ void Video1394::sendSoftwareTrigger()
 	
 		//unsigned long flags = ACQ_START_VIDEO_STREAM | ACQ_SUBSCRIBE_ONLY /*| ACQ_ALLOW_PGR_DUAL_PACKET*/;
 		//int status = cmu_camera->StartImageAcquisitionEx(1, 0, flags);
-		int status = cmu_camera->StartImageAcquisitionEx(1, 1000, ACQ_START_VIDEO_STREAM);
 		//int status = cmu_camera->StartImageCapture();
-		//int status = cmu_camera->StartImageAcquisition();
+		
+		//int status = cmu_camera->StartImageAcquisitionEx(6, 1000, ACQ_START_VIDEO_STREAM);
+		int status = cmu_camera->StartImageAcquisition();
 		if (status != CAM_SUCCESS)
 		{
 			error("Video1394::start # unable to start camera iso transmission");
@@ -983,7 +984,8 @@ void Video1394::sendSoftwareTrigger()
 */
 
 		//int status = cmu_camera->CaptureImage();
-		int status = cmu_camera->AcquireImageEx(TRUE, NULL);
+		//int status = cmu_camera->AcquireImageEx(TRUE, NULL);
+		int status = cmu_camera->AcquireImage();
 		//checkCamError("captureImage", status);
 		if (status != CAM_SUCCESS)
 		{
