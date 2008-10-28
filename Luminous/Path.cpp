@@ -372,13 +372,13 @@ void Path::renderLineStrip(const Nimble::Matrix3f & m) const
 
 void Path::debugDump() const
 {
-  Radiant::trace("Path::debugDump");
+  Radiant::trace(Radiant::DEBUG, "Path::debugDump");
 
   int i = 0;
   for(container::const_iterator it = m_points.begin(); it != m_points.end(); it++) {
     Nimble::Vector2f p = *it;
 
-    Radiant::trace("\tpoint %d: %f,%f", i++, p.x, p.y);
+    Radiant::trace(Radiant::DEBUG, "\tpoint %d: %f,%f", i++, p.x, p.y);
   }
 }
 

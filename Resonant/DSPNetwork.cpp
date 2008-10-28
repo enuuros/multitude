@@ -30,11 +30,11 @@
 namespace Resonant {
 
   using namespace Radiant;
-  
+
   DSPNetwork::Item::Item()
     : m_module(0),
-      m_compiled(false),
-      m_done(false)
+    m_compiled(false),
+    m_done(false)
   {}
 
   DSPNetwork::Item::~Item()
@@ -53,7 +53,7 @@ namespace Resonant {
   { 
     for(uint i = 0; i < m_ins.size(); i++)
       if(m_ins[i] == ptr)
-	return i;
+        return i;
     return -1;
   }
 
@@ -61,7 +61,7 @@ namespace Resonant {
   { 
     for(uint i = 0; i < m_outs.size(); i++)
       if(m_outs[i] == ptr)
-	return i;
+        return i;
     return -1;
   }
 
@@ -73,7 +73,7 @@ namespace Resonant {
 
   DSPNetwork::DSPNetwork()
     : m_continue(false),
-      m_doneCount(0)
+    m_doneCount(0)
   {
     m_devName[0] = 0;
     m_collect = new ModuleOutCollect(0, this);
@@ -96,7 +96,7 @@ namespace Resonant {
     for(uint i = 0; i < m_buffers.size(); i++)
       m_buffers[i].clear();
   }
-  
+
   bool DSPNetwork::start(const char * device)
   {
     if(isRunning())
@@ -108,7 +108,7 @@ namespace Resonant {
       m_devName[0] = '\0';
 
     // m_continue = true;
-    
+
     return startReadWrite(44100, 2);
   }
 
@@ -131,7 +131,7 @@ namespace Resonant {
       m_doneCount++;
     }
     else
-      error("DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
+      trace(ERROR, "DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
   }
 
   void DSPNetwork::send(ControlData & control)
@@ -148,9 +148,9 @@ namespace Resonant {
 #endif
 
   int DSPNetwork::callback(const void *in, void *out,
-			   unsigned long framesPerBuffer,
-			   const PaStreamCallbackTimeInfo* time,
-			   PaStreamCallbackFlags status)
+      unsigned long framesPerBuffer,
+      const PaStreamCallbackTimeInfo* time,
+      PaStreamCallbackFlags status)
   {
     (void) in;
     (void) time;
@@ -167,7 +167,7 @@ namespace Resonant {
 
     return paContinue;
   }
-  
+
   void DSPNetwork::doCycle(int framesPerBuffer)
   {
     const int cycle = framesPerBuffer;
@@ -178,9 +178,9 @@ namespace Resonant {
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Item & item = (*it);
       /*
-        Module * m = item.m_module;
-        trace("DSPNetwork::doCycle # Processing %p %s", m, typeid(*m).name());
-      */
+         Module * m = item.m_module;
+         trace("DSPNetwork::doCycle # Processing %p %s", m, typeid(*m).name());
+         */
       item.process(cycle);
     }
 
@@ -204,29 +204,29 @@ namespace Resonant {
     m_incopy.rewind();
 
     char buf[512];
-    
+
     FixedStrT<512> id;
 
     while(m_incopy.pos() < sentinel) {
       buf[0] = 0;
-      
+
       if(!m_incopy.readString(buf, 512)) {
-	error("DSPNetwork::checkNewControl # Could not read string");
-	continue;
+        trace(ERROR, "DSPNetwork::checkNewControl # Could not read string");
+        continue;
       }
 
       const char * slash = strchr(buf, '/');
       const char * command;
 
       if(!slash) {
-	id = buf;
-	command = 0;
+        id = buf;
+        command = 0;
       }
       else {
-	id.copyn(buf, slash - buf);
-	command = slash + 1;
+        id.copyn(buf, slash - buf);
+        command = slash + 1;
       }
-      
+
       deliverControl(id, command, m_incopy);
     }
   }
@@ -235,7 +235,7 @@ namespace Resonant {
   {
     while(m_newItems.size()) {
 
-      trace("DSPNetwork::checkNewItems # Next ");
+      trace(DEBUG, "DSPNetwork::checkNewItems # Next ");
 
       if(!m_newMutex.tryLock())
         return;
@@ -252,51 +252,51 @@ namespace Resonant {
 
 
       if(!compile(*itptr, 0)) {
-        error("DSPNetwork::checkNewItems # Could not add module %s", type);
+        trace(ERROR, "DSPNetwork::checkNewItems # Could not add module %s", type);
         m_items.pop_front();
       }
       else {
-        trace("DSPNetwork::checkNewItems # Added a new module %s", type);
-	
-	if(itptr->m_module == m_collect)
-	  continue;
+        trace(DEBUG, "DSPNetwork::checkNewItems # Added a new module %s", type);
 
-	int mchans = itptr->m_outs.size();
-	int outchans = 2; // hardware output channels
-	const char * id = itptr->m_module->id();
-	if(mchans) {
+        if(itptr->m_module == m_collect)
+          continue;
 
-	  /* Add mappings for the new module, so that it is
-	     heard. Realistically, this behavior should be overridable
-	     as needed, now one cannot really make too clever DSP
-	     networks.
-	   */
-	  Item * oi = findItem(m_collect->id());
-	  
-	  if(!oi)
-	    Radiant::fatal("DSPNetwork::checkNewItems # No collector \"%s\"",
-			  m_collect->id());
+        int mchans = itptr->m_outs.size();
+        int outchans = 2; // hardware output channels
+        const char * id = itptr->m_module->id();
+        if(mchans) {
 
-	  for(int i = 0; i < outchans; i++) {
-	    Connection conn;
-	    conn.setModuleId(id);
-	    conn.m_channel = i % mchans;
-	    oi->m_inputs.push_back(conn);
+          /* Add mappings for the new module, so that it is
+             heard. Realistically, this behavior should be overridable
+             as needed, now one cannot really make too clever DSP
+             networks.
+             */
+          Item * oi = findItem(m_collect->id());
 
-	    m_controlData.rewind();
-	    m_controlData.writeString(id); // Source id
-	    m_controlData.writeInt32(i % mchans);// Source module output channel
-	    m_controlData.writeInt32(i % outchans); // Target channels
-	    m_controlData.rewind();
-	    m_collect->control("newmapping", & m_controlData);
-	  }
-	  compile( * oi);
-	  trace("DSPNetwork::checkNewItems # Compiled out collector", type);
-	}
+          if(!oi)
+            Radiant::trace(FATAL, "DSPNetwork::checkNewItems # No collector \"%s\"",
+                m_collect->id());
+
+          for(int i = 0; i < outchans; i++) {
+            Connection conn;
+            conn.setModuleId(id);
+            conn.m_channel = i % mchans;
+            oi->m_inputs.push_back(conn);
+
+            m_controlData.rewind();
+            m_controlData.writeString(id); // Source id
+            m_controlData.writeInt32(i % mchans);// Source module output channel
+            m_controlData.writeInt32(i % outchans); // Target channels
+            m_controlData.rewind();
+            m_collect->control("newmapping", & m_controlData);
+          }
+          compile( * oi);
+          trace(DEBUG, "DSPNetwork::checkNewItems # Compiled out collector", type);
+        }
       }
     }
   }
-  
+
   void DSPNetwork::checkDoneItems()
   {
     if(!m_newMutex.tryLock())
@@ -311,11 +311,11 @@ namespace Resonant {
       Item & item = (*it);
       if(item.m_done) {
         uncompile(item);
-        
+
         item.m_module->stop();
- 
-	trace("DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
-       iterator tmp = it;
+
+        trace(DEBUG, "DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
+        iterator tmp = it;
         tmp++;
         m_items.erase(it);
         it = tmp;
@@ -326,19 +326,19 @@ namespace Resonant {
 
     m_doneCount = 0;
   }
-  
+
   void DSPNetwork::deliverControl(const char * moduleid,
-				  const char * commandid, 
-				  ControlData & data)
+      const char * commandid, 
+      ControlData & data)
   {
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Module * m = (*it).m_module;
       if(strcmp(m->id(), moduleid) == 0) {
-	m->control(commandid, & data);
-	return;
+        m->control(commandid, & data);
+        return;
       }
     } 
-    error("DSPNetwork::deliverControl # No module \"%s\"", moduleid);
+    trace(ERROR, "DSPNetwork::deliverControl # No module \"%s\"", moduleid);
   }
 
 
@@ -357,15 +357,15 @@ namespace Resonant {
       Item * oi = findItem(m_collect->id());
 
       if(!oi)
-        Radiant::fatal("DSPNetwork::checkNewItems # No collector \"%s\"",
-                       m_collect->id());
-      
+        Radiant::trace(FATAL, "DSPNetwork::checkNewItems # No collector \"%s\"",
+            m_collect->id());
+
       for(int i = 0; i < outchans; i++) {
         Connection conn;
         conn.setModuleId(id);
         conn.m_channel = i;
         oi->eraseInput(conn);
-        
+
         m_controlData.rewind();
         m_controlData.writeString(id);
         m_controlData.writeInt32(i);
@@ -374,7 +374,7 @@ namespace Resonant {
         m_collect->control("removemapping", & m_controlData);
       }
       compile( * oi);
-      trace("DSPNetwork::uncompile # uncompiled \"%s\"", id);
+      trace(DEBUG, "DSPNetwork::uncompile # uncompiled \"%s\"", id);
     }
 
     return true;
@@ -386,11 +386,11 @@ namespace Resonant {
 
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       if(& (*it) == & item)
-	return compile(item, i);
+        return compile(item, i);
       i++;
     }
-    
-    Radiant::error("DSPNetwork::compile # Failed to find something to compile");
+
+    Radiant::trace(ERROR, "DSPNetwork::compile # Failed to find something to compile");
 
     return false;
   }
@@ -400,7 +400,7 @@ namespace Resonant {
     int i = 0;
     int ins = item.m_inputs.size();
     int outs = ins;
-    
+
     std::list<NewConnection>::iterator conit;
 
     std::list<Item *> affected;
@@ -410,9 +410,9 @@ namespace Resonant {
       NewConnection & nc = *conit;
       if(strcmp(nc.m_targetId, item.m_module->id()) == 0) {
         item.m_inputs.push_back(Connection(nc.m_sourceId,
-					   nc.m_sourceChannel));
-	trace("Item[%d].m_inputs[%d] = [%d,%d]", location, i,
-	      nc.m_sourceId, nc.m_sourceChannel);
+              nc.m_sourceChannel));
+        trace(DEBUG, "Item[%d].m_inputs[%d] = [%d,%d]", location, i,
+            nc.m_sourceId, nc.m_sourceChannel);
       }
       i++;
     }
@@ -434,22 +434,22 @@ namespace Resonant {
       Connection & conn = item.m_inputs[i];
       float * ptr = findOutput(conn.m_moduleId, conn.m_channel);
       item.m_ins[i] = ptr;
-      trace("Item[%d].m_ins[%d] = %p", location, i, ptr);
+      trace(DEBUG, "Item[%d].m_ins[%d] = %p", location, i, ptr);
     }
 
     for(i = 0; i < outs; i++) {
       if(item.m_outs[i] == 0) {
-	Buf & b = findFreeBuf(location);
-	item.m_outs[i] = b.m_data;
-	trace("Item[%d].m_outs[%d] = %p", location, i, b.m_data);
+        Buf & b = findFreeBuf(location);
+        item.m_outs[i] = b.m_data;
+        trace(DEBUG, "Item[%d].m_outs[%d] = %p", location, i, b.m_data);
       }
     }
 
     item.m_compiled = true;
-    
+
     Module * m = item.m_module;
 
-    trace("DSPNetwork::compile # compiled %p %s", m, typeid(*m).name());
+    trace(DEBUG, "DSPNetwork::compile # compiled %p %s", m, typeid(*m).name());
 
     return true;
   }
@@ -460,13 +460,13 @@ namespace Resonant {
 
     for(uint i = 0; i < s; i++) {
       if(bufIsFree(i, location))
-	return m_buffers[i];
+        return m_buffers[i];
     }
 
     m_buffers.resize(s + 1);
 
     m_buffers[s].init();
-    
+
     return m_buffers[s];
   }
 
@@ -479,10 +479,10 @@ namespace Resonant {
       it++;
 
     float * ptr = m_buffers[channel].m_data;
-    
+
     if((*it).findInOutput(ptr) >= 0)
       return true;
-    
+
     iterator other = it;
 
     for(uint i = 0; i < m_items.size(); i++) {
@@ -493,9 +493,9 @@ namespace Resonant {
       Item & item = (*other);
 
       if(item.findInInput(ptr) >= 0)
-	return false;
+        return false;
       else if(item.findInOutput(ptr) >= 0)
-	return true;
+        return true;
     }
 
     return true;
@@ -518,18 +518,18 @@ namespace Resonant {
     int index = 0;
 
     Module * m = it.m_module;
-    
+
     if(strlen(m->id()) == 0) {
       sprintf(buf, "%p", m);
       m->setId(buf);
       index++;
     }
-    
+
     while(findItem(m->id())) {
       if(!index)
-	sprintf(buf, "%p", m);
+        sprintf(buf, "%p", m);
       else 
-	sprintf(buf, "%p-%.4d", m, index);
+        sprintf(buf, "%p-%.4d", m, index);
       m->setId(buf);
       index++;
     }

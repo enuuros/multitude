@@ -29,7 +29,7 @@ namespace Radiant {
   {
     if(!__verbose)
       return;
-    Radiant::error("%s # Not enough data available", func);
+    Radiant::trace(ERROR, "%s # Not enough data available", func);
   }
 
   static void badmarker(const char * func, int32_t marker)
@@ -40,7 +40,7 @@ namespace Radiant {
     char b = (marker >> 8) & 0xFF;
     char c = (marker >> 16) & 0xFF;
     char d = (marker >> 24) & 0xFF;
-    Radiant::error("%s # bad marker %c%c%c%c", func, a, b, c, d);
+    Radiant::trace(ERROR, "%s # bad marker %c%c%c%c", func, a, b, c, d);
   }
 
   inline int32_t makeMarker(int32_t a, int32_t b, int32_t c, int32_t d)
@@ -287,8 +287,7 @@ namespace Radiant {
 
     if(m_size < s) {
       if(s > 500000000) { // Not more than 500 MB at once, please
-	error("BinaryData::read # Attempting extraordinary read (%d bytes)",
-	      s);
+        Radiant::trace(ERROR, "BinaryData::read # Attempting extraordinary read (%d bytes)", s);
 	return false;
       }
       m_buf = (char *) realloc(m_buf, s);
@@ -319,7 +318,7 @@ namespace Radiant {
     unsigned need = m_current + bytes;
     if(need > m_size) {
       if(m_shared)
-	fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
+        Radiant::trace(FATAL, "BinaryData::ensure # Sharing data, cannot ensure required space");
       
       m_size = need + 128 + need / 16;
       m_buf = (char *) realloc(m_buf, m_size);

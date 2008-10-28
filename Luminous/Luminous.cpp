@@ -25,7 +25,7 @@ namespace Luminous
     GLenum err = glewInit();
 
     if(err != GLEW_OK) { 
-      Radiant::error("Failed to initialize GLEW: %s", glewGetErrorString(err));
+      Radiant::trace(Radiant::ERROR, "Failed to initialize GLEW: %s", glewGetErrorString(err));
       return false;
     }
 
@@ -46,9 +46,9 @@ namespace Luminous
     char * glsl = (char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     std::string glslMsg = (glsl ? glsl : "GLSL not supported");
 
-    Radiant::trace("%s (%s)", versionMsg.c_str(), glslMsg.c_str());
+    Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.c_str(), glslMsg.c_str());
     if(warn) { 
-      Radiant::error("OpenGL 2.0 is not supported by this computer, "
+      Radiant::trace(Radiant::ERROR, "OpenGL 2.0 is not supported by this computer, "
 		     "some applications may fail.");
       return false;
     }

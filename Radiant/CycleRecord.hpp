@@ -17,6 +17,7 @@
 #define RADIANT_CYCLE_RECORD_HPP
 
 #include <Radiant/cycle.h>
+#include <Radiant/Trace.hpp>
 
 #include <vector>
 
@@ -88,7 +89,7 @@ namespace Radiant {
       normalize();
       
       for(unsigned i = 0; i < m_records.size(); i++)
-	printf("CPU cycles  %u   %.2lf\n", i, m_records[i] * 100.0);
+        trace(DEBUG, "CPU cycles  %u   %.2lf\n", i, m_records[i] * 100.0);
     }
 
     /// The latest CPU cycle counter value

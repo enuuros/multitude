@@ -24,9 +24,6 @@
 
 namespace Luminous {
 
-  using Radiant::error;
-  using Radiant::trace;
-
   MultiHead::Area::Area()
     : HasValues(0, "Area"),
     m_keyStone(this, "keystone"),
@@ -166,7 +163,7 @@ namespace Luminous {
     m_size = size;
 
     if(m_areas.size() == 1) {
-      trace("MultiHead::Window::resizeEvent");
+      Radiant::trace(Radiant::DEBUG, "MultiHead::Window::resizeEvent");
       m_areas[0].ptr()->setSize(size);
     }
   }
@@ -217,7 +214,7 @@ namespace Luminous {
 
     // Get the 'type' attribute
     if(!ce.hasAttribute("type")) {
-      Radiant::error("MultiHead::Window::readElement # "
+      Radiant::trace(Radiant::ERROR, "MultiHead::Window::readElement # "
 		     "no type attribute on element '%s'", name.c_str());
       return false;
     }
@@ -320,7 +317,7 @@ namespace Luminous {
   MultiHead::Window & MultiHead::window(unsigned i)
   {
     if(i >= m_windows.size()) {
-      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
+      Radiant::trace(Radiant::FATAL, "MultiHead::window # Array index %u exceeds array size %u",
 		     i, (unsigned) m_windows.size());
     }
 
@@ -431,7 +428,7 @@ namespace Luminous {
 
     // Get the 'type' attribute
     if(!ce.hasAttribute("type")) {
-      Radiant::error("MultiHead::readElement # no type attribute on element '%s'", name.c_str());
+      Radiant::trace(Radiant::ERROR, "MultiHead::readElement # no type attribute on element '%s'", name.c_str());
       return false;
     }
 

@@ -72,7 +72,7 @@ namespace Dyslexic
   bool CPUFontBase::setFaceSize(int size, int resolution)
   {
     if(!m_face) {
-      Radiant::error("CPUFontBase::setSize # no font loaded yet!");
+      Radiant::trace(Radiant::ERROR, "CPUFontBase::setSize # no font loaded yet!");
       return false;
     }
 
@@ -106,7 +106,7 @@ namespace Dyslexic
       return true;
     }
 
-    Radiant::error("CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
+    Radiant::trace(Radiant::ERROR, "CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
     return false;
   }
 

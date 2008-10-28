@@ -32,9 +32,6 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QMouseEvent>
 
-using Radiant::error;
-using Radiant::trace;
-
 using namespace Nimble;
 
 VideoWindow::VideoWindow()
@@ -71,7 +68,7 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
   
   m_movies.push_back(item);
 
-  trace("VideoWindow::open # EXIT OK");
+  Radiant::trace(Radiant::DEBUG, "VideoWindow::open # EXIT OK");
 
   return true;
 }
@@ -129,6 +126,7 @@ void VideoWindow::initializeGL()
 {
   // ALL_MOVIES(contextInit());
   const char * ttf = "DejaVuSans.ttf";
+  /// @todo öh?
   const char * path = ".:/Users/tommi/screenapps/Fonts/";
   std::string filename = Radiant::FileUtils::findFile(ttf, path);
 
@@ -137,7 +135,7 @@ void VideoWindow::initializeGL()
     if(m_subCPUFont->load(filename.c_str())) {
       m_subCPUFont->setFaceSize(25, 72);
       m_subGPUFont = new Dyslexic::GPUTextureFont(m_subCPUFont);
-      Radiant::trace("VideoWindow::initializeGL # Got font");
+      Radiant::trace(Radiant::DEBUG, "VideoWindow::initializeGL # Got font");
     }
   }
 }

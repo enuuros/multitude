@@ -140,9 +140,6 @@ namespace Luminous {
         d, e, 0, f,
         0, 0, 1, 0,
         g, h, 0, 1);
-
-    std::cout << "KEYSTONE MATRIX = \n" << m_matrix <<
-      std::endl;
   }
 
   Vector4 GLKeyStone::project(Vector2 v)

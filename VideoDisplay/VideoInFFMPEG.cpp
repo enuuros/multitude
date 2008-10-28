@@ -61,19 +61,19 @@ namespace VideoDisplay {
     m_seekTarget = -1.0f;
 
     if(!m_video.hasVideoCodec()) {
-      Radiant::error("%s # No video codec", fname);
+      Radiant::trace(Radiant::ERROR, "%s # No video codec", fname);
       m_video.close();
       return false;
     }
 
     if(!m_video.hasAudioCodec()) {
-      Radiant::error("%s # No audio codec", fname);
+      Radiant::trace(Radiant::ERROR, "%s # No audio codec", fname);
       m_video.close();
       return false;
     }
 
     if(pos != 0) {
-      Radiant::trace("%s # Doing a seek", fname);
+      Radiant::trace(Radiant::DEBUG, "%s # Doing a seek", fname);
       if(!m_video.seekPosition(pos.secondsD()))
 	m_video.seekPosition(0);
     }
@@ -88,7 +88,7 @@ namespace VideoDisplay {
 
     float fp = fps();
 
-    trace("%s # %f fps", fname, fp);
+    Radiant::trace(Radiant::DEBUG, "%s # %f fps", fname, fp);
 
     float latency = 1.5f;
 
@@ -135,11 +135,11 @@ namespace VideoDisplay {
       m_seekNot--;
     
     if(st >= 0.0f) {
-      trace("VideoInFFMPEG::getNextFrame # Doing a seek to %lf", st);
+      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::getNextFrame # Doing a seek to %lf", st);
       m_video.seekPosition(st);
       seek = true;
       needResync();
-      trace("VideoInFFMPEG::getNextFrame # Seek done");
+      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::getNextFrame # Seek done");
       m_seekNot = 4;
     }
 
@@ -244,7 +244,7 @@ namespace VideoDisplay {
           hitVFrame = i;
       }
 
-      trace("VideoInFFMPEG::doSeek # VF: %u -> %ld AF: %u -> %ld",
+      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::doSeek # VF: %u -> %ld AF: %u -> %ld",
             m_decodedFrames, hitVFrame, m_decodedAuFrames, hitAFrame);
     
       m_decodedFrames = hitVFrame;
@@ -279,7 +279,7 @@ namespace VideoDisplay {
       m_needSync = 1;
     }
     
-    trace("Sync offset is now %ld (%.2lf)", (long) m_syncOffset, 
+    Radiant::trace(Radiant::DEBUG, "Sync offset is now %ld (%.2lf)", (long) m_syncOffset, 
           m_syncOffset.secondsD());    
   }
 

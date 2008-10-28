@@ -188,7 +188,7 @@ namespace FireView {
 	(dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
       
       if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-	error("Cannot have custom FPS combined with anything but SW trigger (%d)",
+	trace(ERROR, "Cannot have custom FPS combined with anything but SW trigger (%d)",
 	      (int) trig);
     }
     else if((int) m_triggerSource > 0) {
@@ -201,21 +201,21 @@ namespace FireView {
 	return;
       }
       else
-	trace("Enabled trigger source %d (%d) %f %d",
+	trace(DEBUG, "Enabled trigger source %d (%d) %f %d",
 	      trig, m_triggerSource, m_customFps, (int) m_format7);
 
       if(m_triggerMode >= 0) {
 	if(!m_video.setTriggerMode
 	   ((dc1394trigger_mode_t) m_triggerMode))
-	  error("Could not set trigger mode %d", m_triggerMode);
+	  trace(ERROR, "Could not set trigger mode %d", m_triggerMode);
 	else
-	  trace("Enabled trigger mode %d", m_triggerMode);
+	  trace(DEBUG, "Enabled trigger mode %d", m_triggerMode);
       }
     }
     else
       m_video.disableTrigger();
 
-    trace("Getting features");
+    trace(DEBUG, "Getting features");
 
     m_video.getFeatures( & m_features);
 
@@ -244,11 +244,11 @@ namespace FireView {
 
     // m_video.start();
 
-    trace("Starting video capture");
+    trace(DEBUG, "Starting video capture");
 
     if(!m_video.start()) {
       m_state = UNINITIALIZED;
-      error("Could not start video capture");
+      trace(ERROR, "Could not start video capture");
       return;
     }
 
@@ -264,7 +264,7 @@ namespace FireView {
     Radiant::SleepSync sync;
     sync.resetTiming();
 
-    trace("Capturing video");
+    trace(DEBUG, "Capturing video");
 
     m_lastCheckTime = Radiant::TimeStamp::getTime();
     while(m_continue) {
@@ -389,7 +389,7 @@ namespace FireView {
     bool ok = Radiant::Video1394::queryCamera(euid64, & info);
 
     if(!ok) {
-      Radiant::error("CamView::start # Could not query camera");
+      Radiant::trace(Radiant::ERROR, "CamView::start # Could not query camera");
       return false;
     }
 

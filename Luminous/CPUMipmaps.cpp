@@ -81,7 +81,7 @@ namespace Luminous {
       assert(m_dest->m_state != FINISHED);
 
       if(!ok) {
-        error("Loading failed for %s", m_file.c_str());
+        trace(ERROR, "Loading failed for %s", m_file.c_str());
         m_dest->m_state = FAILED;
 	delete image;
       }
@@ -137,7 +137,7 @@ namespace Luminous {
       }
 
       if(m_source->m_state == FAILED) {
-        error("CPUMipmaps::Scaler::doTask # Source has failed , aborting");
+        trace(ERROR, "CPUMipmaps::Scaler::doTask # Source has failed , aborting");
         m_dest->m_state = FAILED;
         m_source->m_scalerOut = 0;
         m_dest->m_scaler = 0;
@@ -151,7 +151,7 @@ namespace Luminous {
       }
 
       if(!m_source->m_image.ptr()) {
-        error("CPUMipmaps::Scaler::doTask # Source has no image!");
+        trace(ERROR, "CPUMipmaps::Scaler::doTask # Source has no image!");
         m_state = DONE;
         return;
       }
@@ -212,9 +212,9 @@ namespace Luminous {
 	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_JPG);
 
       if(ok)
-        trace("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
+        trace(DEBUG, "CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
       else
-        error("CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
+        trace(ERROR, "CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
     }
 
     Guard g(generalMutex());
@@ -424,7 +424,7 @@ namespace Luminous {
 
   bool CPUMipmaps::startLoading(const char * filename, bool immediate)
   {
-	Radiant::trace("CPUMipmaps::startLoading # DEBUG %s, %d", filename, immediate);
+    Radiant::trace(DEBUG, "CPUMipmaps::startLoading # DEBUG %s, %d", filename, immediate);
     m_startedLoading = Radiant::TimeStamp::getTime();
 
     m_filename = filename;
@@ -435,7 +435,7 @@ namespace Luminous {
 
 	Luminous::ImageInfo info;
 	if(!Luminous::Image::ping(filename, info)) {
-		Radiant::error("CPUMipmaps::startLoading # failed to query image size");
+		Radiant::trace(ERROR, "CPUMipmaps::startLoading # failed to query image size");
 		return false;
 	}
 

@@ -205,7 +205,7 @@ namespace Resonant {
   bool ModuleSamplePlayer::BGLoader::addLoadable(const char * filename,
 						 SampleVoice * waiting)
   {
-    trace("ModuleSamplePlayer::BGLoader::addLoadable # %s %p",
+    trace(DEBUG, "ModuleSamplePlayer::BGLoader::addLoadable # %s %p",
 	  filename, waiting);
 
     for(int i = 0; i < BINS; i++) {
@@ -232,26 +232,26 @@ namespace Resonant {
   {
     while(m_continue) {
 
-      trace("ModuleSamplePlayer::BGLoader::childLoop # once");
+      trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # once");
 
       for(int i = 0; i < BINS; i++) {
 	LoadItem & it = m_loads[i];
 	
 	if(!it.m_free) {
 
-	  trace("ModuleSamplePlayer::BGLoader::childLoop # Something");
+	  trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Something");
 
 	  Sample * s = new Sample();
 
 	  bool good = true;
 
 	  if(!s->load(it.m_name.str(), it.m_name.str())) {
-	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not load "
+	    trace(ERROR, "ModuleSamplePlayer::BGLoader::childLoop # Could not load "
 		  "\"%s\"", it.m_name.str());
 	    good = false;
 	  }
 	  else if(!m_host->addSample(s)) {
-	    error("ModuleSamplePlayer::BGLoader::childLoop # Could not add "
+	    trace(ERROR, "ModuleSamplePlayer::BGLoader::childLoop # Could not add "
 		  "\"%s\"", it.m_name.str());
 	    good = false;
 	  }
@@ -266,7 +266,7 @@ namespace Resonant {
 	    }
 	  }
 	  else {
-	    trace("ModuleSamplePlayer::BGLoader::childLoop # Loaded "
+	    trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Loaded "
 		  "\"%s\"", it.m_name.str());
 
 	    for(int j = 0; j < LoadItem::WAITING_COUNT; j++) {
@@ -274,7 +274,7 @@ namespace Resonant {
 	      if(!voice)
 		break;
 
-	      trace("ModuleSamplePlayer::BGLoader::childLoop # Delivering "
+	      trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Delivering "
 		    "\"%s\"", it.m_name.str());
 	      
 	      voice->setSample(s);
@@ -338,14 +338,14 @@ namespace Resonant {
       int voiceind = findFreeVoice();
 
       if(voiceind < 0) {
-        error("ModuleSamplePlayer::control # Out of polyphony");
+        trace(ERROR, "ModuleSamplePlayer::control # Out of polyphony");
         return;
       }
 
       bool ok = data->readString(buf, bufsize);
 
       if(!ok) {
-        error("ModuleSamplePlayer::control # Could not get sample name ");
+        trace(ERROR, "ModuleSamplePlayer::control # Could not get sample name ");
         return;
       }
 
@@ -355,7 +355,7 @@ namespace Resonant {
       int sampleind = findSample(buf);
 
       if(sampleind < 0) {
-        trace("ModuleSamplePlayer::control # No sample \"%s\"", buf);
+        trace(DEBUG, "ModuleSamplePlayer::control # No sample \"%s\"", buf);
 	
 	m_loader->addLoadable(buf, & voice);
 
@@ -366,13 +366,13 @@ namespace Resonant {
 		 m_samples[sampleind].ptr() : 0, data);
       m_active++;
 
-      trace("ModuleSamplePlayer::control # Started sample %s (%d/%d)",
+      trace(DEBUG, "ModuleSamplePlayer::control # Started sample %s (%d/%d)",
 	    buf, voiceind, m_active);
       // assert(voiceind < (int) m_active);
 
     }
     else
-      error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
+      trace(ERROR, "ModuleSamplePlayer::control # Unknown message \"%s\"", id);
   }
 
   void ModuleSamplePlayer::process(float ** , float ** out, int n)
@@ -446,7 +446,7 @@ namespace Resonant {
 	m_samples[i] = s;
 	return true;
       }
-      trace("ModuleSamplePlayer::addSample # m_samples[%u] = %p",
+      trace(DEBUG, "ModuleSamplePlayer::addSample # m_samples[%u] = %p",
 	    i, m_samples[i].ptr());
     }
 

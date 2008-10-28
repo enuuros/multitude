@@ -24,85 +24,44 @@
 #include <cstdlib>
 
 namespace Radiant {
-  
-  static Radiant::MutexAuto __mutex;
 
-  static char fatalmsg[64] = "[FATAL] ";
-  static char errmsg[64] = "[ERROR] ";
-  static char tracemsg[64] = "[trace] ";
+  static Radiant::MutexAuto g_mutex;
 
-  static void __output(const char *str, bool isError, bool isFatal = false)
+  static bool g_enableVerboseOutput = false;
+
+  const char * prefixes[] = {
+    "[DEBUG] ",
+    "",
+    "[WARNING] ",
+    "[ERROR] ",
+    "[FATAL] "
+  };
+
+  void enableVerboseOutput(bool enable) 
   {
-    __mutex.lock();
-    
-    if(isFatal)
-      fprintf(stdout, fatalmsg);
-    else if(isError)
-      fprintf(stdout, errmsg);
-//    else
-//      fprintf(stdout, tracemsg);
-
-    fprintf(stdout, str);
-    fprintf(stdout, "\n");
-    fflush(stdout);
-
-    __mutex.unlock();
+    g_enableVerboseOutput = enable;
   }
 
-  void setAppName(const char *name)
+  void trace(Severity s, const char * msg, ...)
   {
-    __mutex.lock();
-    assert(strlen(name) < 40);
-    sprintf(fatalmsg, "[%s FATAL] ", name);
-    sprintf(errmsg, "[%s ERROR] ", name);
-    sprintf(tracemsg, "[%s] ", name);
-    __mutex.unlock();
+    if(g_enableVerboseOutput || s > DEBUG) {
+
+      FILE * out = (s > WARNING) ? stdout : stderr;
+
+      g_mutex.lock();
+
+      char buf[4096];
+      va_list args;
+
+      va_start(args, msg);
+      vsnprintf(buf, 4096, msg, args);
+      va_end(args);
+
+      fprintf(out, "%s%s\n", prefixes[s], buf);
+      fflush(out);
+
+      g_mutex.unlock();
+    }
   }
-
-  /// Print trace information to the user
-  void trace(const char *msg, ...)
-  {
-    
-    char buf[8196];
-    va_list args;
-    va_start(args, msg);
-    vsprintf(buf, msg, args);
-    
-    __output(buf, false);
-    va_end(args);
-  }
-
-  /// Print error information to the user
-  void error(const char *msg, ...)
-  {
-    
-    char buf[8196];
-    va_list args;
-    va_start(args, msg);
-    vsprintf(buf, msg, args);
-    
-    __output(buf, true);
-    va_end(args);
-  }
-
-  /// Print error information to the user
-  void fatal(const char *msg, ...)
-  {
-    
-    char buf[8196];
-    va_list args;
-    va_start(args, msg);
-    vsprintf(buf, msg, args);
-    
-    __output(buf, true, true);
-    va_end(args);
-
-    int * fail = 0;
-    assert(0);
-    *fail = 123456;
-    exit(1);
-  }
-
-
 
 }

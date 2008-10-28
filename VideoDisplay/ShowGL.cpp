@@ -29,9 +29,6 @@
 
 namespace VideoDisplay {
 
-  using Radiant::error;
-  using Radiant::trace;
-
   ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
     : Luminous::GLSLProgramObject(resources)
   {
@@ -85,7 +82,7 @@ namespace VideoDisplay {
     fragShader->setSource(shadersource);
     if(!fragShader->compile()) {
 
-      error("ShowGL::YUVProgram::init # compile: %s",
+      trace(ERROR, "ShowGL::YUVProgram::init # compile: %s",
           fragShader->compilerLog());
       return false;
     }
@@ -120,7 +117,7 @@ namespace VideoDisplay {
   bool ShowGL::YUVProgram::link()
   {
     if(!Luminous::GLSLProgramObject::link()) {
-      error("ShowGL::YUVProgram::link # %s", linkerLog());
+      trace(ERROR, "ShowGL::YUVProgram::link # %s", linkerLog());
       return false;
     }
 
@@ -137,7 +134,7 @@ namespace VideoDisplay {
       int tmp = getUniformLoc(params[i]);
       m_uniforms[i] = tmp;
       ok = ok && (tmp >= 0);
-      trace("ShowGL::YUVProgram::link # %s -> %d", params[i], i);
+      trace(DEBUG, "ShowGL::YUVProgram::link # %s -> %d", params[i], i);
     }
 
     return ok;
@@ -203,7 +200,7 @@ namespace VideoDisplay {
         // if(i) area.y /= 2;
         // if(i) area.x *= 2;
 
-        trace("ShowGL::YUVProgram::doTextures # area = [%d %d]",
+        trace(DEBUG, "ShowGL::YUVProgram::doTextures # area = [%d %d]",
             area.x, area.y);
 
         ts = area;
@@ -329,7 +326,7 @@ namespace VideoDisplay {
     m_position = 0;
     m_duration = Radiant::TimeStamp::createSecondsD(video.durationSeconds());
 
-    trace("ShowGL::init # Opened %s", filename);
+    trace(DEBUG, "ShowGL::init # Opened %s", filename);
 
     return true;
   }
@@ -346,7 +343,7 @@ namespace VideoDisplay {
     bool ok = ffmpg->startDecoding(filename, pos);
 
     if(!ok) {
-      error("VideoWindow::open # Could not open %s", filename);
+      trace(ERROR, "VideoWindow::open # Could not open %s", filename);
       delete ffmpg;
       return false;
     }
@@ -406,7 +403,7 @@ namespace VideoDisplay {
     }
 
     if(i >= 10) {
-      trace("ShowGL::stop # Forcing quit");
+      trace(DEBUG, "ShowGL::stop # Forcing quit");
     }
 
     delete m_audio;
@@ -550,7 +547,7 @@ namespace VideoDisplay {
     const SubTitles::Text * sub = m_subTitles.current();
 
     if(!subtitleFont && sub) {
-      Radiant::error("ShowGL::render # Missing the subtitle font");
+      trace(ERROR, "ShowGL::render # Missing the subtitle font");
     }
 
     if(subtitleFont && sub) {
@@ -618,7 +615,7 @@ namespace VideoDisplay {
     else if(time >= m_duration)
       time = m_duration - Radiant::TimeStamp::createSecondsD(2);
 
-    trace("ShowGL::seekTo # %lf", time.secondsD());
+    trace(DEBUG, "ShowGL::seekTo # %lf", time.secondsD());
 
     m_video->seekTo(time.secondsD());
   }
@@ -635,7 +632,7 @@ namespace VideoDisplay {
 
   void ShowGL::getThumbnail(double pos)
   {
-    trace("ShowGL::getThumbnail # %lf", pos);
+    trace(DEBUG, "ShowGL::getThumbnail # %lf", pos);
 
     Screenplay::VideoInputFFMPEG video;
     if(!video.open(m_filename.c_str()))
@@ -655,7 +652,7 @@ namespace VideoDisplay {
     if(!Radiant::ImageConversion::convert(img, & m_blankDisplay))
       return;
 
-    trace("ShowGL::getThumbnail # EXIT OK");
+    trace(DEBUG, "ShowGL::getThumbnail # EXIT OK");
 
     m_blankReload = true;
     m_useBlank = true;

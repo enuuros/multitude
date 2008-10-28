@@ -29,20 +29,20 @@ namespace VideoDisplay {
       m_sampleFmt(Radiant::ASF_INT16),
       m_frames(0)
   {
-    Radiant::trace("AudioTransfer::AudioTransfer # %p", this);
+    Radiant::trace(Radiant::DEBUG, "AudioTransfer::AudioTransfer # %p", this);
   }
 
   AudioTransfer::~AudioTransfer()
   {
-    Radiant::trace("AudioTransfer::~AudioTransfer # %p", this);
+    Radiant::trace(Radiant::DEBUG, "AudioTransfer::~AudioTransfer # %p", this);
   }
 
   bool AudioTransfer::prepare(int & channelsIn, int & channelsOut)
   {
-    Radiant::trace("AudioTransfer::prepare");
+    Radiant::trace(Radiant::DEBUG, "AudioTransfer::prepare");
     
     if(!m_video) {
-      Radiant::error("AudioTransfer::prepare # No video source");
+      Radiant::trace(Radiant::ERROR, "AudioTransfer::prepare # No video source");
       m_stopped = true;
       return false;
     }
@@ -94,7 +94,7 @@ namespace VideoDisplay {
       }
     }
     else
-      Radiant::error("AudioTransfer::process # Unsupported sample format");
+      Radiant::trace(Radiant::ERROR, "AudioTransfer::process # Unsupported sample format");
 
     m_frames += m;
   }

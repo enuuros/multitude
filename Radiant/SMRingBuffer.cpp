@@ -64,8 +64,6 @@ namespace Radiant
   {
     const char * const  fnName = "SMRingBuffer::SMRingBuffer";
 
-    trace(fnName);
-
     if(size > 0)
     // Create new shared memory area (SMA)
     {
@@ -73,7 +71,7 @@ namespace Radiant
 
       if(size > maxSize)
       {
-        error("%s # Requested size %ul is greater than maximum size %ul.",
+        trace(ERROR, "%s # Requested size %ul is greater than maximum size %ul.",
           fnName, (unsigned long)(size), (unsigned long)(maxSize));
         assert(0);
       }
@@ -85,11 +83,11 @@ namespace Radiant
       {
         if(::CloseHandle(hMapFile))
         {
-          trace("%s # Successfully removed existing shared memory area with same name.", fnName);
+          trace(DEBUG, "%s # Successfully removed existing shared memory area with same name.", fnName);
         }
         else
         {
-          error("%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+          trace(ERROR, "%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
           assert(0);
         }
       }
@@ -100,11 +98,11 @@ namespace Radiant
       if(m_hMapFile)
       {
         m_isCreator = true;
-        trace("%s # Successfully created new shared memory area (%s).", fnName);
+        trace(DEBUG, "%s # Successfully created new shared memory area (%s).", fnName);
       }
       else
       {
-        error("%s # Failed to create new shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        trace(ERROR, "%s # Failed to create new shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       }
     }
@@ -114,11 +112,11 @@ namespace Radiant
       m_hMapFile = ::OpenFileMappingA(FILE_MAP_ALL_ACCESS, false, m_smName.c_str());
       if(m_hMapFile)
       {
-        trace("%s # Successfully accessed existing shared memory area (%s).", fnName);
+        trace(DEBUG, "%s # Successfully accessed existing shared memory area (%s).", fnName);
       }
       else
       {
-        error("%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        trace(ERROR, "%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       } 
     }
@@ -128,11 +126,11 @@ namespace Radiant
     char * const  smPtr = (char *)(::MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, size));
     if(smPtr)
     {
-      trace("%s # Successfully obtained pointer to shared memory area.", fnName);
+      trace(DEBUG, "%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else
     {
-      error("%s # Failed to obtain pointer to shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      trace(ERROR, "%s # Failed to obtain pointer to shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       assert(0);
     }
 
@@ -160,8 +158,6 @@ namespace Radiant
   {
     const char * const  fnName = "SMRingBuffer::SMRingBuffer";
 
-    trace(fnName);
-
     if(size > 0)
     // Create new shared memory area (SMA)
     {
@@ -169,7 +165,7 @@ namespace Radiant
 
       if(size > maxSize)
       {
-        error("%s # Requested size %ul is greater than maximum size %ul.",
+        trace(ERROR, "%s # Requested size %ul is greater than maximum size %ul.",
           fnName, (unsigned long)(size), (unsigned long)(maxSize));
         assert(0);
       }
@@ -181,11 +177,11 @@ namespace Radiant
       {
         if(shmctl(id, IPC_RMID, 0) != -1)
         {
-          trace("%s # Successfully removed existing shared memory area with same key.", fnName);
+          trace(DEBUG, "%s # Successfully removed existing shared memory area with same key.", fnName);
         }
         else
         {
-          error("%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
+          trace(ERROR, "%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
           assert(0);
         }
       }
@@ -199,11 +195,11 @@ namespace Radiant
       if(m_id != -1)
       {
         m_isCreator = true;
-        trace("%s # Successfully created new shared memory area.", fnName);
+        trace(DEBUG, "%s # Successfully created new shared memory area.", fnName);
       }
       else
       {
-        error("%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
+        trace(ERROR, "%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
         assert(0);
       }
     }
@@ -213,11 +209,11 @@ namespace Radiant
       m_id = shmget(m_smKey, 0, smDefaultPermissions);
       if(m_id != -1)
       {
-        trace("%s # Successfully accessed existing shared memory area.", fnName);
+        trace(DEBUG, "%s # Successfully accessed existing shared memory area.", fnName);
       }
       else
       {
-        error("%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
+        trace(ERROR, "%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
         assert(0);
       }
     }
@@ -227,11 +223,11 @@ namespace Radiant
     char * const  smPtr = (char *)(shmat(m_id, 0, 0));
     if(smPtr != (char *)(-1))
     {
-      trace("%s # Successfully obtained pointer to shared memory area.", fnName);
+      trace(DEBUG, "%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else
     {
-      error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
+      trace(ERROR, "%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
       assert(0);
     }
 
@@ -257,8 +253,6 @@ namespace Radiant
   {
     const char * const  fnName = "SMRingBuffer::~SMRingBuffer";
 
-    trace(fnName);
-
     assert(isValid());
 
     // Detach the SMA
@@ -266,11 +260,11 @@ namespace Radiant
     char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
     if(::UnmapViewOfFile(smPtr))
     {
-      trace("%s # Successfully detached shared memory area.", fnName);
+      trace(DEBUG, "%s # Successfully detached shared memory area.", fnName);
     }
     else
     {
-      error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      trace(ERROR, "%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -280,11 +274,11 @@ namespace Radiant
     {
       if(::CloseHandle(m_hMapFile))
       {
-        trace("%s # Successfully destroyed shared memory area.", fnName);
+        trace(DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
       }
       else
       {
-        error("%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        trace(ERROR, "%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       }
     }
   }
@@ -293,8 +287,6 @@ namespace Radiant
   {
     const char * const  fnName = "SMRingBuffer::~SMRingBuffer";
 
-    trace(fnName);
-
     assert(isValid());
 
     // Detach the SMA
@@ -302,11 +294,11 @@ namespace Radiant
     char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
     if(shmdt(smPtr) != -1)
     {
-      trace("%s # Successfully detached shared memory area.", fnName);
+      trace(DEBUG, "%s # Successfully detached shared memory area.", fnName);
     }
     else
     {
-      error("%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
+      trace(ERROR, "%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -316,11 +308,11 @@ namespace Radiant
     {
       if(shmctl(m_id, IPC_RMID, 0) != -1)
       {
-        trace("%s # Successfully destroyed shared memory area.", fnName);
+        trace(DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
       }
       else
       {
-        error("%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
+        trace(ERROR, "%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
       }
     }
   }
@@ -713,7 +705,7 @@ namespace Radiant
     const uint32_t   totalUsd = used();
     if(numBytes > totalUsd)
     {
-      error("SMRingBuffer::discard # Insufficient data.");
+      trace(ERROR, "SMRingBuffer::discard # Insufficient data.");
       return 0;
     }
 
@@ -783,26 +775,26 @@ namespace Radiant
 
   void SMRingBuffer::dump() const
   {
-    trace("m_isCreator = %s", m_isCreator ? "true" : "false");
+    trace(DEBUG, "m_isCreator = %s", m_isCreator ? "true" : "false");
 #ifdef WIN32
-    trace("m_smName = %s", m_smName.c_str());
-    trace("m_hMapFile = %p", m_hMapFile);
+    trace(DEBUG, "m_smName = %s", m_smName.c_str());
+    trace(DEBUG, "m_hMapFile = %p", m_hMapFile);
 #else
-    trace("m_smKey = %ul", (unsigned long)(m_smKey));
-    trace("m_id = %d", m_id);
+    trace(DEBUG, "m_smKey = %ul", (unsigned long)(m_smKey));
+    trace(DEBUG, "m_id = %d", m_id);
 #endif
-    trace("size() = %ul", (unsigned long)(size()));
-    trace("m_startPtr = %p", m_startPtr);
+    trace(DEBUG, "size() = %ul", (unsigned long)(size()));
+    trace(DEBUG, "m_startPtr = %p", m_startPtr);
 
-    trace("writePos() = %ul", (unsigned long)(writePos()));
-    trace("readPos() = %ul", (unsigned long)(readPos()));
-    trace("readWriteState() = %ul", (unsigned long)(readWriteState()));
+    trace(DEBUG, "writePos() = %ul", (unsigned long)(writePos()));
+    trace(DEBUG, "readPos() = %ul", (unsigned long)(readPos()));
+    trace(DEBUG, "readWriteState() = %ul", (unsigned long)(readWriteState()));
 
-    trace("used = %ul", (unsigned long)(used()));
-    trace("available() = %ul", (unsigned long)(available()));
+    trace(DEBUG, "used = %ul", (unsigned long)(used()));
+    trace(DEBUG, "available() = %ul", (unsigned long)(available()));
 
-    trace("isEmpty() = %s", isEmpty() ? "true" : "false");
-    trace("isFull() = %s", isFull() ? "true" : "false");
+    trace(DEBUG, "isEmpty() = %s", isEmpty() ? "true" : "false");
+    trace(DEBUG, "isFull() = %s", isFull() ? "true" : "false");
   }
 
 }

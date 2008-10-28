@@ -105,7 +105,7 @@ namespace Luminous
       Texture2D * tex = Texture2D::fromImage(*img, false, resources());
      
       if(!tex) {
-        error("DynamicTexture::updateGPUMipmaps # failed to create a texture mipmap");
+        trace(ERROR, "DynamicTexture::updateGPUMipmaps # failed to create a texture mipmap");
         return;
       }
  

@@ -41,7 +41,7 @@ namespace Dyslexic
       m_managedFonts[name] = mfont;
 
       if(!mfont->load(name.c_str())) {
-        Radiant::error("FontManager::getFont # failed to load '%s'", name.c_str());
+        Radiant::trace(Radiant::ERROR, "FontManager::getFont # failed to load '%s'", name.c_str());
         return 0;
       }
     } else mfont = it->second;

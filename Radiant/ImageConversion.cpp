@@ -107,7 +107,7 @@ namespace Radiant {
       ok = false;
 
     if(!ok)
-      error("ImageConversion::convert # %s %s",
+      Radiant::trace(ERROR, "ImageConversion::convert # %s %s",
 	    VideoImage::formatName(sourceFmt),
 	    VideoImage::formatName(targetFmt));
 
@@ -176,7 +176,7 @@ namespace Radiant {
   void ImageConversion::YUV411ToRGB
   (const VideoImage *, VideoImage *)
   {
-    fatal("ImageConversion::YUV411ToRGB");
+    Radiant::trace(FATAL, "ImageConversion::YUV411ToRGB");
     /*  long numpixels = (long) width * (long) height;
   
     long i = numpixels + ( numpixels >> 1 ) -1;

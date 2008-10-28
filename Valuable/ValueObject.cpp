@@ -67,28 +67,28 @@ namespace Valuable
   float ValueObject::asFloat(bool * ok) const
   {   
     if(ok) *ok = false;
-    Radiant::error("ValueObject::asFloat # %s : conversion not available", m_name.c_str());
+    Radiant::trace(Radiant::ERROR, "ValueObject::asFloat # %s : conversion not available", m_name.c_str());
     return 0.0f;
   }
 
   int ValueObject::asInt(bool * ok) const
   {
     if(ok) *ok = false;
-    Radiant::error("ValueObject::asInt # %s : conversion not available", m_name.c_str());
+    Radiant::trace(Radiant::ERROR, "ValueObject::asInt # %s : conversion not available", m_name.c_str());
     return 0;
   }
 
   std::string ValueObject::asString(bool * ok) const
   {
     if(ok) *ok = false;
-    Radiant::error("ValueObject::asString # %s : conversion not available", m_name.c_str());
+    Radiant::trace(Radiant::ERROR, "ValueObject::asString # %s : conversion not available", m_name.c_str());
     return "";
   }
 
   DOMElement ValueObject::serializeXML(DOMDocument * doc) 
   {
     if(m_name.empty()) {
-      Radiant::error("ValueObject::serializeXML # attempt to serialize object with no name");
+      Radiant::trace(Radiant::ERROR, "ValueObject::serializeXML # attempt to serialize object with no name");
       return DOMElement(0);
     }
 
@@ -123,31 +123,31 @@ namespace Valuable
 
   bool ValueObject::set(float )
   {
-    Radiant::error("ValueObject::set(float) # conversion not available");
+    Radiant::trace(Radiant::ERROR, "ValueObject::set(float) # conversion not available");
     return false;
   }
 
   bool ValueObject::set(int )
   {
-    Radiant::error("ValueObject::set(int) # conversion not available");
+    Radiant::trace(Radiant::ERROR, "ValueObject::set(int) # conversion not available");
     return false;
   }
 
   bool ValueObject::set(const std::string & )
   {
-    Radiant::error("ValueObject::set(string) # conversion not available");
+    Radiant::trace(Radiant::ERROR, "ValueObject::set(string) # conversion not available");
     return false;
   }
 
   bool ValueObject::set(const Nimble::Vector2f & )
   {
-    Radiant::error("ValueObject::set(Vector2f) # conversion not available");
+    Radiant::trace(Radiant::ERROR, "ValueObject::set(Vector2f) # conversion not available");
     return false;
   }
 
   bool ValueObject::set(const Nimble::Vector4f & )
   {
-    Radiant::error("ValueObject::set(Vector4f) # conversion not available");
+    Radiant::trace(Radiant::ERROR, "ValueObject::set(Vector4f) # conversion not available");
     return false;
   }
 

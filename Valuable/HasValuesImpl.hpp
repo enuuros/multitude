@@ -32,7 +32,7 @@ namespace Valuable
 
     if(next == std::string("..")) {
       if(!m_parent) {
-        Radiant::error("HasValues::setValue # node '%s' has no parent", m_name.c_str());
+        Radiant::trace(Radiant::ERROR, "HasValues::setValue # node '%s' has no parent", m_name.c_str());
         return false;
       }
 
@@ -41,7 +41,7 @@ namespace Valuable
 
     container::iterator it = m_children.find(next);
     if(it == m_children.end()) {
-      Radiant::error("HasValues::setValue # property '%s' not found", next.c_str());
+      Radiant::trace(Radiant::ERROR, "HasValues::setValue # property '%s' not found", next.c_str());
       return false;
     }
   

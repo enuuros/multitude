@@ -62,13 +62,13 @@ namespace Resonant {
     tmp.to   = control->readInt32( & ok);
     
     if(!ok) {
-      Radiant::error("ModuleOutCollect::control # Could not parse control # %s",
+      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # Could not parse control # %s",
                      tmp.sourceId);
       return;
     }
     else if(strcmp(address, "newmapping") == 0) {
       m_map.push_back(tmp);
-      Radiant::trace("ModuleOutCollect::control # newmapping %s %d -> %d",
+      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # newmapping %s %d -> %d",
 		     tmp.sourceId, tmp.from, tmp.to);
     }
     else if(strcmp(address, "removemapping") == 0) {
@@ -78,10 +78,10 @@ namespace Resonant {
       if(it != m_map.end())
 	m_map.erase(it);
       else
-	Radiant::error("ModuleOutCollect::control # Could not erase mapping");
+	Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # Could not erase mapping");
     }
     else {
-      Radiant::error("ModuleOutCollect::control # No param \"%s\"", address);
+      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # No param \"%s\"", address);
     }
   }
 

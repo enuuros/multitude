@@ -201,7 +201,7 @@ namespace Screenplay {
         m_capturedAudio += aframes;
 
         if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-          error("VideoInputFFMPEG::captureImage # Audio trouble %d %d",
+          trace(ERROR, "VideoInputFFMPEG::captureImage # Audio trouble %d %d",
               aframes, m_audioFrames);
         }
         // printf("_"); fflush(0);
@@ -219,15 +219,15 @@ namespace Screenplay {
     if(avcfmt == PIX_FMT_YUV420P) {
       m_image.setFormatYUV420P();
       if(m_debug && m_capturedVideo < 10)
-        trace("%s # PIX_FMT_YUV420P", fname);
+        trace(DEBUG, "%s # PIX_FMT_YUV420P", fname);
     }
     else if(avcfmt == PIX_FMT_YUVJ422P) {  
       m_image.setFormatYUV422P(); 
       if(m_debug && m_capturedVideo < 10)
-        trace("%s # PIX_FMT_YUV422P", fname);
+        trace(DEBUG, "%s # PIX_FMT_YUV422P", fname);
     }
     else {
-      error("%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
+      trace(ERROR, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
     }
 
     m_image.m_width = width();
@@ -243,7 +243,7 @@ namespace Screenplay {
     m_image.m_planes[2].m_linesize = m_frame->linesize[2];
 
     if(!m_image.m_width) {
-      error("Captured image has zero width %d %d %d", 
+      trace(ERROR, "Captured image has zero width %d %d %d", 
           m_image.m_planes[0].m_linesize,
           m_image.m_planes[1].m_linesize,
           m_image.m_planes[2].m_linesize);
@@ -334,7 +334,7 @@ namespace Screenplay {
       r *= (double) (m_capturedVideo - 1) / (double) m_lastPts;
     }
 
-    Radiant::trace("VideoInputFFMPEG::fps # %d %d -> %.2lf",
+    Radiant::trace(DEBUG, "VideoInputFFMPEG::fps # %d %d -> %.2lf",
         time_base.den, time_base.num, r);
 
     return float(r);
@@ -375,7 +375,7 @@ namespace Screenplay {
     int err = av_open_input_file( & m_ic, filename, iformat, 0, ap);
 
     if(err < 0) {
-      error("%s # Could not open file \"%s\" %s", 
+      trace(ERROR, "%s # Could not open file \"%s\" %s", 
           fname, filename, strerror(-err));
       return false;
     }
@@ -398,7 +398,7 @@ namespace Screenplay {
 
         AVRational fr = m_ic->streams[i]->r_frame_rate;
 
-        trace("%s # Got frame rate of %d %d", fname, fr.num, fr.den);
+        trace(DEBUG, "%s # Got frame rate of %d %d", fname, fr.num, fr.den);
 
         /* if(m_vcodec->supported_framerates) {
            for(int k = 0; m_vcodec->supported_framerates[k].num != 0; k++) {
@@ -449,16 +449,16 @@ namespace Screenplay {
     m_lastSeek = 0;
 
     if(!vcname) {
-      error("%s # File %s has unsupported video codec.", fname, filename);
+      trace(ERROR, "%s # File %s has unsupported video codec.", fname, filename);
       return false;
     }
 
     if(!acname) {
-      error("%s # File %s has unsupported audio codec.", fname, filename);
+      trace(ERROR, "%s # File %s has unsupported audio codec.", fname, filename);
       return false;
     }
 
-    trace("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
+    trace(DEBUG, "%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;
   }
@@ -514,7 +514,7 @@ namespace Screenplay {
         av_seek_frame(m_ic, -1, (int64_t) (timeSeconds * AV_TIME_BASE), 0);
 
       if(err != 0) {
-        error("VideoInputFFMPEG::seekPosition # Seek failed (%lf)",
+        trace(ERROR, "VideoInputFFMPEG::seekPosition # Seek failed (%lf)",
             timeSeconds);
         return false;
       }

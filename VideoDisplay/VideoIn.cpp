@@ -21,9 +21,6 @@
 
 namespace VideoDisplay {
 
-  using Radiant::error;
-  using Radiant::trace;
-
   int VideoIn::m_debug = 0;
 
   VideoIn::VideoIn()
@@ -86,7 +83,7 @@ namespace VideoDisplay {
     // m_fps = fps();
 
     if(!ok) {
-      error("VideoIn::startDecoding # Could not open file \"%s\"", filename);
+      Radiant::trace(Radiant::ERROR, "VideoIn::startDecoding # Could not open file \"%s\"", filename);
       return false;
     }
 
@@ -110,7 +107,7 @@ namespace VideoDisplay {
     bool ok = waitEnd();
 
     if(!ok) {
-      error("VideoIn::stopDecoding # Failed to stop");
+      Radiant::trace(Radiant::ERROR, "VideoIn::stopDecoding # Failed to stop");
       kill();
       waitEnd();
     }
@@ -135,7 +132,7 @@ namespace VideoDisplay {
       n = untilWrap;
 
     if(m_debug)
-      trace("VideoIn::getAudio # n = %u dec = %u cons = %u cont = %d", 
+      Radiant::trace(Radiant::DEBUG, "VideoIn::getAudio # n = %u dec = %u cons = %u cont = %d", 
             n, m_decodedAuFrames, m_consumedAuFrames, (int) m_continue);
     m_amutex.lock();
 
@@ -157,7 +154,7 @@ namespace VideoDisplay {
 
     // assert(m_consumedAuFrames <= m_decodedAuFrames);
     if(m_consumedAuFrames > m_decodedAuFrames) {
-      trace("VideoIn::getAudio # Dangerous times, I guess you were seeking");
+      Radiant::trace(Radiant::DEBUG, "VideoIn::getAudio # Dangerous times, I guess you were seeking");
       m_consumedAuFrames -= n;
       * frames = 0;
       return 0;
@@ -226,7 +223,7 @@ namespace VideoDisplay {
   {
 
     if(m_debug)
-      trace("VideoIn::putFrame # %u %u", m_decodedFrames, m_consumedFrames);
+      Radiant::trace(Radiant::DEBUG, "VideoIn::putFrame # %u %u", m_decodedFrames, m_consumedFrames);
 
     assert(m_frames.size() != 0);
 
@@ -248,7 +245,7 @@ namespace VideoDisplay {
     bool ok = f.m_image.copyData(*im);
 
     if(!ok)
-      error("VideoIn::putFrame # Radiant::Image::copyData failed");
+      Radiant::trace(Radiant::ERROR, "VideoIn::putFrame # Radiant::Image::copyData failed");
 
     m_decodedFrames++;
 
@@ -272,7 +269,7 @@ namespace VideoDisplay {
   void VideoIn::putAudio(const void * audio_data, int audio_frames)
   {
     if(m_debug)
-      trace("VideoIn::putAudio # n = %d dec = %u cons = %u cont = %d", 
+      Radiant::trace(Radiant::DEBUG, "VideoIn::putAudio # n = %d dec = %u cons = %u cont = %d", 
 	    audio_frames, m_decodedAuFrames, m_consumedAuFrames,
 	    (int) m_continue);
 

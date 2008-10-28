@@ -148,8 +148,6 @@ namespace Luminous
     }
     else if(source.pixelFormat() == PixelFormat::rgbaUByte()) {
 
-      trace("SCALING RGBA");
-
       allocate(w, h, source.pixelFormat());
 
       int sw = source.width();
@@ -327,8 +325,6 @@ namespace Luminous
     }
     else if(source.pixelFormat() == PixelFormat::rgbaUByte()) {
 
-      trace("QUARTER RGBA");
-
       allocate(w, h, source.pixelFormat());
 
       const uint8_t * const src = source.bytes();
@@ -486,7 +482,7 @@ namespace Luminous
           ret = readTGA(file);
           break;
         default:
-          error("Image::read # unknown image format in '%s'", filename);
+          trace(ERROR, "Image::read # unknown image format in '%s'", filename);
           break;
       }
 
@@ -504,7 +500,7 @@ namespace Luminous
 
     FILE* file = fopen(filename, "wb");
     if(!file) {
-      error("Image::write # failed to open file '%s'", filename);
+      trace(ERROR, "Image::write # failed to open file '%s'", filename);
     } else {
 
       switch(type) {
@@ -515,7 +511,7 @@ namespace Luminous
           ret = writeJPG(file);
           break;
         default:
-          error("Image::write # unknown file format");
+          trace(ERROR, "Image::write # unknown file format");
           break;
       }
 
@@ -643,11 +639,9 @@ namespace Luminous
   }
 
   bool Image::ping(const char * filename, ImageInfo & info) {
-	  Radiant::trace("TRYING TO OPEN %s", filename);
-
 	  FILE * file = fopen(filename, "r");
 	  if(!file) {
-		  Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
+		  Radiant::trace(Radiant::ERROR, "Image::ping # failed to open file '%s' for reading.", filename);
 		  return false;
 	  }
 
@@ -669,7 +663,7 @@ namespace Luminous
 			  goto exitping;
 			  break;
 		  default:
-			  Radiant::error("Image::ping # '%s' has unsupported image type.", filename);
+			  Radiant::trace(Radiant::ERROR, "Image::ping # '%s' has unsupported image type.", filename);
 			  break;
 	  };
 

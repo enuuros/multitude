@@ -23,15 +23,21 @@
 
 namespace Radiant {
   
-  /* Global functions for output to console/file. */
+  enum Severity
+  {
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL    
+  };
 
-  extern RADIANT_API void setAppName(const char *name);
+  /// Display useful output.
+  RADIANT_API void trace(Severity s, const char * msg, ...);
 
-  extern RADIANT_API void trace(const char *msg, ...);
-
-  extern RADIANT_API void error(const char *msg, ...);
-
-  extern RADIANT_API void fatal(const char *msg, ...);
+  /// Toggle verbose output. If enabled, messages sent with the Trace function
+  /// are displayed to the user. Otherwise they are ignored. @sa Trace
+  extern RADIANT_API void enableVerboseOutput(bool enable);
 
 }
 

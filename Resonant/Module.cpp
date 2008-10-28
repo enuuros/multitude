@@ -51,7 +51,7 @@ namespace Resonant {
       int len = strlen(id);
 
       if(len >= MAX_ID_LENGTH) {
-	Radiant::error("Module::setId # Too long id, %d bytes", len);
+        Radiant::trace(Radiant::ERROR, "Module::setId # Too long id, %d bytes", len);
       }
       else
 	memcpy(m_id, id, len + 1);

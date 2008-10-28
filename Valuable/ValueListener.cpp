@@ -37,7 +37,7 @@ namespace Valuable
       m_listening.erase(it);
     }
     else {
-      Radiant::error("ValueListener::removeObject # Object %p not found", obj);
+      Radiant::trace(Radiant::ERROR, "ValueListener::removeObject # Object %p not found", obj);
     }
   }
 

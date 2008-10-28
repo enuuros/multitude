@@ -29,7 +29,7 @@ namespace Dyslexic
   {
     int error = FT_Render_Glyph(glyph, FT_RENDER_MODE_NORMAL);
     if(error || glyph->format != ft_glyph_format_bitmap) {
-      Radiant::error("CPUBitmapGlyph::CPUBitmapGlyph # failed to render glyph");
+      Radiant::trace(Radiant::ERROR, "CPUBitmapGlyph::CPUBitmapGlyph # failed to render glyph");
       return;
     }
 
@@ -55,7 +55,7 @@ namespace Dyslexic
 
   Nimble::Vector2 CPUBitmapGlyph::render(Nimble::Vector2 pen, const Nimble::Matrix3 & )
   {
-    Radiant::error("CPUBitmapGlyph::render # not implemented");
+    Radiant::trace(Radiant::ERROR, "CPUBitmapGlyph::render # not implemented");
 
     return m_advance + pen;
   }

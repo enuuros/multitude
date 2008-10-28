@@ -158,7 +158,7 @@ namespace Valuable
   DOMElement ValueStringT<std::wstring>::serializeXML(DOMDocument * doc)
   {
     if(m_name.empty()) {
-      Radiant::error("ValueWString::serializeXML # attempt to serialize object with no name");
+      Radiant::trace(Radiant::ERROR, "ValueWString::serializeXML # attempt to serialize object with no name");
       return DOMElement(0);
     }
 

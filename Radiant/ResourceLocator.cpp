@@ -67,8 +67,7 @@ namespace Radiant
     std::string r = FileUtils::findFile(file, m_paths);
 
     if(r.empty()) 
-      Radiant::trace("ResourceLocator::locate # couldn't locate %s", file.c_str());
-//    trace("ResourceLocator::locate # using %s", r.c_str());
+      Radiant::trace(WARNING, "ResourceLocator::locate # couldn't locate %s", file.c_str());
 
     return r;
   }

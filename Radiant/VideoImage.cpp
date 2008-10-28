@@ -62,7 +62,7 @@ namespace Radiant {
         ls = w * 4;
       }
       else
-        fatal("VideoImage::allocateMemory");
+        trace(FATAL, "VideoImage::allocateMemory");
 
       unsigned char * buf = (unsigned char *) malloc(ls * h);
 
@@ -205,7 +205,7 @@ namespace Radiant {
           memset(m_planes[2].m_data, 0, m_planes[2].m_linesize * m_height);
           break;
       default:
-        Radiant::error("VideoImage::zero # unsupported format");
+        Radiant::trace(ERROR, "VideoImage::zero # unsupported format");
         break;
     };
   }

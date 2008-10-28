@@ -48,7 +48,7 @@ namespace Luminous
       eraseResource((*m_resources.begin()).first);
 
     if(m_consumingBytes != 0)
-      Radiant::error("GLResources::~GLResources # The GPU memory is left at %ld -> "
+      Radiant::trace(Radiant::ERROR, "GLResources::~GLResources # The GPU memory is left at %ld -> "
                      "there is a bug in your application.",
                      m_consumingBytes);
   }
@@ -68,8 +68,7 @@ namespace Luminous
     iterator it = m_resources.find(key);
 
     if(it != m_resources.end()) {
-      Radiant::error
-        ("GLResources::addResource # There already is a resource for %p", key);
+      Radiant::trace(Radiant::ERROR, "GLResources::addResource # There already is a resource for %p", key);
       eraseResource(key);
     }
 
@@ -84,8 +83,7 @@ namespace Luminous
     iterator it = m_resources.find(key);
 
     if(it == m_resources.end()) {
-      Radiant::error
-        ("GLResources::eraseResource # No resource for %p", key);
+      Radiant::trace(Radiant::ERROR, "GLResources::eraseResource # No resource for %p", key);
       return false;
     }
 
