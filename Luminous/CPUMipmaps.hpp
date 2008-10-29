@@ -219,6 +219,8 @@ namespace Luminous {
     uint32_t         m_fileMask;
     bool             m_hasAlpha;
     Radiant::TimeStamp m_startedLoading;
+
+    Luminous::ImageInfo m_info;
   };
 
 

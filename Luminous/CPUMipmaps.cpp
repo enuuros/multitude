@@ -81,7 +81,7 @@ namespace Luminous {
       assert(m_dest->m_state != FINISHED);
 
       if(!ok) {
-        trace(ERROR, "Loading failed for %s", m_file.c_str());
+        error("Loading failed for %s", m_file.c_str());
         m_dest->m_state = FAILED;
 	delete image;
       }
@@ -137,7 +137,7 @@ namespace Luminous {
       }
 
       if(m_source->m_state == FAILED) {
-        trace(ERROR, "CPUMipmaps::Scaler::doTask # Source has failed , aborting");
+        error("CPUMipmaps::Scaler::doTask # Source has failed , aborting");
         m_dest->m_state = FAILED;
         m_source->m_scalerOut = 0;
         m_dest->m_scaler = 0;
@@ -151,7 +151,7 @@ namespace Luminous {
       }
 
       if(!m_source->m_image.ptr()) {
-        trace(ERROR, "CPUMipmaps::Scaler::doTask # Source has no image!");
+        error("CPUMipmaps::Scaler::doTask # Source has no image!");
         m_state = DONE;
         return;
       }
@@ -212,9 +212,9 @@ namespace Luminous {
 	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_JPG);
 
       if(ok)
-        trace(DEBUG, "CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
+	debug("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
       else
-        trace(ERROR, "CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
+        error("CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
     }
 
     Guard g(generalMutex());
@@ -424,7 +424,7 @@ namespace Luminous {
 
   bool CPUMipmaps::startLoading(const char * filename, bool immediate)
   {
-    Radiant::trace(DEBUG, "CPUMipmaps::startLoading # DEBUG %s, %d", filename, immediate);
+    debug("CPUMipmaps::startLoading # %s, %d", filename, immediate);
     m_startedLoading = Radiant::TimeStamp::getTime();
 
     m_filename = filename;
@@ -433,13 +433,14 @@ namespace Luminous {
       m_stack[i].clear();
     }
 
-	Luminous::ImageInfo info;
-	if(!Luminous::Image::ping(filename, info)) {
-		Radiant::trace(ERROR, "CPUMipmaps::startLoading # failed to query image size");
-		return false;
-	}
+    m_info = Luminous::ImageInfo();
 
-  m_nativeSize.make(info.width, info.height);
+    if(!Luminous::Image::ping(filename, m_info)) {
+      error("CPUMipmaps::startLoading # failed to query image size");
+      return false;
+    }
+
+    m_nativeSize.make(m_info.width, m_info.height);
 
     if(!m_nativeSize.minimum())
       return false;
@@ -680,6 +681,21 @@ namespace Luminous {
     name = Radiant::FileUtils::path(m_filename);
     name += buf;
     name += Radiant::FileUtils::baseFilename(m_filename);
+    
+    // Put in the right suffix
+
+    unsigned i = name.size() - 1;
+
+    while(i && name[i] != '.' && name[i] != '/')
+      i--;
+
+    name.erase(i + 1);
+
+    if(m_info.pf.layout() == PixelFormat::LAYOUT_RGB ||
+       m_info.pf.layout() == PixelFormat::LAYOUT_LUMINANCE)
+      name += "jpg";
+    else // if(m_info.pf.layout() == PixelFormat::LAYOUT_RGBA)
+      name += "png";
   }
 
 }
