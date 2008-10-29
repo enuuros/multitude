@@ -43,6 +43,11 @@ namespace Radiant {
       effectively the same as calling trace(ERROR, ...). */
   RADIANT_API void error(const char * msg, ...);
 
+  /// Display error output, with a fatal message
+  /** This function calls trace to do the final work and it is
+      effectively the same as calling trace(FATAL, ...). */
+  RADIANT_API void fatal(const char * msg, ...);
+
   /// Toggle verbose output. If enabled, messages sent with the Trace function
   /// are displayed to the user. Otherwise they are ignored. @sa Trace
   extern RADIANT_API void enableVerboseOutput(bool enable);

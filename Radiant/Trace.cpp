@@ -25,7 +25,7 @@
 
 namespace Radiant {
 
-  static Radiant::MutexAuto g_mutex;
+  static Radiant::MutexStatic g_mutex;
 
   static bool g_enableVerboseOutput = false;
 
@@ -42,13 +42,20 @@ namespace Radiant {
     g_enableVerboseOutput = enable;
   }
 
+  static void __output(Severity s, const char * msg)
+  {
+    FILE * out = (s > WARNING) ? stdout : stderr;
+
+    g_mutex.lock();
+    fprintf(out, "%s%s\n", prefixes[s], msg);
+    fflush(out);
+    g_mutex.unlock();
+  }
+
   void trace(Severity s, const char * msg, ...)
   {
     if(g_enableVerboseOutput || s > DEBUG) {
 
-      FILE * out = (s > WARNING) ? stdout : stderr;
-
-      g_mutex.lock();
 
       char buf[4096];
       va_list args;
@@ -57,15 +64,15 @@ namespace Radiant {
       vsnprintf(buf, 4096, msg, args);
       va_end(args);
 
-      fprintf(out, "%s%s\n", prefixes[s], buf);
-      fflush(out);
-
-      g_mutex.unlock();
+      __output(s, buf);
     }
   }
 
  void debug(const char * msg, ...)
   {
+    if(!g_enableVerboseOutput)
+      return;
+
     char buf[4096];
     va_list args;
     
@@ -73,7 +80,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    trace(DEBUG, buf);
+    __output(DEBUG, buf);
   }
 
   void error(const char * msg, ...)
@@ -85,7 +92,21 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    trace(ERROR, buf);
+    __output(ERROR, buf);
+  }
+
+  void fatal(const char * msg, ...)
+  {
+    char buf[4096];
+    va_list args;
+    
+    va_start(args, msg);
+    vsnprintf(buf, 4096, msg, args);
+    va_end(args);
+    
+    __output(FATAL, buf);
+
+    exit(0);
   }
 
 }
