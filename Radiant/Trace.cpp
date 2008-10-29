@@ -65,6 +65,13 @@ namespace Radiant {
       va_end(args);
 
       __output(s, buf);
+
+      if(s >= FATAL) {
+	exit(0);
+	// Sometimes "exit" is not enough, this is guaranteed to work
+	int * bad = 0;
+	*bad = 123456;
+      }
     }
   }
 
@@ -106,7 +113,6 @@ namespace Radiant {
     
     __output(FATAL, buf);
 
-    exit(0);
   }
 
 }
