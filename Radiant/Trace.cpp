@@ -113,6 +113,7 @@ namespace Radiant {
     
     __output(FATAL, buf);
 
+    exit(EXIT_FAILURE);
   }
 
 }
