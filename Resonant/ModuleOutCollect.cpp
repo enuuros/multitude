@@ -28,6 +28,8 @@
 
 namespace Resonant {
 
+  using Radiant::error;
+  
   ModuleOutCollect::ModuleOutCollect(Application * a , DSPNetwork * host)
     : Module(a),
       m_host(host)
@@ -60,28 +62,31 @@ namespace Resonant {
     ok = control->readString(tmp.sourceId, Module::MAX_ID_LENGTH);
     tmp.from = control->readInt32( & ok);
     tmp.to   = control->readInt32( & ok);
+
+    Radiant::debug("ModuleOutCollect::control # %s", address);
     
     if(!ok) {
-      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # Could not parse control # %s",
+     error("ModuleOutCollect::control # Could not parse control # %s",
                      tmp.sourceId);
       return;
     }
     else if(strcmp(address, "newmapping") == 0) {
       m_map.push_back(tmp);
-      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # newmapping %s %d -> %d",
+     error("ModuleOutCollect::control # newmapping %s %d -> %d",
 		     tmp.sourceId, tmp.from, tmp.to);
     }
     else if(strcmp(address, "removemapping") == 0) {
       std::vector<Move>::iterator it =
 	std::find(m_map.begin(), m_map.end(), tmp);
 
-      if(it != m_map.end())
+      if(it != m_map.end()) {
 	m_map.erase(it);
+      }
       else
-	Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # Could not erase mapping");
+	error("ModuleOutCollect::control # Could not erase mapping");
     }
     else {
-      Radiant::trace(Radiant::ERROR, "ModuleOutCollect::control # No param \"%s\"", address);
+     error("ModuleOutCollect::control # No param \"%s\"", address);
     }
   }
 

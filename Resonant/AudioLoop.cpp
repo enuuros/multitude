@@ -28,6 +28,8 @@
 
 namespace Resonant {
 
+  using Radiant::error;
+
   AudioLoop::AudioLoop()
     : m_stream(0),
       m_streamInfo(0),
@@ -56,7 +58,7 @@ namespace Resonant {
 
     PaError e = Pa_Initialize();
     if(e != paNoError) {
-      Radiant::trace(Radiant::ERROR, "AudioLoop::init # %s", Pa_GetErrorText(e));
+     error("AudioLoop::init # %s", Pa_GetErrorText(e));
       return false;
     }
     return true;
@@ -66,7 +68,7 @@ namespace Resonant {
   {
     PaError e = Pa_Terminate();
     if(e != paNoError) {
-      Radiant::trace(Radiant::ERROR, "AudioLoop::cleanup # %s", Pa_GetErrorText(e));
+     error("AudioLoop::cleanup # %s", Pa_GetErrorText(e));
       return false;
     }
     return true;
@@ -86,7 +88,7 @@ namespace Resonant {
 
     m_outParams.device = Pa_GetDefaultOutputDevice();
     if(m_outParams.device == paNoDevice) {
-      Radiant::trace(Radiant::ERROR, "AudioLoop::startReadWrite # No default output device available");
+     error("AudioLoop::startReadWrite # No default output device available");
       return false;
     }
 
@@ -110,7 +112,7 @@ namespace Resonant {
 			this );
 
     if( err != paNoError ) {
-      Radiant::trace(Radiant::ERROR, "AudioLoop::startReadWrite # Pa_OpenStream failed");
+     error("AudioLoop::startReadWrite # Pa_OpenStream failed");
       return false;
     }
     
@@ -121,7 +123,7 @@ namespace Resonant {
     err = Pa_StartStream(m_stream);
     
     if( err != paNoError ) {
-      Radiant::trace(Radiant::ERROR, "AudioLoop::startReadWrite # Pa_StartStream failed");
+     error("AudioLoop::startReadWrite # Pa_StartStream failed");
       return false;
     }
 
@@ -129,7 +131,7 @@ namespace Resonant {
 
     m_isRunning = true;
 
-    Radiant::trace(Radiant::ERROR, "AudioLoop::startReadWrite # lt = %lf, EXIT OK", m_streamInfo->outputLatency);
+   error("AudioLoop::startReadWrite # lt = %lf, EXIT OK", m_streamInfo->outputLatency);
 
     return true;
   }
