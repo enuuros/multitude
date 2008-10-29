@@ -624,6 +624,21 @@ namespace Radiant {
       return false;
     }
 
+    uint32_t maxw = 0;
+    uint32_t maxh = 0;
+    
+    err = dc1394_format7_get_max_image_size
+      (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & maxw, & maxh);
+
+    debug("%s # fps = %f", fname, fps);
+    debug("%s # Maximum image size = %d x %d", fname, (int) maxw, (int) maxh);
+
+    if(roi.high().x > (int) maxw)
+      roi.high().x = maxw;
+
+    if(roi.high().y > (int) maxh)
+      roi.high().y = maxh;
+
     err = dc1394_format7_get_packet_parameters
       (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & minbytes, & maxbytes);
 
@@ -655,7 +670,8 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     int packetSize = 2.01 * (roi.area() * 8 + denom - 1) / denom;
 
     if(packetSize > (int) maxbytes) {
-      trace(DEBUG, "%s # Limiting packet size to %u", maxbytes);
+      
+      debug("%s # Limiting packet size to %u", fname, maxbytes);
       packetSize = maxbytes;
     }
 
@@ -684,6 +700,8 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     m_image.m_width  = roi.width();
     m_image.m_height = roi.height();
 
+    debug("%s # initialized format-7 mode with resolution %d x %d",
+	  fname, m_image.m_width, m_image.m_height);
 
     m_initialized = true;
 
@@ -1006,6 +1024,9 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
     m_camera = __infos[m_cameraNum];
 
+    debug("%s # Initializing camera %s \"%s\"",
+	  fname, m_camera->vendor, m_camera->model);
+
     /* int isochan = m_cameraNum + 2;
        if(dc1394_video_specify_iso_channel(m_camera, isochan) !=DC1394_SUCCESS){
        error(ERR_UNKNOWN, "%s # unable to set ISO channel to %d", 
@@ -1019,12 +1040,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
           fname, m_cameraNum);
     }
 
-#ifdef __linux__
-    // controlled with environment variable:
     bool try1394b = true;
-#else
-    bool try1394b = true;
-#endif
 
     if(getenv("NO_FW800") != 0)
       try1394b = false;
@@ -1032,7 +1048,16 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     if(!m_camera->bmode_capable)
       try1394b = false;
 
-    trace(DEBUG, "%s # Try %s FW800", fname, try1394b ? "with" : "without");
+    if(strstr(m_camera->model, "Firefly") &&
+       strstr(m_camera->vendor, "Point Grey")) {
+      /* PTGrey Firefly is a popular camera, but it apparently reports
+	 itself as FW800 camera... */
+      
+      debug("PTGrey Firefly camera detected, going for FW400");
+      try1394b = false;
+    }
+
+    debug("%s # Try %s FW800", fname, try1394b ? "with" : "without");
 
     if(try1394b) {
       bool is1394b = false;

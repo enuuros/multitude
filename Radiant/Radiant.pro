@@ -85,6 +85,8 @@ linux-*:LIBS += -lboost_filesystem
 macx:LIBS += -framework,CoreFoundation
 PKGCONFIG += libdc1394-2
 
+CONFIG += debug
+
 include(../library.pri)
 
 win32 {

@@ -91,7 +91,7 @@ namespace Radiant
     // Try to open the directory
     DIR * dir = opendir(m_path.c_str());
     if(!dir) {
-      trace("Directory::openDir # failed to open '%s'", m_path.c_str());
+      error("Directory::openDir # failed to open '%s'", m_path.c_str());
       return;
     }
 

@@ -64,4 +64,28 @@ namespace Radiant {
     }
   }
 
+ void debug(const char * msg, ...)
+  {
+    char buf[4096];
+    va_list args;
+    
+    va_start(args, msg);
+    vsnprintf(buf, 4096, msg, args);
+    va_end(args);
+
+    trace(DEBUG, buf);
+  }
+
+  void error(const char * msg, ...)
+  {
+    char buf[4096];
+    va_list args;
+    
+    va_start(args, msg);
+    vsnprintf(buf, 4096, msg, args);
+    va_end(args);
+
+    trace(ERROR, buf);
+  }
+
 }

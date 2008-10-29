@@ -119,7 +119,7 @@ namespace FireView {
     else {
 
 #ifndef WIN32
-      ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 640, 480), m_customFps);
+      ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 2000, 1500), m_customFps);
 #else
       error("Format 7 not yet supported under Windows.");
       ok = false;

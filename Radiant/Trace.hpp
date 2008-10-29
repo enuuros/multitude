@@ -34,6 +34,14 @@ namespace Radiant {
 
   /// Display useful output.
   RADIANT_API void trace(Severity s, const char * msg, ...);
+  /// Display debug output
+  /** This function calls trace to do the final work and it is
+      effectively the same as calling trace(DEBUG, ...). */
+  RADIANT_API void debug(const char * msg, ...);
+  /// Display error output
+  /** This function calls trace to do the final work and it is
+      effectively the same as calling trace(ERROR, ...). */
+  RADIANT_API void error(const char * msg, ...);
 
   /// Toggle verbose output. If enabled, messages sent with the Trace function
   /// are displayed to the user. Otherwise they are ignored. @sa Trace
