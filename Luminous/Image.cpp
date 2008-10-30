@@ -652,23 +652,20 @@ namespace Luminous
 	  switch(type) {
 		  case Image::IMAGE_TYPE_JPG:
 			  ok = readJPGHeader(file, info);
-			  goto exitping;
 			  break;
 		  case Image::IMAGE_TYPE_PNG:
 			  ok = readPNGHeader(file, info);
-			  goto exitping;
 			  break;
 		  case Image::IMAGE_TYPE_TGA:
 			  ok = readTGAHeader(file, info);
-			  goto exitping;
 			  break;
 		  default:
 			  Radiant::trace(Radiant::ERROR, "Image::ping # '%s' has unsupported image type.", filename);
 			  break;
 	  };
 
-exitping:;
 	  fclose(file);
+
 	  return ok;
   }
 
