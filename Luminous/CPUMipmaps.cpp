@@ -473,8 +473,8 @@ namespace Luminous {
       }
     }
 
-    if(!immediate) {
-      // Now load the base image and create the mipmaps.
+    if(immediate) {
+      // Now start loading the base image and create the mipmaps.
       for(i = lowestLevel(); i <= (unsigned) m_maxLevel; i++) 
 	createLevelScalers(i);
     }
