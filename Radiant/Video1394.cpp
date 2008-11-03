@@ -1078,12 +1078,14 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
                 fname);
           }
         }
+	else
+	  dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400);
       }
-    }
-    else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
-        != DC1394_SUCCESS) {
-      trace(FATAL, "%s # dc1394_video_set_iso_speed failed",
-          fname);
+      else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
+	      != DC1394_SUCCESS) {
+	error("%s # dc1394_video_set_iso_speed failed", fname);
+	return false;
+      }
     }
 
     if (dc1394_video_get_iso_speed(m_camera, &m_speed) != DC1394_SUCCESS) {

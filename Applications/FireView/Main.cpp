@@ -16,6 +16,7 @@
 #include "CamView.hpp"
 #include "MainWindow.hpp"
 
+#include <Radiant/Trace.hpp>
 #include <Radiant/Video1394.hpp>
 
 #include <QtGui/QApplication>
@@ -89,6 +90,7 @@ int main(int argc, char ** argv)
     }
     else if(strcmp(arg, "--verbose") == 0) {
       FireView::CamView::setVerbose(true);
+      Radiant::enableVerboseOutput(true);
     }
     else {
       printf("%s Could not handle argument %s\n", argv[0], arg);
