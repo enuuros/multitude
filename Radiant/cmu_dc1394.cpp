@@ -18,13 +18,12 @@
 #include <dc1394/control.h>
 #include <math.h>
 #define _INC_STDLIB			// __restrict
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <1394Camera.h>
 #include "cmu_dc1394.hpp"
 
-#ifdef WIN32
 #include <WinPort.h>
-#endif
 
 
 // ----------------------------------------------------------------------------

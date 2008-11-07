@@ -82,7 +82,7 @@ namespace VideoDisplay {
     fragShader->setSource(shadersource);
     if(!fragShader->compile()) {
 
-      trace(ERROR, "ShowGL::YUVProgram::init # compile: %s",
+		Radiant::error("ShowGL::YUVProgram::init # compile: %s",
           fragShader->compilerLog());
       return false;
     }
@@ -117,7 +117,7 @@ namespace VideoDisplay {
   bool ShowGL::YUVProgram::link()
   {
     if(!Luminous::GLSLProgramObject::link()) {
-      trace(ERROR, "ShowGL::YUVProgram::link # %s", linkerLog());
+		Radiant::error("ShowGL::YUVProgram::link # %s", linkerLog());
       return false;
     }
 
@@ -343,7 +343,7 @@ namespace VideoDisplay {
     bool ok = ffmpg->startDecoding(filename, pos);
 
     if(!ok) {
-      trace(ERROR, "VideoWindow::open # Could not open %s", filename);
+		Radiant::error("VideoWindow::open # Could not open %s", filename);
       delete ffmpg;
       return false;
     }
@@ -547,7 +547,7 @@ namespace VideoDisplay {
     const SubTitles::Text * sub = m_subTitles.current();
 
     if(!subtitleFont && sub) {
-      trace(ERROR, "ShowGL::render # Missing the subtitle font");
+		Radiant::error("ShowGL::render # Missing the subtitle font");
     }
 
     if(subtitleFont && sub) {

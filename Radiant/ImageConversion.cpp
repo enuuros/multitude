@@ -107,7 +107,7 @@ namespace Radiant {
       ok = false;
 
     if(!ok)
-      Radiant::trace(ERROR, "ImageConversion::convert # %s %s",
+      Radiant::error("ImageConversion::convert # %s %s",
 	    VideoImage::formatName(sourceFmt),
 	    VideoImage::formatName(targetFmt));
 

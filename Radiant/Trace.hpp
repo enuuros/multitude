@@ -28,7 +28,7 @@ namespace Radiant {
     DEBUG,
     INFO,
     WARNING,
-    ERROR,
+    FAILURE,
     FATAL    
   };
 
@@ -50,7 +50,7 @@ namespace Radiant {
 
   /// Toggle verbose output. If enabled, messages sent with the Trace function
   /// are displayed to the user. Otherwise they are ignored. @sa Trace
-  extern RADIANT_API void enableVerboseOutput(bool enable);
+  RADIANT_API void enableVerboseOutput(bool enable);
 
 }
 

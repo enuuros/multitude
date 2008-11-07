@@ -24,7 +24,7 @@ namespace Valuable
   ChangeMap::ChangeMap()
   {
     if(instance) {
-      Radiant::trace(Radiant::ERROR, "ChangeMap::ChangeMap # instance already exists, replacing it.");
+      Radiant::trace(Radiant::FAILURE, "ChangeMap::ChangeMap # instance already exists, replacing it.");
     } 
 
     instance = this;

@@ -131,7 +131,7 @@ namespace Resonant {
       m_doneCount++;
     }
     else
-      trace(ERROR, "DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
+      error("DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
   }
 
   void DSPNetwork::send(ControlData & control)
@@ -211,7 +211,7 @@ namespace Resonant {
       buf[0] = 0;
 
       if(!m_incopy.readString(buf, 512)) {
-        trace(ERROR, "DSPNetwork::checkNewControl # Could not read string");
+        error("DSPNetwork::checkNewControl # Could not read string");
         continue;
       }
 
@@ -252,7 +252,7 @@ namespace Resonant {
 
 
       if(!compile(*itptr, 0)) {
-        trace(ERROR, "DSPNetwork::checkNewItems # Could not add module %s", type);
+        error("DSPNetwork::checkNewItems # Could not add module %s", type);
         m_items.pop_front();
       }
       else {
@@ -338,7 +338,7 @@ namespace Resonant {
         return;
       }
     } 
-    trace(ERROR, "DSPNetwork::deliverControl # No module \"%s\"", moduleid);
+    error("DSPNetwork::deliverControl # No module \"%s\"", moduleid);
   }
 
 
@@ -390,7 +390,7 @@ namespace Resonant {
       i++;
     }
 
-    Radiant::trace(ERROR, "DSPNetwork::compile # Failed to find something to compile");
+    Radiant::error("DSPNetwork::compile # Failed to find something to compile");
 
     return false;
   }

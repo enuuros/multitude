@@ -53,7 +53,7 @@ namespace Valuable
 
     // Check children
     if(m_children.find(cname) != m_children.end()) {
-      Radiant::trace(Radiant::ERROR, "HasValues::addValue # can not add child '%s' as '%s' "
+      Radiant::trace(Radiant::FAILURE, "HasValues::addValue # can not add child '%s' as '%s' "
                      "already has a child with the same name.",
                      cname.c_str(), m_name.c_str());
       return false;
@@ -62,7 +62,7 @@ namespace Valuable
     // Unlink parent if necessary
     HasValues * parent = value->parent();
     if(parent) {
-      Radiant::trace(Radiant::ERROR, "HasValues::addValue # '%s' already has a parent '%s'. "
+      Radiant::trace(Radiant::FAILURE, "HasValues::addValue # '%s' already has a parent '%s'. "
                      "Unlinking it to set new parent.",
                      cname.c_str(), parent->name().c_str());
       value->removeParent();  
@@ -83,7 +83,7 @@ namespace Valuable
   
     container::iterator it = m_children.find(cname);
     if(it == m_children.end()) {
-      Radiant::trace(Radiant::ERROR, "HasValues::removeValue # '%s' is not a child of '%s'.", 
+      Radiant::trace(Radiant::FAILURE, "HasValues::removeValue # '%s' is not a child of '%s'.", 
                      cname.c_str(), m_name.c_str());
       return;
     }
@@ -97,7 +97,7 @@ namespace Valuable
     Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
     DOMElement e = serializeXML(doc.ptr());
     if(e.null()) {
-      Radiant::trace(Radiant::ERROR, "HasValues::saveToFileXML # object failed to serialize");
+      Radiant::trace(Radiant::FAILURE, "HasValues::saveToFileXML # object failed to serialize");
       return false;
     }
 
@@ -194,13 +194,13 @@ namespace Valuable
   DOMElement HasValues::serializeXML(DOMDocument * doc)
   {
     if(m_name.empty()) {
-      Radiant::trace(Radiant::ERROR, "HasValues::serializeXML # attempt to serialize object with no name");
+      Radiant::trace(Radiant::FAILURE, "HasValues::serializeXML # attempt to serialize object with no name");
       return DOMElement(0);
     }
 
     DOMElement elem = doc->createElement(m_name.c_str());
     if(elem.null()) {
-      Radiant::trace(Radiant::ERROR, "HasValues::serializeXML # failed to create XML element");
+      Radiant::trace(Radiant::FAILURE, "HasValues::serializeXML # failed to create XML element");
       return DOMElement(0);
     }
 
@@ -237,7 +237,7 @@ namespace Valuable
       if(vo)
         vo->deserializeXML(elem);
       else if(!readElement(elem)) {
-        Radiant::trace(Radiant::ERROR, "HasValues::deserializeXML # (%s) don't know how to handle element '%s'", type(), name.c_str());
+        Radiant::trace(Radiant::FAILURE, "HasValues::deserializeXML # (%s) don't know how to handle element '%s'", type(), name.c_str());
         return false;
       }
     }

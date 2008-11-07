@@ -25,7 +25,7 @@ namespace Luminous
     GLenum err = glewInit();
 
     if(err != GLEW_OK) { 
-      Radiant::trace(Radiant::ERROR, "Failed to initialize GLEW: %s", glewGetErrorString(err));
+      Radiant::trace(Radiant::FAILURE, "Failed to initialize GLEW: %s", glewGetErrorString(err));
       return false;
     }
 
@@ -48,7 +48,7 @@ namespace Luminous
 
     Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.c_str(), glslMsg.c_str());
     if(warn) { 
-      Radiant::trace(Radiant::ERROR, "OpenGL 2.0 is not supported by this computer, "
+      Radiant::trace(Radiant::FAILURE, "OpenGL 2.0 is not supported by this computer, "
 		     "some applications may fail.");
       return false;
     }

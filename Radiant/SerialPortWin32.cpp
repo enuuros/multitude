@@ -13,9 +13,9 @@
  * 
  */
 
-#include <Radiant/SerialPort.hpp>
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Trace.hpp>
+#include <Radiant/SerialPort.hpp>
 
 #include <cassert>
 #include <string>

@@ -42,7 +42,7 @@ namespace VideoDisplay {
     Radiant::trace(Radiant::DEBUG, "AudioTransfer::prepare");
     
     if(!m_video) {
-      Radiant::trace(Radiant::ERROR, "AudioTransfer::prepare # No video source");
+      Radiant::trace(Radiant::FAILURE, "AudioTransfer::prepare # No video source");
       m_stopped = true;
       return false;
     }
@@ -94,7 +94,7 @@ namespace VideoDisplay {
       }
     }
     else
-      Radiant::trace(Radiant::ERROR, "AudioTransfer::process # Unsupported sample format");
+      Radiant::trace(Radiant::FAILURE, "AudioTransfer::process # Unsupported sample format");
 
     m_frames += m;
   }
@@ -119,7 +119,7 @@ namespace VideoDisplay {
 
     return Radiant::TimeStamp::createSecondsD(secs);
 
-    // Radiant::error("AudioTransfer::audioTime # UNIMPLEMENTED");
+    // Radiant::FAILURE("AudioTransfer::audioTime # UNIMPLEMENTED");
     // return 0;
   }
 

@@ -14,8 +14,9 @@
  */
 
 #include "TCPServerSocket.hpp"
-
 #include "TCPSocket.hpp"
+
+#include <Radiant/Trace.hpp>
 
 #ifndef WIN32
 #include <arpa/inet.h>
@@ -29,8 +30,6 @@
 #include <winsock2.h>
 #include <WinPort.h>
 #endif
-
-#include <Radiant/Trace.hpp>
 
 namespace Radiant {
 

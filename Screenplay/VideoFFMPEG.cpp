@@ -201,7 +201,7 @@ namespace Screenplay {
         m_capturedAudio += aframes;
 
         if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-          trace(ERROR, "VideoInputFFMPEG::captureImage # Audio trouble %d %d",
+			Radiant::trace(Radiant::FAILURE, "VideoInputFFMPEG::captureImage # Audio trouble %d %d",
               aframes, m_audioFrames);
         }
         // printf("_"); fflush(0);
@@ -227,7 +227,7 @@ namespace Screenplay {
         trace(DEBUG, "%s # PIX_FMT_YUV422P", fname);
     }
     else {
-      trace(ERROR, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
+		Radiant::trace(Radiant::FAILURE, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
     }
 
     m_image.m_width = width();
@@ -243,7 +243,7 @@ namespace Screenplay {
     m_image.m_planes[2].m_linesize = m_frame->linesize[2];
 
     if(!m_image.m_width) {
-      trace(ERROR, "Captured image has zero width %d %d %d", 
+		error("Captured image has zero width %d %d %d", 
           m_image.m_planes[0].m_linesize,
           m_image.m_planes[1].m_linesize,
           m_image.m_planes[2].m_linesize);
@@ -375,7 +375,7 @@ namespace Screenplay {
     int err = av_open_input_file( & m_ic, filename, iformat, 0, ap);
 
     if(err < 0) {
-      trace(ERROR, "%s # Could not open file \"%s\" %s", 
+      error("%s # Could not open file \"%s\" %s", 
           fname, filename, strerror(-err));
       return false;
     }
@@ -449,12 +449,12 @@ namespace Screenplay {
     m_lastSeek = 0;
 
     if(!vcname) {
-      trace(ERROR, "%s # File %s has unsupported video codec.", fname, filename);
+      error("%s # File %s has unsupported video codec.", fname, filename);
       return false;
     }
 
     if(!acname) {
-      trace(ERROR, "%s # File %s has unsupported audio codec.", fname, filename);
+      error("%s # File %s has unsupported audio codec.", fname, filename);
       return false;
     }
 
@@ -514,7 +514,7 @@ namespace Screenplay {
         av_seek_frame(m_ic, -1, (int64_t) (timeSeconds * AV_TIME_BASE), 0);
 
       if(err != 0) {
-        trace(ERROR, "VideoInputFFMPEG::seekPosition # Seek failed (%lf)",
+        error("VideoInputFFMPEG::seekPosition # Seek failed (%lf)",
             timeSeconds);
         return false;
       }

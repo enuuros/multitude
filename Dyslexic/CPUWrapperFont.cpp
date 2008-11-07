@@ -112,7 +112,7 @@ namespace Dyslexic
 
   bool CPUWrapperFont::load(const char * )
   {
-    Radiant::trace(Radiant::ERROR, "CPUWrapperFont::load # don't call me");
+    Radiant::trace(Radiant::FAILURE, "CPUWrapperFont::load # don't call me");
     return false;
   }
 

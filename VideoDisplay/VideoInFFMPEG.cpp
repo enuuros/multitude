@@ -61,13 +61,13 @@ namespace VideoDisplay {
     m_seekTarget = -1.0f;
 
     if(!m_video.hasVideoCodec()) {
-      Radiant::trace(Radiant::ERROR, "%s # No video codec", fname);
+      Radiant::trace(Radiant::FAILURE, "%s # No video codec", fname);
       m_video.close();
       return false;
     }
 
     if(!m_video.hasAudioCodec()) {
-      Radiant::trace(Radiant::ERROR, "%s # No audio codec", fname);
+      Radiant::trace(Radiant::FAILURE, "%s # No audio codec", fname);
       m_video.close();
       return false;
     }

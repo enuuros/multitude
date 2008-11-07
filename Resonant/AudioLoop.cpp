@@ -28,7 +28,7 @@
 
 namespace Resonant {
 
-  using Radiant::error;
+  using Radiant::FAILURE;
 
   AudioLoop::AudioLoop()
     : m_stream(0),
@@ -58,7 +58,7 @@ namespace Resonant {
 
     PaError e = Pa_Initialize();
     if(e != paNoError) {
-     error("AudioLoop::init # %s", Pa_GetErrorText(e));
+		Radiant::error("AudioLoop::init # %s", Pa_GetErrorText(e));
       return false;
     }
     return true;
@@ -68,7 +68,7 @@ namespace Resonant {
   {
     PaError e = Pa_Terminate();
     if(e != paNoError) {
-     error("AudioLoop::cleanup # %s", Pa_GetErrorText(e));
+		Radiant::error("AudioLoop::cleanup # %s", Pa_GetErrorText(e));
       return false;
     }
     return true;
@@ -88,7 +88,7 @@ namespace Resonant {
 
     m_outParams.device = Pa_GetDefaultOutputDevice();
     if(m_outParams.device == paNoDevice) {
-     error("AudioLoop::startReadWrite # No default output device available");
+		Radiant::error("AudioLoop::startReadWrite # No default output device available");
       return false;
     }
 
@@ -112,7 +112,7 @@ namespace Resonant {
 			this );
 
     if( err != paNoError ) {
-     error("AudioLoop::startReadWrite # Pa_OpenStream failed");
+		Radiant::error("AudioLoop::startReadWrite # Pa_OpenStream failed");
       return false;
     }
     
@@ -123,7 +123,7 @@ namespace Resonant {
     err = Pa_StartStream(m_stream);
     
     if( err != paNoError ) {
-     error("AudioLoop::startReadWrite # Pa_StartStream failed");
+		Radiant::error("AudioLoop::startReadWrite # Pa_StartStream failed");
       return false;
     }
 
@@ -131,7 +131,7 @@ namespace Resonant {
 
     m_isRunning = true;
 
-   error("AudioLoop::startReadWrite # lt = %lf, EXIT OK", m_streamInfo->outputLatency);
+	Radiant::error("AudioLoop::startReadWrite # lt = %lf, EXIT OK", m_streamInfo->outputLatency);
 
     return true;
   }
@@ -147,7 +147,7 @@ namespace Resonant {
     
     int err = Pa_StopStream(m_stream);
     if(err != paNoError) {
-      trace(Radiant::ERROR, "AudioLoop::stop # Could not stop the stream");
+      trace(Radiant::FAILURE, "AudioLoop::stop # Could not stop the stream");
 
       while(isRunning() && i < 100) {
         Pa_Sleep(5);
@@ -159,7 +159,7 @@ namespace Resonant {
 
     err = Pa_CloseStream(m_stream);
     if(err != paNoError) {
-      trace(Radiant::ERROR, "AudioLoop::stop # Could not close stream");
+      trace(Radiant::FAILURE, "AudioLoop::stop # Could not close stream");
     }
     
     m_stream = 0;

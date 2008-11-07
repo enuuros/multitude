@@ -15,9 +15,12 @@
 
 // Some original source code by Juha Laitinen still may be around.
 
-#include "Video1394cmu.hpp"
-
 #include <Radiant/Trace.hpp>
+
+#include "Video1394cmu.hpp"
+#include "cmu_dc1394.hpp"
+
+
 #include <Radiant/Mutex.hpp>
 #include <Radiant/Sleep.hpp>
 #include <Radiant/Types.hpp>
@@ -30,7 +33,7 @@
 #include <set>
 
 #include <1394Camera.h>
-#include "cmu_dc1394.hpp"
+
 
 #define NUM_BUFFERS 10
 
@@ -550,7 +553,7 @@ bool Video1394::disableTrigger()
 void checkCamError(const char * what, int err) {
 	switch(err) {
 			case CAM_SUCCESS:
-				trace("%s : success", what);
+				trace(Radiant::DEBUG, "%s : success", what);
 				break;
 			case CAM_ERROR_NOT_INITIALIZED:
 				error("%s : no camera selected/camera not initialized", what);
@@ -612,7 +615,7 @@ void Video1394::sendSoftwareTrigger()
 		m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
 
 		if (euid != 0)
-			trace("Video1394::open # %.8x%.8x (%s)", (int) (m_euid >> 32), (int) m_euid, euid);
+			trace(Radiant::DEBUG, "Video1394::open # %.8x%.8x (%s)", (int) (m_euid >> 32), (int) m_euid, euid);
 
 		const char * fname = "Video1394::initialize";
 
@@ -668,7 +671,7 @@ void Video1394::sendSoftwareTrigger()
 			{
 				m_cameraNum = (int) i;
 				foundCorrect = true;
-				trace("%s # Got camera %d based on euid", fname, (int) i);
+				trace(Radiant::DEBUG, "%s # Got camera %d based on euid", fname, (int) i);
 				break;
 			}
 		}
@@ -855,7 +858,7 @@ void Video1394::sendSoftwareTrigger()
 		}
 
 		int mbps = cmu_camera->GetMaxSpeed();
-		trace("CAMERA MAX SPEED %d", mbps);
+		trace(Radiant::DEBUG, "CAMERA MAX SPEED %d", mbps);
 		
 		int err = cmu_camera->SetVideoFormat(0);
 		checkCamError("setVideoFormat", err);
@@ -866,7 +869,7 @@ void Video1394::sendSoftwareTrigger()
 		err = cmu_camera->SetVideoFrameRate(5);
 		checkCamError("setVideoFrameRate", err);
 
-		trace("%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
+		trace(Radiant::DEBUG, "%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
 		return true;
 	}
 

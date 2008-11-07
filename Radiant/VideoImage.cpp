@@ -205,7 +205,7 @@ namespace Radiant {
           memset(m_planes[2].m_data, 0, m_planes[2].m_linesize * m_height);
           break;
       default:
-        Radiant::trace(ERROR, "VideoImage::zero # unsupported format");
+        Radiant::error("VideoImage::zero # unsupported format");
         break;
     };
   }

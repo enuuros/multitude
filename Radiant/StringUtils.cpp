@@ -207,7 +207,7 @@ namespace Radiant
             ((c1 & 0x3F) << 12) + ((c0 & 0x07) << 18);
         }
 	else {
-	  trace(ERROR, "utf8ToStdWstring # Bad character 0x%x", (int) c0);
+		Radiant::error("utf8ToStdWstring # Bad character 0x%x", (int) c0);
           return;
 	}
 
@@ -243,7 +243,7 @@ namespace Radiant
           *ptr++ = c & 0x03F;	  
         }
         else {
-          trace(ERROR, "stdWstringToUtf8 # Bad Unicode character %x", c);
+			Radiant::error("stdWstringToUtf8 # Bad Unicode character %x", c);
         }
       }
     }

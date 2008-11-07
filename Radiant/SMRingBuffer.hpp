@@ -19,13 +19,11 @@
 #include <Radiant/Export.hpp>
 
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <WinPort.h>
-#endif
-
-#ifndef WIN32
-#include <sys/ipc.h> // key_t on OSX
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+#	include <WinPort.h>
+#else
+#	include <sys/ipc.h> // key_t on OSX
 #endif
 
 #include <string>

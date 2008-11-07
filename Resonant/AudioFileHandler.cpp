@@ -346,7 +346,7 @@ namespace Resonant {
       bzero( & m_data[0], m_data.size() * sizeof(float));
 
     if(sf_seek(m_file, frame, SEEK_SET) != frame) {
-      trace(ERROR, "AudioFileHandler::Handle::moveReadHead");
+		Radiant::error("AudioFileHandler::Handle::moveReadHead");
       return false;
     }
 

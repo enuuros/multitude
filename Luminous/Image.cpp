@@ -482,7 +482,7 @@ namespace Luminous
           ret = readTGA(file);
           break;
         default:
-          trace(ERROR, "Image::read # unknown image format in '%s'", filename);
+          error("Image::read # unknown image format in '%s'", filename);
           break;
       }
 
@@ -500,7 +500,7 @@ namespace Luminous
 
     FILE* file = fopen(filename, "wb");
     if(!file) {
-      trace(ERROR, "Image::write # failed to open file '%s'", filename);
+      error("Image::write # failed to open file '%s'", filename);
     } else {
 
       switch(type) {
@@ -511,7 +511,7 @@ namespace Luminous
           ret = writeJPG(file);
           break;
         default:
-          trace(ERROR, "Image::write # unknown file format");
+          error("Image::write # unknown file format");
           break;
       }
 
@@ -641,7 +641,7 @@ namespace Luminous
   bool Image::ping(const char * filename, ImageInfo & info) {
 	  FILE * file = fopen(filename, "r");
 	  if(!file) {
-		  Radiant::trace(Radiant::ERROR, "Image::ping # failed to open file '%s' for reading.", filename);
+		  Radiant::trace(Radiant::FAILURE, "Image::ping # failed to open file '%s' for reading.", filename);
 		  return false;
 	  }
 
@@ -660,7 +660,7 @@ namespace Luminous
 			  ok = readTGAHeader(file, info);
 			  break;
 		  default:
-			  Radiant::trace(Radiant::ERROR, "Image::ping # '%s' has unsupported image type.", filename);
+			  Radiant::trace(Radiant::FAILURE, "Image::ping # '%s' has unsupported image type.", filename);
 			  break;
 	  };
 

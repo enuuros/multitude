@@ -33,7 +33,7 @@ namespace Radiant {
     "[DEBUG] ",
     "",
     "[WARNING] ",
-    "[ERROR] ",
+    "[FAILURE] ",
     "[FATAL] "
   };
 
@@ -99,7 +99,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    __output(ERROR, buf);
+    __output(FAILURE, buf);
   }
 
   void fatal(const char * msg, ...)

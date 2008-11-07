@@ -13,12 +13,12 @@
  * 
  */
 
+#include <Radiant/StringUtils.hpp>
+#include <Radiant/Trace.hpp>
+
 #include "SMRingBuffer.hpp"
 
 #include <Nimble/Math.hpp>
-
-#include <Radiant/StringUtils.hpp>
-#include <Radiant/Trace.hpp>
 
 #include <cassert>
 #include <cerrno>
@@ -71,7 +71,7 @@ namespace Radiant
 
       if(size > maxSize)
       {
-        trace(ERROR, "%s # Requested size %ul is greater than maximum size %ul.",
+        error("%s # Requested size %ul is greater than maximum size %ul.",
           fnName, (unsigned long)(size), (unsigned long)(maxSize));
         assert(0);
       }
@@ -87,7 +87,7 @@ namespace Radiant
         }
         else
         {
-          trace(ERROR, "%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+          error(ERROR, "%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
           assert(0);
         }
       }
@@ -102,7 +102,7 @@ namespace Radiant
       }
       else
       {
-        trace(ERROR, "%s # Failed to create new shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        error("%s # Failed to create new shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       }
     }
@@ -116,7 +116,7 @@ namespace Radiant
       }
       else
       {
-        trace(ERROR, "%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        error("%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       } 
     }
@@ -130,7 +130,7 @@ namespace Radiant
     }
     else
     {
-      trace(ERROR, "%s # Failed to obtain pointer to shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      error("%s # Failed to obtain pointer to shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       assert(0);
     }
 
@@ -264,7 +264,7 @@ namespace Radiant
     }
     else
     {
-      trace(ERROR, "%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -278,7 +278,7 @@ namespace Radiant
       }
       else
       {
-        trace(ERROR, "%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        error("%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       }
     }
   }
@@ -705,7 +705,7 @@ namespace Radiant
     const uint32_t   totalUsd = used();
     if(numBytes > totalUsd)
     {
-      trace(ERROR, "SMRingBuffer::discard # Insufficient data.");
+      error("SMRingBuffer::discard # Insufficient data.");
       return 0;
     }
 
