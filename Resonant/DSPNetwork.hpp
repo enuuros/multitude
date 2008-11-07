@@ -123,8 +123,10 @@ namespace Resonant {
 
       inline void process(int n)
       {
-	assert(m_compiled != false);
-	m_module->process(& m_ins[0], & m_outs[0], n);
+		assert(m_compiled != false);
+		float ** in = m_ins.empty() ? 0 : &m_ins[0];
+		float ** out = m_outs.empty() ? 0 : &m_outs[0];
+		m_module->process(in, out, n);
       }
 
       void eraseInput(const Connection & c);

@@ -16,6 +16,7 @@
 #include <Luminous/Luminous.hpp>
 #include <Radiant/Trace.hpp>
 #include <string>
+#include <sstream>
 
 namespace Luminous
 {
@@ -24,29 +25,33 @@ namespace Luminous
   {
     GLenum err = glewInit();
 
+	std::ostringstream versionMsg;
+
     if(err != GLEW_OK) { 
       Radiant::trace(Radiant::FAILURE, "Failed to initialize GLEW: %s", glewGetErrorString(err));
       return false;
     }
 
-    std::string versionMsg = "Luminous initialized: ";
-
-    // Print which OpenGL version we have support for
-    bool warn = true;
-    if(GLEW_VERSION_2_0) {
-      warn = false; 
-      versionMsg += std::string("OpenGL 2.0 supported");
-    }
-    else if(GLEW_VERSION_1_5) versionMsg += std::string("OpenGL 1.5 supported");
-    else if(GLEW_VERSION_1_4) versionMsg += std::string("OpenGL 1.4 supported");
-    else if(GLEW_VERSION_1_3) versionMsg += std::string("OpenGL 1.3 supported");
-    else if(GLEW_VERSION_1_2) versionMsg += std::string("OpenGL 1.2 supported");
-    else if(GLEW_VERSION_1_1) versionMsg += std::string("OpenGL 1.1 supported");
+	// Check the OpenGL version
+	bool warn = true;
+    versionMsg << "Luminous initialized: ";
+		
+	if(GLEW_VERSION_2_1) {
+		warn = false;
+		versionMsg << "OpenGL 2.1 supported";
+	} else if(GLEW_VERSION_2_0) {
+		warn = false;
+		versionMsg << "OpenGL 2.0 supported";
+	} else if(GLEW_VERSION_1_5) versionMsg << std::string("OpenGL 1.5 supported");
+    else if(GLEW_VERSION_1_4) versionMsg << std::string("OpenGL 1.4 supported");
+    else if(GLEW_VERSION_1_3) versionMsg << std::string("OpenGL 1.3 supported");
+    else if(GLEW_VERSION_1_2) versionMsg << std::string("OpenGL 1.2 supported");
+    else if(GLEW_VERSION_1_1) versionMsg << std::string("OpenGL 1.1 supported");
 
     char * glsl = (char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     std::string glslMsg = (glsl ? glsl : "GLSL not supported");
 
-    Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.c_str(), glslMsg.c_str());
+	Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.str().c_str(), glslMsg.c_str());
     if(warn) { 
       Radiant::trace(Radiant::FAILURE, "OpenGL 2.0 is not supported by this computer, "
 		     "some applications may fail.");
