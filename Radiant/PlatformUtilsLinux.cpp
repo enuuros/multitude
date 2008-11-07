@@ -33,7 +33,7 @@ namespace Radiant
       len = readlink("/proc/self/exe", buf, 512);
 
       if(len == -1) {
-        trace(ERROR, "PlatformUtils::getExecutablePath # readlink() failed");
+        Radiant::error("PlatformUtils::getExecutablePath # readlink() failed");
         return std::string("");
       }
 

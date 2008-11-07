@@ -165,7 +165,7 @@ namespace Radiant
 
       if(size > maxSize)
       {
-        trace(ERROR, "%s # Requested size %ul is greater than maximum size %ul.",
+        Radiant::error("%s # Requested size %ul is greater than maximum size %ul.",
           fnName, (unsigned long)(size), (unsigned long)(maxSize));
         assert(0);
       }
@@ -177,11 +177,11 @@ namespace Radiant
       {
         if(shmctl(id, IPC_RMID, 0) != -1)
         {
-          trace(DEBUG, "%s # Successfully removed existing shared memory area with same key.", fnName);
+          Radiant::trace(Radiant::DEBUG, "%s # Successfully removed existing shared memory area with same key.", fnName);
         }
         else
         {
-          trace(ERROR, "%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
+          Radiant::error("%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
           assert(0);
         }
       }
@@ -195,11 +195,11 @@ namespace Radiant
       if(m_id != -1)
       {
         m_isCreator = true;
-        trace(DEBUG, "%s # Successfully created new shared memory area.", fnName);
+        Radiant::trace(Radiant::DEBUG, "%s # Successfully created new shared memory area.", fnName);
       }
       else
       {
-        trace(ERROR, "%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
+        Radiant::error("%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
         assert(0);
       }
     }
@@ -209,11 +209,11 @@ namespace Radiant
       m_id = shmget(m_smKey, 0, smDefaultPermissions);
       if(m_id != -1)
       {
-        trace(DEBUG, "%s # Successfully accessed existing shared memory area.", fnName);
+        Radiant::trace(Radiant::DEBUG, "%s # Successfully accessed existing shared memory area.", fnName);
       }
       else
       {
-        trace(ERROR, "%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
+        Radiant::error("%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
         assert(0);
       }
     }
@@ -223,11 +223,11 @@ namespace Radiant
     char * const  smPtr = (char *)(shmat(m_id, 0, 0));
     if(smPtr != (char *)(-1))
     {
-      trace(DEBUG, "%s # Successfully obtained pointer to shared memory area.", fnName);
+      Radiant::trace(Radiant::DEBUG, "%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else
     {
-      trace(ERROR, "%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
+      Radiant::error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
       assert(0);
     }
 
@@ -260,11 +260,11 @@ namespace Radiant
     char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
     if(::UnmapViewOfFile(smPtr))
     {
-      trace(DEBUG, "%s # Successfully detached shared memory area.", fnName);
+      Radiant::trace(Radiant::DEBUG, "%s # Successfully detached shared memory area.", fnName);
     }
     else
     {
-      error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      Radiant::error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -274,11 +274,11 @@ namespace Radiant
     {
       if(::CloseHandle(m_hMapFile))
       {
-        trace(DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
+        Radiant::trace(Radiant::DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
       }
       else
       {
-        error("%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+        Radiant::error("%s # Failed to destroy shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
       }
     }
   }
@@ -294,11 +294,11 @@ namespace Radiant
     char * const  smPtr = (char *)(m_startPtr - smHeaderSize);
     if(shmdt(smPtr) != -1)
     {
-      trace(DEBUG, "%s # Successfully detached shared memory area.", fnName);
+      Radiant::trace(Radiant::DEBUG, "%s # Successfully detached shared memory area.", fnName);
     }
     else
     {
-      trace(ERROR, "%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
+      Radiant::error("%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -308,11 +308,11 @@ namespace Radiant
     {
       if(shmctl(m_id, IPC_RMID, 0) != -1)
       {
-        trace(DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
+        Radiant::trace(Radiant::DEBUG, "%s # Successfully destroyed shared memory area.", fnName);
       }
       else
       {
-        trace(ERROR, "%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
+        Radiant::error("%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
       }
     }
   }

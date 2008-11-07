@@ -259,7 +259,7 @@ namespace Radiant {
             DC1394_FEATURE_WHITE_BALANCE, 
             DC1394_FEATURE_MODE_AUTO);
       else
-        trace(ERROR, "%s # no auto mode for white balance", fname);
+        Radiant::error("%s # no auto mode for white balance", fname);
     }
     else {
 
@@ -272,7 +272,7 @@ namespace Radiant {
             DC1394_FEATURE_WHITE_BALANCE, 
             DC1394_FEATURE_MODE_MANUAL);
       else {
-        trace(ERROR, "%s # no manual mode for white balance", fname);
+        Radiant::error("%s # no manual mode for white balance", fname);
         return;
       }
 
@@ -329,7 +329,7 @@ namespace Radiant {
       if(b)
         dc1394_feature_set_mode(m_camera, feature, DC1394_FEATURE_MODE_AUTO);
       else
-        trace(ERROR, "%s # no auto mode for %s", fname, name);
+        Radiant::error("%s # no auto mode for %s", fname, name);
     }
     else {
       has_manual_mode(m_camera, feature, & b);
@@ -337,7 +337,7 @@ namespace Radiant {
       if(b)
         dc1394_feature_set_mode(m_camera, feature, DC1394_FEATURE_MODE_MANUAL);
       else {
-        trace(ERROR, "%s # no manual mode for %s", fname, name);
+        Radiant::error("%s # no manual mode for %s", fname, name);
         return;
       }
 
@@ -421,13 +421,13 @@ namespace Radiant {
 
     if(dc1394_external_trigger_set_power(m_camera, DC1394_ON)
         != DC1394_SUCCESS) {
-      trace(ERROR, "Video1394::enableTrigger # Could not turn trigger power on");
+      Radiant::error("Video1394::enableTrigger # Could not turn trigger power on");
       return false;
     }
 
     if(dc1394_external_trigger_set_source(m_camera, source)
         != DC1394_SUCCESS) {
-      trace(ERROR, "Video1394::enableTrigger # Could not set trigger source");
+      Radiant::error("Video1394::enableTrigger # Could not set trigger source");
       return false;
     }
 
@@ -440,7 +440,7 @@ namespace Radiant {
 
     if(dc1394_external_trigger_set_mode(m_camera, mode)
         != DC1394_SUCCESS) {
-      trace(ERROR, "Video1394::setTriggerMode # Could not set trigger mode");
+      Radiant::error("Video1394::setTriggerMode # Could not set trigger mode");
       return false;
     }
 
@@ -512,7 +512,7 @@ namespace Radiant {
       if (dc1394_video_get_supported_framerates(m_camera, 
             video_mode, &framerates)
           != DC1394_SUCCESS) {
-        trace(ERROR, "%s # dc1394_video_get_supported_framerates",
+        Radiant::error("%s # dc1394_video_get_supported_framerates",
             fname);
         // cleanup_and_exit(m_camera);
       }
@@ -549,13 +549,13 @@ namespace Radiant {
     // If the camera is already running (eg. unclean exit), stop it
     dc1394switch_t isoWasOn;
     if(dc1394_video_get_transmission(m_camera, &isoWasOn) != DC1394_SUCCESS)     
-      trace(ERROR, "%s # dc1394_video_get_transmission failed", fname);
+      Radiant::error("%s # dc1394_video_get_transmission failed", fname);
 
     if(isoWasOn == DC1394_ON) {
       trace(DEBUG, "%s # Camera is already running, stopping it", fname);
 
       if(dc1394_video_set_transmission(m_camera, DC1394_OFF) !=DC1394_SUCCESS)
-        trace(ERROR, "%s # dc1394_video_set_transmission failed", fname);      
+        Radiant::error("%s # dc1394_video_set_transmission failed", fname);      
     }
 
     captureSetup(NUM_BUFFERS);
@@ -598,7 +598,7 @@ namespace Radiant {
     }
     else {
       m_initialized = false;
-      trace(ERROR, "%s # unsupported image format", fname);
+      Radiant::error("%s # unsupported image format", fname);
     }
 
     trace(DEBUG, "%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
@@ -620,7 +620,7 @@ namespace Radiant {
 
     err = dc1394_video_set_mode(m_camera, DC1394_VIDEO_MODE_FORMAT7_0);
     if(err != DC1394_SUCCESS) {
-      trace(ERROR, "%s # Could not set mode to format7_0", fname);
+      Radiant::error("%s # Could not set mode to format7_0", fname);
       return false;
     }
 
@@ -643,7 +643,7 @@ namespace Radiant {
       (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & minbytes, & maxbytes);
 
     if(err != DC1394_SUCCESS) {
-      trace(ERROR, "%s # Could not get packet parameters", fname);
+      Radiant::error("%s # Could not get packet parameters", fname);
       return false;
     }
 
@@ -659,7 +659,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     else if(m_speed == DC1394_ISO_SPEED_800)
       busPeriod = 0.0000625f;
     else {
-      trace(ERROR, "%s # Cannot calculate bus speed as the speed (%d) is unknown",
+      Radiant::error("%s # Cannot calculate bus speed as the speed (%d) is unknown",
           fname, (int) m_speed);
       return false;
     }
@@ -687,7 +687,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
         roi.width(), roi.height());
 
     if(err != DC1394_SUCCESS) {
-      trace(ERROR, "%s # Could not set ROI", fname);
+      Radiant::error("%s # Could not set ROI", fname);
       return false;
     }
 
@@ -741,7 +741,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     assert(m_started == false);
 
     if (dc1394_video_set_transmission(m_camera, DC1394_ON) != DC1394_SUCCESS) {
-      trace(ERROR, "Video1394::start # unable to start camera iso transmission");
+      Radiant::error("Video1394::start # unable to start camera iso transmission");
 
       return false;
     }
@@ -768,7 +768,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
     dc1394_capture_stop(m_camera);
     if (dc1394_video_set_transmission(m_camera, DC1394_OFF) !=DC1394_SUCCESS) {
-      trace(ERROR, "Video1394::stop # unable to stop iso transmission");
+      Radiant::error("Video1394::stop # unable to stop iso transmission");
     }
 
     m_started = false;
@@ -794,7 +794,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       // if(err != DC1394_NO_CAMERA)
 
 #ifdef __linux__      
-      trace(ERROR, "%s # dc1394_find_cameras failed (%s)\n"
+      Radiant::error("%s # dc1394_find_cameras failed (%s)\n"
           "**********************************************\n"
           "Please check that relevant device files exist:\n"
           "/dev/raw1394\n"
@@ -803,7 +803,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
           "**********************************************\n\n",
           fname, dc1394_error_get_string(err));
 #else
-      trace(ERROR, "%s # dc1394_find_cameras failed (%s)\n",
+      Radiant::error("%s # dc1394_find_cameras failed (%s)\n",
           fname, dc1394_error_get_string(err));
 #endif
       return false;
@@ -851,7 +851,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       }
     }
 
-    trace(ERROR, "Video1394::queryCamera # FAILED");
+    Radiant::error("Video1394::queryCamera # FAILED");
 
     return false;
   }
@@ -874,7 +874,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
         DC1394_CAPTURE_POLICY_WAIT, & m_frame);
 
     if(err ) {
-      trace(ERROR, "Video1394::captureImage # Unable to capture a frame!");
+      Radiant::error("Video1394::captureImage # Unable to capture a frame!");
       close();
       return 0;
     }
@@ -892,7 +892,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     m_outside++;
 
     if(m_outside != 1) {
-      trace(ERROR, "Video1394::captureImage # Please release captured " 
+      Radiant::error("Video1394::captureImage # Please release captured " 
           "frames with doneImage()");
     }
 
@@ -972,7 +972,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     }
 
     if(!__infos.size()) {
-      trace(ERROR, "%s # No FireWire cameras found", fname);
+      Radiant::error("%s # No FireWire cameras found", fname);
       return false;
     }
 
@@ -1111,7 +1111,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 #endif
         != DC1394_SUCCESS) {
 
-      trace(ERROR, "Video1394::captureSetup # "
+      Radiant::error("Video1394::captureSetup # "
           "unable to setup camera- check that the video mode,"
           "framerate and format are supported (%s)", 
           m_videodevice.c_str());

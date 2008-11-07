@@ -50,14 +50,14 @@ namespace Radiant
     m_fd = ::open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if(m_fd <= 0) {
-      trace(ERROR, "%s # Failed to open \"%s\" (%s)", fname, device, strerror(errno));
+      Radiant::error("%s # Failed to open \"%s\" (%s)", fname, device, strerror(errno));
       errno = 0;
       return false;
     }
 
     struct termios opts;
     if (tcgetattr(m_fd, & opts) < 0) {
-      trace(ERROR, "%s # Could get read port attributes (%s)", fname, device);
+      Radiant::error("%s # Could get read port attributes (%s)", fname, device);
       return false;
     }
 
@@ -133,7 +133,7 @@ namespace Radiant
 #endif
 
     if(tcsetattr(m_fd, TCSANOW, & opts) < 0) {
-      trace(ERROR, "%s # Failed to set TTY parameters (%s)", fname, strerror(errno));
+      Radiant::error("%s # Failed to set TTY parameters (%s)", fname, strerror(errno));
       errno = 0;
       return false;
     }

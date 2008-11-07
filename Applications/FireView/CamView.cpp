@@ -188,7 +188,7 @@ namespace FireView {
 	(dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
       
       if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-	trace(ERROR, "Cannot have custom FPS combined with anything but SW trigger (%d)",
+	Radiant::error("Cannot have custom FPS combined with anything but SW trigger (%d)",
 	      (int) trig);
     }
     else if((int) m_triggerSource > 0) {
@@ -207,7 +207,7 @@ namespace FireView {
       if(m_triggerMode >= 0) {
 	if(!m_video.setTriggerMode
 	   ((dc1394trigger_mode_t) m_triggerMode))
-	  trace(ERROR, "Could not set trigger mode %d", m_triggerMode);
+	  Radiant::error("Could not set trigger mode %d", m_triggerMode);
 	else
 	  trace(DEBUG, "Enabled trigger mode %d", m_triggerMode);
       }
@@ -248,7 +248,7 @@ namespace FireView {
 
     if(!m_video.start()) {
       m_state = UNINITIALIZED;
-      trace(ERROR, "Could not start video capture");
+      Radiant::error("Could not start video capture");
       return;
     }
 
@@ -389,7 +389,7 @@ namespace FireView {
     bool ok = Radiant::Video1394::queryCamera(euid64, & info);
 
     if(!ok) {
-      Radiant::trace(Radiant::ERROR, "CamView::start # Could not query camera");
+      Radiant::trace(Radiant::FAILURE, "CamView::start # Could not query camera");
       return false;
     }
 
