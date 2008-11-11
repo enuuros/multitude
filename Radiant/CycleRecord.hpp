@@ -89,7 +89,7 @@ namespace Radiant {
       normalize();
       
       for(unsigned i = 0; i < m_records.size(); i++)
-        trace(DEBUG, "CPU cycles  %u   %.2lf\n", i, m_records[i] * 100.0);
+        trace(DEBUG, "CPU cycles  %u   %.2lf", i, m_records[i] * 100.0);
     }
 
     /// The latest CPU cycle counter value

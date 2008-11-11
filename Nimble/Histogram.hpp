@@ -116,6 +116,42 @@ namespace Nimble {
         /// Returns the sum of all bin counts
         int count() const { return m_count; }
 
+      int largestBin() const 
+      {
+        T high = m_data[0];
+        int index = 0;
+
+        for(int i = 1; i < N; i++) {
+          T tmp = m_data[i];
+          if(high < tmp) {
+            high = tmp;
+            index = i;
+          }
+        }
+
+        return index;
+      }
+
+      int lowestNonEmpty() const 
+      {
+        for(int i = 1; i < N; i++) {
+          if(m_data[i])
+            return i;
+        }
+        return N-1;
+      }
+
+      int highestNonEmpty() const 
+      {
+        for(int i = N - 1; i > 0; i--) {
+          if(m_data[i])
+            return i;
+        }
+        return 0;
+      }
+
+      T & operator [] (int i) { return m_data[i]; }
+
       protected:
 
         T   m_data[N];
