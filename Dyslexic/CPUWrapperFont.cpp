@@ -51,21 +51,21 @@ namespace Dyslexic
     return font;
   }
 
-  float CPUWrapperFont::advance(const char * str)
+  float CPUWrapperFont::advance(const char * str, int n)
   {
     CPUFont * f = m_managedFont->getMetricFont();
 //    float s = static_cast<float> (f->faceSize()) / static_cast<float> (m_pointSize);
     float s = static_cast<float> (m_pointSize) / static_cast<float> (f->faceSize());
 
-    return f->advance(str) * s;
+    return f->advance(str, n) * s;
   }
 
-  float CPUWrapperFont::advance(const wchar_t * str)
+  float CPUWrapperFont::advance(const wchar_t * str, int n)
   {
     CPUFont * f = m_managedFont->getMetricFont();
     float s = static_cast<float> (m_pointSize) / static_cast<float> (f->faceSize());
 
-    return f->advance(str) * s;
+    return f->advance(str, n) * s;
   }
   
   float CPUWrapperFont::ascender() const 

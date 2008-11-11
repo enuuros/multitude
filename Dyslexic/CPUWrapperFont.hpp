@@ -33,8 +33,8 @@ namespace Dyslexic
       CPUWrapperFont(CPUManagedFont * mfont);
       ~CPUWrapperFont();
 
-      float advance(const char * str);
-      float advance(const wchar_t * str);      
+      float advance(const char * str, int n = -1);
+      float advance(const wchar_t * str, int n = -1);
     
       int faceSize() const        { return m_pointSize; }
       bool setFaceSize(int size, int = DYSLEXIC_DEFAULT_RESOLUTION)  { m_pointSize = size; return true; }

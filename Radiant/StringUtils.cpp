@@ -145,6 +145,16 @@ namespace Radiant
       }
     }
 
+    void merge(std::wstring & dest, const WStringList & src)
+    {
+      dest.clear();
+
+      for(WStringList::const_iterator it = src.begin();
+	  it != src.end(); it++) {
+	dest += (*it);
+      }
+    }
+
     int lineCount(const char * s)
     {
       if(!s)

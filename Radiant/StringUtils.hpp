@@ -58,6 +58,8 @@ namespace Radiant
     /// Split std::wstring into sub-strings.
     RADIANT_API void split(const std::wstring & ws, const std::wstring & delim, WStringList & out);
 
+    RADIANT_API void merge(std::wstring & dest, const WStringList & src);
+
     /// Count the number of lines in the string.
     RADIANT_API int lineCount(const char * s);
 

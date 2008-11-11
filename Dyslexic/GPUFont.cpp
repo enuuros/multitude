@@ -135,4 +135,30 @@ namespace Dyslexic
     render(str, x - w * 0.5f, y + h * 0.5f);
   }
 
+  void GPUFont::renderCentered(const char * str,
+			       const Nimble::Matrix3 & transform)
+  {
+    BBox bb;
+
+    cpuFont()->bbox(str, bb);
+    Nimble::Vector2 span = bb.span();
+    Nimble::Vector2 center = bb.center();
+    center += span * 0.5f;
+    
+    render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
+  }
+
+  void GPUFont::renderCentered(const wchar_t * str,
+			       const Nimble::Matrix3 & transform)
+  {
+    BBox bb;
+
+    cpuFont()->bbox(str, bb);
+    Nimble::Vector2 span = bb.span();
+    Nimble::Vector2 center(0,0);// = bb.center();
+    center += span * 0.5f;
+    // center.x += span.x * 0.5f;
+    render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
+  }
+
 }

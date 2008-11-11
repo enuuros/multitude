@@ -82,6 +82,9 @@ namespace Nimble {
     /// Expands this rectangle to include the argument rectangle
     inline void expand(const RectT &b);
 
+    inline void smaller(const T & v)
+    { m_low.x += v; m_low.y += v; m_high.x -= v; m_high.y -= v; }
+
     /// Returns the low X/Y vector
     Vector2T<T> & low() { return m_low; }
     const Vector2T<T> & low() const { return m_low; }
@@ -106,23 +109,17 @@ namespace Nimble {
     void set(const Vector2T<T> &point, T radius)
     { m_low = point - radius; m_high = point + radius; }
 
-    void setLow(const Vector2T<T> &low)
-    { m_low = low; }
+    void setLow(const Vector2T<T> &low) { m_low = low; }
 
-    void setHigh(const Vector2T<T> &high)
-    { m_high = high; }
+    void setHigh(const Vector2T<T> &high) { m_high = high; }
 
-    void setLowX(const T lowX)
-    { m_low.x = lowX; }
+    void setLowX(const T lowX) { m_low.x = lowX; }
 
-    void setLowY(const T lowY)
-    { m_low.y = lowY; }
+    void setLowY(const T lowY) { m_low.y = lowY; }
 
-    void setHighX(const T highX)
-    { m_high.x = highX; }
+    void setHighX(const T highX) { m_high.x = highX; }
 
-    void setHighY(const T highY)
-    { m_high.y = highY; }
+    void setHighY(const T highY) { m_high.y = highY; }
 
     /// Returns the center of the rectangle.
     inline Vector2T<T> center() const { return (m_low + m_high) * (T) 0.5; }

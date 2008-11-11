@@ -30,7 +30,7 @@ namespace Dyslexic
   {
 
     /// Zero-width space character is used as new line character.
-    #define W_NEWLINE wchar_t(0x200B)
+    enum { W_NEWLINE = 0x200B };
 
     /**
       * @brief Break wstring into lines.

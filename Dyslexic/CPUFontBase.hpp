@@ -37,8 +37,8 @@ namespace Dyslexic
 
       int error() const;
 
-      float advance(const char * str);
-      float advance(const wchar_t * str);
+      float advance(const char * str, int n = -1);
+      float advance(const wchar_t * str, int n = -1);
 
       int faceSize() const;
       virtual bool setFaceSize(int size, int resolution);

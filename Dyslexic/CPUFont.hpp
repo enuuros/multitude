@@ -34,8 +34,8 @@ namespace Dyslexic
       virtual ~CPUFont() {}
   
 
-      virtual float advance(const char * str) = 0;
-      virtual float advance(const wchar_t * str) = 0;
+      virtual float advance(const char * str, int n = -1) = 0;
+      virtual float advance(const wchar_t * str, int n = -1) = 0;
 
     float advance(const std::string & str)
     {

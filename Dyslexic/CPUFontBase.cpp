@@ -201,31 +201,44 @@ namespace Dyslexic
     return true;
   }
 
-  float CPUFontBase::advance(const char * str)
+  float CPUFontBase::advance(const char * str, int n)
   {
     const unsigned char * c = (unsigned char *)str;
     float width = 0.f;
 
+    int i = 0;
     while(*c) {
+      
+      if(n >= 0 && i >= n)
+	break;
+
       if(checkGlyph(*c)) {
         width += m_glyphList->advance(*c, *(c + 1));
       }
-      ++c;
+      c++;
+      i++;
     }
 
     return width;
   }
 
-  float CPUFontBase::advance(const wchar_t * str)
+  float CPUFontBase::advance(const wchar_t * str, int n)
   {
     const wchar_t * c = str;
     float width = 0.f;
 
+    int i = 0;
+
     while(*c) {
+
+      if(n >= 0 && i >= n)
+	break;
+
       if(checkGlyph(*c)) {
         width += m_glyphList->advance(*c, *(c + 1));
       }
-      ++c;
+      c++;
+      i++;
     }
 
     return width;

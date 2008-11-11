@@ -101,6 +101,10 @@ namespace Luminous {
 				float fromRadians, float toRadians,
                                 float width, float blendwidth,
 				int linesegments, const float * color);
+    static void glFilledSoftArc(const Nimble::Matrix3 & m, float radius,
+				float fromRadians, float toRadians,
+                                float width, float blendwidth,
+				int linesegments, const float * color);
     static void glSolidSoftArc(float centerx, float centery, float radius,
 			       float fromRadians, float toRadians,
 			       float blendwidth,
@@ -123,18 +127,29 @@ namespace Luminous {
     static void glFilledSoftCircle(const float * center, float radius,
 				   float width, float blendwidth,
 				   int linesegments, const float * color);
+    static void glFilledSoftCircle(const Nimble::Matrix3 & m, float radius,
+				   float width, float blendwidth,
+				   int linesegments, const float * color);
     static void glSolidSoftCircle(float centerx, float centery, float radius,
 				  float blendwidth,
 				  int linesegments, const float * color);
+
+    static void glSolidSoftCircle(const Nimble::Matrix3 & m, float radius,
+				  float blendwidth,
+				  int segments, const float * color);
+    
     /// Draw a circle sector ('pie slice') using GL_LINE_STRIP
     static void glSectorf(float centerx, float centery, float radius,
-       float fromRadians, float toRadians, int lineSegments);
+			  float fromRadians, float toRadians, int lineSegments);
+
    /// Draw a filled circle sector ('pie slice') using GL_TRIANGLE_FAN
     static void glFilledSectorf(float centerx, float centery, float radius,
        float fromRadians, float toRadians, int lineSegments);
+
     static void glFilledSoftLinePolygon(const Nimble::Vector2f * corners, int n,
 					float width, float blendwidth,
 					const float * color);
+
     static void glFilledSoftLineTriangle(Nimble::Vector2f c1,
 					 Nimble::Vector2f c2, 
 					 Nimble::Vector2f c3,
@@ -143,15 +158,45 @@ namespace Luminous {
 
     static void glTriangle(float x1, float y1, float x2, float y2, float x3, float y3); 
     /// Draw a rounded rectangle
-    static void glRoundedRectf(const float x1, const float y1, const float x2, const float y2,
-      const float cornerRadius, const int cornerLineSegments);
-    static void glRoundedRectfv(const Nimble::Vector2 & low, const Nimble::Vector2 & high,
-      const float cornerRadius, const int cornerLineSegments);
+    static void glRoundedRectf(const float x1, const float y1,
+			       const float x2, const float y2,
+			       const float cornerRadius,
+			       const int cornerLineSegments);
+
+
+    static void glRoundedRectfv(const Nimble::Vector2 & low,
+				const Nimble::Vector2 & high,
+				const float cornerRadius, 
+				const int cornerLineSegments);
+
+    
+    static void glSoftRoundedRectf(float x1, float y1,
+				   float x2, float y2,
+				   float cornerRadius,
+				   int cornerLineSegments,
+				   float lineWidth, float blendWidth,
+				   const float * rgba,
+				   const Nimble::Matrix3 & m);
+
     /// Draw a filled rounded rectangle
-    static void glFilledRoundedRectf(const float x1, const float y1, const float x2, const float y2,
-      const float cornerRadius, const int cornerLineSegments);
-    static void glFilledRoundedRectfv(const Nimble::Vector2 & low, const Nimble::Vector2 & high,
-      const float cornerRadius, const int cornerLineSegments);
+    static void glFilledRoundedRectf(const float x1, const float y1,
+				     const float x2, const float y2,
+				     const float cornerRadius, 
+				     const int cornerLineSegments);
+    static void glFilledRoundedRectfv(const Nimble::Vector2 & low,
+				      const Nimble::Vector2 & high,
+				      const float cornerRadius,
+				      const int cornerLineSegments);
+
+    static void glSoftFilledRoundedRectf
+      (const float x1, const float y1, const float x2, const float y2,
+       const float cornerRadius, const int cornerLineSegments,
+       float blendwidth, const float * rgba, const Nimble::Matrix3 & m);
+
+    static void glSoftFilledRoundedRectfv
+      (const Nimble::Vector2 & low, const Nimble::Vector2 & high,
+       const float cornerRadius, const int cornerLineSegments,
+       float blendwidth, const float * rgba, const Nimble::Matrix3 & m);
 
     /// Enable the most usual OpenGL blend mode
     /** The most usual blend mode is the semi-transparent -glass style
@@ -174,11 +219,42 @@ namespace Luminous {
 			       int segments, int sectors,
 			       const float * rgba);
 
+    static void glCircularHalo(float x, float y, float inside, float outside,
+			       float radians1,
+			       float radians2, 
+			       int segments, int sectors,
+			       const float * rgba,
+			       const Nimble::Matrix3 & m);
+
+    static void glCircularHalo(float inside, float outside,
+			       float radians1,
+			       float radians2, 
+			       int segments, int sectors,
+			       const float * rgba,
+			       const Nimble::Matrix3 & m);
+
     static void glHorizontalHalo(float x1, float y1, 
 				 float x2, float y2,
 				 float inside, float outside,
 				 int segments, int sectors,
 				 const float * rgba);
+
+    static void glRectHalo(float x1, float y1, 
+			   float x2, float y2,
+			   float inside, float outside,
+			   int segments, int sectors,
+			   const float * rgba,
+			   const Nimble::Matrix3 & m);
+
+    static inline void glVertex2(const Nimble::Matrix3 & m, const Nimble::Vector2 & v)
+    {
+      glVertex2fv((m * v).data());
+    }
+
+    static inline void glVertex2(const Nimble::Matrix3 & m, float x, float y)
+    {
+      glVertex2fv((m * Nimble::Vector2(x, y)).data());
+    }
   };
 
 }
