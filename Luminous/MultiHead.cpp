@@ -202,6 +202,8 @@ namespace Luminous {
 
   void MultiHead::Window::setPixelSizeCm(float sizeCm)
   {
+    assert(sizeCm > 0.0f);
+
     m_pixelSizeCm = sizeCm;
 
     for(unsigned i = 0; i < m_areas.size(); i++)
@@ -239,7 +241,7 @@ namespace Luminous {
 
   MultiHead::MultiHead()
   : HasValues(0, "MultiHead", false),
-    m_widthcm(this, "widthcm", false, 100.0f),
+    m_widthcm(this, "widthcm", 100, true),
     m_edited(false)
   {}
 
@@ -370,10 +372,12 @@ namespace Luminous {
 
   int MultiHead::width()
   {
-    float left = 1000000;
-    float right = -1000000;
+    float left =  1000000;
+    float right =-1000000;
 
     int n = areaCount();
+
+    Radiant::debug("MultiHead::width # %d", n);
 
     for(int i = 0; i < n; i++) {
       Area & a = area(i);
@@ -386,6 +390,8 @@ namespace Luminous {
 
       left  = Nimble::Math::Min(left,  wleft);
       right = Nimble::Math::Max(right, wright);
+      
+      Radiant::debug("lr = %f %f", left, right);
     }
 
     return (int) (right - left);
@@ -417,6 +423,12 @@ namespace Luminous {
 
     bool ok = HasValues::deserializeXML(element);
 
+    const float pixelSizeCm = m_widthcm.asFloat() / width();
+
+    for(unsigned i = 0; i < windowCount(); i++) {
+      window(i).setPixelSizeCm(pixelSizeCm);      
+    }
+
     m_edited = false;
 
     return ok;
@@ -428,7 +440,7 @@ namespace Luminous {
 
     // Get the 'type' attribute
     if(!ce.hasAttribute("type")) {
-      Radiant::trace(Radiant::FAILURE, "MultiHead::readElement # no type attribute on element '%s'", name.c_str());
+      Radiant::error("MultiHead::readElement # no type attribute on element '%s'", name.c_str());
       return false;
     }
 
@@ -441,8 +453,6 @@ namespace Luminous {
       addValue(name, win);
       win->deserializeXML(ce);
 
-      const float pixelSizeCm = m_widthcm.asFloat() / width();
-      win->setPixelSizeCm(pixelSizeCm);
 
       m_windows.push_back(win);
     } else {
