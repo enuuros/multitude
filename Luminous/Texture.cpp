@@ -17,6 +17,7 @@
 #include "PixelFormat.hpp"
 #include <cassert>
 #include <iostream>
+#include "Error.hpp"
 
 #include <Radiant/Trace.hpp>
 
@@ -215,9 +216,11 @@ namespace Luminous
     if(buildMipmaps)
       gluBuild2DMipmaps(GL_TEXTURE_2D, srcFormat.numChannels(),
 			w, h, srcFormat.layout(), srcFormat.type(), data);
-    else
-      glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0,
-                   srcFormat.layout(), srcFormat.type(), data);
+    else {
+      Radiant::trace(Radiant::DEBUG, "TEXTURE UPLOAD :: INTERNAL %s FORMAT %s", glInternalFormatToString(internalFormat), glFormatToString(srcFormat.layout()));
+      Radiant::trace(Radiant::DEBUG, "%dx%d", w, h);
+      glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, srcFormat.layout(), srcFormat.type(), data);
+    }
 
     long uses = consumesBytes();
 

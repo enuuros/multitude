@@ -51,7 +51,7 @@ namespace Luminous
     char * glsl = (char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     std::string glslMsg = (glsl ? glsl : "GLSL not supported");
 
-	Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.str().c_str(), glslMsg.c_str());
+    Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.str().c_str(), glslMsg.c_str());
     if(warn) { 
       Radiant::trace(Radiant::FAILURE, "OpenGL 2.0 is not supported by this computer, "
 		     "some applications may fail.");

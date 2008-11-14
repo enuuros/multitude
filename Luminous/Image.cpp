@@ -38,14 +38,14 @@ namespace Luminous
 {
 
   Image::Image()
-  : m_width(0),
+    : m_width(0),
     m_height(0),
     m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
     m_data(0)
   {}
 
   Image::Image(const Image& img)
-  : m_width(0),
+    : m_width(0),
     m_height(0),
     m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
     m_data(0)
@@ -77,7 +77,7 @@ namespace Luminous
         uint8_t tmp = *l1;
         *l1 = *l2;
         *l2 = tmp;
-        
+
         l1++;
         l2++;
       };
@@ -100,29 +100,29 @@ namespace Luminous
 
       for(int y = 0; y < h; y++) {
 
-	float sy = y * yscale;
-	int yi = (int) sy;
-	int yi1 = yi + 1;
+        float sy = y * yscale;
+        int yi = (int) sy;
+        int yi1 = yi + 1;
 
-	if(yi1 >= sh) yi1 = yi;
-	float wy1 = sy - yi;
-	float wy0 = 1.0f - wy1;
+        if(yi1 >= sh) yi1 = yi;
+        float wy1 = sy - yi;
+        float wy0 = 1.0f - wy1;
 
         uint8_t * dest = bytes() + y * w * 3;
 
-	for(int x = 0; x < w; x++) {
+        for(int x = 0; x < w; x++) {
 
-	  float sx = x * xscale;
-	  int xi = (int) sx;
-	  int xi1 = xi + 1;
-	  if(xi1 >= sw) xi1 = xi;
+          float sx = x * xscale;
+          int xi = (int) sx;
+          int xi1 = xi + 1;
+          if(xi1 >= sw) xi1 = xi;
 
-	  float wx1 = sx - xi;
-	  float wx0 = 1.0f - wx1;
+          float wx1 = sx - xi;
+          float wx0 = 1.0f - wx1;
 
-	  const uint8_t * v00 = & src[(yi * sw  + xi) * 3];
+          const uint8_t * v00 = & src[(yi * sw  + xi) * 3];
           const uint8_t * v10 = & src[(yi * sw  + xi1) * 3];
-	  const uint8_t * v01 = & src[(yi1 * sw + xi) * 3];
+          const uint8_t * v01 = & src[(yi1 * sw + xi) * 3];
           const uint8_t * v11 = & src[(yi1 * sw + xi1) * 3];
 
           float fw00 = wy0 * wx0;
@@ -130,20 +130,20 @@ namespace Luminous
           float fw01 = wy0 * wx1;
           float fw11 = wy1 * wx1;
 
-	  for(int c = 0; c < 3; c++) {
-	    float val = 
-	      (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 +  (*v11) * fw11;
+          for(int c = 0; c < 3; c++) {
+            float val = 
+              (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 +  (*v11) * fw11;
 
-      *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
-	    
-	    dest++;
+            *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 
-	    v00++;
-	    v10++;
-	    v01++;
-	    v11++;
-	  }
-	}
+            dest++;
+
+            v00++;
+            v10++;
+            v01++;
+            v11++;
+          }
+        }
       }
     }
     else if(source.pixelFormat() == PixelFormat::rgbaUByte()) {
@@ -159,29 +159,29 @@ namespace Luminous
       const uint8_t * src = source.bytes();
       for(int y = 0; y < h; y++) {
 
-	float sy = y * yscale;
-	int yi = (int) sy;
-	int yi1 = yi + 1;
+        float sy = y * yscale;
+        int yi = (int) sy;
+        int yi1 = yi + 1;
 
-	if(yi1 >= sh) yi1 = yi;
-	float wy1 = sy - yi;
-	float wy0 = 1.0f - wy1;
+        if(yi1 >= sh) yi1 = yi;
+        float wy1 = sy - yi;
+        float wy0 = 1.0f - wy1;
 
         uint8_t * dest = bytes() + y * w * 4;
 
-	for(int x = 0; x < w; x++) {
+        for(int x = 0; x < w; x++) {
 
-	  float sx = x * xscale;
-	  int xi = (int) sx;
-	  int xi1 = xi + 1;
-	  if(xi1 >= sw) xi1 = xi;
+          float sx = x * xscale;
+          int xi = (int) sx;
+          int xi1 = xi + 1;
+          if(xi1 >= sw) xi1 = xi;
 
-	  float wx1 = sx - xi;
-	  float wx0 = 1.0f - wx1;
+          float wx1 = sx - xi;
+          float wx0 = 1.0f - wx1;
 
-	  const uint8_t * v00 = & src[(yi * sw  + xi) * 4];
+          const uint8_t * v00 = & src[(yi * sw  + xi) * 4];
           const uint8_t * v10 = & src[(yi * sw  + xi1) * 4];
-	  const uint8_t * v01 = & src[(yi1 * sw + xi) * 4];
+          const uint8_t * v01 = & src[(yi1 * sw + xi) * 4];
           const uint8_t * v11 = & src[(yi1 * sw + xi1) * 4];
 
           float fw00 = wy0 * wx0;
@@ -189,66 +189,66 @@ namespace Luminous
           float fw01 = wy0 * wx1;
           float fw11 = wy1 * wx1;
 
-	  float a00 = v00[3];
-	  float a10 = v10[3];
-	  float a01 = v01[3];
-	  float a11 = v11[3];
+          float a00 = v00[3];
+          float a10 = v10[3];
+          float a01 = v01[3];
+          float a11 = v11[3];
 
-	  /*a00 = 200;
-	  a10 = 200;
-	  a01 = 200;
-	  a11 = 20;
-	  */
-	  float asum = a00 * fw00 + a10 * fw10 + a01 * fw01 + a11 * fw11;
-	  float ascale = asum > 0.00001 ? 1.0f / asum : 0.0f;
+          /*a00 = 200;
+            a10 = 200;
+            a01 = 200;
+            a11 = 20;
+            */
+          float asum = a00 * fw00 + a10 * fw10 + a01 * fw01 + a11 * fw11;
+          float ascale = asum > 0.00001 ? 1.0f / asum : 0.0f;
 
-	  for(int c = 0; c < 3; c++) {
-	    float val = 
-	      ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
-	       (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
+          for(int c = 0; c < 3; c++) {
+            float val = 
+              ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
+               (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
 
-	    *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
-	    	    
-	    dest++;
+            *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 
-	    v00++;
-	    v10++;
-	    v01++;
-	    v11++;
-	  }
+            dest++;
 
-	  *dest = uint8_t(Nimble::Math::Min((int) asum, 255));
+            v00++;
+            v10++;
+            v01++;
+            v11++;
+          }
 
-	  /* if(*dest > 128)
-	     printf("."); */
-	  // *dest = 255;
-	  dest++;
-	}
+          *dest = uint8_t(Nimble::Math::Min((int) asum, 255));
+
+          /* if(*dest > 128)
+             printf("."); */
+          // *dest = 255;
+          dest++;
+        }
       }
 
       write("some-with-a.png", IMAGE_TYPE_PNG);
-      
+
       return true;
     }
-    
+
     return false;
   }
 
-    
+
   bool Image::quarterSize(const Image & source)
   {
     const int sw = source.width();
     int w = sw / 2;
-     
+
     const int sh = source.height();
     int h = sh / 2;
 
     // Make even:
     /* if(w & 0x1)
-      w--;
-    if(h & 0x1)
-      h--;
-    */
+       w--;
+       if(h & 0x1)
+       h--;
+       */
 
     while(w & 0x3)
       w--;
@@ -256,33 +256,33 @@ namespace Luminous
       h--;
 
     if(source.pixelFormat() == PixelFormat::alphaUByte() ||
-       source.pixelFormat() == PixelFormat::luminanceUByte()) {
+        source.pixelFormat() == PixelFormat::luminanceUByte()) {
 
       allocate(w, h, source.pixelFormat());
 
       const uint8_t * src = source.bytes();
-      
+
       for(int y = 0; y < h; y++) {
-        
-	const uint8_t * l0 = src + y * 2 * sw;
-	const uint8_t * l1 = l0 + sw;
+
+        const uint8_t * l0 = src + y * 2 * sw;
+        const uint8_t * l1 = l0 + sw;
 
         uint8_t * dest = bytes() + y * w;
 
-	for(int x = 0; x < w; x++) {
-	  
-	  unsigned tmp = l0[0];
-	  tmp += l0[1];
-	  tmp += l1[0];
-	  tmp += l1[1];
+        for(int x = 0; x < w; x++) {
 
-	  *dest = uint8_t(tmp >> 2);
+          unsigned tmp = l0[0];
+          tmp += l0[1];
+          tmp += l1[0];
+          tmp += l1[1];
 
-	  l0 += 2;
-	  l1 += 2;
-	
-	  dest++;
-	}
+          *dest = uint8_t(tmp >> 2);
+
+          l0 += 2;
+          l1 += 2;
+
+          dest++;
+        }
 
       }
 
@@ -293,16 +293,16 @@ namespace Luminous
       allocate(w, h, source.pixelFormat());
 
       const uint8_t * const src = source.bytes();
-      
+
       for(int y = 0; y < h; y++) {
-	
-	const uint8_t * l0 = src + y * 2 * 3 * sw;
-	const uint8_t * l1 = l0 + sw * 3;
+
+        const uint8_t * l0 = src + y * 2 * 3 * sw;
+        const uint8_t * l1 = l0 + sw * 3;
 
         uint8_t * dest = bytes() + y * w * 3;
 
-	for(int x = 0; x < w; x++) {
-          
+        for(int x = 0; x < w; x++) {
+
           for(int i = 0; i < 3; i++) {
             unsigned tmp = l0[0];
             tmp += l0[3];
@@ -318,7 +318,7 @@ namespace Luminous
 
           l0 += 3;
           l1 += 3;
-	}
+        }
       }
 
       return true;
@@ -328,31 +328,31 @@ namespace Luminous
       allocate(w, h, source.pixelFormat());
 
       const uint8_t * const src = source.bytes();
-      
+
       for(int y = 0; y < h; y++) {
-	
-	const uint8_t * l0 = src + y * 2 * 4 * sw;
-	const uint8_t * l1 = l0 + sw * 4;
+
+        const uint8_t * l0 = src + y * 2 * 4 * sw;
+        const uint8_t * l1 = l0 + sw * 4;
 
         uint8_t * dest = bytes() + y * w * 4;
 
-	for(int x = 0; x < w; x++) {
+        for(int x = 0; x < w; x++) {
 
-	  unsigned a00 = l0[3];
-	  unsigned a10 = l0[7];
-	  unsigned a01 = l1[3];
-	  unsigned a11 = l1[7];
-	  
-	  /* a00 = 255;
-	     a10 = 255;
-	     a01 = 255;
-	     a11 = 255;
-	  */
-	  unsigned asum = a00 + a10 + a01 + a11;
+          unsigned a00 = l0[3];
+          unsigned a10 = l0[7];
+          unsigned a01 = l1[3];
+          unsigned a11 = l1[7];
 
-	  if(!asum)
-	    asum = 1;
-          
+          /* a00 = 255;
+             a10 = 255;
+             a01 = 255;
+             a11 = 255;
+             */
+          unsigned asum = a00 + a10 + a01 + a11;
+
+          if(!asum)
+            asum = 1;
+
           for(int i = 0; i < 3; i++) {
             unsigned tmp = (unsigned) l0[0] * a00;
             tmp += (unsigned) l0[4] * a10;
@@ -366,13 +366,13 @@ namespace Luminous
             dest++;
           }
 
-	  *dest = uint8_t(asum >> 2);
-	  // *dest = 255;
-	  dest++;
+          *dest = uint8_t(asum >> 2);
+          // *dest = 255;
+          dest++;
 
           l0 += 5;
           l1 += 5;
-	}
+        }
       }
 
       return true;
@@ -395,7 +395,7 @@ namespace Luminous
       }
 
       m_width -= n;
-      
+
       return true;
     }
 
@@ -413,7 +413,7 @@ namespace Luminous
       (m_pixelFormat.layout() == PixelFormat::LAYOUT_LUMINANCE_ALPHA) ||
       (m_pixelFormat.layout() == PixelFormat::LAYOUT_RGBA);
   }
-  
+
   Image& Image::operator = (const Image& img) 
   {    
     allocate(img.m_width, img.m_height, img.m_pixelFormat);
@@ -429,6 +429,11 @@ namespace Luminous
     unsigned int bytes = width * height * pf.numChannels();
     unsigned int mybytes = m_width * m_height * m_pixelFormat.numChannels();
 
+    
+
+    Radiant::trace(DEBUG, "Image::allocate # PARAMS(%d, %d, %s) CURRENT(%d, %d, %s)", width, height, pf.toString().c_str(), m_width, m_height, m_pixelFormat.toString().c_str());
+    Radiant::trace(DEBUG, "\tbytes = %u, mybytes = %u", bytes, mybytes);
+
     m_width = width;
     m_height = height;
     m_pixelFormat = pf;
@@ -436,24 +441,24 @@ namespace Luminous
     if(bytes != mybytes) {
       delete [] m_data;
       if(bytes)
-	m_data = new unsigned char [bytes];
+        m_data = new unsigned char [bytes];
       else
-	m_data = 0;
+        m_data = 0;
     }
   }
-   
+
   // Guess the filetype from the extension
   static Image::ImageType typeFromFileExt(const std::string & filename) 
   {
-	  Image::ImageType type = Image::IMAGE_TYPE_UNKNOWN;
+    Image::ImageType type = Image::IMAGE_TYPE_UNKNOWN;
     string ext = filename.substr(filename.rfind(".") + 1);
 
-	if(strcasecmp(ext.c_str(), "tga") == 0) type = Image::IMAGE_TYPE_TGA;
-	else if(strcasecmp(ext.c_str(), "png") == 0) type = Image::IMAGE_TYPE_PNG;
+    if(strcasecmp(ext.c_str(), "tga") == 0) type = Image::IMAGE_TYPE_TGA;
+    else if(strcasecmp(ext.c_str(), "png") == 0) type = Image::IMAGE_TYPE_PNG;
     else if(strcasecmp(ext.c_str(), "jpg") == 0 ||
-		strcasecmp(ext.c_str(), "jpeg") == 0) type = Image::IMAGE_TYPE_JPG;
+        strcasecmp(ext.c_str(), "jpeg") == 0) type = Image::IMAGE_TYPE_JPG;
 
-	return type;
+    return type;
   }
 
   bool Image::read(const char* filename, ImageType* pType)
@@ -470,13 +475,13 @@ namespace Luminous
       switch(type) {
         case IMAGE_TYPE_PNG:
           ret = readPNG(file);
-	  if(!ret)
-	    ret = readJPG(file);
+          if(!ret)
+            ret = readJPG(file);
           break;
         case IMAGE_TYPE_JPG:
           ret = readJPG(file);
-	  if(!ret)
-	    ret = readPNG(file);
+          if(!ret)
+            ret = readPNG(file);
           break;
         case IMAGE_TYPE_TGA:
           ret = readTGA(file);
@@ -486,12 +491,12 @@ namespace Luminous
           break;
       }
 
-    fclose(file);
-  }
+      fclose(file);
+    }
 
-  if(pType) *pType = type;
+    if(pType) *pType = type;
 
-  return ret;
+    return ret;
   }
 
   bool Image::write(const char* filename, ImageType type)
@@ -521,8 +526,8 @@ namespace Luminous
     return ret;
   }
 
-    void Image::fromData(const unsigned char * bytes, int width, int height,
-		       PixelFormat format)
+  void Image::fromData(const unsigned char * bytes, int width, int height,
+      PixelFormat format)
   {
 
     allocate(width, height, format);
@@ -543,130 +548,130 @@ namespace Luminous
     m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_UNKNOWN,
         PixelFormat::TYPE_UNKNOWN);
   }
-/*
-  void Image::scale(int reqWidth, int reqHeight, bool keepAspectRatio, Image& dest) const
-  {
-    dest.clear();
+  /*
+     void Image::scale(int reqWidth, int reqHeight, bool keepAspectRatio, Image& dest) const
+     {
+     dest.clear();
 
-    if(empty()) {
-      trace("Image::scaled # Scaling empty image");
-      return;
-    }
+     if(empty()) {
+     trace("Image::scaled # Scaling empty image");
+     return;
+     }
 #if 1
-    dest = *this;
+dest = *this;
 #else 
-    // Compute new dimensions
-    int newWidth, newHeight;
+  // Compute new dimensions
+  int newWidth, newHeight;
 
-    if(!keepAspectRatio) {
-      newWidth = reqWidth;
-      newHeight = reqHeight;
-    } else {
-      int rw = reqHeight * m_width / m_height;
+  if(!keepAspectRatio) {
+  newWidth = reqWidth;
+  newHeight = reqHeight;
+  } else {
+  int rw = reqHeight * m_width / m_height;
 
-      bool useHeight = (rw <= reqWidth);
+  bool useHeight = (rw <= reqWidth);
 
-      if(useHeight) {
-        newWidth = rw;
-        newHeight = reqHeight;
-      } else {
-        newHeight = reqWidth * m_height / m_width;
-        newWidth = reqWidth;
-      }
-    }
+  if(useHeight) {
+  newWidth = rw;
+  newHeight = reqHeight;
+  } else {
+  newHeight = reqWidth * m_height / m_width;
+  newWidth = reqWidth;
+  }
+  }
 
-    // No need to scale, just return a copy
-    if(newWidth == m_width && newHeight == m_height) {
-      dest = *this;
-      return;
-    }
+  // No need to scale, just return a copy
+  if(newWidth == m_width && newHeight == m_height) {
+  dest = *this;
+  return;
+  }
 
-    dest.allocate(newWidth, newHeight, m_pixelFormat);
+  dest.allocate(newWidth, newHeight, m_pixelFormat);
 
-    float xRatio = (float)m_width / (float)newWidth;
-    float yRatio = (float)m_height / (float)newHeight;
+  float xRatio = (float)m_width / (float)newWidth;
+  float yRatio = (float)m_height / (float)newHeight;
 
-    for(int y = 0; y < newHeight; y++) {
-      for(int x = 0; x < newWidth; x++) {
+  for(int y = 0; y < newHeight; y++) {
+  for(int x = 0; x < newWidth; x++) {
 
-        float sx = (float)x * xRatio;
-        float sy = (float)y * yRatio;
+  float sx = (float)x * xRatio;
+  float sy = (float)y * yRatio;
 
-        sample(sx, sy, xRatio, yRatio, dest, x, y);
-      }
-    }
+  sample(sx, sy, xRatio, yRatio, dest, x, y);
+  }
+  }
 #endif
-  }
+}
 */    
-  /// @todo currently ignores alpha channel
-  void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
-  {
-    int begX = (int)x1;
-    int begY = (int)y1;
-    int endX = (int)x2;
-    int endY = (int)y2;
+/// @todo currently ignores alpha channel
+void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
+{
+  int begX = (int)x1;
+  int begY = (int)y1;
+  int endX = (int)x2;
+  int endY = (int)y2;
 
-    int nc = m_pixelFormat.numChannels();
+  int nc = m_pixelFormat.numChannels();
 
-    for(int y = begY; y < endY; y++) {
-      for(int x = begX; x < endX; x++) {
-	  
-	float w = computeWeight(x, y, x1, y1, x2, y2);
-	  
-	assert(w > 0.0f && w <= 1.0f);
-	  
-	unsigned int dstOffset = destY * dest.width() + destX;
-	unsigned int srcOffset = y * m_width + x;
-	  
-	for(int c = 0; c < nc; c++) 
-	  dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
-      }
+  for(int y = begY; y < endY; y++) {
+    for(int x = begX; x < endX; x++) {
+
+      float w = computeWeight(x, y, x1, y1, x2, y2);
+
+      assert(w > 0.0f && w <= 1.0f);
+
+      unsigned int dstOffset = destY * dest.width() + destX;
+      unsigned int srcOffset = y * m_width + x;
+
+      for(int c = 0; c < nc; c++) 
+        dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
     }
   }
+}
 
 
-  float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2) const
-  {
-    float sx = (x < x1 ? x1 : x);
-    float sy = (y < y1 ? y1 : y);
-    
-    x++; y++;
+float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2) const
+{
+  float sx = (x < x1 ? x1 : x);
+  float sy = (y < y1 ? y1 : y);
 
-    float ex = (x < x2 ? x : x2);
-    float ey = (y < y2 ? y : y2);
+  x++; y++;
 
-    return (ex - sx) * (ey - sy);
+  float ex = (x < x2 ? x : x2);
+  float ey = (y < y2 ? y : y2);
+
+  return (ex - sx) * (ey - sy);
+}
+
+bool Image::ping(const char * filename, ImageInfo & info) {
+  FILE * file = fopen(filename, "r");
+  if(!file) {
+    Radiant::trace(Radiant::FAILURE, "Image::ping # failed to open file '%s' for reading.", filename);
+    return false;
   }
 
-  bool Image::ping(const char * filename, ImageInfo & info) {
-	  FILE * file = fopen(filename, "r");
-	  if(!file) {
-		  Radiant::trace(Radiant::FAILURE, "Image::ping # failed to open file '%s' for reading.", filename);
-		  return false;
-	  }
+  Image::ImageType type = typeFromFileExt(filename);
 
-	  Image::ImageType type = typeFromFileExt(filename);
+  bool ok = false;
 
-	  bool ok = false;
+  switch(type) {
+    case Image::IMAGE_TYPE_JPG:
+      ok = readJPGHeader(file, info);
+      break;
+    case Image::IMAGE_TYPE_PNG:
+      ok = readPNGHeader(file, info);
+      break;
+    case Image::IMAGE_TYPE_TGA:
+      ok = readTGAHeader(file, info);
+      break;
+    default:
+      Radiant::trace(Radiant::FAILURE, "Image::ping # '%s' has unsupported image type.", filename);
+      break;
+  };
 
-	  switch(type) {
-		  case Image::IMAGE_TYPE_JPG:
-			  ok = readJPGHeader(file, info);
-			  break;
-		  case Image::IMAGE_TYPE_PNG:
-			  ok = readPNGHeader(file, info);
-			  break;
-		  case Image::IMAGE_TYPE_TGA:
-			  ok = readTGAHeader(file, info);
-			  break;
-		  default:
-			  Radiant::trace(Radiant::FAILURE, "Image::ping # '%s' has unsupported image type.", filename);
-			  break;
-	  };
+  fclose(file);
 
-	  fclose(file);
-
-	  return ok;
-  }
+  return ok;
+}
 
 }

@@ -20,6 +20,8 @@
 
 #include <Luminous/Export.hpp>
 
+#include <string>
+
 namespace Luminous
 {
   /// Describes the pixel format of an image
@@ -83,6 +85,8 @@ namespace Luminous
     {
       return m_layout == that.m_layout && m_type == that.m_type;
     }
+
+    std::string toString() const;
 
     protected:
       ChannelLayout m_layout;

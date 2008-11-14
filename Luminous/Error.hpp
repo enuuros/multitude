@@ -16,10 +16,14 @@
 #ifndef ERROR_HPP
 #define ERROR_HPP
 
+#include <GL/glew.h>
 #include <iostream>
 
 namespace Luminous
 {
+
+  const char * glInternalFormatToString(GLint format);
+  const char * glFormatToString(GLenum format);
 
   std::string glErrorToString();
 
