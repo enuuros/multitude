@@ -29,33 +29,34 @@ namespace Dyslexic
   /// A font on the CPU that wraps the point size of the font for convenience.
   class DYSLEXIC_API CPUWrapperFont : public CPUFont
   {
-    public:
-      CPUWrapperFont(CPUManagedFont * mfont);
-      ~CPUWrapperFont();
+  public:
+    CPUWrapperFont(CPUManagedFont * mfont);
+    ~CPUWrapperFont();
 
-      float advance(const char * str, int n = -1);
-      float advance(const wchar_t * str, int n = -1);
+    float advance(const char * str, int n = -1);
+    float advance(const wchar_t * str, int n = -1);
     
-      int faceSize() const        { return m_pointSize; }
-      bool setFaceSize(int size, int = DYSLEXIC_DEFAULT_RESOLUTION)  { m_pointSize = size; return true; }
+    int faceSize() const        { return m_pointSize; }
+    bool setFaceSize(int size, int = DYSLEXIC_DEFAULT_RESOLUTION)
+    { m_pointSize = size; return true; }
 
-      float minimumRenderSize() const        { return m_minimumRenderSize; }
-      void setMinimumRenderSize(float size) { m_minimumRenderSize = size; }
+    float minimumRenderSize() const        { return m_minimumRenderSize; }
+    void setMinimumRenderSize(float size) { m_minimumRenderSize = size; }
 
-      float ascender() const;
-      float descender() const;
-      float lineHeight() const;
+    float ascender() const;
+    float descender() const;
+    float lineHeight() const;
 
-      void bbox(const char * str, BBox & bbox);
-      void bbox(const wchar_t * str, BBox & bbox);
+    void bbox(const char * str, BBox & bbox);
+    void bbox(const wchar_t * str, BBox & bbox);
 
-      bool load(const char * fontFilePath);
+    bool load(const char * fontFilePath);
 
-      GPUWrapperFont * getGPUFont(Luminous::GLResources * resources);
+    GPUWrapperFont * getGPUFont(Luminous::GLResources * resources);
 
-    protected:
-      CPUManagedFont * m_managedFont;
-      int m_pointSize;
+  protected:
+    CPUManagedFont * m_managedFont;
+    int m_pointSize;
     float m_minimumRenderSize;
   };
 

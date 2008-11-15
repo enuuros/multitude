@@ -53,6 +53,7 @@ namespace Luminous {
     static void inline glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2)
     { glTexRect(v1.x, v1.y, v2.x, v2.y); }
     static void glTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
+    static void glTexRectAA(Nimble::Vector2 size, const Nimble::Matrix3 & m, const float * rgba);
     static void glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2,
 			  Nimble::Vector2f uv1, Nimble::Vector2f uv2);
     static void glCenteredTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
@@ -61,6 +62,10 @@ namespace Luminous {
     static void glRectWithHole(const Nimble::Rect & area,
 			       const Nimble::Rect & hole,
 			       const Nimble::Matrix3 & m);
+    static void glRectWithHoleAA(const Nimble::Rect & area,
+				 const Nimble::Rect & hole,
+				 const Nimble::Matrix3 & m,
+				 const float * rgba);
 
     /// Draw a square using GL_LINE_STRIP
     static void glLineRect(float x1, float y1, float x2, float y2);
@@ -80,6 +85,10 @@ namespace Luminous {
     static void glFilledSoftLine(const float * v1, const float * v2,
 				 float width, float edgeWidth,
 				 const float * color);
+    static void glFilledLineAA(const float * v1, const float * v2,
+			       float width,
+			       const Nimble::Matrix3 & m,
+			       const float * color);
     /// Draw a cross (X)
     static void glCross(float centerx, float centery, float size, float radians);
     static void glCrossf(float centerx, float centery, float size, float radians);

@@ -41,6 +41,10 @@ namespace Dyslexic
     {
       return advance(str.c_str());
     }
+    float advance(const std::wstring & str)
+    {
+      return advance(str.c_str());
+    }
 
       virtual int faceSize() const = 0;
       virtual bool setFaceSize(int size, int resolution = DYSLEXIC_DEFAULT_RESOLUTION) = 0;

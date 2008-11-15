@@ -289,18 +289,93 @@ namespace Luminous {
 
     glTexCoord2f(0.0f, 0.0f);
     glVertex3fv(static_cast<const GLfloat *> (&v[0].x));
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex3fv(static_cast<const GLfloat *> (&v[1].x));
-  
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex3fv(static_cast<const GLfloat *> (&v[2].x));
-    
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex3fv(static_cast<const GLfloat *> (&v[3].x));
     */
 
     glEnd();
+  }
+
+  void Utils::glTexRectAA(Nimble::Vector2 size, const Nimble::Matrix3 & m,
+			  const float * rgba)
+  {
+    float r = rgba[0];
+    float g = rgba[1];
+    float b = rgba[2];
+    float a = rgba[3];
+
+    // float scale = m.extractScale();
+
+    // float xe = 1.0f / size.x 
+
+    float e = 0.01f;
+    
+    const Vector2 v[4] = {
+      (m * Vector2(0,      0)).xy(),
+      (m * Vector2(size.x, 0)).xy(),
+      (m * Vector2(size.x, size.y)).xy(),
+      (m * Vector2(0,      size.y)).xy()
+    };
+
+    Nimble::Vector2 right(m[0][0], m[1][0]);
+    Nimble::Vector2 up(m[0][1], m[1][1]);
+
+    up.normalize();
+    right.normalize();
+
+    glColor4f(r, g, b, a);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(e, e);
+    glVertex2fv(v[0].data());
+
+    glTexCoord2f(1.0f - e, e);
+    glVertex2fv(v[1].data());
+  
+    glTexCoord2f(1.0f - e, 1.0f-e);
+    glVertex2fv(v[2].data());
+    
+    glTexCoord2f(e, 1.0f - e);
+    glVertex2fv(v[3].data());
+
+    glEnd();
+
+
+    // return;
+
+    glBegin(GL_TRIANGLE_STRIP);
+
+    glTexCoord2f(e, e);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((v[0] - up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(v[0].data());
+
+    glTexCoord2f(1.0f - e, e);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((v[1] - up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(v[1].data());
+    
+    glTexCoord2f(1.0f - e, 1.0f - e);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((v[2] + up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(v[2].data());
+    
+    glTexCoord2f(e, 1.0f - e);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((v[3] + up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(v[3].data());
+    
+    glTexCoord2f(e, e);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((v[0] - up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(v[0].data());
+
+    glEnd();
+
   }
 
   void Utils::glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2,
@@ -443,6 +518,166 @@ namespace Luminous {
 
     glEnd();
     
+  }
+
+  void Utils::glRectWithHoleAA(const Nimble::Rect & area,
+			       const Nimble::Rect & hole,
+			       const Nimble::Matrix3 & m,
+			       const float * rgba)
+  {
+    float r = rgba[0];
+    float g = rgba[1];
+    float b = rgba[2];
+    float a = rgba[3];
+
+    Nimble::Vector2 inner[4] = {
+      (m * hole.low()).xy(),
+      (m * hole.lowHigh()).xy(),
+      (m * hole.high()).xy(),
+      (m * hole.highLow()).xy()
+    };
+
+    Nimble::Vector2 outer[4] = {
+      (m * area.low()).xy(),
+      (m * area.lowHigh()).xy(),
+      (m * area.high()).xy(),
+      (m * area.highLow()).xy()
+    };
+
+    /*
+      Nimble::Vector2 up(m[0][0], m[0][1]);
+      Nimble::Vector2 right(m[1][0], m[1][1]);
+    */
+    Nimble::Vector2 right(m[0][0], m[1][0]);
+    Nimble::Vector2 up(m[0][1], m[1][1]);
+
+    up.normalize();
+    right.normalize();
+
+    // The main thing:
+
+    glColor4f(r, g, b, a);
+
+    glBegin(GL_TRIANGLE_STRIP);
+
+    Vector2 as = area.size();
+
+    // Hole texture UV-coordinates
+    Rectf htxuv(hole.low() - area.low(), hole.high() - area.low());
+
+    htxuv.low().descale(as);
+    htxuv.high().descale(as);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2fv(outer[0].data());
+
+    glTexCoord2fv(htxuv.low().data());
+    glVertex2fv(inner[0].data());
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex2fv(outer[1].data());
+
+    glTexCoord2fv(htxuv.lowHigh().data());
+    glVertex2fv(inner[1].data());
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2fv(outer[2].data());
+
+    glTexCoord2fv(htxuv.high().data());
+    glVertex2fv(inner[2].data());
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex2fv(outer[3].data());
+
+    glTexCoord2fv(htxuv.highLow().data());
+    glVertex2fv(inner[3].data());
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2fv(outer[0].data());
+
+    glTexCoord2fv(htxuv.low().data());
+    glVertex2fv(inner[0].data());
+
+    glEnd();
+
+    // AA strip around the outer edge:
+
+    glBegin(GL_TRIANGLE_STRIP);
+
+    /* r = 1;
+    g = 0;
+    b = 0;
+    */
+
+    // glTexCoord2f(0.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((outer[0] - up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(outer[0].data());
+
+    // glTexCoord2f(0.0f, 1.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((outer[1] + up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(outer[1].data());
+
+    // glTexCoord2f(1.0f, 1.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((outer[2] + up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(outer[2].data());
+
+    // glTexCoord2f(1.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((outer[3] - up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(outer[3].data());
+
+    // glTexCoord2f(0.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((outer[0] - up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(outer[0].data());
+
+    glEnd();
+
+
+    // AA strip around the inner edge:
+
+
+    glBegin(GL_TRIANGLE_STRIP);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((inner[0] + up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(inner[0].data());
+
+    glTexCoord2f(0.0f, 1.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((inner[1] - up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(inner[1].data());
+
+    glTexCoord2f(1.0f, 1.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((inner[2] - up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(inner[2].data());
+
+    glTexCoord2f(1.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((inner[3] + up - right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(inner[3].data());
+
+    glTexCoord2f(0.0f, 0.0f);
+    glColor4f(r, g, b, 0);
+    glVertex2fv((inner[0] + up + right).data());
+    glColor4f(r, g, b, a);
+    glVertex2fv(inner[0].data());
+
+    glEnd();
   }
 
 
@@ -602,6 +837,18 @@ namespace Luminous {
     glVertex2fv((begin - up - up2 - dir2).data());
 
     glEnd();
+  }
+  
+  void Utils::glFilledLineAA(const float * v1, const float * v2,
+			     float width,
+			     const Nimble::Matrix3 & m,
+			     const float * color)
+  {
+    float scale = m.extractScale();
+
+    glFilledSoftLine((m * Vector2(v1[0], v1[1])).data(),
+		     (m * Vector2(v2[0], v2[1])).data(),
+		     width * scale, 1.0f, color);
   }
 
   void Utils::glFilledSoftLine(const float * v1, const float * v2, float width,
