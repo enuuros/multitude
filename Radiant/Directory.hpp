@@ -18,6 +18,7 @@
 
 #include <Radiant/Export.hpp>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -80,6 +81,35 @@ namespace Radiant
 		Directory(const char * pathname, const char * suffixlist,
 			int filters = AllEntries, SortFlag sortFlag = Unsorted);
 
+		/** Creates a Directory object by immediately scanning
+		    the contents of the directory. Entries matching
+		    the given filters are included.  If the file does
+		    not exist an exception is thrown.  If the
+		    signature is not ok an exception is thrown too.
+
+		    @param signature "jcb" string. Anything else will
+		    trigger an exception. There is a already
+		    constructor with the same signature that does not
+		    throw exceptions hence the need for this author's
+		    signature.
+
+		    @param pathname directory path
+
+		    @param suffixlist list of accpeted suffices, for
+		    example "jpg,png,tiff"
+
+		    @param filters one or more filter flags OR'ed
+		    together
+
+		    @param sortFlag flag indicating how the results
+		    should be sorted
+
+		*/
+		Directory( const std::string &signature, const char * pathname, 
+			   const char * suffixlist, int filters = AllEntries, 
+			   SortFlag sortFlag = Unsorted ) throw(std::runtime_error);
+
+ 
 		/// Deallocates the list
 		virtual ~Directory();
 
@@ -111,8 +141,15 @@ namespace Radiant
 		Directory(const Directory &) {}
 		Directory & operator = (const Directory &) { return * this;}
 
-		// This function takes care of the low-level platform specific stuff. 
-		// All it does is fill up m_entries with the directory contents matching the flags.		
+		// Calling a constructor from another is evil but we
+		// can put all dupplicated code in the same private
+		// method
+		void init(const std::string & pathname, const char * suffixlist,
+			  const int filters, const SortFlag sortFlag) ;
+
+		// This function takes care of the low-level platform
+		// specific stuff.  All it does is fill up m_entries
+		// with the directory contents matching the flags.
 		void populate();
 		
 		std::string m_path;
