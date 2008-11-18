@@ -81,6 +81,8 @@ namespace Radiant {
 	avoid the need to resize the buffer later on. */
     void expand(unsigned size)
     { if(size > m_points.size()) m_points.resize(size); }
+    void resize(unsigned size)
+    { expand(size); m_count = size; }
 
     /// Gets an object, and check that the index is valid
     const T & getSafe(unsigned index) const
@@ -88,13 +90,24 @@ namespace Radiant {
     T & getSafe(unsigned index)
     { assert(index < m_count); return m_points[index]; }
 
+    T & getExpand(unsigned index)
+    { 
+      if(index >= m_count) { 
+	expand(index + 10);
+	m_count = index + 1;
+      } 
+      return m_points[index];
+    }
+
     /// Gets an object, without safety checks
     const T & get(int index) const { return m_points[index]; }
     T & get(int index) { return m_points[index]; }
     T & getLast() { return m_points[m_count - 1]; }
+    T & last() { return m_points[m_count - 1]; }
     /// Ges the last object in the storage array
     const T & getLast() const { return m_points[m_count - 1]; }
     const T & getLast(int n) const { return m_points[m_count - 1 - n]; }
+    const T & last(int n) const { return m_points[m_count - 1 - n]; }
 
     /// Appends an object to the vector
     /** The storage area is automatically incremented if necessary. */
@@ -106,6 +119,11 @@ namespace Radiant {
       m_points[m_count++] = x;
     }
     
+    /** Appends an object to the vector, equals append(x). This method
+	has been implemented so that this class looks and feels more
+	like a typical STL container. */
+    void push_back(const T & x) { append(x); }
+
     /// Increase the size of the storage by one, and return the last object
     /** The storage area is automatically incremented if necessary. */
     T & append()
@@ -154,6 +172,13 @@ namespace Radiant {
 
       for(unsigned i = 0; i < that.size(); i++)
 	m_points[m_count++] = that.get(i);
+    }
+
+    void setAll(const T & value)
+    {
+      for(unsigned i = 0; i < size(); i++)
+	m_points[i] = value;
+
     }
 
     /// Returns an iterator to the beginning of the vector
