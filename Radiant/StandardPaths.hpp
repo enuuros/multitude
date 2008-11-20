@@ -23,8 +23,10 @@ namespace Radiant
   /// Default font search paths (no trailing /) 
 #ifdef WIN32
   const std::string STD_FONT_PATHS("../../../share/MultiTouch/Fonts;C:/WINDOWS/Fonts;.");
-#else
+#elif __linux__
   const std::string STD_FONT_PATHS("../../share/MultiTouch/Fonts;/usr/share/fonts/truetype/ttf-dejavu;.");
+#else
+  const std::string STD_FONT_PATHS("../../share/MultiTouch/Fonts;/Library/Frameworks/MultiTouch.framework/Fonts;.");
 #endif
 
 }
