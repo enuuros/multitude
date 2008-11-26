@@ -161,4 +161,31 @@ namespace Dyslexic
     render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
   }
 
+
+  void GPUFont::renderLines(const char * str, Nimble::Vector2 loc)
+  {
+    float lh = cpuFont()->lineHeight();
+
+    int left = strlen(str);
+    int linelen = strchrnul(str, '\n') - str;
+
+    while(left) {
+          
+      if(linelen) {
+        render(str, linelen, Nimble::Matrix3::translate2D(loc));
+      }
+
+      loc.y += lh;
+          
+      str += linelen + 1;
+
+      if(linelen >= left)
+        left = 0;
+      else {
+        left = strlen(str);
+        linelen = strchrnul(str, '\n') - str;
+      }
+    }
+    
+  }
 }

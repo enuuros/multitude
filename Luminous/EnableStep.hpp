@@ -23,6 +23,7 @@
 
 namespace Luminous {
 
+  /** Enables some OpenGL feature while this object exists. */ 
   class EnableStep : public Patterns::NotCopyable
   {
   public:
