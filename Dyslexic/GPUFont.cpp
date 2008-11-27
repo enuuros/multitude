@@ -17,6 +17,8 @@
 
 #include "CPUFont.hpp"
 
+#include <Radiant/StringUtils.hpp>
+
 namespace Dyslexic
 {
 
@@ -167,7 +169,7 @@ namespace Dyslexic
     float lh = cpuFont()->lineHeight();
 
     int left = strlen(str);
-    int linelen = strchrnul(str, '\n') - str;
+    int linelen = Radiant::StringUtils::strchrnul(str, '\n') - str;
 
     while(left) {
           
@@ -183,7 +185,7 @@ namespace Dyslexic
         left = 0;
       else {
         left = strlen(str);
-        linelen = strchrnul(str, '\n') - str;
+        linelen = Radiant::StringUtils::strchrnul(str, '\n') - str;
       }
     }
     

@@ -155,6 +155,17 @@ namespace Radiant
       }
     }
 
+    const char * strchrnul(const char * str, int c)
+    {
+      while(true) {
+	if(str[0] == 0)
+	  return str;
+	else if(str[0] == c)
+	  return str;
+	str++;
+      }
+    }
+    
     int lineCount(const char * s)
     {
       if(!s)
