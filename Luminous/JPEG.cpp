@@ -20,20 +20,48 @@
 #include <iostream>
 
 extern "C" {
-#include <jpeglib.h>
+# include <jpeglib.h>
+# include <setjmp.h>
 }
 
 using namespace std;
 
 namespace Luminous
 {
+  
+  // Our own error handler to avoid calling exit() if libjpeg encounters a fatal
+  // error.
+  struct LuminousErrorMgr {
+    struct jpeg_error_mgr pub;
+    jmp_buf setjmpBuffer;
+  };
+
+  // The actual error handling routine
+  void luminousErrorExit(j_common_ptr cinfo)
+  {
+    LuminousErrorMgr * myErr = (LuminousErrorMgr *)cinfo->err;
+
+    // Display the error message
+    (*cinfo->err->output_message)(cinfo);
+
+    // Return control to setjmp location instead of calling exit()
+    longjmp(myErr->setjmpBuffer, 1);    
+  }
+
   bool Image::readJPGHeader(FILE * file, ImageInfo & info)
   {
-    struct jpeg_error_mgr jerr;
+    LuminousErrorMgr jerr;
     struct jpeg_decompress_struct cinfo;
 
-    // Set error handler
-    cinfo.err = jpeg_std_error(&jerr);
+    // Set the standard error handler first, but override the error_exit
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = luminousErrorExit;
+
+    // Setup a return context with setjmp for error_exit to use
+    if(setjmp(jerr.setjmpBuffer)) {
+      jpeg_destroy_decompress(&cinfo);
+      return false;
+    }
 
     // Init decompression object
     jpeg_create_decompress(&cinfo);
@@ -63,11 +91,18 @@ namespace Luminous
 
   bool Image::readJPG(FILE* file)
   {
-    struct jpeg_error_mgr jerr;
+    LuminousErrorMgr jerr;
     struct jpeg_decompress_struct cinfo;
-    
-    // Set error handler
-    cinfo.err = jpeg_std_error(&jerr);
+        
+    // Set error handler, override exit_error
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = luminousErrorExit;
+
+    // Setup return context for error_exit
+    if(setjmp(jerr.setjmpBuffer)){
+      jpeg_destroy_decompress(&cinfo);
+      return false;
+    }
 
     // Init decompression object
     jpeg_create_decompress(&cinfo);
