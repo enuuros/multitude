@@ -1,5 +1,6 @@
 #include "CodecRegistry.hpp"
 #include "ImageCodec.hpp"
+#include "Luminous.hpp"
 
 #include <Radiant/StringUtils.hpp>
 
@@ -14,6 +15,8 @@ namespace Luminous
 
   ImageCodec * CodecRegistry::getCodec(const std::string & filename, FILE * file)
   {
+    Luminous::initDefaultImageCodecs();
+
     ImageCodec * codec = 0;
 
     // Try a codec that matches the extension first
@@ -26,9 +29,12 @@ namespace Luminous
     if(file) {
      
       // Verify our choice
-      if(codec && codec->canRead(file)) 
+      if(codec && codec->canRead(file))
         return codec;
-     
+
+      Radiant::debug("CodecRegistry::getCodec # Default codec failed for %s (%s, %p)",
+		     filename.c_str(), ext.c_str(), codec);
+      
       // No codec matched the extension, go through all registered codecs and
       // see if they match
       for(Codecs::iterator it = m_codecs.begin(); it != m_codecs.end(); it++) {
@@ -47,6 +53,9 @@ namespace Luminous
 
   void CodecRegistry::registerCodec(ImageCodec * codec)
   {
+    Radiant::debug("CodecRegistry::registerCodec # %s",
+		   typeid(*codec).name());
+
     namespace su = Radiant::StringUtils;
 
     m_codecs.push_back(codec);
@@ -57,6 +66,7 @@ namespace Luminous
 
     for(su::StringList::iterator it = exts.begin(); it != exts.end(); it++) {
       m_aliases.insert(std::make_pair(*it, codec));
+      Radiant::debug("Adding codec %p for file type %s", codec, (*it).c_str());
     }    
   }
 

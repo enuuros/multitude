@@ -15,6 +15,7 @@ namespace Luminous
   class ImageCodec 
   {
     public:
+      virtual ~ImageCodec() {}
       /// Can this codec read the given file? The method should examine the file
       /// contents and return true if this codec can read it. The function must
       /// not change the current position in the file.

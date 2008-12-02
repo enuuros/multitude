@@ -9,6 +9,7 @@ namespace Luminous
   class ImageCodecPNG : public ImageCodec
   {
     public:
+      virtual ~ImageCodecPNG();
       virtual bool canRead(FILE * file);
 
       virtual std::string extensions() const;

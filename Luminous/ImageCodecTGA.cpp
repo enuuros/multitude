@@ -29,6 +29,9 @@ namespace Luminous
   } TGAHeader;
 
 
+  ImageCodecTGA::~ImageCodecTGA()
+  {}
+
   bool ImageCodecTGA::canRead(FILE * file)
   {    
     TGAHeader header;

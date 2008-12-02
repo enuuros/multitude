@@ -435,7 +435,8 @@ namespace Luminous {
     m_info = Luminous::ImageInfo();
 
     if(!Luminous::Image::ping(filename, m_info)) {
-      error("CPUMipmaps::startLoading # failed to query image size");
+      error("CPUMipmaps::startLoading # failed to query image size for %s",
+	    filename);
       return false;
     }
 

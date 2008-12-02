@@ -46,6 +46,7 @@ namespace Luminous
       too low OpenGL version).
   */
   LUMINOUS_API bool initLuminous();
+  LUMINOUS_API void initDefaultImageCodecs();
 
 }
 

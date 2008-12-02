@@ -7,6 +7,8 @@
 
 namespace Luminous
 {
+  ImageCodecPNG::~ImageCodecPNG()
+  {}
 
   bool ImageCodecPNG::canRead(FILE * file)
   {

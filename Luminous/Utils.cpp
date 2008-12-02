@@ -1157,7 +1157,8 @@ namespace Luminous {
 				 float width, float blendwidth,
 				 int linesegments, const float * color)
   {
-    glFilledSoftArc(center[0], center[1], radius, 0.0f, float(Nimble::Math::TWO_PI),
+    glFilledSoftArc(center[0], center[1], radius, 0.0f,
+		    float(Nimble::Math::TWO_PI),
 		    width, blendwidth, linesegments, color);
   }
 

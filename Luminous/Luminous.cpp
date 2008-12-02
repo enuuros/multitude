@@ -65,12 +65,25 @@ namespace Luminous
       return false;
     }
 
+    initDefaultImageCodecs();
+
+    return true;
+  }
+  
+  void initDefaultImageCodecs()
+  {
+    static bool done = false;
+
+    if(done)
+      return;
+
+    done = true;
+
     // Register built-in image codecs
     Image::codecs()->registerCodec(new ImageCodecTGA());
     Image::codecs()->registerCodec(new ImageCodecPNG());
     Image::codecs()->registerCodec(new ImageCodecJPEG());
 
-    return true;
   }
 
 }

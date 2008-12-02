@@ -30,6 +30,8 @@ namespace Luminous
     longjmp(myErr->setjmpBuffer, 1);    
   }
 
+  ImageCodecJPEG::~ImageCodecJPEG()
+  {}
 
   bool ImageCodecJPEG::canRead(FILE * file)
   {
