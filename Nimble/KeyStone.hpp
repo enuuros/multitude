@@ -101,6 +101,8 @@ namespace Nimble {
     /** This function applies the lens correction and projection
 	matrix on the coordinates. */
     Nimble::Vector2 project(const Nimble::Vector2 &) const;
+    /** Project the point from camera coordinates to normalized
+	coordinates in range [0,1].*/
     Nimble::Vector2 project01(const Nimble::Vector2 &) const;
     /// Applies a 3x3 correction marix on a 2D vector.
     static Nimble::Vector2 project(const Nimble::Matrix3 & m,
@@ -109,7 +111,10 @@ namespace Nimble {
       Nimble::Vector3 p = m * v;
       return Nimble::Vector2(p.x / p.z, p.y / p.z);
     }
-
+    
+    /** Do inverse projection (from screen to camera coordinates),
+	ignoring the camera barrel distortion. Useful as a rough
+	estimation of the point location on the camera image. x*/
     Nimble::Vector2 projectInverse(const Nimble::Vector2 &) const;
 
     /// Returns a corner point in camera coordinates
@@ -203,6 +208,10 @@ namespace Nimble {
 
     void updateLimits();
 
+    /** Returns the version number of the object. Whenever the
+	keystone information is modified, the version number is
+	incremented. This information can be used by other objects to
+	check is they need to update some of their data structures.*/
     int version() { return m_version; }
 
   private:

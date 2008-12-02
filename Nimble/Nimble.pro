@@ -19,6 +19,7 @@ HEADERS += Vector4.hpp
 
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
+SOURCES += Random.cpp
 SOURCES += Rect.cpp
 
 include(../library.pri)

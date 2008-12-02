@@ -16,6 +16,8 @@
 #ifndef NIMBLE_RANDOM_HPP
 #define NIMBLE_RANDOM_HPP
 
+#include <Nimble/Vector2.hpp>
+
 namespace Nimble {
 
   /// Random number generator with uniform distribution
@@ -82,9 +84,12 @@ namespace Nimble {
       return Nimble::Vector2f(rand11(), rand11()).normalize();
     }
 
+    static RandomUniform & instance() { return m_instance; }
+
   private:
     unsigned m_val;
     static const unsigned m_randMul = 134695621;  
+    static RandomUniform  m_instance;
   };
 
   /// RandomGaussian generates pseudo-random numbers from a normal (gaussian) distribution.
