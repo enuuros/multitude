@@ -22,8 +22,8 @@
 #include <Radiant/ImageConversion.hpp>
 #include <Radiant/Sleep.hpp>
 
-#include <Dyslexic/GPUFont.hpp>
-#include <Dyslexic/CPUFont.hpp>
+#include <Poetic/GPUFont.hpp>
+#include <Poetic/CPUFont.hpp>
 
 #include <Luminous/Utils.hpp>
 
@@ -476,7 +476,7 @@ namespace VideoDisplay {
   void ShowGL::render(Luminous::GLResources * resources,
 		      Vector2 topleft, Vector2 bottomright,
 		      const Nimble::Matrix3f * transform,
-		      Dyslexic::GPUFont * subtitleFont,
+		      Poetic::GPUFont * subtitleFont,
 		      float subTitleSpace)
   {
     GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, &yuvkey, resources);
@@ -557,7 +557,7 @@ namespace VideoDisplay {
 
       // puts("RENDERING SUBS");
 
-      Dyslexic::CPUFont * cpuFont = subtitleFont->cpuFont();
+      Poetic::CPUFont * cpuFont = subtitleFont->cpuFont();
 
       float fontH = cpuFont->lineHeight();
       float subH = fontH * 2.2f;

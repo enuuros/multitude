@@ -39,7 +39,7 @@ namespace Resonant {
   class DSPNetwork;
 }
 
-namespace Dyslexic {
+namespace Poetic {
   class GPUFont;
 }
 
@@ -149,7 +149,7 @@ namespace VideoDisplay {
     VIDEODISPLAY_API void render(Luminous::GLResources * resources,
 		Vector2 topleft, Vector2 bottomright,
 		const Nimble::Matrix3f * transform = 0,
-		Dyslexic::GPUFont * subtitleFont = 0,
+		Poetic::GPUFont * subtitleFont = 0,
 		float subTitleSpace = 0);
 
       /// Pixel size of the video image.
