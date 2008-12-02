@@ -1,34 +1,16 @@
-/* COPYRIGHT
- *
- * This file is part of Luminous.
- *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
- *
- * See file "Luminous.hpp" for authors and more details.
- *
- * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
- * from the GNU organization (www.gnu.org).
- * 
- */
-
-#include <Luminous/Image.hpp>
+#include "ImageCodecJPEG.hpp"
+#include "Image.hpp"
 
 #include <Radiant/Trace.hpp>
-
-#include <iostream>
 
 extern "C" {
 # include <jpeglib.h>
 # include <setjmp.h>
 }
 
-using namespace std;
-
 namespace Luminous
 {
-  
+
   // Our own error handler to avoid calling exit() if libjpeg encounters a fatal
   // error.
   struct LuminousErrorMgr {
@@ -48,7 +30,31 @@ namespace Luminous
     longjmp(myErr->setjmpBuffer, 1);    
   }
 
-  bool Image::readJPGHeader(FILE * file, ImageInfo & info)
+
+  bool ImageCodecJPEG::canRead(FILE * file)
+  {
+    unsigned char header[2];
+
+    long pos = ftell(file);
+    if(fread(header, 1, 2, file) != 2)
+      return false;
+
+    fseek(file, pos, SEEK_SET);
+
+    return header[0] == 0xFF && header[1] == 0xD8;
+  }
+
+  std::string ImageCodecJPEG::extensions() const
+  {
+    return std::string("jpg jpeg");
+  }
+
+  std::string ImageCodecJPEG::name() const
+  {
+    return std::string("jpeg");
+  }
+
+  bool ImageCodecJPEG::ping(ImageInfo & info, FILE * file)
   {
     LuminousErrorMgr jerr;
     struct jpeg_decompress_struct cinfo;
@@ -89,11 +95,11 @@ namespace Luminous
     return true;
   }
 
-  bool Image::readJPG(FILE* file)
+  bool ImageCodecJPEG::read(Image & image, FILE * file)
   {
     LuminousErrorMgr jerr;
     struct jpeg_decompress_struct cinfo;
-        
+
     // Set error handler, override exit_error
     cinfo.err = jpeg_std_error(&jerr.pub);
     jerr.pub.error_exit = luminousErrorExit;
@@ -123,8 +129,7 @@ namespace Luminous
     } else if(cinfo.output_components == 3) {
       layout = PixelFormat::LAYOUT_RGB;
     } else {
-      cerr << "Image::readJPG # Unsupported number of components ("
-	   << cinfo.output_components << ") found" << endl;
+      Radiant::error("ImageCodecJPEG::read # Unsupported number of components (%d) found", cinfo.output_components);
       jpeg_destroy_decompress(&cinfo);
       return false;
     }
@@ -132,10 +137,10 @@ namespace Luminous
     int stride = cinfo.output_width * cinfo.output_components;
 
     // Allocate memory
-    allocate(cinfo.output_width, cinfo.output_height, PixelFormat(layout, PixelFormat::TYPE_UBYTE));
+    image.allocate(cinfo.output_width, cinfo.output_height, PixelFormat(layout, PixelFormat::TYPE_UBYTE));
 
     while(cinfo.output_scanline < cinfo.output_height) {
-      JSAMPROW scanline = &m_data [cinfo.output_scanline * stride];
+      JSAMPROW scanline = &image.bytes()[cinfo.output_scanline * stride];
       jpeg_read_scanlines(&cinfo, &scanline, 1);
     }
 
@@ -146,7 +151,7 @@ namespace Luminous
     return true;
   }
 
-  bool Image::writeJPG(FILE* file)
+  bool ImageCodecJPEG::write(const Image & image, FILE * file)
   {
     int quality = 100;
 
@@ -163,42 +168,42 @@ namespace Luminous
     jpeg_stdio_dest(&cinfo, file);
 
     // Parameters
-    cinfo.image_width = m_width;
-    cinfo.image_height = m_height; 
-    cinfo.input_components = m_pixelFormat.numChannels();
- 
+    cinfo.image_width = image.width();
+    cinfo.image_height = image.height(); 
+    cinfo.input_components = image.pixelFormat().numChannels();
+
     if(cinfo.input_components == 1) {
       cinfo.in_color_space = JCS_GRAYSCALE;
     } else if(cinfo.input_components == 3) {
       cinfo.in_color_space = JCS_RGB;
     } else {
-      cerr << "Image::writeJPG # JPEG format only supports "
-	"GRAYSCALE or RGB images" << endl;
+      Radiant::error("ImageCodecJPEG::write # JPEG format only supports GRAYSCALE or RGB images");
       jpeg_destroy_compress(&cinfo);
       return false;
     }
 
-    if(m_pixelFormat.type() != PixelFormat::TYPE_UBYTE) {
-      cerr << "Image::writeJPG # JPEG only supports byte-based components"
-	   << endl;
+    if(image.pixelFormat().type() != PixelFormat::TYPE_UBYTE) {
+      Radiant::error("ImageCodecJPEG::write # JPEG only supports byte-based components");
       jpeg_destroy_compress(&cinfo);
       return false;
     }
 
     // Default compression parameters
     jpeg_set_defaults(&cinfo);
-   
+
     // Set quality
     jpeg_set_quality(&cinfo, quality, TRUE);
 
     // Start compressing
     jpeg_start_compress(&cinfo, TRUE);
 
-    int stride = m_width * cinfo.input_components;
-  
+    int stride = image.width() * cinfo.input_components;
+
     // Write scanlines
     while(cinfo.next_scanline < cinfo.image_height) {
-      JSAMPROW row_pointer = &m_data[cinfo.next_scanline * stride];
+      unsigned char * buf = const_cast<unsigned char *> (image.bytes());
+      buf = buf + cinfo.next_scanline * stride;
+      JSAMPROW row_pointer = buf;
       jpeg_write_scanlines(&cinfo, &row_pointer, 1);
     }
 

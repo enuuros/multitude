@@ -31,6 +31,17 @@ HEADERS += Utils.hpp
 HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
 
+HEADERS += ImageCodec.hpp
+HEADERS += ImageCodecTGA.hpp
+HEADERS += CodecRegistry.hpp
+HEADERS += ImageCodecPNG.hpp
+HEADERS += ImageCodecJPEG.hpp
+
+SOURCES += ImageCodecJPEG.cpp
+SOURCES += ImageCodecPNG.cpp
+SOURCES += CodecRegistry.cpp
+SOURCES += ImageCodecTGA.cpp
+
 SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -45,17 +56,14 @@ SOURCES += GLSLProgramObject.cpp
 SOURCES += GLSLShaderObject.cpp
 SOURCES += GPUMipmaps.cpp
 SOURCES += Image.cpp
-SOURCES += JPEG.cpp
 SOURCES += Luminous.cpp
 #SOURCES += MipmapTask.cpp
 SOURCES += MultiHead.cpp
 SOURCES += Path.cpp
 SOURCES += PixelFormat.cpp
-SOURCES += PNG.cpp
 SOURCES += Task.cpp
 SOURCES += TCBSpline.cpp
 SOURCES += Texture.cpp
-SOURCES += TGA.cpp
 #SOURCES += TiledMipMapImage.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp

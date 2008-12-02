@@ -12,11 +12,6 @@ int main(int argc, char ** argv)
   argc--; argv++;
   const char * file = argv[0];
 
-  Luminous::ImageInfo info;
-  if(Luminous::Image::ping(file, info)) {
-    printf("%s : %d x %d\n", file, info.width, info.height); 
-  }
-
   SDL_Init(SDL_INIT_VIDEO);
 
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
@@ -36,8 +31,19 @@ int main(int argc, char ** argv)
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+  Luminous::ImageInfo info;
+  if(Luminous::Image::ping(file, info)) {
+    printf("%s : %d x %d\n", file, info.width, info.height); 
+  }
+
+  Luminous::Image image;
+  if(!image.read(file)) {
+    printf("failed to open %s\n", file);
+    return 1;
+  }
+
   Luminous::Texture2D tex;
-  if(!tex.loadImage(file, false)) return 1;
+  if(!tex.fromImage(image, false)) return 1;
 
   tex.bind();
 
@@ -77,6 +83,13 @@ int main(int argc, char ** argv)
     glEnd();
 	
     SDL_GL_SwapBuffers();
+  }
+
+  // Debug
+  const char * output = "debug.jpg";
+  if(!image.write(output)) {
+    printf("failed to save %s\n", output);
+    return false;
   }
 
   return 0;

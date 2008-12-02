@@ -14,7 +14,14 @@
  */
 
 #include <Luminous/Luminous.hpp>
+#include <Luminous/Image.hpp>
+#include <Luminous/CodecRegistry.hpp>
+#include <Luminous/ImageCodecTGA.hpp>
+#include <Luminous/ImageCodecPNG.hpp>
+#include <Luminous/ImageCodecJPEG.hpp>
+
 #include <Radiant/Trace.hpp>
+
 #include <string>
 #include <sstream>
 
@@ -57,6 +64,11 @@ namespace Luminous
 		     "some applications may fail.");
       return false;
     }
+
+    // Register built-in image codecs
+    Image::codecs()->registerCodec(new ImageCodecTGA());
+    Image::codecs()->registerCodec(new ImageCodecPNG());
+    Image::codecs()->registerCodec(new ImageCodecJPEG());
 
     return true;
   }

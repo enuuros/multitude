@@ -49,7 +49,7 @@ namespace Dyslexic
   FT_Library * freetype()
   {
     if(!g_library) {
-      bool result = initialize();
+      initialize();
     }
 
     return g_library;

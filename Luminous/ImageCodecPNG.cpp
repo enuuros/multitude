@@ -1,54 +1,58 @@
-/* COPYRIGHT
- *
- * This file is part of Luminous.
- *
- * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
- *
- * See file "Luminous.hpp" for authors and more details.
- *
- * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
- * from the GNU organization (www.gnu.org).
- * 
- */
-
-#include <Luminous/Image.hpp>
+#include "ImageCodecPNG.hpp"
+#include "Image.hpp"
 
 #include <png.h>
 
-#include <iostream>
-
-using namespace std;
+#include <Radiant/Trace.hpp>
 
 namespace Luminous
 {
-  bool Image::readPNGHeader(FILE * file, ImageInfo & info)
+
+  bool ImageCodecPNG::canRead(FILE * file)
   {
+    long pos = ftell(file);
+
     char header[8];
-    fread(header, 1, 8, file);
-    if(png_sig_cmp((png_bytep)header, 0, 8)) {
-      cerr << "Image::readPNGHeader # not a PNG file" << endl;
+    if(fread(header, 1, 8, file) != 8) 
       return false;
-    }
+
+    fseek(file, pos, SEEK_SET);
+
+    return png_sig_cmp((png_bytep)header, 0, 8) == 0;  
+  }
+
+  std::string ImageCodecPNG::extensions() const
+  {
+    return std::string("png");
+  }
+
+  std::string ImageCodecPNG::name() const
+  {
+    return std::string("png");
+  }
+
+  bool ImageCodecPNG::ping(ImageInfo & info, FILE * file)
+  {
+    // Skip the header
+    fseek(file, 8, SEEK_CUR);
 
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
-      cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
+      Radiant::error("ImageCodecPNG::ping # couldn't create PNG read struct");
       return false;
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if(info_ptr == NULL) {
       png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-      cerr << "Image::readPNG # couldn't create PNG info struct" << endl;
+      Radiant::error("ImageCodecPNG::ping # couldn't create PNG info struct");
       return false;
     }
 
     if(setjmp(png_jmpbuf(png_ptr))) {
       png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-      cerr << "Image::readPNG # couldn't set png_jumpbuf" << endl;
+      Radiant::error("ImageCodecPNG::ping # couldn't set png_jumpbuf");
       return false;
     }
 
@@ -96,7 +100,7 @@ namespace Luminous
         info.pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);  
         break;
       default:
-        cerr << "Image::readPNGHeader # unsupported number of channels (" << channels << ") found" << endl;
+        Radiant::error("ImageCodecPNG::ping # unsupported number of channels (%d) found", channels);
         return false; 
     };
 
@@ -105,32 +109,28 @@ namespace Luminous
     return true;
   }
 
-  bool Image::readPNG(FILE* file)
+  bool ImageCodecPNG::read(Image & image, FILE * file)
   {
-    char header[8];
-    fread(header, 1, 8, file);
-    if(png_sig_cmp((png_bytep)header, 0, 8)) {
-      cerr << "Image::readPNG # not a PNG file" << endl;
-      return false;
-    }
+    // Skip the header
+    fseek(file, 8, SEEK_CUR);
 
     // Initialize IO stuff
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
-      cerr << "Image::readPNG # couldn't create PNG read struct" << endl;
+      Radiant::error("ImageCodecPNG::read # couldn't create PNG read struct");
       return false;
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if(info_ptr == NULL) {
       png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-      cerr << "Image::readPNG # couldn't create PNG info struct" << endl;
+      Radiant::error("ImageCodecPNG::read # couldn't create PNG info struct");
       return false;
     }
 
     if(setjmp(png_jmpbuf(png_ptr))) {
       png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-      cerr << "Image::readPNG # couldn't set png_jumpbuf" << endl;
+      Radiant::error("ImageCodecPNG::read # couldn't set png_jumpbuf");
       return false;
     }
 
@@ -156,7 +156,7 @@ namespace Luminous
 
     // PNGs support 16 bpp, we don't
     if(bit_depth == 16) {
-      cout << "Image::readPNG # warning, converting 16-bit channels to 8-bit" << endl;
+      Radiant::trace(Radiant::WARNING, "ImageCodecPNG::read # warning, converting 16-bit channels to 8-bit");
       png_set_strip_16(png_ptr);
     }
 
@@ -186,17 +186,17 @@ namespace Luminous
         pf = PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE);  
         break;
       default:
-        cerr << "Image::readPNG # unsupported number of channels (" << channels << ") found" << endl;
+        Radiant::error("ImageCodecPNG::read # unsupported number of channels (%d) found");
         return false; 
     };
 
     // Allocate memory
-    allocate(width, height, pf);
+    image.allocate(width, height, pf);
 
-    png_bytep* row_pointers = new png_bytep [m_height];
+    png_bytep * row_pointers = new png_bytep [height];
 
-    for(int i = 0; i < m_height; i++)
-      row_pointers[i] = &m_data[0] + i * rowsize;
+    for(int i = 0; i < height; i++)
+      row_pointers[i] = image.bytes() + i * rowsize;
 
     png_read_image(png_ptr, row_pointers);
 
@@ -205,25 +205,26 @@ namespace Luminous
     png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 
     return true;
+
   }
 
-  bool Image::writePNG(FILE* file) 
+  bool ImageCodecPNG::write(const Image & image, FILE * file)
   {
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
     if(png_ptr == NULL) {
-      cerr << "Image::writePNG # couldn't create a PNG write struct" << endl;
+      Radiant::error("ImageCodecPNG::write # couldn't create a PNG write struct");
       return false;
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if(info_ptr == NULL) {
-      cerr << "Image::writePNG # couldn't create a PNG info struct" << endl;
+      Radiant::error("ImageCodecPNG::write # couldn't create a PNG info struct");
       png_destroy_write_struct(&png_ptr, &info_ptr);
       return false;
     }
 
     if(setjmp(png_jmpbuf(png_ptr))) {
-      cerr << "Image::writePNG # png_jmpbuf failed" << endl;
+      Radiant::error("ImageCodecPNG::write # png_jmpbuf failed");
       png_destroy_write_struct(&png_ptr, &info_ptr);
       return false;
     }
@@ -231,7 +232,7 @@ namespace Luminous
     png_init_io(png_ptr, file);
 
     int color_type;
-    int channels = m_pixelFormat.numChannels();
+    int channels = image.pixelFormat().numChannels();
 
     switch(channels) {
       case 1:
@@ -247,24 +248,24 @@ namespace Luminous
         color_type = PNG_COLOR_TYPE_RGB_ALPHA;
         break;
       default:
-        cerr << "Image::writePNG # cannot write a PNG file with " << channels << " channels." << endl;
+        Radiant::error("ImageCodecPNG::write # cannot write a PNG file with (%d).", channels);
         png_destroy_write_struct(&png_ptr, &info_ptr);
         return false;
     };
 
     png_set_IHDR(png_ptr, info_ptr,
-        m_width, m_height,
+        image.width(), image.height(),
         8, // bit depth
         color_type,
         PNG_INTERLACE_NONE,
         PNG_COMPRESSION_TYPE_DEFAULT,
         PNG_FILTER_TYPE_DEFAULT);
 
-    int rowsize = m_width * channels;
-    unsigned char** row_pointers = new unsigned char* [m_height];
+    int rowsize = image.width() * channels;
+    unsigned char** row_pointers = new unsigned char* [image.height()];
 
-    for(int i = 0; i < m_height; i++)
-      row_pointers[i] = &m_data[0] + rowsize * i;
+    for(int i = 0; i < image.height(); i++)
+      row_pointers[i] = const_cast<unsigned char *> (image.bytes()) + rowsize * i;
 
     png_set_rows(png_ptr, info_ptr, row_pointers);
     png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
@@ -277,4 +278,3 @@ namespace Luminous
   }
 
 }
-

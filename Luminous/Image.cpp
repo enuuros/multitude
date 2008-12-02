@@ -13,7 +13,9 @@
  * 
  */
 
-#include <Luminous/Image.hpp>
+#include "Image.hpp"
+#include "ImageCodec.hpp"
+#include "CodecRegistry.hpp"
 
 #include <Nimble/Math.hpp>
 
@@ -36,6 +38,13 @@ using namespace Radiant;
 
 namespace Luminous
 {
+
+  CodecRegistry * Image::codecs() 
+  {
+    static CodecRegistry cr;
+
+    return &cr;    
+  }
 
   Image::Image()
     : m_width(0),
@@ -226,7 +235,7 @@ namespace Luminous
         }
       }
 
-      write("some-with-a.png", IMAGE_TYPE_PNG);
+      write("some-with-a.png");
 
       return true;
     }
@@ -429,8 +438,6 @@ namespace Luminous
     unsigned int bytes = width * height * pf.numChannels();
     unsigned int mybytes = m_width * m_height * m_pixelFormat.numChannels();
 
-    
-
     Radiant::trace(DEBUG, "Image::allocate # PARAMS(%d, %d, %s) CURRENT(%d, %d, %s)", width, height, pf.toString().c_str(), m_width, m_height, m_pixelFormat.toString().c_str());
     Radiant::trace(DEBUG, "\tbytes = %u, mybytes = %u", bytes, mybytes);
 
@@ -446,7 +453,7 @@ namespace Luminous
         m_data = 0;
     }
   }
-
+/*
   // Guess the filetype from the extension
   static Image::ImageType typeFromFileExt(const std::string & filename) 
   {
@@ -460,68 +467,47 @@ namespace Luminous
 
     return type;
   }
-
-  bool Image::read(const char* filename, ImageType* pType)
+*/
+  bool Image::read(const char* filename)
   {
+    bool result = false;
+
     clear();
 
-    bool ret = false;
-
-    ImageType type = typeFromFileExt(filename);
-
-    // Figure out the file type
-    FILE* file = fopen(filename, "rb");
-    if(file) {
-      switch(type) {
-        case IMAGE_TYPE_PNG:
-          ret = readPNG(file);
-          if(!ret)
-            ret = readJPG(file);
-          break;
-        case IMAGE_TYPE_JPG:
-          ret = readJPG(file);
-          if(!ret)
-            ret = readPNG(file);
-          break;
-        case IMAGE_TYPE_TGA:
-          ret = readTGA(file);
-          break;
-        default:
-          error("Image::read # unknown image format in '%s'", filename);
-          break;
-      }
-
-      fclose(file);
+    FILE * file = fopen(filename, "rb");
+    if(!file) {
+      error("Image::read # failed to open file '%s'", filename);
+      return false;
     }
 
-    if(pType) *pType = type;
+    ImageCodec * codec = codecs()->getCodec(filename, file);
+    if(codec) {
+      result = codec->read(*this, file);
+    } else {
+      error("Image::read # no suitable codec found for '%s'", filename);
+    }
 
-    return ret;
+    fclose(file);
+
+    return result;
   }
 
-  bool Image::write(const char* filename, ImageType type)
+  bool Image::write(const char* filename)
   {
     bool ret = false;
 
-    FILE* file = fopen(filename, "wb");
+    FILE * file = fopen(filename, "wb");
     if(!file) {
       error("Image::write # failed to open file '%s'", filename);
-    } else {
-
-      switch(type) {
-        case IMAGE_TYPE_PNG:
-          ret = writePNG(file);
-          break;
-        case IMAGE_TYPE_JPG:
-          ret = writeJPG(file);
-          break;
-        default:
-          error("Image::write # unknown file format");
-          break;
-      }
-
-      fclose(file);
+      return false;
     }
+
+    ImageCodec * codec = codecs()->getCodec(filename);
+    if(codec) {
+      ret = codec->write(*this, file);
+    }
+
+    fclose(file);
 
     return ret;
   }
@@ -643,35 +629,24 @@ float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2)
   return (ex - sx) * (ey - sy);
 }
 
-bool Image::ping(const char * filename, ImageInfo & info) {
-  FILE * file = fopen(filename, "r");
+bool Image::ping(const char * filename, ImageInfo & info)
+{
+  bool result = false;
+
+  FILE * file = fopen(filename, "rb");
   if(!file) {
     Radiant::trace(Radiant::FAILURE, "Image::ping # failed to open file '%s' for reading.", filename);
-    return false;
+    return result;
   }
-
-  Image::ImageType type = typeFromFileExt(filename);
-
-  bool ok = false;
-
-  switch(type) {
-    case Image::IMAGE_TYPE_JPG:
-      ok = readJPGHeader(file, info);
-      break;
-    case Image::IMAGE_TYPE_PNG:
-      ok = readPNGHeader(file, info);
-      break;
-    case Image::IMAGE_TYPE_TGA:
-      ok = readTGAHeader(file, info);
-      break;
-    default:
-      Radiant::trace(Radiant::FAILURE, "Image::ping # '%s' has unsupported image type.", filename);
-      break;
-  };
+  
+  ImageCodec * codec = codecs()->getCodec(filename, file);
+  if(codec) {
+    result = codec->ping(info, file);
+  }
 
   fclose(file);
 
-  return ok;
+  return result;
 }
 
 }

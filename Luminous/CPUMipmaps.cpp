@@ -204,15 +204,14 @@ namespace Luminous {
       bool ok;
 
       if(dimage->pixelFormat() == PixelFormat::rgbaUByte()) {
-	// if(FileUtils::suffix(m_file) == "PNG")
-	//  m_file = FileUtils::baseFileName(m_file) + ".png";
-	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_PNG);
-      }
-      else
-	ok = dimage->write(m_file.c_str(), Image::IMAGE_TYPE_JPG);
+        // if(FileUtils::suffix(m_file) == "PNG")
+        //  m_file = FileUtils::baseFileName(m_file) + ".png";
+        ok = dimage->write(m_file.c_str());
+      } else
+        ok = dimage->write(m_file.c_str());
 
       if(ok)
-	debug("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
+        debug("CPUMipmaps::Scaler::doTask # Saved mipmap %s", m_file.c_str());
       else
         error("CPUMipmaps::Scaler::doTask # Failed saving %s", m_file.c_str());
     }

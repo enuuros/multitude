@@ -24,6 +24,8 @@
 
 namespace Luminous
 {
+  class CodecRegistry;
+
   /// Simple struct containing basic image information that can be quickly
   /// queried (with Image::ping) without loading the full image.
   struct ImageInfo {
@@ -36,16 +38,11 @@ namespace Luminous
   class LUMINOUS_API Image
   {
   public:
-    enum ImageType {
-      IMAGE_TYPE_UNKNOWN,
-      IMAGE_TYPE_PNG,
-      IMAGE_TYPE_JPG,
-      IMAGE_TYPE_TGA
-    };
-
     Image();
     Image(const Image& img);
     ~Image();
+
+    void allocate(int width, int height, const PixelFormat & pf);
 
     float aspect() const { return (float)m_width / (float)m_height; }
 
@@ -56,20 +53,19 @@ namespace Luminous
 
     unsigned char* line(unsigned y) { return &m_data[y * lineSize()]; }
 
-    unsigned char* bytes() { return & m_data[0]; }
-    const unsigned char* bytes() const { return & m_data[0]; }
+    unsigned char * bytes() { return & m_data[0]; }
+    const unsigned char * bytes() const { return & m_data[0]; }
 
     static bool ping(const char * filename, ImageInfo & info);
 
-    bool read(const char* filename, ImageType* type = 0);
-    bool write(const char* filename, ImageType type);
+    bool read(const char * filename);
+    bool write(const char * filename);
 
     void fromData(const unsigned char * bytes, int width, int height, 
 		  PixelFormat format);
 
     const PixelFormat& pixelFormat() const { return m_pixelFormat; }
 
-    void allocate(int width, int height, const PixelFormat& pf);     
     void clear();
 
     bool empty() const { return (m_data == 0); }
@@ -89,27 +85,17 @@ namespace Luminous
 
     Image & operator = (const Image& img);
 
+    static CodecRegistry * codecs();
+
   protected:
 
     void sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const;
     float computeWeight(int x, int y, float x1, float y1, float x2, float y2) const;
 
-    static bool readPNGHeader(FILE * file, ImageInfo & info);
-    bool readPNG(FILE* file);
-    bool writePNG(FILE* file);
-
-    static bool readJPGHeader(FILE * file, ImageInfo & info);
-    bool readJPG(FILE* file);
-    bool writeJPG(FILE* file);
-
-    static bool readTGAHeader(FILE * file, ImageInfo & info);
-    bool readTGA(FILE* file);
-    bool writeTGA(FILE* file);
-
     int m_width;
     int m_height;
     PixelFormat m_pixelFormat;
-    unsigned char* m_data;    
+    unsigned char* m_data;
   };
 
 }
