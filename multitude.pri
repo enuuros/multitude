@@ -21,7 +21,7 @@ macx {
   }
 }
 
-LIB_DYSLEXIC = -lDyslexic
+LIB_DYSLEXIC = -lPoetic
 LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
@@ -47,7 +47,7 @@ macx {
 
     MULTI_LIB_FLAG = -F
 
-    LIB_DYSLEXIC = -framework,Dyslexic
+    LIB_DYSLEXIC = -framework,Poetic
     LIB_FLUFFY = -framework,Fluffy
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble

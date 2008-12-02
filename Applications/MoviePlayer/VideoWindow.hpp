@@ -20,8 +20,8 @@
 #define _WINSOCKAPI_	// timeval struct redefinition
 #endif
 
-#include <Dyslexic/CPUFontBase.hpp>
-#include <Dyslexic/GPUFont.hpp>
+#include <Poetic/CPUFontBase.hpp>
+#include <Poetic/GPUFont.hpp>
 
 #include <Luminous/GLResources.hpp>
 
@@ -69,8 +69,8 @@ protected:
 
   QTimer m_timer;
   Radiant::TimeStamp m_lastActivity;
-  Dyslexic::CPUFontBase * m_subCPUFont;
-  Dyslexic::GPUFont * m_subGPUFont;
+  Poetic::CPUFontBase * m_subCPUFont;
+  Poetic::GPUFont * m_subGPUFont;
 
   Luminous::GLResources m_glResources;
 

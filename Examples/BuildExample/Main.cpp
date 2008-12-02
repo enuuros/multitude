@@ -1,5 +1,5 @@
 /* Just include random files to see that it is working correctly. */
-#include <Dyslexic/GPUFont.hpp>
+#include <Poetic/GPUFont.hpp>
 
 #include <Luminous/Utils.hpp>
 

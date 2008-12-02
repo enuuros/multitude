@@ -25,8 +25,8 @@
 
 #include <VideoDisplay/SubTitles.hpp>
 
-#include <Dyslexic/CPUBitmapFont.hpp>
-#include <Dyslexic/GPUTextureFont.hpp>
+#include <Poetic/CPUBitmapFont.hpp>
+#include <Poetic/GPUTextureFont.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QKeyEvent>
@@ -131,10 +131,10 @@ void VideoWindow::initializeGL()
   std::string filename = Radiant::FileUtils::findFile(ttf, path);
 
   if(filename.size()) {
-    m_subCPUFont = new Dyslexic::CPUBitmapFont();
+    m_subCPUFont = new Poetic::CPUBitmapFont();
     if(m_subCPUFont->load(filename.c_str())) {
       m_subCPUFont->setFaceSize(25, 72);
-      m_subGPUFont = new Dyslexic::GPUTextureFont(m_subCPUFont);
+      m_subGPUFont = new Poetic::GPUTextureFont(m_subCPUFont);
       Radiant::trace(Radiant::DEBUG, "VideoWindow::initializeGL # Got font");
     }
   }
