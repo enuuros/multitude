@@ -30,7 +30,8 @@ namespace Patterns {
   template<class T>
   class Singleton
   {
-  public:
+ public:
+    /// @todo this is not thread-safe
     static T & instance() {
       static T * obj = 0;
 
