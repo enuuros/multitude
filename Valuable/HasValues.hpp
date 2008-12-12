@@ -30,7 +30,13 @@
 
 namespace Valuable
 {
+  /// Base class for objects that include member variables with automatic IO
+  /** This base class has a list of #ValueObject child objects (aka
+      member variables) that are named with uniqye striong.
 
+      Deleting the child objects is the responsibility of the child
+      classes, HasValues simply maintains a list of children.
+  */
   class VALUABLE_API HasValues : public ValueObject
   {
     public:
@@ -38,8 +44,12 @@ namespace Valuable
       HasValues(HasValues * parent, const std::string & name, bool transit = false);
       virtual ~HasValues();
 
+      /// Adds new ValueObject to the list of values
       bool addValue(const std::string & name, ValueObject * const value);
+      /// Gets a ValueObject with the given name
+      /** If no object can be found, then this method return zero. */
       ValueObject * getValue(const std::string & name);
+      /// Removes a ValueObject from the list of value.
       void removeValue(ValueObject * const value);      
 
       /// @todo add 'shortcut' API
@@ -49,18 +59,25 @@ namespace Valuable
       template<class T>
       bool setValue(const std::string & name, const T & v);
 
+      /// Saves this object (and its children) to an XML file
       bool saveToFileXML(const char * filename);
+      /// Saves this object (and its children) to binary data buffer
       bool saveToMemoryXML(std::vector<char> & buffer);
-
+      
+      /// Reads this object (and its children) from an XML file
       bool loadFromFileXML(const char * filename);
 
+      /// Returns the typename of this object. 
       virtual const char * const type() const { return VO_TYPE_HASVALUES; }
-
+      
+      /// Serializes this object (and its children) to a DOM node
       DOMElement serializeXML(DOMDocument * doc);
+      /// De-serializes this object (and its children) from a DOM node
       bool deserializeXML(DOMElement element);
-
+      
       virtual bool readElement(DOMElement element);
-
+      
+      /// Prints the contents of this ValueObject to the terinal
       void debugDump();
 
       typedef std::map<std::string, ValueObject *> container;

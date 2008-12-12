@@ -25,7 +25,8 @@
 #include <vector>
 
 namespace VideoDisplay {
-  
+
+  /// Subtitles for the videos
   class VIDEODISPLAY_API SubTitles 
   {
   public:

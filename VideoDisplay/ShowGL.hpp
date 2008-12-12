@@ -51,6 +51,7 @@ namespace VideoDisplay {
 
   class AudioTransfer;
 
+  /// Objects throws the video to an OpenGL device
   class ShowGL
   {
   public:

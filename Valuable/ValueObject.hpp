@@ -33,6 +33,16 @@ namespace Valuable
   class DOMElement;
   class DOMDocument;
 
+
+  /// Base class for values 
+  /** Typical child classes include some POD elements (floats, ints,
+      vector2) etc, that can be accesses through the API.
+
+      It is also possible to add listeners to values, so that if a
+      value is changed, then a call-back to soem other object is
+      followed. The listener-API is a bit hard-core, but it has plenty
+      of power when you need to track the state of other objects.
+  */
   class VALUABLE_API ValueObject
   {
     public:
@@ -43,7 +53,7 @@ namespace Valuable
       ValueObject(HasValues * parent, const std::string & name, bool transit = false);
       virtual ~ValueObject();
       
-      std::string name() const { return m_name; }
+      const std::string & name() const { return m_name; }
       void setName(const std::string & s) { m_name = s; }
   
       std::string path() const;
@@ -69,18 +79,23 @@ namespace Valuable
       HasValues * parent() { return m_parent; }
       void removeParent();
 
-    void addListener(ValueListener * l) { m_listeners.push_back(l); }
-    void removeListener(ValueListener * l) { m_listeners.remove(l); }
+      /// Adds a listener that is invoked whenever the value is changed
+      void addListener(ValueListener * l) { m_listeners.push_back(l); }
+      /// Removes a listener from the listener list
+      void removeListener(ValueListener * l) { m_listeners.remove(l); }
     
     protected:
+      /// Invokes the change valueChanged function of all listeners
       virtual void emitChange();
+      /// Invokes the change valueDeleted function of all listeners
       virtual void emitDelete();
-
+    private:
+      /// The object that holds this object
       HasValues * m_parent;
       std::string m_name;
       bool m_transit;
 
-    ValueListeners m_listeners;
+      ValueListeners m_listeners;
 
       friend class HasValues;
   };

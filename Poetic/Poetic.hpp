@@ -15,18 +15,19 @@
 #ifndef POETIC_FREETYPE_HPP
 #define POETIC_FREETYPE_HPP
 
-//#include <ft2build.h>
-//#include FT_FREETYPE_H
-
 struct FT_LibraryRec_;
 
-/** Poetic is an OpenGL font rendering library.
- *
- * Poetic is a C++ OpenGL font rendering library based on FTGL
- * 2.1.2. It was built to be used in multithreaded rendering.
- *
- * @author Esa Nuuros
- */
+/// Poetic is an OpenGL font rendering library.
+
+/** Poetic is a C++ OpenGL font rendering library loosely based on FTGL
+    2.1.2. It was built to be used in both single-threaded and
+    multi-threaded rendering.
+
+    The main classes of the library are #CPUFont and #GPUFont. The are
+    abstract base classes for text rendering.
+    
+    @author Esa Nuuros
+*/
 namespace Poetic
 {
 

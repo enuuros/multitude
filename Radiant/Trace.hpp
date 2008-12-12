@@ -38,6 +38,10 @@ namespace Radiant {
   /** This function calls trace to do the final work and it is
       effectively the same as calling trace(DEBUG, ...). */
   RADIANT_API void debug(const char * msg, ...);
+  /// Display information output
+  /** This function calls trace to do the final work and it is
+      effectively the same as calling trace(INFO, ...). */
+  RADIANT_API void info(const char * msg, ...);
   /// Display error output
   /** This function calls trace to do the final work and it is
       effectively the same as calling trace(ERROR, ...). */

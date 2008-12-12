@@ -157,12 +157,12 @@ namespace Valuable
   template<>
   DOMElement ValueStringT<std::wstring>::serializeXML(DOMDocument * doc)
   {
-    if(m_name.empty()) {
+    if(name().empty()) {
       Radiant::error("ValueWString::serializeXML # attempt to serialize object with no name");
       return DOMElement(0);
     }
 
-    DOMElement elem = doc->createElement(m_name.c_str());
+    DOMElement elem = doc->createElement(name().c_str());
     elem.setAttribute("type", type());
   
     const std::wstring & ws = asWString();

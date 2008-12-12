@@ -23,7 +23,8 @@
 
 namespace Valuable
 {
-  /* We use namespace mxercesc, as xerces is just a macro around the
+  /// Utility namespace for handling the xerces_2_x namespaces in Valuable
+  /** We use namespace mxercesc, as xerces is just a macro around the
      xercesc_2_7 or xercesc_2_8 namespaces. */
   namespace mxercesc {
     class DOMElement;

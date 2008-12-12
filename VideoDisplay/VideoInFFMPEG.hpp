@@ -22,20 +22,25 @@
 #include <Screenplay/VideoFFMPEG.hpp>
 
 namespace VideoDisplay {
-
+  
+  /// Movie file decoder, that uses the Screenplay::VideoInputFFMPEG
   class VideoInFFMPEG : public VideoIn
   {
   public:
     VideoInFFMPEG();
     virtual ~VideoInFFMPEG();
 
+    /// Gets the audio parameters of the movie
     virtual void getAudioParameters(int * channels, 
 				    int * sample_rate,
 				    Radiant::AudioSampleFormat * format);
-
+    /// Returns the nominal fps of the movie
     virtual float fps();
-
+    
+    /// Returns the total length of the movie, in seconds
     virtual double durationSeconds();
+    
+    /// Seek to some time in the movie
     virtual bool seekTo(double seconds);
   
   private:

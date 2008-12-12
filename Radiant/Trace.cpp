@@ -90,6 +90,18 @@ namespace Radiant {
     __output(DEBUG, buf);
   }
 
+  void info(const char * msg, ...)
+  {
+    char buf[4096];
+    va_list args;
+    
+    va_start(args, msg);
+    vsnprintf(buf, 4096, msg, args);
+    va_end(args);
+
+    __output(INFO, buf);
+  }
+
   void error(const char * msg, ...)
   {
     char buf[4096];

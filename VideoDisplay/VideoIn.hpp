@@ -32,6 +32,7 @@
 
 namespace VideoDisplay {
 
+  /// Base class for video file inputs, for the VideoDisplay framework
   class VIDEODISPLAY_API VideoIn : public Radiant::Thread
   {
   public:
