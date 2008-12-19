@@ -21,6 +21,9 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <string.h>
+#include <stdlib.h>
+
 namespace Radiant {
 
   static bool __verbose = true;

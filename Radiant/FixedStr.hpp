@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <cassert>
 
+#include <string.h>
+
 namespace Radiant {
 
   /** Template class for fixed-capacity strings. */

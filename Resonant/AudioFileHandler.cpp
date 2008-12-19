@@ -21,6 +21,7 @@
 #include <sndfile.h>
 
 #include <sched.h>
+#include <string.h>
 #include <strings.h>
 
 #include <cassert>

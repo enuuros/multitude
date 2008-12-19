@@ -16,6 +16,9 @@
 #include <Radiant/TCPServerSocket.hpp>
 #include <Radiant/TCPSocket.hpp>
 
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef WIN32
 #include <WinPort.h>
 #endif

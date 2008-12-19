@@ -18,6 +18,8 @@
 #include <Radiant/Trace.hpp>
 #include <Radiant/Types.hpp>
 
+#include <string.h>
+
 #include <strings.h>
 #include <cassert>
 

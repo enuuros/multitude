@@ -18,6 +18,8 @@
 
 #include "StringUtils.hpp"
 
+#include <string.h>
+
 namespace Radiant {
 
   TimeStamp TimeStamp::createDate(const char * date,

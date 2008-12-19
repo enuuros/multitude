@@ -18,6 +18,10 @@
 #include <Nimble/Rect.hpp>
 #include <Nimble/Matrix4.hpp>
 
+#include <stdio.h>
+#include <stdlib.h>
+
+
 namespace Nimble {
 
   KeyStone::KeyStone()
@@ -56,7 +60,7 @@ namespace Nimble {
     int i;
     
     for(i = 0; i < 8; i++)
-      corners[i] = float(strtod(ptr, & ptr));
+      corners[i] = float(strtof(ptr, & ptr));
     
     setVertices(vertices, w, h, dpyw, dpyh, dpyx, dpyy);
   }

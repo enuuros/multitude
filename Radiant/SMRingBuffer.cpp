@@ -26,6 +26,8 @@
 #include <memory>
 #include <sstream>
 
+#include <string.h>
+
 #ifndef WIN32
 #include <sys/ipc.h>
 #include <sys/shm.h>

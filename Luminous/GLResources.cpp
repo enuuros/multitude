@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+#include <stdlib.h>
+
 namespace Luminous
 {
 

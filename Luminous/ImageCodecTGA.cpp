@@ -4,6 +4,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <string.h>
+
 namespace Luminous
 {
 

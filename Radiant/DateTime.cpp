@@ -17,6 +17,8 @@
 
 #include <cassert>
 
+#include <string.h>
+
 namespace Radiant {
 
   DateTime::DateTime()

@@ -1,6 +1,9 @@
 #include <Valuable/Valuable.hpp>
 #include <Valuable/DOMDocument.hpp>
 
+#include <stdio.h>
+#include <string.h>
+
 using namespace Valuable;
 
 int main(int argc, char ** argv)

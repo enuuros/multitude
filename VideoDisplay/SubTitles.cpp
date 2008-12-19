@@ -20,6 +20,8 @@
 
 #include <fstream>
 
+#include <string.h>
+
 namespace VideoDisplay {
   
 

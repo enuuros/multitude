@@ -21,7 +21,9 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <stdlib.h>
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <algorithm>
 #include <cctype>

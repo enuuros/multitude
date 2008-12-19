@@ -68,7 +68,7 @@ namespace Valuable
       bool loadFromFileXML(const char * filename);
 
       /// Returns the typename of this object. 
-      virtual const char * const type() const { return VO_TYPE_HASVALUES; }
+      virtual const char * type() const { return VO_TYPE_HASVALUES; }
       
       /// Serializes this object (and its children) to a DOM node
       DOMElement serializeXML(DOMDocument * doc);

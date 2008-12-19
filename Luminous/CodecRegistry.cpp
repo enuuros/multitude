@@ -4,6 +4,8 @@
 
 #include <Radiant/StringUtils.hpp>
 
+#include <typeinfo>
+
 namespace Luminous
 {
 

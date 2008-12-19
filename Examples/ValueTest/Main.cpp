@@ -4,6 +4,10 @@
 #include <Valuable/ValueRect.hpp>
 #include <Valuable/ValueString.hpp>
 
+#include <string.h>
+#include <errno.h>
+
+
 using namespace Valuable;
 
 int main(int, char **)

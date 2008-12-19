@@ -28,6 +28,8 @@
 #include <vector>
 #include <cassert>
 
+#include <string.h>
+
 namespace Resonant {
 
   using Radiant::RefPtr;
@@ -87,7 +89,7 @@ namespace Resonant {
 #ifdef WIN32
     strcpy_s(m_moduleId, id);
 #else
-    strcpy(m_moduleId, id);
+        strcpy(m_moduleId, id);
 #endif
 	else
     m_moduleId[0] = '\0';

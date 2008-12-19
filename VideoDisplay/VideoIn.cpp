@@ -18,6 +18,7 @@
 #include "VideoIn.hpp"
 
 #include <assert.h>
+#include <string.h>
 
 namespace VideoDisplay {
 

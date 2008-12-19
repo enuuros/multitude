@@ -71,7 +71,7 @@ namespace Valuable
       virtual bool set(const Nimble::Vector4f & v);
  
       /// Get the type id of the type 
-      virtual const char * const type() const = 0;      
+      virtual const char * type() const = 0;      
 
       virtual DOMElement serializeXML(DOMDocument * doc);
       virtual bool deserializeXML(DOMElement element) = 0;

@@ -33,7 +33,7 @@ namespace Valuable
 
       ValueRect & operator = (const Nimble::Rect & r) { m_rect = r; STD_OP }
 
-      const char * const type() const { return "rect"; }
+    const char * type() const { return "rect"; }
 
       std::string asString(bool * const ok = 0) const;
 

@@ -23,6 +23,7 @@
 #include <dc1394/control.h>
 
 #include <string>
+#include <stdint.h>
 
 #ifdef WIN32
 #include <WinPort.h>
@@ -51,7 +52,7 @@ namespace Radiant {
 
     /// Get the list of cameras that are connected.
     static bool queryCameras(std::vector<CameraInfo> * cameras);
-    static bool queryCamera(u_int64_t euid64, CameraInfo * camera);
+    static bool queryCamera(uint64_t euid64, CameraInfo * camera);
 
     virtual const VideoImage * captureImage();
     virtual void doneImage();
@@ -114,7 +115,7 @@ namespace Radiant {
     virtual bool close();
 
     /// Sets the camera EUID that will be used to select the camera
-    void setCameraEuid64(u_int64_t euid) { m_euid = euid; }
+    void setCameraEuid64(uint64_t euid) { m_euid = euid; }
 
     CameraInfo cameraInfo();
 
@@ -140,7 +141,7 @@ namespace Radiant {
     dc1394featureset_t m_features;
     dc1394speed_t      m_speed; // FW400, FW800 etc.
 
-    u_int64_t m_euid;
+    uint64_t m_euid;
     int m_cameraNum;
 
     int m_isoChannel;

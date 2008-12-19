@@ -43,7 +43,7 @@ namespace Valuable
 
       inline operator const T & () const { return Base::m_value; }
 
-      const char * const type() const { return VO_TYPE_FLOAT; }
+    const char * type() const { return VO_TYPE_FLOAT; }
 
       bool deserializeXML(DOMElement element);
   };

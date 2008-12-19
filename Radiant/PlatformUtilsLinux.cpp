@@ -16,8 +16,9 @@
 #include "Trace.hpp"
 
 #include <dlfcn.h>
-
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 namespace Radiant
 {

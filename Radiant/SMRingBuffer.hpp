@@ -248,10 +248,10 @@ namespace Radiant
       /// Shared memory access functions.
 
       /// Return a pointer to the write position.
-      unsigned char * const writePtr() const { return (m_startPtr + writePos()); }
+      unsigned char * writePtr() { return (m_startPtr + writePos()); }
 
       /// Return a pointer to the read position.
-      const unsigned char * const readPtr() const { return (m_startPtr + readPos()); }
+       const unsigned char * readPtr() const { return (m_startPtr + readPos()); }
 
 
     private:

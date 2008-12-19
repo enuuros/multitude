@@ -48,7 +48,7 @@ namespace Valuable
 
       virtual bool set(const std::string & v);
  
-      const char * const type() const { return VO_TYPE_STRING; }
+    const char * type() const { return VO_TYPE_STRING; }
 
       DOMElement serializeXML(DOMDocument * doc);
       bool deserializeXML(DOMElement element);      

@@ -19,6 +19,8 @@
 
 #include <Radiant/StringUtils.hpp>
 
+#include <string.h>
+
 namespace Poetic
 {
 
