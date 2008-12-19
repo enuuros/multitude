@@ -53,7 +53,7 @@ namespace Valuable
       ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; STD_OP }
       ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; STD_OP }
 
-      const char * const type() const { return VO_TYPE_INT; }
+    const char * type() const { return VO_TYPE_INT; }
 
       bool deserializeXML(DOMElement element);
   };

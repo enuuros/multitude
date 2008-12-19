@@ -58,7 +58,7 @@ namespace Luminous {
       size_t size() const { return m_points.size(); }
       Nimble::Vector2f point(size_t i) const { return m_points[i]; }
 
-      virtual const char * const type() const { return "Path"; }
+    virtual const char * type() const { return "Path"; }
 
       virtual Valuable::DOMElement serializeXML(Valuable::DOMDocument * doc);
       virtual bool deserializeXML(Valuable::DOMElement element);

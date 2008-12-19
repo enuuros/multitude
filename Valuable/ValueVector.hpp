@@ -54,7 +54,7 @@ namespace Valuable
 
       virtual bool deserializeXML(DOMElement element);
 
-      const char * const type() const;
+    const char * type() const;
 
       virtual bool set(const VectorType & v);
 

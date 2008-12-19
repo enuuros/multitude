@@ -47,7 +47,7 @@ namespace Luminous {
     virtual ~GLKeyStone();
 
     /// Returns the object type name = "glkeystone"
-    virtual const char * const type() const { return "glkeystone"; }
+    virtual const char * type() const { return "glkeystone"; }
 
     /// Reads in variables from the DOMElement and calculates the matrix
     virtual bool deserializeXML(Valuable::DOMElement e);

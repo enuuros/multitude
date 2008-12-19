@@ -23,7 +23,7 @@ namespace Valuable
 {
 
   template<class VectorType, typename ElementType, int N>
-  const char * const ValueVector<VectorType, ElementType, N>::type() const { return "vector"; }
+  const char *  ValueVector<VectorType, ElementType, N>::type() const { return "vector"; }
 
   /// @todo Under WIN32 these specializations conflict with the class instantiation
   /// in ValueVector.hpp. Remove them and if possible modify the template function 

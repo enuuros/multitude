@@ -91,7 +91,7 @@ namespace Luminous {
         LUMINOUS_API void applyGlState();
         LUMINOUS_API void cleanEdges();
 
-        virtual const char * const type() const { return "area"; }
+      virtual const char * type() const { return "area"; }
 
         GLKeyStone & keyStone() { return m_keyStone; }
 
@@ -164,7 +164,7 @@ namespace Luminous {
         LUMINOUS_API Window();
         LUMINOUS_API ~Window();
 
-        const char * const type() const { return "window"; }
+        const char * type() const { return "window"; }
 
         /// Set the location and size of this window
         void setGeometry(int x, int y, int w, int h)
