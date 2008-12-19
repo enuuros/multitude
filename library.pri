@@ -1,11 +1,7 @@
 # Common rules to build multitude libraries
 TEMPLATE = lib
 
-DEPENDPATH += ../
-
-INCLUDEPATH += ../ 
-
-DESTDIR = ../lib
+DESTDIR = $$PWD/lib
 
 linux-* {
 

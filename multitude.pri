@@ -7,19 +7,13 @@ CONFIG += link_pkgconfig
 CONFIG += release
 
 # Uncomment for debug build
-#CONFIG += debug
+CONFIG += debug
+
+INCLUDEPATH += $$PWD
 
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
-
-macx {
-  exists(/opt/local/include/xercesc) {
-
-    INCLUDEPATH += /opt/local/include/
-    LIBS += -L/opt/local/lib/
-  }
-}
 
 LIB_DYSLEXIC = -lPoetic
 LIB_FLUFFY = -lFluffy
@@ -36,6 +30,11 @@ LIB_VALUABLE = -lValuable
 MULTI_LIB_FLAG = -L
 
 macx {
+  exists(/opt/local/include/xercesc) {
+
+    INCLUDEPATH += /opt/local/include/
+    LIBS += -L/opt/local/lib/
+  }
 
   # withbundles = $$(MULTI_BUNDLES)
   withbundles = YES
@@ -62,5 +61,5 @@ macx {
 
 MULTI_VIDEO_LIBS = $$LIB_SCREENPLAY $$LIB_RESONANT $$LIB_VIDEODISPLAY
 
-LIBS += $${MULTI_LIB_FLAG}../lib
+LIBS += $${MULTI_LIB_FLAG}$$PWD/lib
 
