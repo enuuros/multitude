@@ -439,10 +439,10 @@ namespace Luminous
   {
     unsigned int bytes = width * height * pf.numChannels();
     unsigned int mybytes = m_width * m_height * m_pixelFormat.numChannels();
-
-    Radiant::trace(DEBUG, "Image::allocate # PARAMS(%d, %d, %s) CURRENT(%d, %d, %s)", width, height, pf.toString().c_str(), m_width, m_height, m_pixelFormat.toString().c_str());
-    Radiant::trace(DEBUG, "\tbytes = %u, mybytes = %u", bytes, mybytes);
-
+    /*
+    Radiant::debug("Image::allocate # PARAMS(%d, %d, %s) CURRENT(%d, %d, %s)", width, height, pf.toString().c_str(), m_width, m_height, m_pixelFormat.toString().c_str());
+    Radiant::debug("\tbytes = %u, mybytes = %u", bytes, mybytes);
+    */
     m_width = width;
     m_height = height;
     m_pixelFormat = pf;
