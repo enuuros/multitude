@@ -33,6 +33,7 @@ void helper(const char * app)
     ("OPTIONS:\n"
      " --fps  +float  - Sets arbitrary capture rate for the cameras, with SW trigger\n"
      " --help         - This help\n"
+     " --listformat7modes    - List available format 7 modes\n"
      " --rate +int    - Selects one of the standard frame rates (15, 30, 60...)\n"
      " --scanbus      - Scans and reports all available cameras\n"
      " --triggermode   +int - Selects the trigger mode, range: 0-%d\n"
@@ -62,6 +63,7 @@ int main(int argc, char ** argv)
   Task t = TASK_SHOW_CAMERAS;
   int i, res = 0;
   bool format7 = false;
+  bool listmodes = false;
 
   for(i = 1; i < argc; i++) {
     const char * arg = argv[i];
@@ -75,6 +77,9 @@ int main(int argc, char ** argv)
     else if(strcmp(arg, "--help") == 0) {
       helper(argv[0]);
       return 0;
+    }
+    else if(strcmp(arg, "--listformat7modes") == 0) {
+      listmodes = true;
     }
     else if(strcmp(arg, "--rate") == 0 && (i+1) < argc) {
       rate = Radiant::closestFrameRate(atof(argv[++i]));
@@ -117,6 +122,13 @@ int main(int argc, char ** argv)
 	     i + 1, (long long) cam.m_euid64,
 	     cam.m_vendor.c_str(), cam.m_model.c_str());
       fflush(0);
+
+      if(listmodes) {
+	Radiant::Video1394 tmp;
+	char idbuf[32];
+	sprintf(idbuf, "%llx", cam.m_euid64);
+	tmp.printFormat7Modes(idbuf);
+      }
     }
   }
   else {

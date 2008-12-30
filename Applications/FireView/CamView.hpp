@@ -58,7 +58,7 @@ namespace FireView {
     void autoParam(int i) { m_thread.m_autoSend[i] = true;}
 
     static void setVerbose(bool verbose) { m_verbose = verbose; }
-
+    static bool verbose() { return m_verbose; }
   public slots:
     
     void openParams();

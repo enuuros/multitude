@@ -109,6 +109,8 @@ namespace Radiant {
 			     Nimble::Recti roi,
 			     float fps);
     
+    bool printFormat7Modes(const char * cameraeuid);
+
     virtual bool isInitialized() const;
     virtual bool start();
     virtual bool stop();

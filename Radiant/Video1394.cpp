@@ -610,8 +610,8 @@ namespace Radiant {
   }
 
   bool Video1394::openFormat7(const char * cameraeuid,
-      Nimble::Recti roi,
-      float fps)
+			      Nimble::Recti roi,
+			      float fps)
   {
     const char * fname = "Video1394::openFormat7";
 
@@ -709,6 +709,58 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     m_initialized = true;
 
     return true;
+  }
+
+  bool Video1394::printFormat7Modes(const char * cameraeuid)
+  {
+    const char * fname = "Video1394::printFormat7Modes";
+
+    if(!findCamera(cameraeuid))
+      return false;
+
+    int err;
+    dc1394format7modeset_t modeset;
+
+    bzero( & modeset, sizeof(modeset));
+
+    err = dc1394_format7_get_modeset(m_camera, & modeset);
+    
+    if(err != DC1394_SUCCESS) {
+      Radiant::error("%s # Could not get modeset", fname);
+      close();
+      return false;
+    }
+
+    CameraInfo ci(cameraInfo());
+    
+    info("Format 7 mode information for %s %s (id = %s)",
+	 ci.m_vendor.c_str(), ci.m_model.c_str(), cameraeuid);
+    
+    for(int i = 0; i < DC1394_VIDEO_MODE_FORMAT7_NUM; i++) {
+
+      dc1394format7mode_t & mode = modeset.mode[i];
+
+      if(!mode.present) {
+	info(" Format7 mode %d not present", i);
+	continue;
+      }
+      
+      info(" Format7 mode %d:", i);
+      info("  size    = [%d %d]\n"
+	   "  maxsize = [%d %d]\n"
+	   "  pos     = [%d %d]",
+	   mode.size_x, mode.size_y, 
+	   mode.max_size_x, mode.max_size_y,
+	   mode.pos_x, mode.pos_y);
+      info("  unitsize    = [%d %d]\n"
+	   "  unitpos     = [%d %d]",
+	   mode.unit_size_x, mode.unit_size_y, 
+	   mode.unit_pos_x, mode.unit_pos_y);
+      info("  pixum    = %d",
+	   mode.pixnum);
+    }
+    
+    return close();
   }
 
   bool Video1394::isInitialized() const
@@ -918,16 +970,18 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
    */
   bool Video1394::close()
   {
-    assert(isInitialized());
+    // assert(isInitialized());
 
     if(!m_camera)
       return false;
-
+    
     if (m_started)
       stop();
 
-    // dc1394_release_camera(m_camera);
-    // dc1394_free_camera(m_camera);
+    if(m_camera) {
+      // dc1394_release_camera(m_camera);
+      dc1394_camera_free(m_camera);
+    }
 
     m_initialized = false;
     m_camera = 0;
