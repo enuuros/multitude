@@ -30,9 +30,14 @@ namespace Radiant
     /// Get the size of a file.
     RADIANT_API unsigned long getFileLen(std::ifstream& file);
 
-    /// Load a text file. The contents of the file are returned as a
-    /// zero-terminated string.
+    /// Load a text file.
+    /** The contents of the file are returned as a zero-terminated
+	string. The caller is responsible for freeing the memory,
+	using a call to <b>delete</b>.*/
     RADIANT_API char * loadTextFile(const char* filename);
+
+    /// Writes a string to a text file.
+    RADIANT_API bool writeTextFile(const char * filename,const char * contents);
 
     /// Check if a given file is readable.
     RADIANT_API bool fileReadable(const char* filename);

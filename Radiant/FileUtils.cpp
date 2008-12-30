@@ -18,6 +18,7 @@
 #include "StringUtils.hpp"
 #include "Directory.hpp"
 
+#include <fcntl.h>
 #include <iostream>
 
 using namespace std;
@@ -90,6 +91,22 @@ namespace Radiant
       file.close();
 
       return contents;
+    }
+
+    bool writeTextFile(const char * filename, const char * contents)
+    {
+      int fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+
+      if(fd <= 0)
+	return false;
+
+      int len = strlen(contents);
+      
+      bool ok = write(fd, contents, len) == len;
+
+      close(fd);
+
+      return ok;
     }
 
     string path(const string & filepath)
