@@ -1,7 +1,7 @@
 #ifndef LUMINOUS_IMAGE_CODEC_JPEG_HPP
 #define LUMINOUS_IMAGE_CODEC_JPEG_HPP
 
-#include <ImageCodec.hpp>
+#include <Luminous/ImageCodec.hpp>
 
 namespace Luminous
 {

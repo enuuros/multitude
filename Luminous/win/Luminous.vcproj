@@ -209,6 +209,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\CodecRegistry.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\CodecRegistry.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\Collectable.cpp"
 			>
 		</File>
@@ -321,11 +329,35 @@
 			>
 		</File>
 		<File
-			RelativePath="..\ImagePyramid.hpp"
+			RelativePath="..\ImageCodec.hpp"
 			>
 		</File>
 		<File
-			RelativePath="..\JPEG.cpp"
+			RelativePath="..\ImageCodecJPEG.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImageCodecJPEG.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImageCodecPNG.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImageCodecPNG.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImageCodecTGA.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImageCodecTGA.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ImagePyramid.hpp"
 			>
 		</File>
 		<File
@@ -365,10 +397,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\PNG.cpp"
-			>
-		</File>
-		<File
 			RelativePath="..\Task.cpp"
 			>
 		</File>
@@ -390,10 +418,6 @@
 		</File>
 		<File
 			RelativePath="..\Texture.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\TGA.cpp"
 			>
 		</File>
 		<File

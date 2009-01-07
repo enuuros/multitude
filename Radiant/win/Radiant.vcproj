@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Radiant"
 	ProjectGUID="{410D922A-8FD9-363D-99ED-2607E09E3A78}"
 	RootNamespace="Radiant"
@@ -48,7 +48,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../multitude&quot;;&quot;$(SolutionDir)../multitude/Win32/WinPort/include&quot;"
-				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
@@ -140,7 +140,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../multitude&quot;;&quot;$(SolutionDir)../multitude/Win32/WinPort/include&quot;"
-				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;NDEBUG;QT_NO_DEBUG;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;RADIANT_EXPORT;NDEBUG;QT_NO_DEBUG;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="FireView"
 	ProjectGUID="{FA9FFE9E-CC51-3BB6-AF70-D25BFAB34E94}"
 	RootNamespace="FireView"
@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin\"
 			IntermediateDirectory="release\"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -80,10 +80,10 @@
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
 				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib user32.lib qtmain.lib QtXml4.lib QtOpenGL4.lib QtGui4.lib QtCore4.lib"
-				OutputFile="..\..\Win32\app\release\FireView.exe"
+				OutputFile="$(OutDir)\FireView.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -113,7 +113,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)bin\"
 			IntermediateDirectory="debug\"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include"
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;QT_DLL;QT_XML_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -173,11 +173,11 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="1394camerad.lib opengl32.lib glu32.lib gdi32.lib glew32.lib CORE_DB_Magick++_.lib pthreadVC2.lib QtMaind.lib QtXmld4.lib QtOpenGLd4.lib QtGuid4.lib QtCored4.lib"
-				OutputFile="..\..\Win32\app\debug\FireViewD.exe"
+				AdditionalDependencies="1394camerad.lib opengl32.lib glu32.lib gdi32.lib glew32.lib pthreadVC2.lib QtMaind.lib QtXmld4.lib QtOpenGLd4.lib QtGuid4.lib QtCored4.lib"
+				OutputFile="$(OutDir)\FireViewD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../multitude/Win32/WinPort/lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="1"
@@ -256,7 +256,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC ..\CamView.hpp"
-						CommandLine="C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D_CRT_SECURE_NO_DEPRECATE -DEXPORT=__declspec(dllimport) -DQT_DLL -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include&quot; -I&quot;..\..\..\..\multitude&quot; -I&quot;..\..\..\Applications&quot; -I&quot;c:\develop\ext\glew\include&quot; -I&quot;..\..\..\Win32\WinPort\include&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11\Magick++\lib&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11&quot; -I&quot;c:\develop\ext\pthreads\Pre-built.2\include&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;..\..\FireView&quot; -I&quot;.&quot; -Ic:\develop\ext\Qt\qt-win-opensource-src-4.4.1\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 ..\CamView.hpp -o debug\moc_CamView.cpp&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe ..\$(InputFileName) -o debug\moc_$(InputName).cpp"
 						AdditionalDependencies="..\CamView.hpp;C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe"
 						Outputs="debug\moc_CamView.cpp"
 					/>
@@ -286,7 +286,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC ..\MainWindow.hpp"
-						CommandLine="C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D_CRT_SECURE_NO_DEPRECATE -DEXPORT=__declspec(dllimport) -DQT_DLL -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include&quot; -I&quot;..\..\..\..\multitude&quot; -I&quot;..\..\..\Applications&quot; -I&quot;c:\develop\ext\glew\include&quot; -I&quot;..\..\..\Win32\WinPort\include&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11\Magick++\lib&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11&quot; -I&quot;c:\develop\ext\pthreads\Pre-built.2\include&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;..\..\FireView&quot; -I&quot;.&quot; -Ic:\develop\ext\Qt\qt-win-opensource-src-4.4.1\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 ..\MainWindow.hpp -o debug\moc_MainWindow.cpp&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe ..\$(InputFileName) -o debug\moc_$(InputName).cpp"
 						AdditionalDependencies="..\MainWindow.hpp;C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe"
 						Outputs="debug\moc_MainWindow.cpp"
 					/>
@@ -312,7 +312,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC ..\ParamView.hpp"
-						CommandLine="C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D_CRT_SECURE_NO_DEPRECATE -DEXPORT=__declspec(dllimport) -DQT_DLL -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtCore&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtGui&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtOpenGL&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\QtXml&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include&quot; -I&quot;..\..\..\..\multitude&quot; -I&quot;..\..\..\Applications&quot; -I&quot;c:\develop\ext\glew\include&quot; -I&quot;..\..\..\Win32\WinPort\include&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11\Magick++\lib&quot; -I&quot;c:\develop\ext\GraphicsMagick-1.1.11&quot; -I&quot;c:\develop\ext\pthreads\Pre-built.2\include&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\libdc1394&quot; -I&quot;c:\develop\ext\Qt\qt-win-opensource-src-4.4.1\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;..\..\FireView&quot; -I&quot;.&quot; -Ic:\develop\ext\Qt\qt-win-opensource-src-4.4.1\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 ..\ParamView.hpp -o debug\moc_ParamView.cpp&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe ..\ParamView.hpp -o debug\moc_ParamView.cpp"
 						AdditionalDependencies="..\ParamView.hpp;C:\develop\ext\Qt\qt-win-opensource-src-4.4.1\bin\moc.exe"
 						Outputs="debug\moc_ParamView.cpp"
 					/>

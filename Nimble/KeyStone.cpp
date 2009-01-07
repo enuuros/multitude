@@ -60,7 +60,7 @@ namespace Nimble {
     int i;
     
     for(i = 0; i < 8; i++)
-      corners[i] = float(strtof(ptr, & ptr));
+      corners[i] = float(strtod(ptr, & ptr));
     
     setVertices(vertices, w, h, dpyw, dpyh, dpyx, dpyy);
   }

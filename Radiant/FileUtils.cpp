@@ -21,6 +21,15 @@
 #include <fcntl.h>
 #include <iostream>
 
+#ifdef WIN32
+#include <io.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
 using namespace std;
 
 namespace Radiant
@@ -95,8 +104,11 @@ namespace Radiant
 
     bool writeTextFile(const char * filename, const char * contents)
     {
+#ifdef WIN32
+		int fd = _creat(filename, _S_IWRITE);
+#else
       int fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-
+#endif
       if(fd <= 0)
 	return false;
 
