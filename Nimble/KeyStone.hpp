@@ -214,6 +214,11 @@ namespace Nimble {
 	check is they need to update some of their data structures.*/
     int version() { return m_version; }
 
+    /// Calculates the projection matrix.
+    /** See Paul Heckbert's master's thesis, pages 19-21. Often you
+        need to invert this. */
+    static Nimble::Matrix3 projectionMatrix(const Nimble::Vector2 * vertices);
+
   private:
 
     void updated() { m_version++; }
@@ -221,10 +226,6 @@ namespace Nimble {
     void updateLimits(std::vector<Nimble::Vector2i> & limits, 
                       const Vector4 * offsets = 0);
 
-    /// Calculates the projection matrix.
-    /** See Paul Heckbert's master's thesis, pages 19-21. Often you
-        need to invert this. */
-    static Nimble::Matrix3 projectionMatrix(const Nimble::Vector2 * vertices);
 
     LensCorrection  m_lensCorrection;
 
