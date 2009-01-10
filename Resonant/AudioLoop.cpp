@@ -131,7 +131,8 @@ namespace Resonant {
 
     m_isRunning = true;
 
-	Radiant::error("AudioLoop::startReadWrite # lt = %lf, EXIT OK", m_streamInfo->outputLatency);
+    Radiant::debug("AudioLoop::startReadWrite # lt = %lf, EXIT OK",
+		   m_streamInfo->outputLatency);
 
     return true;
   }
