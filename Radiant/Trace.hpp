@@ -44,7 +44,7 @@ namespace Radiant {
   RADIANT_API void info(const char * msg, ...);
   /// Display error output
   /** This function calls trace to do the final work and it is
-      effectively the same as calling trace(ERROR, ...). */
+      effectively the same as calling trace(FAILURE, ...). */
   RADIANT_API void error(const char * msg, ...);
 
   /// Display error output, with a fatal message
