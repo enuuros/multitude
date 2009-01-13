@@ -20,9 +20,11 @@
 
 namespace Radiant {
   
+  /* Note: these are all inline classes so do not dllexport them on win32 */
+
   /// Utility for RefObj
   template <typename T>
-  class RADIANT_API RefObjInt
+  class RefObjInt
   {
   public:
     RefObjInt() : m_count(1) {}
@@ -35,7 +37,7 @@ namespace Radiant {
   /** This class can be used to share an object between several
       holders, using reference counters. */
   template <typename T>
-  class RADIANT_API RefObj
+  class RefObj
   {
   public:
     RefObj() : m_holder(0) {}

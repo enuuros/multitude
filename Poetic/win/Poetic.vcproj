@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="Dyslexic"
+	Version="9.00"
+	Name="Poetic"
 	ProjectGUID="{91100E0D-7088-341E-A1AD-B974640EFBD9}"
 	RootNamespace="Dyslexic"
 	Keyword="Qt4VSv1.0"
@@ -48,7 +48,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include;$(SolutionDir)../multitude/Win32/WinPort/include/freetype2"
-				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;QT_LARGEFILE_SUPPORT;DYSLEXIC_FLIP_Y;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;POETIC_EXPORT;QT_LARGEFILE_SUPPORT;DYSLEXIC_FLIP_Y;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
@@ -142,7 +142,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir)../multitude;$(SolutionDir)../multitude/Win32/WinPort/include;$(SolutionDir)../multitude/Win32/WinPort/include/freetype2"
-				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;DYSLEXIC_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;DYSLEXIC_FLIP_Y"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;POETIC_EXPORT;NDEBUG;QT_NO_DEBUG,QT_LARGEFILE_SUPPORT;_CRT_SECURE_NO_DEPRECATE;DYSLEXIC_FLIP_Y"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -243,10 +243,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Dyslexic.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\Face.cpp"
 				>
 			</File>
@@ -284,6 +280,10 @@
 			</File>
 			<File
 				RelativePath="..\GPUWrapperFont.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Poetic.cpp"
 				>
 			</File>
 			<File
@@ -333,10 +333,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Dyslexic.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\Export.hpp"
 				>
 			</File>
@@ -378,6 +374,10 @@
 			</File>
 			<File
 				RelativePath="..\GPUWrapperFont.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Poetic.hpp"
 				>
 			</File>
 			<File
