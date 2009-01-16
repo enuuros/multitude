@@ -48,6 +48,9 @@ namespace Luminous
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, format, width, height);
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
   Framebuffer::Framebuffer()
   {
     glGenFramebuffersEXT(1, &m_bufferId);
@@ -125,7 +128,7 @@ namespace Luminous
   {
     bind();
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D,
-			      texture->id(), level);		
+			      texture->id(), level);
   }
 
   void Framebuffer::detachTexture2D(FramebufferAttachment attachment)

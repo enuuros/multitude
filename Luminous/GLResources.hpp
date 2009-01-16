@@ -18,6 +18,8 @@
 
 #include <Luminous/Export.hpp>
 
+#include <Radiant/ResourceLocator.hpp>
+
 #include <map>
 
 namespace Luminous
@@ -53,7 +55,7 @@ namespace Luminous
     typedef std::map<void *, GLResource *> container;
     typedef container::iterator iterator;
 
-    GLResources();
+    GLResources(Radiant::ResourceLocator & rl);
     virtual ~GLResources();
 
     /// Get a handle to a resource 
@@ -89,9 +91,10 @@ namespace Luminous
     /** Sets the threshold for deleting old objects from GPU memory. */
     void setComfortableGPURAM(long bytes)
     { m_comfortableGPURAM = bytes; }
+
+    Radiant::ResourceLocator & resourceLocator() { return m_resourceLocator; }
  
  protected:
-
     container m_resources;
 
     long m_deallocationSum;
@@ -105,6 +108,8 @@ namespace Luminous
     long m_comfortableGPURAM;
 
     long m_frame;
+
+    Radiant::ResourceLocator & m_resourceLocator;
   };
 }
 

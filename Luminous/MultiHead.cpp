@@ -53,8 +53,7 @@ namespace Luminous {
 
   void MultiHead::Area::applyGlState()
   {
-    // printf("MultiHead::Area::applyGlState # %d %d\n",
-    // m_location.x, m_location.y);
+//     printf("MultiHead::Area::applyGlState # %d %d\n", m_location[0], m_location[1]);
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

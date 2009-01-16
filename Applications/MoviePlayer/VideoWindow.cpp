@@ -37,6 +37,7 @@ using namespace Nimble;
 VideoWindow::VideoWindow()
   : m_subCPUFont(0),
     m_subGPUFont(0),
+    m_glResources(m_resourceLocator),
     m_showProgress(true),
     m_showSteps(false)
 {

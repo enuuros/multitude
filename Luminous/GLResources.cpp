@@ -28,12 +28,13 @@
 namespace Luminous
 {
 
-  GLResources::GLResources()
+  GLResources::GLResources(Radiant::ResourceLocator & rl)
     : m_deallocationSum(0),
       m_allocationSum(0),
       m_consumingBytes(0),
       m_comfortableGPURAM((1 << 20) * 70), // 70 MB
-      m_frame(0)
+      m_frame(0),
+      m_resourceLocator(rl)
   {
     const char * envgp = getenv("MULTI_GPU_RAM");
 

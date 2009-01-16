@@ -29,6 +29,8 @@
 
 #include <VideoDisplay/ShowGL.hpp>
 
+#include <Radiant/ResourceLocator.hpp>
+
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QTimer>
 
@@ -72,6 +74,7 @@ protected:
   Poetic::CPUFontBase * m_subCPUFont;
   Poetic::GPUFont * m_subGPUFont;
 
+  Radiant::ResourceLocator m_resourceLocator;
   Luminous::GLResources m_glResources;
 
   bool   m_showProgress;
