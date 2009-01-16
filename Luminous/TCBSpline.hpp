@@ -25,6 +25,7 @@
 
 namespace Luminous {
 
+/// A 2D TCB-spline class
 class LUMINOUS_API TCBSpline2 
 {
   public:

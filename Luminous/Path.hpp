@@ -31,6 +31,7 @@
 
 namespace Luminous {
 
+  /// Path provides some utility functions to manipulate series of points
   class LUMINOUS_API Path : public Valuable::HasValues
   {
     public:

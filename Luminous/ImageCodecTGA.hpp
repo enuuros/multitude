@@ -6,6 +6,7 @@
 namespace Luminous
 {
 
+  /// Image codec to handle TGA files
   class ImageCodecTGA : public ImageCodec
   {
     public:

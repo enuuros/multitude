@@ -6,6 +6,7 @@
 namespace Luminous
 {
 
+  /// Image codec to handle JPEG files
   class ImageCodecJPEG : public ImageCodec
   {
     public:
