@@ -24,18 +24,13 @@
 
 namespace Valuable
 {
-
-  namespace mxercesc {
-    class DOMDocument;
-    class XMLFormatTarget;
-  }
-
   class DOMElement;
 
   /// Wrapper for xercesc::DOMDocument
   class VALUABLE_API DOMDocument
   {
     public:
+      struct Wrapped;
 
       ~DOMDocument();
 
@@ -57,14 +52,10 @@ namespace Valuable
 
       DOMElement getDocumentElement();
 
-      mxercesc::DOMDocument * document() { return m_xDoc; }
-
     private:
-      DOMDocument(mxercesc::DOMDocument * doc);
+      DOMDocument(Wrapped * doc);
 
-      mxercesc::DOMDocument * m_xDoc;
-
-      friend bool writeDom(DOMDocument *, mxercesc::XMLFormatTarget &);
+      Wrapped * m_wrapped;
   };
 
 }

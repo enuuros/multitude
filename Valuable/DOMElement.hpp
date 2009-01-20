@@ -23,22 +23,17 @@
 
 namespace Valuable
 {
-  /// Utility namespace for handling the xerces_2_x namespaces in Valuable
-  /** We use namespace mxercesc, as xerces is just a macro around the
-     xercesc_2_7 or xercesc_2_8 namespaces. */
-  namespace mxercesc {
-    class DOMElement;
-  }
-
 
   /// Wrapper for xercesc::DOMElement
   class VALUABLE_API DOMElement
   {
     public:
-      DOMElement(mxercesc::DOMElement * xElement);
+      struct Wrapped;
+
+      DOMElement(Wrapped * x); 
       ~DOMElement() {}
 
-      bool null() const { return (m_xElement == 0);  }
+      bool null() const { return (m_wrapped == 0);  }
 
       std::string getTagName() const;
 
@@ -58,7 +53,7 @@ namespace Valuable
       NodeList getChildNodes() const;
 
     private:
-       mxercesc::DOMElement * m_xElement;
+      Wrapped * m_wrapped;
 
       friend class DOMDocument;
   };

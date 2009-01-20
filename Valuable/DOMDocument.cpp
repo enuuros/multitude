@@ -26,100 +26,92 @@
 #include <xercesc/util/RuntimeException.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
-using namespace xercesc;
-
 namespace Valuable
 {
-  inline mxercesc::DOMDocument * 
-  MXERCESDOC(xercesc::DOMDocument * x)
-  { return (mxercesc::DOMDocument *) x; }
+  struct DOMDocument::Wrapped {
+      xercesc::DOMDocument * x;
+  };
 
-  inline xercesc::DOMDocument * 
-  XERCESDOC(mxercesc::DOMDocument * x)
-  { return (xercesc::DOMDocument *) x; }
+  inline xercesc::DOMDocument * XDOC(DOMDocument::Wrapped * x) { return reinterpret_cast<xercesc::DOMDocument *> (x); }
+  inline xercesc::DOMElement * XELEM(DOMElement::Wrapped * x) { return reinterpret_cast<xercesc::DOMElement *> (x); }
 
-  inline mxercesc::DOMElement * 
-  MXERCESELEM(xercesc::DOMElement * x)
-  { return (mxercesc::DOMElement *) x; }
+  inline DOMDocument::Wrapped * DOC(xercesc::DOMDocument * x) { return reinterpret_cast<DOMDocument::Wrapped *> (x); }
+  inline DOMElement::Wrapped * ELEM(xercesc::DOMElement * x) { return reinterpret_cast<DOMElement::Wrapped *> (x); }
 
-  inline xercesc::DOMElement * 
-  XERCESELEM(mxercesc::DOMElement * x)
-  { return (xercesc::DOMElement *) x; }
-
-  DOMDocument::DOMDocument(mxercesc::DOMDocument * doc)
-    : m_xDoc(doc)
+  DOMDocument::DOMDocument(DOMDocument::Wrapped * doc)
+    : m_wrapped(doc)
   {}
 
   DOMDocument::~DOMDocument()
   {
-    if(m_xDoc)
-      XERCESDOC(m_xDoc)->release();
+    if(m_wrapped)
+      XDOC(m_wrapped)->release();
   }
 
   void DOMDocument::appendChild(DOMElement element)
   {
     if(element.null()) return;
 
-    assert(m_xDoc != 0);
+    assert(m_wrapped != 0);
 
-    XERCESDOC(m_xDoc)->appendChild(XERCESELEM(element.m_xElement));
+    XDOC(m_wrapped)->appendChild(XELEM(element.m_wrapped));
   }
 
   DOMDocument * DOMDocument::createDocument()
   {
-    const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
-    DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
+    const XMLCh LS[] = {xercesc::chLatin_L, xercesc::chLatin_S, xercesc::chNull};
+    xercesc::DOMImplementation * impl = xercesc::DOMImplementationRegistry::getDOMImplementation(LS);
 
     // Create a document & writer
     xercesc::DOMDocument * doc = impl->createDocument();
-    return new DOMDocument(MXERCESDOC(doc));
+    return new DOMDocument(DOC(doc));
   }
 
   DOMElement DOMDocument::createElement(const char * name)
   {
-    XMLCh * xName = XMLString::transcode(name);
+    XMLCh * xName = xercesc::XMLString::transcode(name);
     xercesc::DOMElement * elem = 0;
 
     try {
-      elem = XERCESDOC(m_xDoc)->createElement(xName);
-    } catch(const DOMException & e) {
-      char * msg = XMLString::transcode(e.getMessage());
+      elem = XDOC(m_wrapped)->createElement(xName);
+    } catch(const xercesc::DOMException & e) {
+      char * msg = xercesc::XMLString::transcode(e.getMessage());
       Radiant::trace(Radiant::FAILURE, "DOMDocument::createElement # %s", msg);
-      XMLString::release(&msg);
+      xercesc::XMLString::release(&msg);
     }
 
-    XMLString::release(&xName);
+    xercesc::XMLString::release(&xName);
 
-    return DOMElement(MXERCESELEM(elem));
+    return DOMElement(ELEM(elem));
   }
 
-  bool writeDom(DOMDocument * doc, XMLFormatTarget & target)
+  bool writeDom(DOMDocument::Wrapped * doc, xercesc::XMLFormatTarget & target)
   {
      // Get implementation of the Load-Store (LS) interface
-    const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
-    DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
+    const XMLCh LS[] = {xercesc::chLatin_L, xercesc::chLatin_S, xercesc::chNull};
+    xercesc::DOMImplementation * impl = xercesc::DOMImplementationRegistry::getDOMImplementation(LS);
 
     // Create a document & writer
-    DOMWriter * writer = ((DOMImplementationLS*)impl)->createDOMWriter();
+    xercesc::DOMWriter * writer = ((xercesc::DOMImplementationLS*)impl)->createDOMWriter();
 
     bool result = true;
 
     try {
       // Output pretty XML
-      writer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-      writer->writeNode(&target, *XERCESDOC(doc->document()));
+      writer->setFeature(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+      writer->writeNode(&target, *XDOC(doc));
 
       // Flush the target just to be sure all contents are written
       target.flush();
-    } catch(const XMLException & e)  {
-      char * msg = XMLString::transcode(e.getMessage());
+    } catch(const xercesc::XMLException & e)  {
+      char * msg = xercesc::XMLString::transcode(e.getMessage());
       Radiant::trace(Radiant::FAILURE, "DOMDocument::save # %s", msg);
-      XMLString::release(&msg);
+      xercesc::XMLString::release(&msg);
       result = false;
-    } catch(const DOMException & e) {
-      char * msg = XMLString::transcode(e.msg);
+    } catch(const xercesc::DOMException & e) {
+      char * msg = xercesc::XMLString::transcode(e.msg);
       Radiant::trace(Radiant::FAILURE, "DOMDocument::save # %s", msg);
-      XMLString::release(&msg);
+      xercesc::XMLString::release(&msg);
       result = false;
     }
 
@@ -132,8 +124,8 @@ namespace Valuable
   bool DOMDocument::writeToFile(const char * filename)
   {
     try {
-      LocalFileFormatTarget target(filename);
-      return writeDom(this, target);
+      xercesc::LocalFileFormatTarget target(filename);
+      return writeDom(m_wrapped, target);
     } catch(...) {
       return false;
     }
@@ -141,8 +133,8 @@ namespace Valuable
 
   bool DOMDocument::writeToMem(std::vector<char> & buffer)
   {
-    MemBufFormatTarget target;
-    if(!writeDom(this, target)) {
+    xercesc::MemBufFormatTarget target;
+    if(!writeDom(m_wrapped, target)) {
       buffer.clear();
       return false;
     }
@@ -154,22 +146,22 @@ namespace Valuable
     return true;
   }
 
-  class ErrorHandler : public DOMErrorHandler
+  class ErrorHandler : public xercesc::DOMErrorHandler
   {
     public:
       ErrorHandler() {}
 
       // return false = stop processing, return true = keep processing
-      virtual bool handleError(const DOMError & e) {
+      virtual bool handleError(const xercesc::DOMError & e) {
 
-        char * uri = XMLString::transcode(e.getLocation()->getURI());
+        char * uri = xercesc::XMLString::transcode(e.getLocation()->getURI());
         int line = e.getLocation()->getLineNumber();
-        char * msg = XMLString::transcode(e.getMessage());
+        char * msg = xercesc::XMLString::transcode(e.getMessage());
 
         Radiant::trace(Radiant::FAILURE, "[XML] %s:%d: %s", uri, line, msg);
 
-        XMLString::release(&uri);
-        XMLString::release(&msg);
+        xercesc::XMLString::release(&uri);
+        xercesc::XMLString::release(&msg);
 
         return true;
       }
@@ -178,54 +170,56 @@ namespace Valuable
   bool DOMDocument::readFromFile(const char * filename, bool validate)
   {
     // Get implementation of the Load-Store (LS) interface
-    const XMLCh LS[] = {chLatin_L, chLatin_S, chNull};
-    DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(LS);
+    const XMLCh LS[] = {xercesc::chLatin_L, xercesc::chLatin_S, xercesc::chNull};
+    xercesc::DOMImplementation * impl = xercesc::DOMImplementationRegistry::getDOMImplementation(LS);
 	
     // Create a parser
-    DOMBuilder * parser = ((DOMImplementationLS*)impl)->createDOMBuilder
-      (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
+    xercesc::DOMBuilder * parser = ((xercesc::DOMImplementationLS*)impl)->createDOMBuilder
+      (xercesc::DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
   if(validate) {
-    parser->setFeature(XMLUni::fgDOMNamespaces, true);
-    parser->setFeature(XMLUni::fgXercesSchema, true);
-    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
-    parser->setFeature(XMLUni::fgDOMValidation, true);
-    parser->setFeature(XMLUni::fgDOMDatatypeNormalization, true);    
+    parser->setFeature(xercesc::XMLUni::fgDOMNamespaces, true);
+    parser->setFeature(xercesc::XMLUni::fgXercesSchema, true);
+    parser->setFeature(xercesc::XMLUni::fgXercesSchemaFullChecking, true);
+    parser->setFeature(xercesc::XMLUni::fgDOMValidation, true);
+    parser->setFeature(xercesc::XMLUni::fgDOMDatatypeNormalization, true);    
   }
 
-  parser->setErrorHandler(new ErrorHandler);
+  ErrorHandler * handler = new ErrorHandler;
+  parser->setErrorHandler(handler);
 
 	xercesc::DOMDocument * parsed = 0;
 
 	try {
 		parsed = parser->parseURI(filename);
 	} catch(xercesc::RuntimeException e) {
-		char * msg = XMLString::transcode(e.getMessage());
+		char * msg = xercesc::XMLString::transcode(e.getMessage());
 		
 		Radiant::trace(Radiant::FAILURE, "DOMDocument::readFromFile # %s", msg);
 		parser->release();
-		XMLString::release(&msg);
+		xercesc::XMLString::release(&msg);
 		return false;
 	}
    
     // Clone the document because the parsed
-    if(m_xDoc)
-      XERCESDOC(m_xDoc)->release();
+    if(m_wrapped)
+      XDOC(m_wrapped)->release();
 
     if(parsed)
-      m_xDoc = MXERCESDOC((xercesc::DOMDocument *) parsed->cloneNode((parsed == 0) ? false: true));
+      m_wrapped = DOC((xercesc::DOMDocument *) parsed->cloneNode((parsed == 0) ? false: true));
     else
-      m_xDoc = 0;
+      m_wrapped = 0;
 
     parser->release();
+    delete handler;
 
-    return (m_xDoc != 0);
+    return (m_wrapped != 0);
   }
    
   DOMElement DOMDocument::getDocumentElement()
   {
-    xercesc::DOMElement * de = XERCESDOC(m_xDoc)->getDocumentElement();
-    return DOMElement(MXERCESELEM(de));
+    xercesc::DOMElement * de = XDOC(m_wrapped)->getDocumentElement();
+    return DOMElement(ELEM(de));
   }
 
 }
