@@ -22,8 +22,6 @@ SOURCES += LensCorrection.cpp
 SOURCES += Random.cpp
 SOURCES += Rect.cpp
 
-include(../library.pri)
+win32:DEFINES += NIMBLE_EXPORT
 
-win32 {
-	CONFIG += staticlib
-}
+include(../library.pri)

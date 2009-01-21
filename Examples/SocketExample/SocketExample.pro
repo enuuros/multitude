@@ -2,7 +2,9 @@ include(../Examples.pri)
 
 SOURCES += Main.cpp
 
-TARGET = SocketExample
-
 LIBS += $$LIB_RADIANT 
 
+win32 {
+	LIBS += -lWin32x
+	CONFIG += console
+}

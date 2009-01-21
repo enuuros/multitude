@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
+win32: SUBDIRS += Win32x
 SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
@@ -12,8 +13,6 @@ SUBDIRS += VideoDisplay
 
 exists(Examples/Examples.pro):SUBDIRS += Examples
 SUBDIRS += Applications
-
-#SUBDIRS += Documents
 
 CONFIG += ordered
 

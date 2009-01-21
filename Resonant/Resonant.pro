@@ -25,13 +25,13 @@ SOURCES += ModuleSamplePlayer.cpp
 
 LIBS += $$LIB_RADIANT 
 
-PKGCONFIG += portaudio-2.0 sndfile
+unix: PKGCONFIG += portaudio-2.0 sndfile
 
 include(../library.pri)
 
 win32 {
-	INCLUDEPATH += $$INC_LIBSNDFILE $$INC_PORTAUDIO $$INC_WINPORT $$INC_PTHREADS 
-	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_LIBSNDFILE $$LNK_PORTAUDIO
-	LIBS += $$LIB_PTHREADS $$LIB_WINPORT $$LIB_SNDFILE $$LIB_PORTAUDIO
-	QMAKE_CXXFLAGS *= -wd4251		# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+	DEFINES += RESONANT_EXPORT
+	INCLUDEPATH += ..\Win32x\include\portaudio ..\Win32x\include\libsndfile
+	LIBS += -llibsndfile-1 -lportaudio_x86 -lWin32x
+	QMAKE_CXXFLAGS += -Zc:wchar_t
 }

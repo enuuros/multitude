@@ -178,7 +178,7 @@ namespace Valuable
       (xercesc::DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
   if(validate) {
-    parser->setFeature(xercesc::XMLUni::fgDOMNamespaces, true);
+	parser->setFeature(xercesc::XMLUni::fgDOMNamespaces, true);
     parser->setFeature(xercesc::XMLUni::fgXercesSchema, true);
     parser->setFeature(xercesc::XMLUni::fgXercesSchemaFullChecking, true);
     parser->setFeature(xercesc::XMLUni::fgDOMValidation, true);

@@ -59,6 +59,16 @@ macx {
 
 }
 
+win32 {
+	INCLUDEPATH += "$$(BOOST_DIR)"
+	INCLUDEPATH += $$PWD\Win32x\include
+	LIBPATH += "$$(BOOST_DIR)\lib"
+	LIBPATH += $$PWD\Win32x\lib
+	LIB_OPENGL = -lopengl32
+	LIB_GLU = -lglu32
+	QMAKE_CXXFLAGS += -Zc:wchar_t
+}
+
 MULTI_VIDEO_LIBS = $$LIB_SCREENPLAY $$LIB_RESONANT $$LIB_VIDEODISPLAY
 
 LIBS += $${MULTI_LIB_FLAG}$$PWD/lib

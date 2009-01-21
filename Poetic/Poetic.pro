@@ -46,9 +46,9 @@ SOURCES += Utils.cpp
 
 DEFINES += POETIC_FLIP_Y
 
-PKGCONFIG += freetype2
+unix: PKGCONFIG += freetype2
 
-LIBS += $$LIB_LUMINOUS $$LIB_RADIANT 
+LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_NIMBLE
 LIBS += $$LIB_OPENGL
 
 macx:LIBS += -framework,OpenGL
@@ -56,9 +56,7 @@ macx:LIBS += -framework,OpenGL
 include(../library.pri)
 
 win32 {
-	SOURCES -= FontManager.cpp
-	INCLUDEPATH += $$INC_GLEW $$INC_FREETYPE_A $$INC_FREETYPE_B $$INC_WINPORT
-	LIBPATH += $$LNK_MULTITUDE $$LNK_FREETYPE 
-	LIBS += $$LIB_FREETYPE $$LIB_OPENGL
-	QMAKE_CXXFLAGS *= -wd4251	# see http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+	DEFINES += POETIC_EXPORT
+	INCLUDEPATH += ..\Win32x\include\freetype2
+	LIBS += -lfreetype
 }

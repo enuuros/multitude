@@ -8,7 +8,7 @@
 namespace Luminous
 {
   class Image;
-  class ImageInfo;
+  struct ImageInfo;
   
   /// The base class for different image codecs. Derive your own codec from this
   /// and override the three methods.

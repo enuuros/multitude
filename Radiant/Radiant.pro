@@ -61,7 +61,6 @@ SOURCES += FixedStr.cpp
 SOURCES += ImageConversion.cpp
 SOURCES += Mutex.cpp
 SOURCES += ResourceLocator.cpp
-SOURCES += SerialPortLinux.cpp
 SOURCES += Size2D.cpp
 SOURCES += Sleep.cpp
 SOURCES += SMRingBuffer.cpp
@@ -72,29 +71,32 @@ SOURCES += Thread.cpp
 SOURCES += Timer.cpp
 SOURCES += TimeStamp.cpp
 SOURCES += Trace.cpp
-SOURCES += Video1394.cpp
 SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
 linux-*:SOURCES += PlatformUtilsLinux.cpp
+macx { 
+	SOURCES += PlatformUtilsOSX.cpp
+	LIBS += -framework,CoreFoundation
+}
 
-macx:SOURCES += PlatformUtilsOSX.cpp
+unix {
+	SOURCES += SerialPortLinux.cpp
+	SOURCES += Video1394.cpp
 
-unix:LIBS += -lpthread $$LIB_RT -ldl
-# linux-*:LIBS += -lboost_filesystem
-
-macx:LIBS += -framework,CoreFoundation
-PKGCONFIG += libdc1394-2
-
-# CONFIG += debug
-
-include(../library.pri)
+	LIBS += -lpthread $$LIB_RT -ldl
+	PKGCONFIG += libdc1394-2
+}
 
 win32 {
-	SOURCES -= SerialPort.cpp Video1394.cpp SMRingBuffer.cpp
-    SOURCES += Video1394cmu.cpp cmu_dc1394.cpp
-	INCLUDEPATH += $$INC_PTHREADS $$INC_WINPORT $$INC_LIBDC1394 $$INC_CMUCAM
-	LIBPATH += $$LNK_MULTITUDE $$LNK_PTHREADS $$LNK_CMUCAM
-	LIBS += $$LIB_WINPORT $$LIB_PTHREADS $$LIB_CMUCAM -lws2_32
+	DEFINES += RADIANT_EXPORT BOOST_ALL_DYN_LINK
+    SOURCES += Video1394cmu.cpp
+	SOURCES += cmu_dc1394.cpp
+	SOURCES += PlatformUtilsWin32.cpp
+	LIBS += 1394Camera.lib win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib
+	QMAKE_CXXFLAGS += -Zc:wchar_t
 }
+
+
+include(../library.pri)

@@ -43,9 +43,3 @@ macx {
 
     message(Creating OSX bundle)
 }
-
-win32 {
-	DEFINES += EXPORT=__declspec(dllexport)
-	include(./Win32/WinPort.pri)
-}
-

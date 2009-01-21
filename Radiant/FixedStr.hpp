@@ -63,5 +63,4 @@ namespace Radiant {
 
 }
 
-
 #endif

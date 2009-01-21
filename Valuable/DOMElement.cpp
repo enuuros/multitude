@@ -23,7 +23,7 @@
 
 namespace Valuable
 {
-  class DOMElement::Wrapped
+  struct DOMElement::Wrapped
   {
     xercesc::DOMElement * x;
   };

@@ -1,11 +1,8 @@
 include(../Examples.pri)
 
+win32: CONFIG += console
+
 SOURCES += Main.cpp
-
-TARGET = PlatformExample
-
-INCLUDEPATH += ../../
-DEPENDPATH += ../../
 
 LIBS += $$LIB_RADIANT 
 
