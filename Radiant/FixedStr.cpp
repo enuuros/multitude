@@ -16,4 +16,8 @@
 // The purpose of this file is to include FixedStr.hpp in the Radiant build
 // thereby including any template instantiations defined in that file
 
-#include "FixedStr.hpp"
+#include "FixedStrImpl.hpp"
+
+template class Radiant::FixedStrT<32> ;
+template class Radiant::FixedStrT<256> ;
+template class Radiant::FixedStrT<512> ;
