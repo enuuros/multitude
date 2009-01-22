@@ -19,7 +19,7 @@
 #include <Nimble/Export.hpp>
 
 #ifdef WIN32
-#include <Win32/WinPort/include/WinPort.h>
+#include <WinPort.h>
 #endif
 
 #include <string>

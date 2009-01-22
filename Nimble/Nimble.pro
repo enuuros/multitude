@@ -21,6 +21,7 @@ SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
 SOURCES += Random.cpp
 SOURCES += Rect.cpp
+SOURCES += Histogram.cpp
 
 win32:DEFINES += NIMBLE_EXPORT
 
