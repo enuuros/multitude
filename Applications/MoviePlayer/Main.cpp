@@ -23,8 +23,6 @@
 
 int main(int argc, char ** argv)
 {
-  printf("Test\n");
-  
   QApplication qa(argc, argv);
 
   if(argc < 2) {

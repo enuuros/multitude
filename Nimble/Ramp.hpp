@@ -24,7 +24,7 @@ namespace Nimble {
   /** This class is used to interpolate between key-point values, with
       fixed-length intervals. */
   template <class T>
-  class NIMBLE_API RampT
+  class /*NIMBLE_API*/ RampT
   {
   public:
     RampT() {}
