@@ -1,5 +1,6 @@
 include(../multitude.pri)
 
+HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
 HEADERS += Color.hpp
@@ -47,6 +48,7 @@ HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
 
+SOURCES += UDPSocket.cpp
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
