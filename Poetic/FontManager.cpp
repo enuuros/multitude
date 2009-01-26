@@ -14,8 +14,9 @@
  */
 
 #include "FontManager.hpp"
-
 #include "CPUManagedFont.hpp"
+
+#include <Radiant/Trace.hpp>
 
 #include <map>
 #include <string>
@@ -24,24 +25,46 @@ namespace Poetic
 {
 
   FontManager::FontManager()
-  {}
+  {    
+    m_locator.addPath("../../share/MultiTouch/Fonts");
+
+    // Add platform specific paths 
+    m_locator.addPath(
+#ifdef WIN32
+    /// @todo Windows might not be installed on drive C...
+    "C:/Windows/Fonts"
+#elif __linux__
+    "/usr/share/fonts/truetype/ttf-dejavu"
+#else
+    "/Library/Frameworks/MultiTouch.framework/Fonts"
+#endif
+  );
+    m_locator.addPath(".");
+  }
 
   FontManager::~FontManager()
   {}
 
   CPUWrapperFont * FontManager::getFont(const std::string & name)
   {
-	container::iterator it = m_managedFonts.find(name);
+    container::iterator it = m_managedFonts.find(name);
 
     CPUManagedFont * mfont = 0;
 
     if(it == m_managedFonts.end()) {
+
+      const std::string path = m_locator.locate(name);
+      if(path.empty()) {
+        Radiant::error("FontManager::getFont # failed to locate font %s", name.c_str());
+        return 0;
+      }
+  
       // Need to create a new managed font
       mfont = new CPUManagedFont(0);
       m_managedFonts[name] = mfont;
 
-      if(!mfont->load(name.c_str())) {
-        Radiant::trace(Radiant::FAILURE, "FontManager::getFont # failed to load '%s'", name.c_str());
+      if(!mfont->load(path.c_str())) {
+        Radiant::trace(Radiant::FAILURE, "FontManager::getFont # failed to load '%s'", path.c_str());
         return 0;
       }
     } else mfont = it->second;
@@ -49,8 +72,10 @@ namespace Poetic
     return new CPUWrapperFont(mfont);
   }
 
-
-
+  std::string FontManager::locate(const std::string & name)
+  {
+    return m_locator.locate(name);
+  }
 
 }
 

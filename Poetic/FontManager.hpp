@@ -15,15 +15,13 @@
 #ifndef POETIC_FONT_MANAGER_HPP
 #define POETIC_FONT_MANAGER_HPP
 
-#include <Poetic/CPUFont.hpp>
 #include <Poetic/Export.hpp>
+#include <Poetic/CPUFont.hpp>
 #include <Poetic/GPUFont.hpp>
 #include <Poetic/CPUBitmapFont.hpp>
 #include <Poetic/CPUWrapperFont.hpp>
 
 #include <Patterns/Singleton.hpp>
-
-#include <Radiant/Trace.hpp>
 
 namespace Poetic
 {
@@ -37,13 +35,17 @@ namespace Poetic
     public:
       CPUWrapperFont * getFont(const std::string & name);
 
+      std::string locate(const std::string & name);
+
     private:
       FontManager();
       ~FontManager();
-    
+
       // filename -> cpu font
       typedef std::map<std::string, CPUManagedFont *> container;
       container m_managedFonts;
+
+      Radiant::ResourceLocator m_locator;
 
       friend class Patterns::Singleton<FontManager>;
   };

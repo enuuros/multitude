@@ -40,9 +40,9 @@ namespace Poetic
       CPUBitmapFont * font = new CPUBitmapFont(Collectable::gc());
 
       ok = font->load(m_file.c_str());
-      assert(ok);
+      if(!ok) return false;
       ok = font->setFaceSize(g_faceSizes[i]);
-      assert(ok);
+      if(!ok) return false;
       m_fonts.push_back(font);
     }
 

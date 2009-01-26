@@ -49,8 +49,12 @@ namespace Radiant
       std::string locateWriteable(const std::string & file) const;
       std::string locateOverWriteable(const std::string & file) const;
 
+      static ResourceLocator & instance() { return s_instance; }
+
     private:
       std::string m_paths;
+
+      static ResourceLocator s_instance;
   };
 
 }

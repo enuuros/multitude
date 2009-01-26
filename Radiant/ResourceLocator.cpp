@@ -25,6 +25,8 @@
 namespace Radiant
 {
 
+  ResourceLocator ResourceLocator::s_instance;
+
   std::string   ResourceLocator::separator = ";";
 
   ResourceLocator::ResourceLocator()
