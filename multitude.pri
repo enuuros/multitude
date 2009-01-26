@@ -15,7 +15,7 @@ MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
 
-LIB_DYSLEXIC = -lPoetic
+LIB_POETIC = -lPoetic
 LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
 LIB_NIMBLE = -lNimble
