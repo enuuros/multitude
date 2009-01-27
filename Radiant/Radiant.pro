@@ -77,7 +77,8 @@ SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
-linux-*:SOURCES += PlatformUtilsLinux.cpp
+LIBS += $$LIB_NIMBLE
+
 macx { 
 	SOURCES += PlatformUtilsOSX.cpp
 	LIBS += -framework,CoreFoundation

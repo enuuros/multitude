@@ -1069,7 +1069,7 @@ void Video1394::sendSoftwareTrigger()
 
 	// ----------------------------------------------------------------------------
 	//
-	void Video1394::queryCameras(std::vector<CameraInfo> * query)
+	bool Video1394::queryCameras(std::vector<CameraInfo> * query)
 	{
 		/* JJK needed??
 		if (!__dcs)
@@ -1080,6 +1080,7 @@ void Video1394::sendSoftwareTrigger()
 		C1394Camera cmucam;
 		cmucam.CheckLink();
 		int numCams = cmucam.RefreshCameraList();
+		if(numCams < 1) return false;
 
 		// -- enumerate cameras
 		dc1394camera_list_t camlist;
@@ -1120,6 +1121,8 @@ void Video1394::sendSoftwareTrigger()
 
 		//?? query->clear();
 		//cmu_dc1394_camera_free_list(camlist);
+		
+		return true;
 	}
 
 	// ----------------------------------------------------------------------------

@@ -32,11 +32,11 @@ namespace Radiant
     close();
   }
 
-  bool SerialPort::open(const char * device, bool /*stopBit*/, bool parityBit,
+  bool SerialPort::open(const char * device, bool stopBit, bool parityBit,
     int baud, int bits, int /*waitBytes*/, int waitTimeUS)
   {
     // First make sure serial port is closed
-
+	trace(DEBUG, "SerialPort::open(%s)", device);
     close();
 
     // Open serial port
@@ -57,9 +57,9 @@ namespace Radiant
 
     // Obtain current parameters of serial port
 
-    DCB   dcbParams;
-    memset(& dcbParams, 0, sizeof(DCB));
-    dcbParams.DCBlength = sizeof(DCB);
+    DCB dcbParams;
+    memset(& dcbParams, 0, sizeof(dcbParams));
+    dcbParams.DCBlength = sizeof(dcbParams);
 
     if(!GetCommState(m_hPort, & dcbParams))
     {
@@ -108,8 +108,10 @@ namespace Radiant
     }
 
     // Set timeouts
-
     const int   waitTimeMS = waitTimeUS / 1000;
+	
+//trace(INFO, "SerialPort::open # timeout %dus (%dms)", waitTimeUS, waitTimeMS);
+	
     COMMTIMEOUTS  timeouts;
     memset(& timeouts, 0, sizeof(COMMTIMEOUTS));
     timeouts.ReadIntervalTimeout = waitTimeMS;
@@ -151,7 +153,13 @@ namespace Radiant
 
     DWORD   bytesWritten = 0;
     WriteFile(m_hPort, buf, bytes, & bytesWritten, 0);
-
+/*
+	std::ostringstream os;
+	for(int i = 0; i < bytesWritten; i++)
+		os << (int)((char*)buf)[i] << " ";
+	
+	info("SerialPort::write # wrote %d bytes (%s)", bytesWritten, os.str().c_str());
+*/
     return int(bytesWritten);
   }
 
@@ -165,8 +173,16 @@ namespace Radiant
     assert(isOpen());
 
     DWORD   bytesRead = 0;
-    ReadFile(m_hPort, buf, bytes, & bytesRead, 0);
-
+    if(ReadFile(m_hPort, buf, bytes, & bytesRead, 0) == FALSE)
+		error("SerialPort::read # read failed");
+/*	
+	
+	std::ostringstream os;
+	for(int i = 0; i < bytesRead; i++)
+		os << (int)((char*)buf)[i] << " ";
+	info("SerialPort::read # read %d bytes (%s)", bytesRead, os.str().c_str());
+*/	
+	
     return int(bytesRead);
   }
 
