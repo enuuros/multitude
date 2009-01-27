@@ -510,6 +510,7 @@ bool Video1394::enableTrigger(dc1394trigger_source_t source)
 			error("Video1394::enableTrigger # Could not turn trigger power on");
 			return false;
 			} */
+		pcct->SetOnOff(true);
 
 		unsigned short src = unsigned short(source - DC1394_TRIGGER_SOURCE_MIN);
 		if (source == DC1394_TRIGGER_SOURCE_SOFTWARE)
