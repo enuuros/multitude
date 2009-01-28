@@ -79,6 +79,10 @@ SOURCES += WatchDog.cpp
 
 LIBS += $$LIB_NIMBLE
 
+linux-* {
+  SOURCES += PlatformUtilsLinux.cpp
+}
+
 macx { 
 	SOURCES += PlatformUtilsOSX.cpp
 	LIBS += -framework,CoreFoundation
