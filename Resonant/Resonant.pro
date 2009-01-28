@@ -23,7 +23,7 @@ SOURCES += ModuleGain.cpp
 SOURCES += ModuleOutCollect.cpp
 SOURCES += ModuleSamplePlayer.cpp
 
-LIBS += $$LIB_RADIANT $$LIB_NIMBLE
+LIBS += $$LIB_RADIANT $$LIB_NIMBLE $$LIB_PATTERNS
 
 unix: PKGCONFIG += portaudio-2.0 sndfile
 

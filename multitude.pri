@@ -26,6 +26,7 @@ LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
 LIB_VIDEODISPLAY = -lVideoDisplay
 LIB_VALUABLE = -lValuable
+LIB_PATTERNS = -lPatterns
 
 MULTI_LIB_FLAG = -L
 
@@ -55,6 +56,7 @@ macx {
     LIB_SCREENPLAY = -framework,Screenplay
     LIB_VALUABLE = -framework,Valuable
     LIB_VIDEODISPLAY = -framework,VideoDisplay
+	LIB_PATTERNS = -framework,Patterns
   }
 
 }

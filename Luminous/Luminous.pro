@@ -69,7 +69,7 @@ SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
 
 LIBS += $$LIB_RADIANT -lGLEW $$LIB_OPENGL
-LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE
+LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE $$LIB_PATTERNS
 
 unix: LIBS += -ljpeg -lpng
 

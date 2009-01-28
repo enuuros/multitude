@@ -77,7 +77,7 @@ SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
 
-LIBS += $$LIB_NIMBLE
+LIBS += $$LIB_NIMBLE $$LIB_PATTERNS
 
 linux-* {
   SOURCES += PlatformUtilsLinux.cpp

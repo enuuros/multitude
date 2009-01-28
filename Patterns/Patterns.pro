@@ -5,6 +5,6 @@ HEADERS += Factory.hpp
 HEADERS += NotCopyable.hpp
 HEADERS += Singleton.hpp
 
-SOURCES += Dummy.cpp
+SOURCES += NotCopyable.cpp
 
 include(../library.pri)

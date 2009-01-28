@@ -24,7 +24,7 @@
 namespace Nimble {
 
   template <class T>
-  class NIMBLE_API Vector4T
+  class Vector4T
   {
   public:
     T		x;										// x-component of the vector
