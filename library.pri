@@ -3,23 +3,29 @@ TEMPLATE = lib
 
 DESTDIR = $$PWD/lib
 
-linux-* {
-
-  target.path = /lib
+target.path = /lib
  
-  includes.path = /include/$$TARGET
-  includes.files = $$HEADERS
+includes.path = /include/$$TARGET
+includes.files = $$HEADERS
 
-  src_code.path = /src/MultiTouch/multitude/$$TARGET
-  src_code.files = $$HEADERS $$SOURCES
+src_code.path = /src/MultiTouch/multitude/$$TARGET
+src_code.files = $$HEADERS $$SOURCES
 
-  PROJECT_FILE = $$join(TARGET, "", "", ".pro")
-  src_code.files += $$PROJECT_FILE
+PROJECT_FILE = $$join(TARGET, "", "", ".pro")
+src_code.files += $$PROJECT_FILE
 
-  INSTALLS += target includes src_code
+INSTALLS += target includes src_code
+
+# On Windows, put DLLs into /bin with the exes
+win32 {
+	tt = $$join(TARGET, "", "$$DESTDIR/", ".dll")
+	dlls.path = /bin
+	dlls.files += $$tt
+	
+	INSTALLS += dlls
 }
 
-macx {
+  macx {
 
     CONFIG += lib_bundle
 
