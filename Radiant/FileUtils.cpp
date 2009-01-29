@@ -165,10 +165,10 @@ namespace Radiant
 	  it != pathList.end(); it++) {
         string fullPath = (*it) + string("/") + filename;
 
-        trace(INFO, "Testing %s for %s", (*it).c_str(), filename.c_str());
+		debug("Radiant::findFile # Testing %s for %s", (*it).c_str(), filename.c_str());
 
         if(fileReadable(fullPath.c_str())) {
-          trace(INFO, "FOUND %s", fullPath.c_str());
+			debug("Radiant::findFile # FOUND %s", fullPath.c_str());
           return fullPath;
         }
       }

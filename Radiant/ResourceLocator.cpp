@@ -38,8 +38,6 @@ namespace Radiant
 
   void ResourceLocator::addPath(const std::string & path, bool front)
   {
-	  trace(INFO, "ResourceLocator::addPath(%s,%d)", path.c_str(), front);
-
 	  if(path.empty()) {
 		  error("ResourceLocator::addPath # attempt to add an empty path");
 		  return;

@@ -9,7 +9,7 @@ CONFIG += thread
 CONFIG += release
 
 # Uncomment for debug build
-CONFIG += debug
+# CONFIG += debug
 
 INCLUDEPATH += $$PWD
 
