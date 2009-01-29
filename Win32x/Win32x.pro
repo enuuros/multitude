@@ -13,7 +13,7 @@ DEFINES += WINPORT_EXPORT
 
 # Install windows 3rd party dlls to bin
 win32 {
-	win32_libs.path = /bin
+	win32_libs.path = /apps/bin
 	win32_libs.files = lib/*.dll
 	
 	INSTALLS += win32_libs

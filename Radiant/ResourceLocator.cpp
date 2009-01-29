@@ -19,6 +19,7 @@
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/PlatformUtils.hpp>
 #include <Radiant/StringUtils.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <sstream>
 
@@ -37,17 +38,22 @@ namespace Radiant
 
   void ResourceLocator::addPath(const std::string & path, bool front)
   {
-    if(path.size() == 0)
-      ;
-    else if(m_paths.empty()) 
+	  trace(INFO, "ResourceLocator::addPath(%s,%d)", path.c_str(), front);
+
+	  if(path.empty()) {
+		  error("ResourceLocator::addPath # attempt to add an empty path");
+		  return;
+	  }
+
+	if(m_paths.empty())
       m_paths = path;
     else {
       std::ostringstream os;
 
       if(front)
-	os << path << separator << m_paths;
+		os << path << separator << m_paths;
       else
-	os << m_paths << separator << path;
+		os << m_paths << separator << path;
       
       m_paths = os.str();
     }

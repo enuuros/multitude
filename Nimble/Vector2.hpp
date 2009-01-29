@@ -30,7 +30,7 @@ namespace Nimble {
       functions. */
 
   template <class T>
-  class Vector2T
+  class NIMBLE_API Vector2T
   {
   public:
     /// X-component of the vector

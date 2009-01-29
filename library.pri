@@ -19,8 +19,9 @@ INSTALLS += target includes src_code
 # On Windows, put DLLs into /bin with the exes
 win32 {
 	tt = $$join(TARGET, "", "$$DESTDIR/", ".dll")
-	dlls.path = /bin
+	dlls.path = /apps/bin
 	dlls.files += $$tt
+	dlls.CONFIG += no_check_exist
 	
 	INSTALLS += dlls
 }

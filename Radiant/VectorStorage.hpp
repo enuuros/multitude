@@ -70,6 +70,8 @@ namespace Radiant {
     /** This function does not erase any objects. */
     void reset() { m_count = 0; }
 
+	bool empty() const { return m_points.empty(); }
+
     /// Resets the internal object counter to n.
     void truncate(unsigned n) { m_count = n; }
 

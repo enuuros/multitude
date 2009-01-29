@@ -37,12 +37,11 @@ SOURCES += ValueVector.cpp
 
 # PKGCONFIG += xercesc
 
-LIBS += $$LIB_RADIANT
+LIBS += $$LIB_RADIANT $$LIB_NIMBLE
 unix: LIBS += -lxerces-c
 
 win32 {
 	DEFINES += VALUABLE_EXPORT
-	LIBS += -lRadiant -lNimble
 	LIBS += xerces-c_2.lib
 	QMAKE_CXXFLAGS += -Zc:wchar_t
 }

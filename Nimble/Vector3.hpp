@@ -26,7 +26,7 @@ namespace Nimble {
   /** Three-dimensional vector class for 3D mathematics. */
 
   template <class T>
-  class Vector3T
+  class NIMBLE_API Vector3T
   {
   public:
     T		x;										// x-component of the vector

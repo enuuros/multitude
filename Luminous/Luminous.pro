@@ -76,7 +76,11 @@ unix: LIBS += -ljpeg -lpng
 win32 {
 	DEFINES += LUMINOUS_EXPORT
 	INCLUDEPATH += ../Win32x/include/libjpeg
-	LIBS += libjpeg-static-mt.lib libpng.lib -lWin32x
+	LIBS += libjpeg-static-mt.lib -lWin32x
+	
+	# This seems to be important under Windows. libpng crashes if you mix release & debug code.
+	CONFIG(debug): LIBS += libpng13d.lib
+	else: LIBS+=libpng13.lib	
 }
 
 include(../library.pri)
