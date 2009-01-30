@@ -78,6 +78,9 @@ namespace Radiant {
     /// The number of objecs in the array
     unsigned size() const { return m_count; }
 
+    /// The number of allocated objects
+    unsigned reserved() const { return m_points.size(); }
+
     /// Expand the size of the storage buffer to desired size
     /** This function can be run in software initialization phase, to
 	avoid the need to resize the buffer later on. */
