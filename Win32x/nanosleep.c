@@ -13,6 +13,8 @@
 //
 int nanosleep(const struct timespec * req, struct timespec * rem)
 {
+	(void)rem;
+
 	if (req)
 	{
 		uint32_t dur = (uint32_t)(req->tv_sec * 1000 + req->tv_nsec / 1000000);
