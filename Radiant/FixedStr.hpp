@@ -45,7 +45,7 @@ namespace Radiant {
 
     void writeFloats(const float * ptr, int n, int digits);
    
-    inline void copyn(const char * ptr, int n);
+    void copyn(const char * ptr, int n);
 
     const char * str() const;
 
