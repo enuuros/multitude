@@ -13,8 +13,4 @@ CONFIG += qt
 
 QT = core gui opengl xml
 
-win32 {
-	INCLUDEPATH += ../../Win32x/include/portaudio
-}
-
 include(../Applications_end.pri)

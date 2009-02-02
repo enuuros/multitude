@@ -27,6 +27,5 @@ include(../library.pri)
 
 win32 {
 	DEFINES += VIDEODISPLAY_EXPORT
-	INCLUDEPATH += ../Win32x/include/portaudio
 	LIBS += -lWin32x
 }
