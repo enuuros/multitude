@@ -44,7 +44,7 @@ namespace Luminous
   };
 
   /// An abstraction of an off-screen render target.
-  class Renderbuffer
+  class LUMINOUS_API Renderbuffer
   {
   public:
     Renderbuffer();
@@ -62,7 +62,7 @@ namespace Luminous
   };
 
   /// Abstraction of an off-screen render target that can be used as a texture.
-  class Framebuffer
+  class LUMINOUS_API Framebuffer
   {
   public:
     Framebuffer();
