@@ -18,7 +18,7 @@
 
 #include <Resonant/Export.hpp>
 
-#include <portaudio.h>
+//#include <portaudio.h>
 
 namespace Resonant {
 
@@ -33,39 +33,29 @@ namespace Resonant {
     static bool init();
     static bool cleanup();
     
-    bool startReadWrite(int samplerate,
-			int channels);
+    bool startReadWrite(int samplerate, int channels);
     bool isRunning() { return m_isRunning; }
 
     bool stop();
 
-    const PaStreamParameters & inParameters()  { return m_inParams; }
-    const PaStreamParameters & outParameters() { return m_outParams; }
+    int outChannels() const;
 
   private:
-    static int paCallback(const void *in, void *out,
-			  unsigned long framesPerBuffer,
-			  const PaStreamCallbackTimeInfo* time,
-			  PaStreamCallbackFlags status,
-			  void * self);
-    static void paFinished(void * self);
-
-    virtual int callback(const void *in, void *out,
-			 unsigned long framesPerBuffer,
-			 const PaStreamCallbackTimeInfo* time,
-			 PaStreamCallbackFlags status) = 0;
-
     virtual void finished();
 
-    PaStreamParameters m_inParams;
-    PaStreamParameters m_outParams;
+    virtual int callback(const void *in, void *out,
+        unsigned long framesPerBuffer
+//        , const PaStreamCallbackTimeInfo* time,
+//        PaStreamCallbackFlags status
+        ) = 0;
 
-    PaStream * m_stream;
-    const PaStreamInfo * m_streamInfo;
-    PaTime     m_startTime;
     bool       m_isRunning;
     bool       m_continue;
-  };
+
+    class AudioLoopInternal;
+
+    AudioLoopInternal * m_d;
+ };
 
 }
 

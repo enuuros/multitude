@@ -14,7 +14,6 @@
  */
 
 #include "ModuleSamplePlayer.hpp"
-
 #include "ControlData.hpp"
 
 #include <Nimble/Math.hpp>
@@ -22,23 +21,34 @@
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
 
-#include <assert.h>
-
-#ifdef WIN32
-#include <WinPort.h>
-#endif
+#include <sndfile.h>
+#include <cassert>
 
 namespace Resonant {
 
   using namespace Radiant;
 
+  class ModuleSamplePlayer::Sample::Internal
+  {
+    public:
+      SF_INFO m_info;
+  };
+
   ModuleSamplePlayer::Sample::Sample()
   {
-    bzero(&m_info, sizeof(m_info));
+    m_d = new Internal();
+    bzero(&m_d, sizeof(m_d));
   }
 
-//  ModuleSamplePlayer::Sample::~Sample()
-//  {}
+  ModuleSamplePlayer::Sample::~Sample()
+  {
+    delete m_d;
+  }
+
+  const float * ModuleSamplePlayer::Sample::buf(unsigned i) const 
+  {
+    return &m_data[i * m_d->m_info.channels];
+  }
 
   bool ModuleSamplePlayer::Sample::load(const char * filename,
 					const char * name)
@@ -48,14 +58,14 @@ namespace Resonant {
     
     m_name = name;
 
-    bzero(&m_info, sizeof(m_info));
+    bzero(&m_d->m_info, sizeof(m_d->m_info));
 
-    SNDFILE * sndf = sf_open(filename, SFM_READ, & m_info);
+    SNDFILE * sndf = sf_open(filename, SFM_READ, & m_d->m_info);
 
     if(!sndf)
       return false;
 
-    m_data.resize(m_info.channels * m_info.frames);
+    m_data.resize(m_d->m_info.channels * m_d->m_info.frames);
     if(!m_data.empty())
       bzero( & m_data[0], m_data.size() * sizeof(float));
     
@@ -63,11 +73,11 @@ namespace Resonant {
 
     unsigned pos = 0;
 
-    while(pos < m_info.frames) {
-      uint get = Nimble::Math::Min((uint) (m_info.frames - pos), block);
-      uint n = get * m_info.channels;
+    while(pos < m_d->m_info.frames) {
+      uint get = Nimble::Math::Min((uint) (m_d->m_info.frames - pos), block);
+      uint n = get * m_d->m_info.channels;
       
-      sf_read_float(sndf, & m_data[pos * m_info.channels], n);
+      sf_read_float(sndf, & m_data[pos * m_d->m_info.channels], n);
 
       pos += get;
     }

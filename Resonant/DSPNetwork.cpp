@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <typeinfo>
 
+#include <portaudio.h>
+
 #ifdef WIN32
 #include <WinPort.h>
 #endif
@@ -140,21 +142,20 @@ namespace Resonant {
     m_incoming.append(control);
   }
 
-#ifdef WIN32
   DSPNetwork * DSPNetwork::instance()
   {
     return m_instance;
   }
-#endif
 
   int DSPNetwork::callback(const void *in, void *out,
-      unsigned long framesPerBuffer,
-      const PaStreamCallbackTimeInfo* time,
-      PaStreamCallbackFlags status)
+      unsigned long framesPerBuffer
+//, const PaStreamCallbackTimeInfo* time,
+//      PaStreamCallbackFlags status
+)
   {
     (void) in;
-    (void) time;
-    (void) status;
+//    (void) time;
+//    (void) status;
 
     /* printf("st = %lf, dact = %lf\n",
        m_streamInfo->outputLatency, time->outputBufferDacTime);*/
@@ -163,7 +164,7 @@ namespace Resonant {
     doCycle(framesPerBuffer);
     const float * res = m_collect->interleaved();
     assert(res != 0);
-    memcpy(out, res, 4 * framesPerBuffer * outParameters().channelCount);
+    memcpy(out, res, 4 * framesPerBuffer * outChannels());
 
     return paContinue;
   }

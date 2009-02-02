@@ -125,10 +125,10 @@ namespace Resonant {
 
       inline void process(int n)
       {
-		assert(m_compiled != false);
-		float ** in = m_ins.empty() ? 0 : &m_ins[0];
-		float ** out = m_outs.empty() ? 0 : &m_outs[0];
-		m_module->process(in, out, n);
+        assert(m_compiled != false);
+        float ** in = m_ins.empty() ? 0 : &m_ins[0];
+        float ** out = m_outs.empty() ? 0 : &m_outs[0];
+        m_module->process(in, out, n);
       }
 
       void eraseInput(const Connection & c);
@@ -155,27 +155,22 @@ namespace Resonant {
 
     bool start(const char * device = 0);
 
-    int outChannels() { return outParameters().channelCount; }
+    //int outChannels() { return outParameters().channelCount; }
 
     void addModule(Item &);
     void markDone(Item &);
 
     void send(ControlData & control);
 
-#ifdef WIN32
-    // not inline because of linkage issues
     static DSPNetwork * instance();
-#else
-    // inline
-    static DSPNetwork * instance() { return m_instance; }
-#endif
-
+  
   private:
 
     virtual int callback(const void *in, void *out,
-			 unsigned long framesPerBuffer,
-			 const PaStreamCallbackTimeInfo* time,
-			 PaStreamCallbackFlags status);
+			 unsigned long framesPerBuffer
+//       , const PaStreamCallbackTimeInfo* time,
+//			 PaStreamCallbackFlags status
+       );
     
     void doCycle(int);
 
