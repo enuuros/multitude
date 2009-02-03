@@ -1,0 +1,23 @@
+Import('env binaryPath platform')
+
+pEnv = env.Clone()
+
+src = Split("""
+    CamView.cpp 
+    MainWindow.cpp 
+    ParamView.cpp 
+    Main.cpp
+    """)
+
+
+
+if platform.system() == "Linux":
+  pEnv.ParseConfig('pkg-config --cflags --libs QtCore QtGui QtOpenGL QtXml')
+
+pEnv.Append(LIBS = Split("Luminous Valuable Radiant Nimble Patterns"))
+
+pEnv.Moc("CamView.hpp")
+
+app = pEnv.Program('FireView', src)
+
+env.Install(binaryPath, [app])

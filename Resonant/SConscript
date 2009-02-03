@@ -1,0 +1,24 @@
+Import('env libraryPath platform')
+
+src = Split("""
+    Application.cpp
+    AudioFileHandler.cpp
+    AudioLoop.cpp
+    ControlData.cpp
+    DSPNetwork.cpp
+    Module.cpp
+    ModuleFilePlay.cpp
+    ModuleGain.cpp
+    ModuleOutCollect.cpp
+    ModuleSamplePlayer.cpp
+    """)
+
+pEnv = env.Clone()
+
+if platform.system() == "Linux":
+  pEnv.ParseConfig('pkg-config --cflags --libs portaudio-2.0')
+  pEnv.ParseConfig('pkg-config --cflags --libs sndfile')
+
+resonant = pEnv.SharedLibrary('Resonant', src)
+
+env.Install(libraryPath, [resonant])

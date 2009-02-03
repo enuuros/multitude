@@ -1,0 +1,33 @@
+Import('env libraryPath platform')
+
+src = Split("""
+    BBox.cpp
+    Charmap.cpp
+    CPUBitmapFont.cpp
+    CPUBitmapGlyph.cpp
+    CPUFontBase.cpp
+    CPUManagedFont.cpp
+    CPUWrapperFont.cpp
+    Poetic.cpp
+    Face.cpp
+    FontManager.cpp
+    GlyphContainer.cpp
+    Glyph.cpp
+    GPUFontBase.cpp
+    GPUFont.cpp
+    GPUManagedFont.cpp
+    GPUTextureFont.cpp
+    GPUTextureGlyph.cpp
+    GPUWrapperFont.cpp
+    Size.cpp
+    Utils.cpp
+    """)
+
+pEnv = env.Clone()
+
+if platform.system() == "Linux":
+  pEnv.ParseConfig('pkg-config --cflags --libs freetype2')
+
+poetic = pEnv.SharedLibrary('Poetic', src)
+
+env.Install(libraryPath, [poetic])

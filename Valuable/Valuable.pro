@@ -35,8 +35,6 @@ SOURCES += ValueRect.cpp
 SOURCES += ValueString.cpp
 SOURCES += ValueVector.cpp
 
-# PKGCONFIG += xercesc
-
 LIBS += $$LIB_RADIANT $$LIB_NIMBLE
 unix: LIBS += -lxerces-c
 

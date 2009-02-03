@@ -1,0 +1,18 @@
+Import('env libraryPath platform')
+
+src = Split("""
+    AudioTransfer.cpp
+    ShowGL.cpp
+    SubTitles.cpp
+    VideoIn.cpp
+    VideoInFFMPEG.cpp
+    """)
+
+pEnv = env.Clone()
+
+if platform.system() == "Linux":
+  pEnv.ParseConfig('pkg-config --cflags --libs libavutil')
+
+videodisplay = pEnv.SharedLibrary('VideoDisplay', src)
+
+env.Install(libraryPath, [videodisplay])

@@ -1,0 +1,46 @@
+Import('env libraryPath platform')
+
+src = """
+    UDPSocket.cpp
+    BinaryData.cpp
+    Color.cpp
+    ColorUtils.cpp
+    Condition.cpp
+    ConfigReader.cpp
+    DateTime.cpp
+    DirectoryCommon.cpp
+    FileUtils.cpp
+    FixedStr.cpp
+    ImageConversion.cpp
+    Mutex.cpp
+    ResourceLocator.cpp
+    Size2D.cpp
+    Sleep.cpp
+    SMRingBuffer.cpp
+    StringUtils.cpp
+    TCPServerSocket.cpp
+    TCPSocket.cpp
+    Thread.cpp
+    Timer.cpp
+    TimeStamp.cpp
+    Trace.cpp
+    VideoImage.cpp
+    VideoInput.cpp
+    WatchDog.cpp
+    """
+
+pEnv = env.Clone()
+
+if platform.system() == "Win32":
+  src += "DirectoryBoost.cpp"
+
+if platform.system() == "Linux":
+  src += " DirectoryBoost.cpp"
+  src += " PlatformUtilsLinux.cpp"
+  src += " SerialPortLinux.cpp"
+  src += " Video1394.cpp"
+  pEnv.ParseConfig('pkg-config --cflags --libs libdc1394-2')
+  
+radiant = pEnv.SharedLibrary('Radiant', Split(src))
+
+env.Install(libraryPath, [radiant])

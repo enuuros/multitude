@@ -1,0 +1,26 @@
+Import('env libraryPath platform')
+
+src = Split("""
+    ChangeMap.cpp
+    DOMDocument.cpp
+    DOMElement.cpp
+    HasValues.cpp
+    Valuable.cpp
+    ValueColor.cpp
+    ValueFloat.cpp
+    ValueInt.cpp
+    ValueListener.cpp
+    ValueObject.cpp
+    ValueRect.cpp
+    ValueString.cpp
+    ValueVector.cpp
+    """)
+
+pEnv = env.Clone()
+
+if platform.system() == "Linux":
+  pEnv.Append(LIBS = ['xerces-c'])
+
+valuable = pEnv.SharedLibrary('Valuable', src)
+
+env.Install(libraryPath, [valuable])

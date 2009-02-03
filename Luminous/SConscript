@@ -1,0 +1,42 @@
+Import('env libraryPath')
+
+src = Split("""
+    ImageCodecJPEG.cpp
+    ImageCodecPNG.cpp
+    CodecRegistry.cpp
+    ImageCodecTGA.cpp
+    BGThread.cpp
+    Collectable.cpp
+    CPUMipmaps.cpp
+    DynamicTexture.cpp
+    Error.cpp
+    FramebufferObject.cpp
+    GarbageCollector.cpp
+    GLKeyStone.cpp
+    GLResource.cpp
+    GLResources.cpp
+    GLSLProgramObject.cpp
+    GLSLShaderObject.cpp
+    GPUMipmaps.cpp
+    Image.cpp
+    Luminous.cpp
+    MultiHead.cpp
+    Path.cpp
+    PixelFormat.cpp
+    Task.cpp
+    TCBSpline.cpp
+    Texture.cpp
+    Utils.cpp
+    VertexBuffer.cpp
+    """)
+
+pEnv = env.Clone()
+
+pEnv.Append(LIBS = Split("jpeg png GLEW"))
+lib = pEnv.SharedLibrary('Luminous', src)
+
+
+
+
+
+env.Install(libraryPath, [lib])
