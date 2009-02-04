@@ -1,0 +1,17 @@
+Import('env binaryPath platform')
+
+pEnv = env.Clone()
+
+src = Split("""
+  VideoWindow.cpp
+  Main.cpp
+  """)
+
+if platform.system() == "Linux":
+  pEnv.ParseConfig('pkg-config --cflags --libs QtCore QtGui QtOpenGL QtXml')
+
+pEnv.Append(LIBS = Split("Poetic Resonant VideoDisplay Screenplay Luminous Valuable Radiant Nimble Patterns"))
+
+app = pEnv.Program('MoviePlayer', src)
+
+env.Install(binaryPath, [app])

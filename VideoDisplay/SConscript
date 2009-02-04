@@ -13,6 +13,8 @@ pEnv = env.Clone()
 if platform.system() == "Linux":
   pEnv.ParseConfig('pkg-config --cflags --libs libavutil')
 
-videodisplay = pEnv.SharedLibrary('VideoDisplay', src)
+pEnv.Append(LIBS = 'Screenplay')
 
-env.Install(libraryPath, [videodisplay])
+lib = pEnv.SharedLibrary('VideoDisplay', src)
+
+env.Install(libraryPath, [lib])
