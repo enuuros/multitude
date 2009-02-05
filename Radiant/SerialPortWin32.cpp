@@ -116,14 +116,11 @@ namespace Radiant
     memset(& timeouts, 0, sizeof(COMMTIMEOUTS));
     // Returns immediately
     timeouts.ReadIntervalTimeout = MAXDWORD;
- 
-/*
-    timeouts.ReadIntervalTimeout = waitTimeMS;
-    timeouts.ReadTotalTimeoutConstant = waitTimeMS;
-    timeouts.ReadTotalTimeoutMultiplier = waitTimeMS / 5;
-    timeouts.WriteTotalTimeoutConstant = waitTimeMS;
-    timeouts.WriteTotalTimeoutMultiplier = waitTimeMS / 5;
-*/
+    timeouts.ReadTotalTimeoutConstant = 0;
+    timeouts.ReadTotalTimeoutMultiplier = 0;
+    timeouts.WriteTotalTimeoutConstant = 0;
+    timeouts.WriteTotalTimeoutMultiplier = 0;
+
     if(!SetCommTimeouts(m_hPort, & timeouts))
     {
       error("%s # Failed to set serial port timeouts (%s)", fName, device);
