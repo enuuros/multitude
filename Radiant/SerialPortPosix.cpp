@@ -50,7 +50,7 @@ namespace Radiant
     m_fd = ::open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if(m_fd <= 0) {
-      Radiant::error("%s # Failed to open \"%s\" (%s)", fname, device, strerror(errno));
+      //Radiant::error("%s # Failed to open \"%s\" (%s)", fname, device, strerror(errno));
       errno = 0;
       return false;
     }

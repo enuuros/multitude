@@ -89,7 +89,7 @@ macx {
 }
 
 unix {
-	SOURCES += SerialPortLinux.cpp
+	SOURCES += SerialPortPosix.cpp
 	SOURCES += Video1394.cpp
 
 	LIBS += -lpthread $$LIB_RT -ldl
