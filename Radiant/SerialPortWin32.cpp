@@ -49,7 +49,7 @@ namespace Radiant
     if(m_hPort == INVALID_HANDLE_VALUE)
     {
       const std::string   strErr = StringUtils::getLastErrorMessage();
-      error("%s # Failed to open serial port (%s): %s", fName, device, strErr.c_str());
+      //error("%s # Failed to open serial port (%s): %s", fName, device, strErr.c_str());
 
       m_hPort = 0;
       return false;
@@ -114,12 +114,16 @@ namespace Radiant
 	
     COMMTIMEOUTS  timeouts;
     memset(& timeouts, 0, sizeof(COMMTIMEOUTS));
+    // Returns immediately
+    timeouts.ReadIntervalTimeout = MAXDWORD;
+ 
+/*
     timeouts.ReadIntervalTimeout = waitTimeMS;
     timeouts.ReadTotalTimeoutConstant = waitTimeMS;
     timeouts.ReadTotalTimeoutMultiplier = waitTimeMS / 5;
     timeouts.WriteTotalTimeoutConstant = waitTimeMS;
     timeouts.WriteTotalTimeoutMultiplier = waitTimeMS / 5;
-
+*/
     if(!SetCommTimeouts(m_hPort, & timeouts))
     {
       error("%s # Failed to set serial port timeouts (%s)", fName, device);
