@@ -49,7 +49,7 @@ macx {
 
     MULTI_LIB_FLAG = -F
 
-    LIB_DYSLEXIC = -framework,Poetic
+    LIB_POETIC = -framework,Poetic
     LIB_FLUFFY = -framework,Fluffy
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble

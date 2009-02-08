@@ -280,7 +280,8 @@ namespace Luminous {
     : m_nativeSize(100, 100),
       m_maxLevel(0),
       m_fileMask(0),
-      m_hasAlpha(false)
+      m_hasAlpha(false),
+      m_ok(false)
   {}
 
   CPUMipmaps::~CPUMipmaps()

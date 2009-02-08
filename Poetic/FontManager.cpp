@@ -47,15 +47,28 @@ namespace Poetic
 
   CPUWrapperFont * FontManager::getFont(const std::string & name)
   {
+    assert(!name.empty());
+    
+    /*
+    if(name.empty()) {
+      Radiant::error("FontManager::getFont # empty fontname");
+      return 0;
+    }
+    */
+
     container::iterator it = m_managedFonts.find(name);
 
     CPUManagedFont * mfont = 0;
+
+    std::string dirredname("Configs/");
+    dirredname += name;
 
     if(it == m_managedFonts.end()) {
 
       const std::string path = m_locator.locate(name);
       if(path.empty()) {
-        Radiant::error("FontManager::getFont # failed to locate font %s", name.c_str());
+        Radiant::error("FontManager::getFont # failed to locate font \"%s\"",
+		       name.c_str());
         return 0;
       }
   
@@ -64,10 +77,14 @@ namespace Poetic
       m_managedFonts[name] = mfont;
 
       if(!mfont->load(path.c_str())) {
-        Radiant::trace(Radiant::FAILURE, "FontManager::getFont # failed to load '%s'", path.c_str());
+        Radiant::trace(Radiant::FAILURE,
+		       "FontManager::getFont # failed to load '%s'",
+		       path.c_str());
         return 0;
       }
-    } else mfont = it->second;
+    }
+    else
+      mfont = it->second;
 
     return new CPUWrapperFont(mfont);
   }

@@ -20,9 +20,10 @@
 #include <Luminous/Luminous.hpp>
 
 #include <Nimble/Rect.hpp>
-#include <Nimble/Vector2.hpp>
-#include <Nimble/Vector3.hpp>
 #include <Nimble/Matrix3.hpp>
+
+#include <Nimble/Vector2.hpp>
+#include <Nimble/Vector4.hpp>
 
 namespace Luminous {
   
@@ -264,7 +265,18 @@ namespace Luminous {
     {
       glVertex2fv((m * Nimble::Vector2(x, y)).data());
     }
+
+    static inline Nimble::Vector4 project(const Nimble::Matrix3 & m,
+					  const Nimble::Vector2 & xy)
+    {
+      Nimble::Vector3 xyw = m * xy;
+
+      // return Nimble::Vector4(xyw.x / xyw[2], xyw.y / xyw[2], 0, xyw[2]);
+      return Nimble::Vector4(xyw.x, xyw.y, 0, xyw[2]);
+    }
   };
+
+  
 
 }
 

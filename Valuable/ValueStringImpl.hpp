@@ -81,17 +81,18 @@ namespace Valuable
 
   // Specializations for wide strings.
 
+  /*
   template <>
   ValueStringT<std::wstring>::ValueStringT()
   : ValueObject()
   {}
   
   template <>
-  ValueStringT<std::wstring>::ValueStringT(HasValues * parent, const std::string & name, std::wstring v, bool transit)
+  ValueStringT<std::wstring>::ValueStringT(HasValues * parent, const std::string & name, const std::wstring & v, bool transit)
   : ValueObject(parent, name, transit),
   m_value(v)
   {}
-
+  */
   template <>
   ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const ValueStringT<std::wstring> & i)
   {

@@ -156,6 +156,13 @@ namespace Radiant
       return filepath.substr(cut);
     }
 
+    bool suffixMatch(const std::string & filename,
+			    const std::string & suf)
+    {
+      string s = suffix(filename);
+      return StringUtils::lowerCase(s) == StringUtils::lowerCase(suf);
+    }
+
     string findFile(const string & filename, const string & paths)
     {
       StringList pathList;

@@ -26,14 +26,13 @@ namespace Valuable
 {
   ValueObject::ValueObject()
   : m_parent(0),
-//  m_name("noname"),
-  m_transit(false)
+    m_transit(false)
   {}
 
   ValueObject::ValueObject(HasValues * parent, const std::string & name, bool transit)
     : m_parent(0),
-    m_name(name),
-    m_transit(transit)
+      m_name(name),
+      m_transit(transit)
   {
     if(parent)
       parent->addValue(name, this);

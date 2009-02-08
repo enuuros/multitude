@@ -307,16 +307,25 @@ namespace Luminous {
     // float xe = 1.0f / size.x 
 
     float e = 0.01f;
-    
+
+    /*
     const Vector2 v[4] = {
       (m * Vector2(0,      0)).xy(),
       (m * Vector2(size.x, 0)).xy(),
       (m * Vector2(size.x, size.y)).xy(),
       (m * Vector2(0,      size.y)).xy()
     };
+    */
 
-    Nimble::Vector2 right(m[0][0], m[1][0]);
-    Nimble::Vector2 up(m[0][1], m[1][1]);
+    const Vector4 v[4] = {
+      project(m, Vector2(0, 0)),
+      project(m, Vector2(size.x, 0)),
+      project(m, Vector2(size.x, size.y)),
+      project(m, Vector2(0,      size.y))
+    };
+
+    Nimble::Vector4 right(m[0][0], m[1][0], 0, 0);
+    Nimble::Vector4 up(m[0][1], m[1][1], 0, 0);
 
     up.normalize();
     right.normalize();
@@ -326,19 +335,18 @@ namespace Luminous {
     glBegin(GL_QUADS);
 
     glTexCoord2f(e, e);
-    glVertex2fv(v[0].data());
+    glVertex4fv(v[0].data());
 
     glTexCoord2f(1.0f - e, e);
-    glVertex2fv(v[1].data());
+    glVertex4fv(v[1].data());
   
     glTexCoord2f(1.0f - e, 1.0f-e);
-    glVertex2fv(v[2].data());
+    glVertex4fv(v[2].data());
     
     glTexCoord2f(e, 1.0f - e);
-    glVertex2fv(v[3].data());
+    glVertex4fv(v[3].data());
 
     glEnd();
-
 
     // return;
 
@@ -346,33 +354,33 @@ namespace Luminous {
 
     glTexCoord2f(e, e);
     glColor4f(r, g, b, 0);
-    glVertex2fv((v[0] - up - right).data());
+    glVertex4fv((v[0] - up - right).data());
     glColor4f(r, g, b, a);
-    glVertex2fv(v[0].data());
+    glVertex4fv(v[0].data());
 
     glTexCoord2f(1.0f - e, e);
     glColor4f(r, g, b, 0);
-    glVertex2fv((v[1] - up + right).data());
+    glVertex4fv((v[1] - up + right).data());
     glColor4f(r, g, b, a);
-    glVertex2fv(v[1].data());
+    glVertex4fv(v[1].data());
     
     glTexCoord2f(1.0f - e, 1.0f - e);
     glColor4f(r, g, b, 0);
-    glVertex2fv((v[2] + up + right).data());
+    glVertex4fv((v[2] + up + right).data());
     glColor4f(r, g, b, a);
-    glVertex2fv(v[2].data());
+    glVertex4fv(v[2].data());
     
     glTexCoord2f(e, 1.0f - e);
     glColor4f(r, g, b, 0);
-    glVertex2fv((v[3] + up - right).data());
+    glVertex4fv((v[3] + up - right).data());
     glColor4f(r, g, b, a);
-    glVertex2fv(v[3].data());
+    glVertex4fv(v[3].data());
     
     glTexCoord2f(e, e);
     glColor4f(r, g, b, 0);
-    glVertex2fv((v[0] - up - right).data());
+    glVertex4fv((v[0] - up - right).data());
     glColor4f(r, g, b, a);
-    glVertex2fv(v[0].data());
+    glVertex4fv(v[0].data());
 
     glEnd();
 

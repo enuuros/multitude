@@ -63,6 +63,10 @@ namespace Radiant
     /// Extract suffix.
     RADIANT_API std::string suffix(const std::string & filepath);
 
+    /// Check if a suffix matches
+    RADIANT_API bool suffixMatch(const std::string & filename,
+				 const std::string & suffix);
+
     /// Find a file given a list of paths to search. The directory names are
     /// separated by colon or semicolon in typical Windows or UNIX fashion
     /// (/usr/foo:/home/user/foo etc.).

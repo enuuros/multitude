@@ -221,6 +221,7 @@ namespace Luminous {
     Radiant::TimeStamp m_startedLoading;
 
     Luminous::ImageInfo m_info;
+    bool                m_ok;
   };
 
 
