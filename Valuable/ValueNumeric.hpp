@@ -27,7 +27,7 @@ namespace Valuable
 {
 
   template<class T>
-  class VALUABLE_API ValueNumeric : public ValueObject
+  class ValueNumeric : public ValueObject
   {
     public:
       ValueNumeric() : ValueObject(), m_value(T(0)) {}
