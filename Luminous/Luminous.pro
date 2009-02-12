@@ -79,8 +79,14 @@ win32 {
 	LIBS += libjpeg-static-mt.lib -lWin32x
 	
 	# This seems to be important under Windows. libpng crashes if you mix release & debug code.
-	CONFIG(debug): LIBS += libpng13d.lib
-	else: LIBS+=libpng13.lib	
+	CONFIG(debug, debug|release) {
+		message(debug libpng)
+		message($$CONFIG)
+		LIBS += libpng13d.lib
+	} else { 
+		message(release libpng)
+		LIBS += libpng13.lib
+	}
 }
 
 include(../library.pri)

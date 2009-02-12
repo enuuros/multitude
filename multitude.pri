@@ -2,14 +2,8 @@
 # Use this to setup global build options & variables.
 CONFIG -= qt
 CONFIG += link_pkgconfig
-
 CONFIG += thread
-
-# Release build
 CONFIG += release
-
-# Uncomment for debug build
-# CONFIG += debug
 
 INCLUDEPATH += $$PWD
 
