@@ -96,6 +96,11 @@ namespace Nimble {
     static int                columns() { return 3; }
     /// Inserts the argument matrix into the top-left corner of this matrix
     inline void               insert(const Matrix2T<T>& m);
+
+    /// Get the 2x2 upper-left matrix
+    inline Matrix2T<T> upperLeft() const {
+      return Matrix2T<T>(get(0, 0), get(0, 1), get(1, 0), get(1, 1));
+    }
     /** Calculates the inverse of this matrix.
       @param ok Returns the success value of the inversion operation
       @param tolerance if determinant smaller than tolerance, abort
