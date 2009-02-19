@@ -343,7 +343,7 @@ namespace VideoDisplay {
     bool ok = ffmpg->startDecoding(filename, pos);
 
     if(!ok) {
-		Radiant::error("VideoWindow::open # Could not open %s", filename);
+      Radiant::error("ShowGL::open # Could not open %s", filename);
       delete ffmpg;
       return false;
     }
