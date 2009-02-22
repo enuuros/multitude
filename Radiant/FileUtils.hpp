@@ -36,6 +36,8 @@ namespace Radiant
 	using a call to <b>delete</b>.*/
     RADIANT_API char * loadTextFile(const char* filename);
 
+    RADIANT_API std::wstring readTextFile(const std::string & file);
+
     /// Writes a string to a text file.
     RADIANT_API bool writeTextFile(const char * filename,const char * contents);
 

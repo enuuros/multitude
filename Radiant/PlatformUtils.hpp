@@ -39,6 +39,7 @@ namespace Radiant
     RADIANT_API std::string getModuleUserDataPath(const char * module, bool isapplication);
 
     /// Determine whether file or directory is readable.
+    /// @todo shouldn't this be in FileUtils?
     RADIANT_API bool fileReadable(const char * filename);
 
     /// Open a dynamic library, return 0 if failed.

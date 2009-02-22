@@ -20,6 +20,7 @@
 
 #include <fcntl.h>
 #include <iostream>
+#include <sstream>
 
 #ifdef WIN32
 #include <io.h>
@@ -100,6 +101,24 @@ namespace Radiant
       file.close();
 
       return contents;
+    }
+
+    std::wstring readTextFile(const std::string & filename)
+    {
+        std::wostringstream oss;
+        wifstream file(filename.c_str());
+
+        if(file.is_open()) {
+
+        wstring line;
+
+        while(getline(file, line))
+            oss << line;
+        
+        file.close();
+        }
+
+        return oss.str();
     }
 
     bool writeTextFile(const char * filename, const char * contents)
