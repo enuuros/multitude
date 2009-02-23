@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #ifdef WIN32
 #include <io.h>

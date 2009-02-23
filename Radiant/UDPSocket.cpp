@@ -1,5 +1,6 @@
 #include "UDPSocket.hpp"
 #include "TCPSocket.hpp"
+#include <string.h>
 
 #ifndef WIN32
 #include <arpa/inet.h>
