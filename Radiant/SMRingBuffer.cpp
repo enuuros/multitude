@@ -85,11 +85,11 @@ namespace Radiant
       {
         if(::CloseHandle(hMapFile))
         {
-          trace(DEBUG, "%s # Successfully removed existing shared memory area with same name.", fnName);
+          debug("%s # Successfully removed existing shared memory area with same name.", fnName);
         }
         else
         {
-          error(ERROR, "%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+          error("%s # Failed to remove existing shared memory area with same name (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
           assert(0);
         }
       }
@@ -100,7 +100,7 @@ namespace Radiant
       if(m_hMapFile)
       {
         m_isCreator = true;
-        trace(DEBUG, "%s # Successfully created new shared memory area (%s).", fnName);
+        debug("%s # Successfully created new shared memory area (%s).", fnName);
       }
       else
       {
@@ -114,7 +114,7 @@ namespace Radiant
       m_hMapFile = ::OpenFileMappingA(FILE_MAP_ALL_ACCESS, false, m_smName.c_str());
       if(m_hMapFile)
       {
-        trace(DEBUG, "%s # Successfully accessed existing shared memory area (%s).", fnName);
+        debug("%s # Successfully accessed existing shared memory area (%s).", fnName);
       }
       else
       {
@@ -128,7 +128,7 @@ namespace Radiant
     char * const  smPtr = (char *)(::MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, size));
     if(smPtr)
     {
-      trace(DEBUG, "%s # Successfully obtained pointer to shared memory area.", fnName);
+      debug("%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else
     {
@@ -777,26 +777,26 @@ namespace Radiant
 
   void SMRingBuffer::dump() const
   {
-    trace(DEBUG, "m_isCreator = %s", m_isCreator ? "true" : "false");
+    debug("m_isCreator = %s", m_isCreator ? "true" : "false");
 #ifdef WIN32
-    trace(DEBUG, "m_smName = %s", m_smName.c_str());
-    trace(DEBUG, "m_hMapFile = %p", m_hMapFile);
+    debug("m_smName = %s", m_smName.c_str());
+    debug("m_hMapFile = %p", m_hMapFile);
 #else
-    trace(DEBUG, "m_smKey = %ul", (unsigned long)(m_smKey));
-    trace(DEBUG, "m_id = %d", m_id);
+    debug("m_smKey = %ul", (unsigned long)(m_smKey));
+    debug("m_id = %d", m_id);
 #endif
-    trace(DEBUG, "size() = %ul", (unsigned long)(size()));
-    trace(DEBUG, "m_startPtr = %p", m_startPtr);
+    debug("size() = %ul", (unsigned long)(size()));
+    debug("m_startPtr = %p", m_startPtr);
 
-    trace(DEBUG, "writePos() = %ul", (unsigned long)(writePos()));
-    trace(DEBUG, "readPos() = %ul", (unsigned long)(readPos()));
-    trace(DEBUG, "readWriteState() = %ul", (unsigned long)(readWriteState()));
+    debug("writePos() = %ul", (unsigned long)(writePos()));
+    debug("readPos() = %ul", (unsigned long)(readPos()));
+    debug("readWriteState() = %ul", (unsigned long)(readWriteState()));
 
-    trace(DEBUG, "used = %ul", (unsigned long)(used()));
-    trace(DEBUG, "available() = %ul", (unsigned long)(available()));
+    debug("used = %ul", (unsigned long)(used()));
+    debug("available() = %ul", (unsigned long)(available()));
 
-    trace(DEBUG, "isEmpty() = %s", isEmpty() ? "true" : "false");
-    trace(DEBUG, "isFull() = %s", isFull() ? "true" : "false");
+    debug("isEmpty() = %s", isEmpty() ? "true" : "false");
+    debug("isFull() = %s", isFull() ? "true" : "false");
   }
 
 }

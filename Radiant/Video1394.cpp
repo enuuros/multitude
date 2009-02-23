@@ -534,8 +534,8 @@ namespace Radiant {
         break;
     }
 
-    trace(DEBUG, "%s # The video mode id = %d", fname, (int) video_mode);
-    trace(DEBUG, "%s # The frame rate id = %d (target = %d)", 
+    debug("%s # The video mode id = %d", fname, (int) video_mode);
+    debug("%s # The frame rate id = %d (target = %d)", 
         fname, (int) fps, targetfps);
 
     if(dc1394_video_set_mode(m_camera, video_mode)
@@ -555,7 +555,7 @@ namespace Radiant {
       Radiant::error("%s # dc1394_video_get_transmission failed", fname);
 
     if(isoWasOn == DC1394_ON) {
-      trace(DEBUG, "%s # Camera is already running, stopping it", fname);
+      debug("%s # Camera is already running, stopping it", fname);
 
       if(dc1394_video_set_transmission(m_camera, DC1394_OFF) !=DC1394_SUCCESS)
         Radiant::error("%s # dc1394_video_set_transmission failed", fname);      
@@ -604,7 +604,7 @@ namespace Radiant {
       Radiant::error("%s # unsupported image format", fname);
     }
 
-    trace(DEBUG, "%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
+    debug("%s # EXIT OK with difmt = %d", fname, (int) m_image.m_format);
 
     return true;
   }
@@ -803,7 +803,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     else {
       dc1394switch_t trans;
       dc1394_video_get_transmission(m_camera, & trans);
-      trace(DEBUG, "Video1394::start # %d", (int) trans);
+      debug("Video1394::start # %d", (int) trans);
     }
 
     m_started = true;
@@ -1014,7 +1014,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
 
     if(euid != 0)
-      trace(DEBUG, "Video1394::open # %.8x%.8x (%s)", 
+      debug("Video1394::open # %.8x%.8x (%s)", 
           (int) (m_euid >> 32), (int) m_euid, euid);
 
 
@@ -1049,7 +1049,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     if(!initcount) {
 
       if(isleopard)
-        trace(DEBUG, "%s # Running Leopard, no FireWire bus reset", fname);
+        debug("%s # Running Leopard, no FireWire bus reset", fname);
       else {
         for(int c = 0; c < (int) __infos.size(); c++) {
           dc1394_reset_bus(__infos[c]);
@@ -1067,13 +1067,13 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       if(__infos[i]->guid == m_euid) {
         m_cameraNum = (int) i;
         foundCorrect = true;
-        trace(DEBUG, "%s # Got camera %d based on euid", fname, (int) i);
+        debug("%s # Got camera %d based on euid", fname, (int) i);
         break;
       }
     }
 
     if(m_euid != 0 && !foundCorrect) {
-      trace(DEBUG, "%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
+      debug("%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
       return false;
     }
 
@@ -1093,7 +1093,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
     if(dc1394_feature_get_all(m_camera, & m_features)
         != DC1394_SUCCESS) {
-     trace(DEBUG, "%s # unable to get feature set %d", 
+     debug("%s # unable to get feature set %d", 
           fname, m_cameraNum);
     }
 
@@ -1149,7 +1149,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       trace(FATAL, "%s # dc1394_video_get_iso_speed failed", fname);
     }
     else
-      trace(DEBUG, "%s # ISO speed = %u", fname, (uint) m_speed);
+      debug("%s # ISO speed = %u", fname, (uint) m_speed);
 
     return true;
   }
