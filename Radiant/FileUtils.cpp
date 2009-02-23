@@ -112,8 +112,8 @@ namespace Radiant
 
         wstring line;
 
-        while(getline(file, line))
-            oss << line;
+        while(getline(file, line))        
+            oss << line << wchar_t(0x200B); // W_NEWLINE
         
         file.close();
         }
