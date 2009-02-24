@@ -36,6 +36,7 @@ namespace Poetic
       CPUWrapperFont * getFont(const std::string & name);
 
       std::string locate(const std::string & name);
+      Radiant::ResourceLocator & locator();
 
     private:
       FontManager();

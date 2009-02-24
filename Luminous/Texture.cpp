@@ -39,24 +39,13 @@ namespace Luminous
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-/*
-  Texture1D* Texture1D::fromImage
-  (Magick::Image & image, bool buildMipmaps, GLResources * resources)
+
+  Texture1D * Texture1D::fromImage(Luminous::Image & image, bool buildMipmaps, GLResources * resources)
   {
-    Radiant::trace("DEBUG: img size %d,%d", image.columns(), image.rows());
-    assert(image.columns() == 1);
-  
-    Magick::Blob blob;
-
-    image.magick("RGBA");
-    image.write(&blob);
-
-    return fromBytes(GL_RGBA, image.rows(), blob.data(),
-                     PixelFormat(PixelFormat::LAYOUT_RGBA,
-                                 PixelFormat::TYPE_UBYTE) ,
+    return fromBytes(GL_RGBA, image.height(), image.bytes(), image.pixelFormat(),
                      buildMipmaps, resources);
   }
-*/
+
   Texture1D* Texture1D::fromBytes(GLenum internalFormat, int h,
 				  const void* data,
 				  const PixelFormat& srcFormat,

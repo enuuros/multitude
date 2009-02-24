@@ -94,5 +94,10 @@ namespace Poetic
     return m_locator.locate(name);
   }
 
+  Radiant::ResourceLocator & FontManager::locator()
+  {
+    return m_locator;
+  }
+
 }
 
