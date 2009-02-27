@@ -41,6 +41,7 @@ namespace Radiant
 
     /// Remove non-visible characters from std::string.
     RADIANT_API void eraseNonVisibles(std::string & s);
+    RADIANT_API void eraseNonVisibles(std::wstring & s);
 
     /// Convert std::string to double.
     RADIANT_API double stdStringToDouble(const std::string & str, const int precision = 12);

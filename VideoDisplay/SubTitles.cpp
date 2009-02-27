@@ -187,6 +187,30 @@ namespace VideoDisplay {
   {
     return m_current;
   }
+  
+  std::string SubTitles::getLongestSubtitle() const
+  {
+    size_t longest = 0;
+    size_t index = 0;
+   
+    for(size_t i = 0; i < m_texts.size(); i++) { 
+      const Text & text = m_texts[i];
+  
+      const std::string full = text.m_lines[0] + '\n' + text.m_lines[1];
+      size_t len = full.size();
+    
+      if(len > longest) {
+        longest = len;
+        index = i;
+      }
+   }
+
+    const std::string r = m_texts[index].m_lines[0] + '\n' 
+                        + m_texts[index].m_lines[1];
+
+    Radiant::info("LONGEST SUB %s", r.c_str());
+    return r;
+  }
 
 }
 

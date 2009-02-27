@@ -44,6 +44,16 @@ namespace Radiant
       }
     }
 
+    void eraseNonVisibles(wstring & s)
+    {
+      for(unsigned i = 0; i < s.size();) {
+        if(s[i] < 23)
+          s.erase(i, 1);
+        else
+          i++;
+      }
+    }
+
     double stdStringToDouble(const std::string & str, const int precision)
     {
       std::stringstream   ss;

@@ -30,8 +30,8 @@ namespace Poetic
   {
 
     /// Zero-width space character is used as new line character.
-    enum { W_NEWLINE = 0x200B };
-
+    //enum { W_NEWLINE = 0x200B };
+    enum { W_NEWLINE = 10 };
     /**
       * @brief Break wstring into lines.
       * The lines will be less than or equal to the specified width when displayed
