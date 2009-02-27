@@ -168,8 +168,9 @@ namespace VideoDisplay {
       in.getline(buf, 256);
       tmp.m_lines[1] = buf;
 
-      Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[0]);
-      Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[1]);
+      // These will remove unicode characters, so don't do this
+      //Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[0]);
+      //Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[1]);
 
       /*Radiant::trace("Subtitle chunk %lf -> %lf\n%s\n%s",
 		      tmp.m_begin.secondsD(), tmp.m_end.secondsD(),
