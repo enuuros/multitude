@@ -237,7 +237,7 @@ namespace Luminous
         }
       }
 
-      write("some-with-a.png");
+      //write("some-with-a.png");
 
       return true;
     }
