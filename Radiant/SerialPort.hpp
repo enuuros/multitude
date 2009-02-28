@@ -27,6 +27,8 @@
 #include <unistd.h>
 #endif
 
+#include <string>
+
 namespace Radiant
 {
 
@@ -71,8 +73,12 @@ namespace Radiant
 
     bool isOpen() const;
   
+    const std::string & deviceName() { return m_device; }
+
   private:
   
+    std::string m_device;
+
 #ifdef WIN32
     HANDLE  m_hPort;
 #else

@@ -47,6 +47,8 @@ namespace Radiant
 
     const char * fname = "SerialPort::open";
 
+    m_device = device;
+
     m_fd = ::open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if(m_fd <= 0) {

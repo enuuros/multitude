@@ -186,6 +186,9 @@ namespace Radiant {
 
     }
 
+    T * data() { return & m_points[0]; }
+    const T * data() const { return & m_points[0]; }
+
     /// Returns an iterator to the beginning of the vector
     iterator begin() { return m_points.begin(); }
     /// Returns an iterator to the end of the vector

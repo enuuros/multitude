@@ -115,7 +115,7 @@ namespace FireView {
     bool ok;
     
     if(!m_format7)
-      ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 400, m_fps);
+      ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, m_fps);
     else {
 
 #ifndef WIN32

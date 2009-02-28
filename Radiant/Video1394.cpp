@@ -469,12 +469,12 @@ namespace Radiant {
    * controlled.
    */
   bool Video1394::open(const char * device, 
-      const char * camera,
-      const char * euid,
-      ImageFormat fmt, 
-      int width, 
-      int height, 
-      FrameRate framerate)
+                       const char * camera,
+                       const char * euid,
+                       ImageFormat fmt, 
+                       int width, 
+                       int height, 
+                       FrameRate framerate)
   {
     static MutexAuto mutex;
 
@@ -505,7 +505,13 @@ namespace Radiant {
       DC1394_VIDEO_MODE_640x480_YUV411,
       (dc1394video_mode_t) 0
     };
-    dc1394video_mode_t video_mode = DC1394_VIDEO_MODE_640x480_MONO8;
+
+    dc1394video_mode_t video_mode;
+
+    // if(width >= 500)
+    video_mode = DC1394_VIDEO_MODE_640x480_MONO8;
+    // else
+    // video_mode = DC1394_VIDEO_MODE_320x240_MONO8;
 
     dc1394framerates_t framerates;
     framerates.num = 0;
