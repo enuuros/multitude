@@ -630,6 +630,8 @@ namespace VideoDisplay {
     bzero(m_histogram, sizeof(m_histogram));
   }
 
+  /// @todo this should be done in another thread, now it hangs the app
+  /// everytime you call it
   void ShowGL::getThumbnail(double pos)
   {
     trace(DEBUG, "ShowGL::getThumbnail # %lf", pos);
