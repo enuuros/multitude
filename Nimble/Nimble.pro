@@ -12,6 +12,7 @@ HEADERS += Nimble.hpp
 HEADERS += Ramp.hpp 
 HEADERS += Random.hpp 
 HEADERS += Rect.hpp 
+HEADERS += RingBuffer.hpp 
 # HEADERS += RectImpl.hpp
 HEADERS += Vector2.hpp 
 HEADERS += Vector3.hpp 
@@ -21,6 +22,7 @@ SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
 SOURCES += Random.cpp
 SOURCES += Rect.cpp
+SOURCES += RingBuffer.cpp
 SOURCES += Histogram.cpp
 
 win32:DEFINES += NIMBLE_EXPORT
