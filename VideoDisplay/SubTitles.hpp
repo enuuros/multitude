@@ -47,6 +47,7 @@ namespace VideoDisplay {
 	return n;
       }
 
+      /// @todo .srt subtitles are not limited to only two lines
       std::string m_lines[2];
       Radiant::TimeStamp m_begin;
       Radiant::TimeStamp m_end;

@@ -104,6 +104,7 @@ namespace VideoDisplay {
 
   bool SubTitles::readSrt(const char * filename)
   {
+    const int LEN = 1024;
     int index = 1;
 
     std::ifstream in;
@@ -112,7 +113,7 @@ namespace VideoDisplay {
 
     in.open(filename);
 
-    char buf[256];
+    char buf[LEN];
 
     m_texts.clear();
     m_index = 0;
@@ -122,7 +123,7 @@ namespace VideoDisplay {
 
     while (in.good()) {
       // First we get the text chunk index:
-      if(!nextLine(in, buf, 256))
+      if(!nextLine(in, buf, LEN))
 	break;
 
       int readIndex = atoi(buf);
@@ -136,7 +137,7 @@ namespace VideoDisplay {
       index++;
       
       // Now we get the timing information
-      if(!nextLine(in, buf, 256))
+      if(!nextLine(in, buf, LEN))
 	break;
 
       Radiant::StringUtils::StringList list;
@@ -161,11 +162,11 @@ namespace VideoDisplay {
       if(!readTime(t2.c_str(), tmp.m_end))
 	errors++;
 
-      if(nextLine(in, buf, 256))
+      if(nextLine(in, buf, LEN))
 	tmp.m_lines[0] = buf;
 
       buf[0] = 0;
-      in.getline(buf, 256);
+      in.getline(buf, LEN);
       tmp.m_lines[1] = buf;
 
       // These will remove unicode characters, so don't do this
