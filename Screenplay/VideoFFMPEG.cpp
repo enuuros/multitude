@@ -80,6 +80,7 @@ namespace Screenplay {
 
   VideoInputFFMPEG::~VideoInputFFMPEG()
   {
+    close();
     av_free_packet(m_pkt);
     delete m_pkt;
   }
@@ -467,8 +468,8 @@ namespace Screenplay {
 
   bool VideoInputFFMPEG::close()
   {
-    if(!m_ic)
-      return false;
+//    if(!m_ic)
+//      return false;
 
     if(m_frame)
       av_free(m_frame);

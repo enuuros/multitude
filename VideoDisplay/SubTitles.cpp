@@ -23,11 +23,11 @@
 #include <string.h>
 
 namespace VideoDisplay {
-  
+
 
   SubTitles::SubTitles()
     : m_current(0),
-      m_index(0)
+    m_index(0)
   {}
 
   SubTitles::~SubTitles()
@@ -45,11 +45,11 @@ namespace VideoDisplay {
     }
     else if(m_index < 0)
       m_index = 0;
-    
+
     while(m_index >= 0 && m_texts[m_index].m_begin > time)
       m_index--;
     while(m_index >= 0 && m_index < (int) m_texts.size() && 
-	  m_texts[m_index].m_end < time)
+        m_texts[m_index].m_end < time)
       m_index++;
 
 
@@ -74,9 +74,9 @@ namespace VideoDisplay {
       buf[1] = 0;
 
       in.getline(buf, maxn);
-      
+
       if(strlen(buf) != 0 && buf[0] > 23)
-	return true;
+        return true;
     }
 
     return false;
@@ -124,63 +124,69 @@ namespace VideoDisplay {
     while (in.good()) {
       // First we get the text chunk index:
       if(!nextLine(in, buf, LEN))
-	break;
+        break;
 
       int readIndex = atoi(buf);
 
       if(readIndex != index) {
-	Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong chunk index (%d) %d != %d",
-		       (int) buf[0], readIndex, index);
-	errors++;
-	continue;
+        Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong chunk index (%d) %d != %d",
+            (int) buf[0], readIndex, index);
+        errors++;
+        continue;
       }
       index++;
-      
+
       // Now we get the timing information
       if(!nextLine(in, buf, LEN))
-	break;
+        break;
 
       Radiant::StringUtils::StringList list;
 
       Radiant::StringUtils::split(buf, " ", list);
 
       if(list.size() != 3) {
-	Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong time format \"%s\"",
-		       buf);
-	errors++;
-	continue;
+        Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong time format \"%s\"",
+            buf);
+        errors++;
+        continue;
       }
-      
-	  std::string t1 = list.front();
+
+      std::string t1 = list.front();
       std::string t2 = list.back();
 
       Text tmp;
 
       if(!readTime(t1.c_str(), tmp.m_begin))
-	errors++;
+        errors++;
 
       if(!readTime(t2.c_str(), tmp.m_end))
-	errors++;
+        errors++;
 
-      if(nextLine(in, buf, LEN))
-	tmp.m_lines[0] = buf;
+      int foo = 0;
+      bool r = true;
+      while(r && foo++ < 20) {
+        buf[0] = 0;
 
-      buf[0] = 0;
-      in.getline(buf, LEN);
-      tmp.m_lines[1] = buf;
+        in.getline(buf, LEN);
+
+        bool r = (buf[0] && buf[0] != '\n');
+        //Radiant::debug("SUB READ %s (buf[0] = %d, r = %d)", buf, buf[0], r);
+        if(r) tmp.m_lines.push_back(buf);
+        else break;
+      } 
 
       // These will remove unicode characters, so don't do this
       //Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[0]);
       //Radiant::StringUtils::eraseNonVisibles(tmp.m_lines[1]);
 
-      /*Radiant::trace("Subtitle chunk %lf -> %lf\n%s\n%s",
-		      tmp.m_begin.secondsD(), tmp.m_end.secondsD(),
-		      tmp.m_lines[0].c_str(), tmp.m_lines[1].c_str());
-      */
+      Radiant::debug("Subtitle chunk %lf -> %lf %d lines",
+        tmp.m_begin.secondsD(), tmp.m_end.secondsD(),
+        tmp.m_lines.size());
+        
       m_texts.push_back(tmp);
 
       if(errors > 10)
-	return false;
+        return false;
     }
     return m_texts.size() != 0 && errors < 10;
   }
@@ -189,29 +195,35 @@ namespace VideoDisplay {
   {
     return m_current;
   }
-  
+
   std::string SubTitles::getLongestSubtitle() const
   {
     size_t longest = 0;
     size_t index = 0;
-   
+    std::string full;
+
     for(size_t i = 0; i < m_texts.size(); i++) { 
       const Text & text = m_texts[i];
-  
-      const std::string full = text.m_lines[0] + '\n' + text.m_lines[1];
+
+      full = text.m_lines[0];
+
+      for(size_t j = 1; j < text.m_lines.size(); j++)
+        full += '\n' + text.m_lines[j];
       size_t len = full.size();
-    
+
       if(len > longest) {
         longest = len;
         index = i;
       }
-   }
+    }
 
-    const std::string r = m_texts[index].m_lines[0] + '\n' 
-                        + m_texts[index].m_lines[1];
+    full = m_texts[index].m_lines[0];
+    for(size_t j = 1; j < m_texts[index].m_lines.size(); j++) {
+      full += '\n' + m_texts[index].m_lines[j];
+    }
 
-    Radiant::info("LONGEST SUB %s", r.c_str());
-    return r;
+    Radiant::info("LONGEST SUB %s", full.c_str());
+    return full;
   }
 
 }
