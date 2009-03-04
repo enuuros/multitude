@@ -230,7 +230,7 @@ namespace Screenplay {
         trace(DEBUG, "%s # PIX_FMT_YUV422P", fname);
     }
     else {
-		Radiant::trace(Radiant::FAILURE, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
+      Radiant::trace(Radiant::FAILURE, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
     }
 
     m_image.m_width = width();

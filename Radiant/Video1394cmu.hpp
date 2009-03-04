@@ -117,6 +117,8 @@ public:
     CameraInfo cameraInfo();
 
     dc1394camera_t * dc1394Camera() { return m_camera; }
+
+    int framesBehind() const { return 0; }
  
   private:
 	void cmu_setFeature1394(CAMERA_FEATURE feature, float value);

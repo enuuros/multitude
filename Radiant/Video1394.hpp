@@ -43,15 +43,28 @@ namespace Radiant {
     Video1394();
     virtual ~Video1394();
 
+    /** A container of basic camera information. #CameraInfo objects
+	are used to store information about a particular camera. */
     class CameraInfo {
     public:
+      /// The 64-bit unique FireWire identifier
       int64_t m_euid64;
+      /// Vendor name, in a human-readable format
       std::string m_vendor;
+      /// Camera model, in a human-readable format
       std::string m_model;
     };
 
     /// Get the list of cameras that are connected.
+    /** @param cameras List of camera objects, which is filled by this
+	function. */
     static bool queryCameras(std::vector<CameraInfo> * cameras);
+
+    /// Gets information about a particular camera.
+
+    /** @param euid64 The 64-bit unique camera identifier.
+	@camera The camera information object which is updated with new value.
+     */
     static bool queryCamera(uint64_t euid64, CameraInfo * camera);
 
     virtual const VideoImage * captureImage();
@@ -80,7 +93,14 @@ namespace Radiant {
     virtual void setBrightness(float value);
     virtual void setFocus(float value);
     virtual void setWhiteBalance(float u_to_blue, float v_to_red);
+
+    /** Sets a given feature to relative value, in range 0-1.*/
     void setFeature1394(dc1394feature_t feature, float value);
+    /** Sets a given feature to an absolute integer value. 
+	
+	The minimum/maximum range of the value depends on the
+	parameter, and the camera model.
+     */
     void setFeature1394Raw(dc1394feature_t feature, int32_t value);
     void getFeatures(std::vector<dc1394feature_info_t> *);
     static const char * featureName(dc1394feature_t);
@@ -109,6 +129,7 @@ namespace Radiant {
 			     Nimble::Recti roi,
 			     float fps);
     
+    /** Prints the Format-7 modes for a particular camera. */
     bool printFormat7Modes(const char * cameraeuid);
 
     virtual bool isInitialized() const;
@@ -119,11 +140,20 @@ namespace Radiant {
     /// Sets the camera EUID that will be used to select the camera
     void setCameraEuid64(uint64_t euid) { m_euid = euid; }
 
+    /// Returns information about this particular camera object
     CameraInfo cameraInfo();
 
     dc1394camera_t * dc1394Camera() { return m_camera; }
+
+    /** Returns the number of frames that would be immediately readable.
+	
+	This function is not implemented on all platforms, so use it
+	with some care.
+     */
+    int framesBehind() const { return m_framesBehind; }
  
   private:
+
     bool enableCameraFeature(unsigned int feature, 
 			     const std::string & description, 
 			     bool automatic_mode,
@@ -150,6 +180,7 @@ namespace Radiant {
 
     /// Numberof images the user is holding.
     int m_outside;
+    int m_framesBehind;
 
     bool  m_initialized;
     bool  m_started;

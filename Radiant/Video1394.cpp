@@ -131,6 +131,7 @@ namespace Radiant {
     m_outside(0)
   {
     m_videodevice = "/dev/video1394";
+    m_framesBehind = 0;
     m_initialized = false;
     m_euid = 0;
     m_cameraNum = 0;
@@ -483,7 +484,7 @@ namespace Radiant {
 
     m_videodevice = device ? device : "/dev/video1394";
     m_cameraNum = camera ? atoi(camera) : 0;
-
+    m_framesBehind = 0;
 
     uint32_t i;
 
@@ -947,6 +948,8 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
        m_frame->size[1] == (uint) m_image.m_height); */
 
     m_image.m_planes[0].m_data = (uchar *) m_frame->image;
+
+    m_framesBehind = m_frame->frames_behind;
 
     // trace("Video1394::captureImage # EXIT");
 

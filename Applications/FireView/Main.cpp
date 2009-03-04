@@ -31,6 +31,7 @@ void helper(const char * app)
   printf("USAGE:\n %s [options]\n\n", app);
   printf
     ("OPTIONS:\n"
+     "--format7       - Uses Format 7 modes\n"
      " --fps  +float  - Sets arbitrary capture rate for the cameras, with SW trigger\n"
      " --help         - This help\n"
      " --listformat7modes    - List available format 7 modes\n"
