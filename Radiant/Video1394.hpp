@@ -127,7 +127,8 @@ namespace Radiant {
     /// Initializes the FireWire camera to format 7 mode
     virtual bool openFormat7(const char * cameraeuid,
 			     Nimble::Recti roi,
-			     float fps);
+			     float fps,
+			     int mode = 0);
     
     /** Prints the Format-7 modes for a particular camera. */
     bool printFormat7Modes(const char * cameraeuid);

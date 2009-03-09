@@ -118,8 +118,11 @@ namespace FireView {
       ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, m_fps);
     else {
 
+      if(m_customFps <= 3) {
+	m_customFps = 15;
+      }
 #ifndef WIN32
-      ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 2000, 1500), m_customFps);
+      ok = m_video.openFormat7(0, Nimble::Recti(0, 0, 2000, 1500), m_customFps, 1);
 #else
       error("Format 7 not yet supported under Windows.");
       ok = false;

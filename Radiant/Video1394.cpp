@@ -618,7 +618,8 @@ namespace Radiant {
 
   bool Video1394::openFormat7(const char * cameraeuid,
 			      Nimble::Recti roi,
-			      float fps)
+			      float fps,
+			      int mode)
   {
     const char * fname = "Video1394::openFormat7";
 
@@ -628,17 +629,26 @@ namespace Radiant {
     int err;
     unsigned minbytes, maxbytes;
 
-    err = dc1394_video_set_mode(m_camera, DC1394_VIDEO_MODE_FORMAT7_0);
+    dc1394video_mode_t vmode = (dc1394video_mode_t)
+      (DC1394_VIDEO_MODE_FORMAT7_0 + mode);
+    
+    err = dc1394_video_set_mode(m_camera, vmode);
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not set mode to format7_0", fname);
       return false;
     }
 
+    dc1394format7modeset_t modeset;
+
+    bzero( & modeset, sizeof(modeset));
+
+    err = dc1394_format7_get_modeset(m_camera, & modeset);
+    
     uint32_t maxw = 0;
     uint32_t maxh = 0;
     
     err = dc1394_format7_get_max_image_size
-      (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & maxw, & maxh);
+      (m_camera, vmode, & maxw, & maxh);
 
     debug("%s # fps = %f", fname, fps);
     debug("%s # Maximum image size = %d x %d", fname, (int) maxw, (int) maxh);
@@ -650,7 +660,7 @@ namespace Radiant {
       roi.high().y = maxh;
 
     err = dc1394_format7_get_packet_parameters
-      (m_camera, DC1394_VIDEO_MODE_FORMAT7_0, & minbytes, & maxbytes);
+      (m_camera, vmode, & minbytes, & maxbytes);
 
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not get packet parameters", fname);
@@ -686,15 +696,15 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     }
 
     dc1394_format7_set_color_coding(m_camera,
-        DC1394_VIDEO_MODE_FORMAT7_0,
-        DC1394_COLOR_CODING_MONO8);
+				    vmode,
+				    DC1394_COLOR_CODING_MONO8);
 
     err = dc1394_format7_set_roi(m_camera,
-        DC1394_VIDEO_MODE_FORMAT7_0,
-        DC1394_COLOR_CODING_MONO8,
-        packetSize,
-        roi.low().x, roi.low().y,
-        roi.width(), roi.height());
+				 vmode,
+				 DC1394_COLOR_CODING_MONO8,
+				 packetSize,
+				 roi.low().x, roi.low().y,
+				 roi.width(), roi.height());
 
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not set ROI", fname);
