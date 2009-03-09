@@ -464,6 +464,8 @@ namespace Radiant {
     assert(m_camera != 0);
     dc1394_software_trigger_set_power(m_camera, DC1394_ON);
   }
+  
+  static MutexAuto __mutex;
 
   /**
    * Initialize this instance and open connnection to the device to be
@@ -477,10 +479,9 @@ namespace Radiant {
                        int height, 
                        FrameRate framerate)
   {
-    static MutexAuto mutex;
 
     // Only one thread at a time, just to make things sure.
-    Guard guard( & mutex);
+    Guard guard( & __mutex);
 
     m_videodevice = device ? device : "/dev/video1394";
     m_cameraNum = camera ? atoi(camera) : 0;
@@ -621,6 +622,8 @@ namespace Radiant {
 			      float fps,
 			      int mode)
   {
+    Guard guard( & __mutex);
+
     const char * fname = "Video1394::openFormat7";
 
     if(!findCamera(cameraeuid))
