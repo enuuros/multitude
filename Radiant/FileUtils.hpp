@@ -81,6 +81,9 @@ namespace Radiant
 
     RADIANT_API FILE * createFilePath(const std::string & filePath);
 
+    RADIANT_API bool looksLikeImage(const std::string & filePath);
+    RADIANT_API bool looksLikeVideo(const std::string & filePath);
+
   }
 }
 

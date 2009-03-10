@@ -90,9 +90,15 @@ namespace Luminous {
     if(m_seams[1] != 0.0f)
       Utils::fadeEdge(1, 1, 1.62f * m_seams[1] / m_size[0],
           gamma, Utils::RIGHT, false);
+    if(m_seams[2] != 0.0f)
+      Utils::fadeEdge(1, 1, 1.62f * m_seams[2] / m_size[0],
+          gamma, Utils::TOP, false);
+    if(m_seams[3] != 0.0f)
+      Utils::fadeEdge(1, 1, 1.62f * m_seams[3] / m_size[0],
+          gamma, Utils::BOTTOM, false);
 
-    if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
-      puts("MultiHead::Area::cleanEdges # top & bottom unimplemented");
+    // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
+    // puts("MultiHead::Area::cleanEdges # top & bottom unimplemented");
 
     m_keyStone.cleanExterior();
   }

@@ -160,6 +160,8 @@ namespace Luminous {
     glShadeModel(GL_SMOOTH);
 
     MatrixStep ms;
+
+    bool horiz = true;
     
     if(e == RIGHT) // The default
       ;
@@ -167,22 +169,45 @@ namespace Luminous {
       glScalef(-1, 1, 1);
       glTranslatef(-w, 0, 0);
     }
+    else {
+      horiz = false;
+
+      if(e == BOTTOM) {
+	glScalef(1, -1, 1);
+	glTranslatef(0, -h, 0);
+      }
+    }
+    
 
     int i, n = 16;
     float left = w - seam;
+    float top = h - seam;
 
     glBegin(GL_QUAD_STRIP);
     
     // glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 
-    for(i = 0; i <= n; i++) {
-
-      float rel = i / (float)n;
-      float x = left + seam * rel;
-      
-      glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
-      glVertex2f(x, 0.0f);
-      glVertex2f(x, h);
+    if(horiz) {
+      for(i = 0; i <= n; i++) {
+	
+	float rel = i / (float)n;
+	float x = left + seam * rel;
+	
+	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
+	glVertex2f(x, 0.0f);
+	glVertex2f(x, h);
+      }
+    }
+    else {
+      for(i = 0; i <= n; i++) {
+	
+	float rel = i / (float)n;
+	float y = top + seam * rel;
+	
+	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
+	glVertex2f(0.0f, y);
+	glVertex2f(w, y);
+      }
     }
 
     glEnd();
@@ -260,26 +285,26 @@ namespace Luminous {
 
   void Utils::glTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m)
   {
-    const Vector3 v[4] = {
-      m * Vector2(0,       0),
-      m * Vector2(size.x,  0),
-      m * Vector2(size.x,  size.y),
-      m * Vector2(0,       size.y)
+    const Vector4 v[4] = {
+      project(m, Vector2(0,       0)),
+      project(m, Vector2(size.x,  0)),
+      project(m, Vector2(size.x,  size.y)),
+      project(m, Vector2(0,       size.y))
     };
 
     glBegin(GL_QUADS);
 
     glTexCoord2f(0.0f, 0.0f);
-    glVertex2fv(v[0].data());
+    glVertex4fv(v[0].data());
 
     glTexCoord2f(1.0f, 0.0f);
-    glVertex2fv(v[1].data());
+    glVertex4fv(v[1].data());
   
     glTexCoord2f(1.0f, 1.0f);
-    glVertex2fv(v[2].data());
+    glVertex4fv(v[2].data());
     
     glTexCoord2f(0.0f, 1.0f);
-    glVertex2fv(v[3].data());
+    glVertex4fv(v[3].data());
 
     /*
 
@@ -1116,7 +1141,7 @@ namespace Luminous {
       glVertex2f(sa2 * r2 + centerx, ca2 * r2 + centery);
 
       glEnd();
-    }    
+    }
   }
 
 

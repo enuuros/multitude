@@ -68,8 +68,8 @@ namespace VideoDisplay {
 
     if(!m_video.hasAudioCodec()) {
       Radiant::trace(Radiant::FAILURE, "%s # No audio codec", fname);
-      m_video.close();
-      return false;
+      /* m_video.close();
+	 return false; */
     }
 
     if(pos != 0) {

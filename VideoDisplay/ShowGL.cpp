@@ -532,11 +532,12 @@ namespace VideoDisplay {
     for(int i = 0; i < 4; i++) {
       Vector2 co = corners[i];
 
-      if(transform)
-        co = ((*transform) * co).vector2();
-
       glTexCoord2fv(txcoord[i].data());
-      glVertex2fv(co.data());
+
+      if(transform)
+	glVertex4fv(Luminous::Utils::project(*transform , co).data());
+      else
+	glVertex2fv(co.data());
     }
 
     glEnd();

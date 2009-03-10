@@ -244,5 +244,21 @@ namespace Radiant
       return fopen(soFar.c_str(), "w");
     }
 
+    bool looksLikeImage(const std::string & filePath)
+    {
+      return suffixMatch(filePath, "png") ||
+	suffixMatch(filePath, "jpg") ||
+	suffixMatch(filePath, "jpeg");
+    }
+    
+    bool looksLikeVideo(const std::string & filePath)
+    {
+      return suffixMatch(filePath, "avi") ||
+	suffixMatch(filePath, "qt") ||
+	suffixMatch(filePath, "mov");
+    }
+
   }
+
+
 }

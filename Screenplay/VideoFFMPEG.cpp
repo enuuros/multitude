@@ -211,6 +211,17 @@ namespace Screenplay {
       }
     }
 
+    if(!m_acodec && (m_flags & Radiant::WITH_AUDIO)) {
+      // Produce silent audio to fool the playback engine.
+
+      double frames = m_lastTS.secondsD() * 44100;
+      
+      int perFrame = (int) (frames - m_capturedAudio);
+      m_audioFrames   += perFrame;
+      m_capturedAudio += perFrame;
+
+    }
+
     m_capturedVideo++;
 
 
@@ -285,9 +296,17 @@ namespace Screenplay {
       Radiant::AudioSampleFormat * format)
   {
     if(!m_acontext){
-      * channels = 0;
-      * sample_rate = 0;
-      * format = Radiant::ASF_INT16;
+
+      if(m_flags & WITH_AUDIO) {
+	* channels = 2;
+	* sample_rate = 44100;
+	* format = Radiant::ASF_INT16;
+      }
+      else {
+	* channels = 0;
+	* sample_rate = 0;
+	* format = Radiant::ASF_INT16;
+      }
     }
     else {
       * channels = m_acontext->channels;
@@ -430,12 +449,20 @@ namespace Screenplay {
       }
     }
 
+    if(flags & WITH_AUDIO)
+      m_flags = m_flags | WITH_AUDIO;
+
     m_audioFrames = 0;
 
     if(m_aindex >= 0 && m_acontext) {
       m_audioBuffer.resize(300000 * 2);
       m_audioChannels = m_acontext->channels;
       m_audioSampleRate = m_acontext->sample_rate;
+    }
+    else if(flags & Radiant::WITH_AUDIO) {
+      m_audioBuffer.resize(300000 * 2);
+      m_audioChannels = 2;
+      m_audioSampleRate = 44100;
     }
 
     m_frame = avcodec_alloc_frame();
@@ -457,8 +484,8 @@ namespace Screenplay {
     }
 
     if(!acname) {
-      error("%s # File %s has unsupported audio codec.", fname, filename);
-      return false;
+      info("%s # File %s has unsupported audio codec.", fname, filename);
+      // return false;
     }
 
     trace(DEBUG, "%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
