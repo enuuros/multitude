@@ -31,6 +31,8 @@
 #include <WinPort.h>
 #endif
 
+#include <Radiant/Trace.hpp>
+ 
 namespace Radiant {
 
   TCPSocket::TCPSocket()
@@ -160,20 +162,11 @@ namespace Radiant {
     poll(&pfd, 1, waitMicroSeconds / 1000);
     return pfd.revents & POLLIN;
 #else
-	  // -- emulate using select()
-	  struct timeval timeout;
-	  timeout.tv_sec = 0;
-	  timeout.tv_usec = waitMicroSeconds;
-	  fd_set readfds;
-	  FD_ZERO(&readfds);
-  #pragma warning (disable:4127 4389)
-	  FD_SET(m_fd, &readfds);
-  #pragma warning (default:4127 4389)
-	  int status = select(m_fd, &readfds, 0,0, &timeout);
-	  if (status < 0)
-		  return false;
-	  char data;
-	  return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
+	unsigned long value = 0;
+	if(ioctlsocket(m_fd, FIONREAD, &value) != 0) {
+		Radiant::error("TCPSocket::isPendingInput # ioctlsocket failed");
+	}
+	return value;
 #endif
   }
 

@@ -31,7 +31,7 @@ src = """
 
 pEnv = env.Clone()
 
-if platform.system() == "Win32":
+if platform.system() == "Windows":
   src += "DirectoryBoost.cpp"
 
 if platform.system() == "Linux":
