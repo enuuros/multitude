@@ -82,7 +82,7 @@ namespace Luminous {
 
     gluOrtho2D(0, 1, 1, 0);
 
-    float gamma = 1.35f;
+    float gamma = 1.0f;
 
     if(m_seams[0] != 0.0f)
       Utils::fadeEdge(1, 1, 1.62f * m_seams[0] / m_size[0],
@@ -91,10 +91,10 @@ namespace Luminous {
       Utils::fadeEdge(1, 1, 1.62f * m_seams[1] / m_size[0],
           gamma, Utils::RIGHT, false);
     if(m_seams[2] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[2] / m_size[0],
+      Utils::fadeEdge(1, 1, 1.62f * m_seams[2] / m_size[1],
           gamma, Utils::TOP, false);
     if(m_seams[3] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[3] / m_size[0],
+      Utils::fadeEdge(1, 1, 1.62f * m_seams[3] / m_size[1],
           gamma, Utils::BOTTOM, false);
 
     // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
