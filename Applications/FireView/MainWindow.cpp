@@ -53,7 +53,7 @@ namespace FireView {
   
   MainWindow::~MainWindow()
   {
-    Radiant::trace(Radiant::DEBUG, "MainWindow::~MainWindow");
+    Radiant::debug("MainWindow::~MainWindow");
     
     for(std::set<QWidget *>::iterator it = m_displays.begin();
         it != m_displays.end(); it++) {

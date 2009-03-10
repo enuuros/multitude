@@ -204,7 +204,7 @@ namespace FireView {
 	return;
       }
       else
-	trace(DEBUG, "Enabled trigger source %d (%d) %f %d",
+	debug("Enabled trigger source %d (%d) %f %d",
 	      trig, m_triggerSource, m_customFps, (int) m_format7);
 
       if(m_triggerMode >= 0) {
@@ -212,13 +212,13 @@ namespace FireView {
 	   ((dc1394trigger_mode_t) m_triggerMode))
 	  Radiant::error("Could not set trigger mode %d", m_triggerMode);
 	else
-	  trace(DEBUG, "Enabled trigger mode %d", m_triggerMode);
+	  debug("Enabled trigger mode %d", m_triggerMode);
       }
     }
     else
       m_video.disableTrigger();
 
-    trace(DEBUG, "Getting features");
+    debug("Getting features");
 
     m_video.getFeatures( & m_features);
 
@@ -247,7 +247,7 @@ namespace FireView {
 
     // m_video.start();
 
-    trace(DEBUG, "Starting video capture");
+    debug("Starting video capture");
 
     if(!m_video.start()) {
       m_state = UNINITIALIZED;
@@ -267,7 +267,7 @@ namespace FireView {
     Radiant::SleepSync sync;
     sync.resetTiming();
 
-    trace(DEBUG, "Capturing video");
+    debug("Capturing video");
 
     m_lastCheckTime = Radiant::TimeStamp::getTime();
     while(m_continue) {
