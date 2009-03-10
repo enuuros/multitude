@@ -1,4 +1,5 @@
 Import('env libraryPath')
+import platform
 
 src = Split("""
     ImageCodecJPEG.cpp
@@ -32,11 +33,14 @@ src = Split("""
 
 pEnv = env.Clone()
 
-pEnv.Append(LIBS = Split("jpeg png GLEW"))
+if platform.system() == "Windows":
+	pEnv.Append(CPPPATH = Split('../Win32x/include/libjpeg'))
+	pEnv.Append(CCFLAGS = Split('-DLUMINOUS_EXPORT'))
+	pEnv.Append(LIBPATH = Split('../Win32x/lib'))
+	pEnv.Append(LIBS = Split('libjpeg-static-mt.lib'))
+else:
+	pEnv.Append(LIBS = Split("jpeg png GLEW"))
+
 lib = pEnv.SharedLibrary('Luminous', src)
-
-
-
-
 
 env.Install(libraryPath, [lib])

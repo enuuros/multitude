@@ -168,7 +168,7 @@ namespace Luminous {
     m_size = size;
 
     if(m_areas.size() == 1) {
-      Radiant::trace(Radiant::DEBUG, "MultiHead::Window::resizeEvent");
+      Radiant::debug("MultiHead::Window::resizeEvent");
       m_areas[0].ptr()->setSize(size);
     }
   }
