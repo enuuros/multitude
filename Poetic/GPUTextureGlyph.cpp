@@ -14,6 +14,11 @@
  */
 #include "GPUTextureGlyph.hpp"
 #include "CPUBitmapGlyph.hpp"
+
+#include <Luminous/Utils.hpp>
+
+#include <Nimble/Vector4.hpp>
+
 #include <GL/glew.h>
 
 #include <ft2build.h>
@@ -77,23 +82,23 @@ namespace Poetic
     Vector2f v3 = pen + Vector2f(m_width + m_pos.x,     m_pos.y);
 #endif
 
-    v0 = (m * v0).xy();
-    v1 = (m * v1).xy();
-    v2 = (m * v2).xy();
-    v3 = (m * v3).xy();
+    Vector4f p0 = Luminous::Utils::project(m, v0);
+    Vector4f p1 = Luminous::Utils::project(m, v1);
+    Vector4f p2 = Luminous::Utils::project(m, v2);
+    Vector4f p3 = Luminous::Utils::project(m, v3);
 
     glBegin(GL_QUADS);
     glTexCoord2f(m_uv[0].x, m_uv[0].y);
-    glVertex2fv(v0.data());
+    glVertex4fv(p0.data());
 
     glTexCoord2f(m_uv[0].x, m_uv[1].y);
-    glVertex2fv(v1.data());
+    glVertex4fv(p1.data());
 
     glTexCoord2f(m_uv[1].x, m_uv[1].y);
-    glVertex2fv(v2.data());
+    glVertex4fv(p2.data());
 
     glTexCoord2f(m_uv[1].x, m_uv[0].y);
-    glVertex2fv(v3.data());
+    glVertex4fv(p3.data());
     glEnd();
 
     return m_advance + pen;

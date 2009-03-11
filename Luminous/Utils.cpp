@@ -563,18 +563,18 @@ namespace Luminous {
     float b = rgba[2];
     float a = rgba[3];
 
-    Nimble::Vector2 inner[4] = {
-      (m * hole.low()).xy(),
-      (m * hole.lowHigh()).xy(),
-      (m * hole.high()).xy(),
-      (m * hole.highLow()).xy()
+    Nimble::Vector4 inner[4] = {
+      project(m,  hole.low()),
+      project(m,  hole.lowHigh()),
+      project(m,  hole.high()),
+      project(m,  hole.highLow())
     };
 
-    Nimble::Vector2 outer[4] = {
-      (m * area.low()).xy(),
-      (m * area.lowHigh()).xy(),
-      (m * area.high()).xy(),
-      (m * area.highLow()).xy()
+    Nimble::Vector4 outer[4] = {
+      project(m,  area.low()),
+      project(m,  area.lowHigh()),
+      project(m,  area.high()),
+      project(m,  area.highLow())
     };
 
     /*
@@ -602,39 +602,39 @@ namespace Luminous {
     htxuv.high().descale(as);
 
     glTexCoord2f(0.0f, 0.0f);
-    glVertex2fv(outer[0].data());
+    glVertex4fv(outer[0].data());
 
     glTexCoord2fv(htxuv.low().data());
-    glVertex2fv(inner[0].data());
+    glVertex4fv(inner[0].data());
 
     glTexCoord2f(0.0f, 1.0f);
-    glVertex2fv(outer[1].data());
+    glVertex4fv(outer[1].data());
 
     glTexCoord2fv(htxuv.lowHigh().data());
-    glVertex2fv(inner[1].data());
+    glVertex4fv(inner[1].data());
 
     glTexCoord2f(1.0f, 1.0f);
-    glVertex2fv(outer[2].data());
+    glVertex4fv(outer[2].data());
 
     glTexCoord2fv(htxuv.high().data());
-    glVertex2fv(inner[2].data());
+    glVertex4fv(inner[2].data());
 
     glTexCoord2f(1.0f, 0.0f);
-    glVertex2fv(outer[3].data());
+    glVertex4fv(outer[3].data());
 
     glTexCoord2fv(htxuv.highLow().data());
-    glVertex2fv(inner[3].data());
+    glVertex4fv(inner[3].data());
 
     glTexCoord2f(0.0f, 0.0f);
-    glVertex2fv(outer[0].data());
+    glVertex4fv(outer[0].data());
 
     glTexCoord2fv(htxuv.low().data());
-    glVertex2fv(inner[0].data());
+    glVertex4fv(inner[0].data());
 
     glEnd();
 
     // AA strip around the outer edge:
-
+#if 0    
     glBegin(GL_TRIANGLE_STRIP);
 
     /* r = 1;
@@ -711,6 +711,7 @@ namespace Luminous {
     glVertex2fv(inner[0].data());
 
     glEnd();
+#endif
   }
 
 

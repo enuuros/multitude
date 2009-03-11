@@ -435,6 +435,27 @@ namespace VideoDisplay {
     }
   }
 
+
+  bool ShowGL::pause()
+  {
+    if(m_state == PLAY) {
+      return stop();
+    }
+    return true;
+  }
+
+  bool ShowGL::unpause()
+  {
+    if(m_state == PLAY)
+      return true;
+
+    Radiant::TimeStamp pos = m_position;
+    if(Radiant::TimeStamp(m_duration - m_position).secondsD() < 2.5)
+      pos = 0;
+    
+    return open(m_filename.c_str(), m_dsp, pos);
+  }
+
   void ShowGL::update()
   {
     Radiant::TimeStamp targetTime = m_audio ?

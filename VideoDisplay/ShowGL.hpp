@@ -128,6 +128,11 @@ namespace VideoDisplay {
       /// Toggles play/pause state
       VIDEODISPLAY_API bool togglePause();
 
+
+      VIDEODISPLAY_API bool pause();
+
+      VIDEODISPLAY_API bool unpause();
+
       State state() const { return m_state; }
 
       /// Create OpenGL resources
