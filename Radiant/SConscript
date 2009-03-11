@@ -37,7 +37,7 @@ if platform.system() == "Windows":
 if platform.system() == "Linux":
   src += " DirectoryNonBoost.cpp"
   src += " PlatformUtilsLinux.cpp"
-  src += " SerialPortLinux.cpp"
+  src += " SerialPortPosix.cpp"
   src += " Video1394.cpp"
   pEnv.ParseConfig('pkg-config --cflags --libs libdc1394-2')
   
