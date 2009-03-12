@@ -13,6 +13,10 @@
  * 
  */
 
+#ifdef WIN32
+#include <Radiant/Video1394cmu.hpp>
+#else
+
 #ifndef RADIANT_VIDEO_1394_HPP
 #define RADIANT_VIDEO_1394_HPP
 
@@ -192,5 +196,7 @@ namespace Radiant {
 
 }
 
+
+#endif
 
 #endif
