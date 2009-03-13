@@ -59,6 +59,8 @@ namespace Nimble {
     const Vector4T<T>& operator[](int i) const{ return row(i); }
     inline void               setRotation(const Nimble::Matrix3T<T>& that);
     inline Matrix3T<T>        getRotation() const;
+    void                      setTranslation(const Vector3T<T> & v);
+    Vector3T<T>               getTranslation() const;
 
     inline Matrix4T<T>&       transpose();
     void                      clear()         { m[0].clear(); m[1].clear(); m[2].clear(); m[3].clear(); } 
@@ -93,6 +95,8 @@ namespace Nimble {
     template <class S>
     void copyTranspose (const S * x) { for(int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) m[j][i] = (T) x[i*4+j]; }
 
+    static Matrix4T<T> makeRotation(T radians, const Vector3T<T> & axis);
+    static Matrix4T<T> makeTranslation(const Vector3T<T> & v);
   
   private:
     inline static void swap(T &a, T& b);
@@ -387,5 +391,39 @@ inline std::ostream& operator<<(std::ostream& os, const Nimble::Matrix4T<T>& m)
   return os;
 }
 
+template<class T>
+void Nimble::Matrix4T<T>::setTranslation(const Nimble::Vector3T<T> & v)
+{
+  m[3][0] = v.x;
+  m[3][1] = v.y;
+  m[3][2] = v.z;
+}
+
+template<class T>
+Nimble::Vector3T<T> Nimble::Matrix4T<T>::getTranslation() const
+{
+  return Nimble::Vector3T<T>(m[3][0], m[3][1], m[3][2]);
+}
+
+template<class T>
+Nimble::Matrix4T<T> Nimble::Matrix4T<T>::makeRotation(T radians, const Nimble::Vector3T<T> & axis)
+{
+  Nimble::Matrix4T<T> mm;
+  mm.identity();
+
+  mm.setRotation(Nimble::Matrix3T<T>::makeRotation(radians, axis));
+  return mm;
+}
+
+template<class T>
+Nimble::Matrix4T<T> Nimble::Matrix4T<T>::makeTranslation(const Nimble::Vector3T<T> & v)
+{
+  Nimble::Matrix4T<T> mm;
+  mm.identity();
+  
+  mm.setTranslation(v);
+  return mm;
+}
 
 #endif
+

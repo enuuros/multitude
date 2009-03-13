@@ -123,6 +123,8 @@ namespace Nimble {
     /// Create a matrix that performs 2D rotation
     inline static Matrix3T<T> rotate2D(T radians);
 
+    static Matrix3T<T> makeRotation(T radians, const Vector3T<T> & axis);
+
     /// Extract the scaling factor from a homogenous 2D transformation matrix
     inline T extractScale() const;
 
@@ -578,6 +580,34 @@ T Matrix3T<T>::extractScale() const
   T s = Math::Sqrt(v.x * v.x + v.y * v.y);
 
   return s;
+}
+
+template<class T>
+Matrix3T<T> Matrix3T<T>::makeRotation(T radians, const Vector3T<T> & axis)
+{
+  T c = T(cos(radians));
+  T t = T(1) - c;
+  T s = T(sin(radians));
+  
+  Vector3T<T> vn(axis);
+  vn.normalize();
+
+  Matrix3T<T> m(); 
+ 
+  T aa[9];
+  aa[0] = t * vn.x * vn.x + c;
+  aa[1] = t * vn.x * vn.y - s * vn.z;
+  aa[2] = t * vn.x * vn.z + s * vn.y;
+
+  aa[3] = t * vn.x * vn.y + s * vn.z;
+  aa[4] = t * vn.y * vn.y + c;
+  aa[5] = t * vn.y * vn.z - s * vn.x;
+
+  aa[6] = t * vn.x * vn.z - s * vn.y;
+  aa[7] = t * vn.y * vn.z + s * vn.x;
+  aa[8] = t * vn.z * vn.z + c;
+
+  return Matrix3T<T>(aa);
 }
 
 } // namespace
