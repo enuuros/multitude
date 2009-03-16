@@ -313,6 +313,7 @@ namespace Nimble {
 
   typedef Matrix4T<float> Matrix4;
   typedef Matrix4T<float> Matrix4f;
+  typedef Matrix4T<double> Matrix4d;
 
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
