@@ -27,7 +27,7 @@ namespace Nimble {
   /// 2x2 row-major matrix class
   /** The rows of this matrix are of type Nimble::Vector2T<T>. */
   template <class T>
-  class NIMBLE_API Matrix2T
+  class Matrix2T
   {
   public:
     /// Create a matrix without initializing the elements

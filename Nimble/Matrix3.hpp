@@ -28,7 +28,7 @@ namespace Nimble {
   /** This class is a row-major 3x3 matrix. The matrix functions
       (rotations etc.) assume right-handed coordinate system. */
   template <class T>
-  class NIMBLE_API Matrix3T
+  class Matrix3T
   {
   public:
     /// Constructs the matrix without initializing any values.
@@ -123,7 +123,7 @@ namespace Nimble {
     /// Create a matrix that performs 2D rotation
     inline static Matrix3T<T> rotate2D(T radians);
 
-    static Matrix3T<T> makeRotation(T radians, const Vector3T<T> & axis);
+    inline static Matrix3T<T> makeRotation(T radians, const Vector3T<T> & axis);
 
     /// Extract the scaling factor from a homogenous 2D transformation matrix
     inline T extractScale() const;

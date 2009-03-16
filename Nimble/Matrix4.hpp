@@ -23,7 +23,7 @@
 namespace Nimble {
 
   template <class T>
-  class NIMBLE_API Matrix4T
+  class Matrix4T
   {
   public:		
     template <class S>
