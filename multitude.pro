@@ -17,10 +17,7 @@ SUBDIRS += Applications
 CONFIG += ordered
 
 # Install some build files to the source package
-linux-* {
+stuff.path = /src/MultiTouch/multitude
+stuff.files = LGPL.txt multitude.pro multitude.pri library.pri
 
-  stuff.path = /src/MultiTouch/multitude
-  stuff.files = LGPL.txt multitude.pro multitude.pri library.pri
-
-  INSTALLS += stuff
-}
+INSTALLS += stuff

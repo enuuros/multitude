@@ -16,7 +16,10 @@ win32 {
 	win32_libs.path = /apps/bin
 	win32_libs.files = lib/*.dll
 	
-	INSTALLS += win32_libs
+  win32_extra_headers.path = /src/MultiTouch/$$TARGET/include
+  win32_extra_headers.files = include/*
+
+	INSTALLS += win32_libs win32_extra_headers
 }
 
 include(../library.pri)
