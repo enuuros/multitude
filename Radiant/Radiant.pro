@@ -102,6 +102,10 @@ win32 {
 	SOURCES += cmu_dc1394.cpp
 	SOURCES += PlatformUtilsWin32.cpp
 	SOURCES += SerialPortWin32.cpp
+		
+	HEADERS += Video1394cmu.hpp
+	HEADERS += cmu_dc1394.hpp
+	
 	LIBS += 1394Camera.lib win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib
 	QMAKE_CXXFLAGS += -Zc:wchar_t
 }
