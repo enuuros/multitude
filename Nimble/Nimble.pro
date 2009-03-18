@@ -17,7 +17,9 @@ HEADERS += RingBuffer.hpp
 HEADERS += Vector2.hpp 
 HEADERS += Vector3.hpp 
 HEADERS += Vector4.hpp 
+HEADERS += Plane.hpp
 
+SOURCES += Plane.cpp
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
 SOURCES += Random.cpp
