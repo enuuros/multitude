@@ -56,7 +56,7 @@ namespace Luminous
                      m_consumingBytes);
   }
 
-  GLResource * GLResources::getResource(void * key)
+  GLResource * GLResources::getResource(const void * key)
   {
     iterator it = m_resources.find(key);
 
@@ -66,7 +66,7 @@ namespace Luminous
     return (*it).second;
   }
 
-  void GLResources::addResource(void * key, GLResource * resource)
+  void GLResources::addResource(const void * key, GLResource * resource)
   {
     iterator it = m_resources.find(key);
 
@@ -81,7 +81,7 @@ namespace Luminous
     m_allocationSum += bytes;
   }
 
-  bool GLResources::eraseResource(void * key)
+  bool GLResources::eraseResource(const void * key)
   {
     iterator it = m_resources.find(key);
 
@@ -109,7 +109,7 @@ namespace Luminous
   {
     for(GarbageCollector::iterator it = collector->begin();
         it != collector->end(); it++) {
-      void * key = GarbageCollector::getObject(it);
+      const void * key = GarbageCollector::getObject(it);
       eraseResource(key);
     }
 

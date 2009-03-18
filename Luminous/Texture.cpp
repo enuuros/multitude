@@ -130,42 +130,12 @@ namespace Luminous
 		     image.bytes(),
 		     image.pixelFormat(), buildMipmaps);
   }
-/*
-  bool Texture2D::loadImage(Magick::Image & image, bool buildMipmaps)
-  {
-    Magick::Blob blob;
 
-    GLenum type;
-
-    if(image.matte()) {
-      image.magick("RGBA");
-      type = GL_RGBA;
-    }
-    else {
-      image.magick("RGB");
-      type = GL_RGB;
-    }
-
-    image.write(&blob);
-
-    return loadBytes(GL_RGBA, image.columns(), image.rows(), blob.data(),
-		     PixelFormat(PixelFormat::LAYOUT_RGBA,
-				 PixelFormat::TYPE_UBYTE), buildMipmaps);
-  }
-
-  void Texture2D::loadSubImage(Magick::Image & subImage, int x, int y)
-  {
-    Magick::Blob  blob;
-    subImage.write(& blob);
-
-    loadSubBytes(x, y, subImage.columns(), subImage.rows(), blob.data());
-  }
-*/
   bool Texture2D::loadBytes(GLenum internalFormat, int w, int h,
 			    const void * data, 
 			    const PixelFormat& srcFormat,
 			    bool buildMipmaps)
- {
+  {
     // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
       bool isPowerOfTwo1 = !((w - 1) & w);

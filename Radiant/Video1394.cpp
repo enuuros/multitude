@@ -662,6 +662,12 @@ namespace Radiant {
     if(roi.high().y > (int) maxh)
       roi.high().y = maxh;
 
+    // Make the image size multiple of four...
+    for(int i = 0; i < 2; i++) {
+      while(roi.high()[i] & 0x3)
+	roi.high()[i]--;
+    }
+
     err = dc1394_format7_get_packet_parameters
       (m_camera, vmode, & minbytes, & maxbytes);
 

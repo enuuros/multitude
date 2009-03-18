@@ -52,18 +52,18 @@ namespace Luminous
   {
   public:
 
-    typedef std::map<void *, GLResource *> container;
+    typedef std::map<const void *, GLResource *> container;
     typedef container::iterator iterator;
 
     GLResources(Radiant::ResourceLocator & rl);
     virtual ~GLResources();
 
     /// Get a handle to a resource 
-    GLResource * getResource(void * key);
+    GLResource * getResource(const void * key);
     /// Adds a resource
-    void addResource(void * key, GLResource * resource);
+    void addResource(const void * key, GLResource * resource);
     /// Erases a single GLResource
-    bool eraseResource(void * key);
+    bool eraseResource(const void * key);
     /// Erase the resources that are no longer required
     void eraseResources(GarbageCollector * collector);
     /// Erases all resources.

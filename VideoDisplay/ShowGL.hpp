@@ -68,7 +68,6 @@ namespace VideoDisplay {
         virtual bool link();
         virtual void clear();
 
-
       private:
 
         enum {

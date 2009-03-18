@@ -16,6 +16,8 @@
 #ifndef LUMINOUS_GLSLPROGRAMOBJECT_HPP
 #define LUMINOUS_GLSLPROGRAMOBJECT_HPP
 
+#include <Nimble/Matrix4.hpp>
+
 #include <Luminous/GLResource.hpp>
 #include <Luminous/GLSLShaderObject.hpp>
 
@@ -50,11 +52,42 @@ namespace Luminous
 
     int getAttribLoc(const std::string & name);
     int getAttribLoc(const char * name);
+
+    bool setUniformInt(const char * name, int value);
+    bool setUniformFloat(const char * name, float value);
+    bool setUniformVector2(const char * name, Nimble::Vector2f value);
     
     bool validate();
     
+    /** Create a GLSLProgramObject from vertex- and fragment shader files.
+	
+	@param vsFile File containing the vertex shader source
+	code. If vsFile is NULL, then this argument is ignored.
+
+	@param fsFile File containing the fragment shader source
+	code. If fsFile is NULL, then this argument is ignored.
+
+	@return This functions returns a compiled GLSL program
+	object. If the program could not be compiled, this function
+	returns NULL.
+     */
     static GLSLProgramObject* fromFiles
     (const char* vsFile, const char* fsFile);
+
+    /** Create a GLSLProgramObject from vertex- and fragment shader strings.
+	
+	@param vsString String containing the vertex shader source
+	code. If vsString is NULL, then this argument is ignored.
+
+	@param fsString String containing the fragment shader source
+	code. If fsString is NULL, then this argument is ignored.
+
+	@return This functions returns a compiled GLSL program
+	object. If the program could not be compiled, this function
+	returns NULL.
+     */
+    static GLSLProgramObject* fromStrings
+    (const char* vsString, const char* fsString);
 
     int shaderObjectCount() const { return m_shaderObjects.size(); } 
 

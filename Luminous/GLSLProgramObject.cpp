@@ -171,6 +171,43 @@ namespace Luminous
     return glGetAttribLocation(m_handle, name);
   }
 
+  bool GLSLProgramObject::setUniformFloat(const char * name, float value)
+  {
+    int loc = getUniformLoc(name);
+
+    if(loc < 0)
+      return false;
+
+    glUniform1f(loc, value);
+
+    return true;
+  }
+
+  bool GLSLProgramObject::setUniformInt(const char * name, int value)
+  {
+    int loc = getUniformLoc(name);
+
+    if(loc < 0)
+      return false;
+
+    glUniform1i(loc, value);
+
+    return true;
+  }
+
+  bool GLSLProgramObject::setUniformVector2(const char * name,
+					    Nimble::Vector2f value)
+  {
+    int loc = getUniformLoc(name);
+
+    if(loc < 0)
+      return false;
+
+    glUniform2f(loc, value.x, value.y);
+
+    return true;
+  }
+
   bool GLSLProgramObject::validate()
   {
     glValidateProgram(m_handle);
@@ -232,6 +269,59 @@ namespace Luminous
 
     if(!program->link()) {
       cerr << "GLSLProgramObject::fromFiles # linking shader failed:"
+	   << endl << program->linkerLog() << endl;
+      delete program;
+      return 0;
+    }
+
+    return program;
+  }
+
+  GLSLProgramObject* GLSLProgramObject::fromStrings
+  (const char* vsString, const char* fsString)
+  {
+    if(vsString == 0 && fsString == 0) { 
+      return 0;
+    }
+
+    // Load & compile vertex shader
+    GLSLShaderObject* vs = 0;
+    if(vsString) {
+      vs = new GLSLShaderObject(GL_VERTEX_SHADER);
+
+      vs->setSource(vsString);
+
+      if(!vs->compile()) {
+        cerr << "GLSLProgramObject::fromStrings # vertex shader compile error:"
+	     << endl << vs->compilerLog() << endl;
+        delete vs;
+        return 0;
+      }
+    }
+
+    // Load & compile fragment shader
+    GLSLShaderObject* fs = 0;
+    if(fsString) {
+      fs = new GLSLShaderObject(GL_FRAGMENT_SHADER);
+      
+      fs->setSource(fsString);
+  
+      if(!fs->compile()) {
+        cerr << "GLSLProgramObject::fromStrings # fragment shader "
+	  "compile error:" << endl << fs->compilerLog() << endl;
+        delete fs;
+        return 0;
+      }
+    }
+  
+    // Create a program object and link it
+    GLSLProgramObject* program = new GLSLProgramObject();
+
+    if(vs) program->addObject(vs);
+    if(fs) program->addObject(fs);
+
+    if(!program->link()) {
+      cerr << "GLSLProgramObject::fromStrings # linking shader failed:"
 	   << endl << program->linkerLog() << endl;
       delete program;
       return 0;
