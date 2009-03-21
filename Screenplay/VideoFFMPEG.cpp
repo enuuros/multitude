@@ -204,7 +204,7 @@ namespace Screenplay {
         m_capturedAudio += aframes;
 
         if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-			Radiant::trace(Radiant::FAILURE, "VideoInputFFMPEG::captureImage # Audio trouble %d %d",
+	  Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble %d %d",
               aframes, m_audioFrames);
         }
         // printf("_"); fflush(0);
@@ -215,15 +215,22 @@ namespace Screenplay {
       // Produce silent audio to fool the playback engine.
 
       double frames = m_lastTS.secondsD() * 44100;
-      
+
       int perFrame = (int) (frames - m_capturedAudio);
+
+      if(perFrame > 20000)
+	perFrame = 20000;
+      
       m_audioFrames   += perFrame;
       m_capturedAudio += perFrame;
 
+      if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
+	Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d",
+		       perFrame, m_audioFrames);
+      }
     }
 
     m_capturedVideo++;
-
 
     /* trace2("VideoInputFFMPEG::captureImage # m_vcontext->pix_fmt = %d",
        (int) m_vcontext->pix_fmt); */
@@ -233,15 +240,15 @@ namespace Screenplay {
     if(avcfmt == PIX_FMT_YUV420P) {
       m_image.setFormatYUV420P();
       if(m_debug && m_capturedVideo < 10)
-        trace(DEBUG, "%s # PIX_FMT_YUV420P", fname);
+        debug("%s # PIX_FMT_YUV420P", fname);
     }
     else if(avcfmt == PIX_FMT_YUVJ422P) {  
       m_image.setFormatYUV422P(); 
       if(m_debug && m_capturedVideo < 10)
-        trace(DEBUG, "%s # PIX_FMT_YUV422P", fname);
+        debug("%s # PIX_FMT_YUV422P", fname);
     }
     else {
-      Radiant::trace(Radiant::FAILURE, "%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
+      Radiant::error("%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
     }
 
     m_image.m_width = width();
@@ -356,7 +363,7 @@ namespace Screenplay {
       r *= (double) (m_capturedVideo - 1) / (double) m_lastPts;
     }
 
-    Radiant::trace(DEBUG, "VideoInputFFMPEG::fps # %d %d -> %.2lf",
+    Radiant::debug("VideoInputFFMPEG::fps # %d %d -> %.2lf",
         time_base.den, time_base.num, r);
 
     return float(r);
@@ -420,7 +427,7 @@ namespace Screenplay {
 
         AVRational fr = m_ic->streams[i]->r_frame_rate;
 
-        trace(DEBUG, "%s # Got frame rate of %d %d", fname, fr.num, fr.den);
+        debug("%s # Got frame rate of %d %d", fname, fr.num, fr.den);
 
         /* if(m_vcodec->supported_framerates) {
            for(int k = 0; m_vcodec->supported_framerates[k].num != 0; k++) {
@@ -488,7 +495,7 @@ namespace Screenplay {
       // return false;
     }
 
-    trace(DEBUG, "%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
+    debug("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;
   }

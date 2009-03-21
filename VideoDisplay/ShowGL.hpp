@@ -117,10 +117,12 @@ namespace VideoDisplay {
       VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
       /// Initialize the file, but does not play it.
-      VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp);
+    VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp, float previewpos = 0.05f);
       /// Opens the file for playing.
       VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
           Radiant::TimeStamp pos = 0);
+      /// Stops file playback
+      VIDEODISPLAY_API bool start();
       /// Stops file playback
       VIDEODISPLAY_API bool stop();
 
@@ -177,7 +179,7 @@ namespace VideoDisplay {
     private:
 
       void clearHistogram();
-      void getThumbnail(double pos);
+      void getPreview(double pos);
 
 
       std::string             m_filename;

@@ -84,7 +84,8 @@ namespace Radiant {
 
       breakLink(); 
       m_holder = ((RefPtr *) & that)->m_holder; 
-      m_holder->m_count++;
+      if(m_holder)
+	m_holder->m_count++;
 
       return *this;
     }

@@ -291,7 +291,8 @@ namespace VideoDisplay {
     return m_subTitles.readSrt(filename);
   }
 
-  bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp)
+  bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
+		    float previewpos)
   {
     m_filename = filename;
     m_dsp = dsp;
@@ -303,7 +304,7 @@ namespace VideoDisplay {
 
     // Seek a bit into the file (at most 60 secs)
     double len = video.durationSeconds();
-    double pos = len * 0.05;
+    double pos = len * previewpos;
     if(pos > 60)
       pos = 60;
 
@@ -373,6 +374,11 @@ namespace VideoDisplay {
     clearHistogram();
 
     return true;
+  }
+
+  bool ShowGL::start()
+  {
+    return open(m_filename.c_str(), m_dsp, 0.0f); 
   }
 
   bool ShowGL::stop()
@@ -628,7 +634,7 @@ namespace VideoDisplay {
     m_position = time;
 
     if(!m_video) {
-      getThumbnail(time.secondsD());
+      getPreview(time.secondsD());
       return;
     }
 
@@ -654,9 +660,9 @@ namespace VideoDisplay {
 
   /// @todo this should be done in another thread, now it hangs the app
   /// everytime you call it
-  void ShowGL::getThumbnail(double pos)
+  void ShowGL::getPreview(double pos)
   {
-    trace(DEBUG, "ShowGL::getThumbnail # %lf", pos);
+    trace(DEBUG, "ShowGL::getPreview # %lf", pos);
 
     Screenplay::VideoInputFFMPEG video;
     if(!video.open(m_filename.c_str()))
@@ -676,7 +682,7 @@ namespace VideoDisplay {
     if(!Radiant::ImageConversion::convert(img, & m_blankDisplay))
       return;
 
-    trace(DEBUG, "ShowGL::getThumbnail # EXIT OK");
+    trace(DEBUG, "ShowGL::getPreview # EXIT OK");
 
     m_blankReload = true;
     m_useBlank = true;
