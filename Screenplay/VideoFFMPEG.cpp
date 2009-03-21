@@ -162,6 +162,9 @@ namespace Screenplay {
           }
           else
             m_lastTS = Radiant::TimeStamp::createSecondsD(secs);
+
+	  if(m_capturedVideo == 0)
+	    m_firstTS = m_lastTS;
         }
 
         if(m_sinceSeek == 0) {
@@ -214,15 +217,21 @@ namespace Screenplay {
     if(!m_acodec && (m_flags & Radiant::WITH_AUDIO)) {
       // Produce silent audio to fool the playback engine.
 
-      double frames = m_lastTS.secondsD() * 44100;
+      double secs = TimeStamp(m_lastTS - m_firstTS).secondsD();
+      double frames = secs * 44100;
 
       int perFrame = (int) (frames - m_capturedAudio);
 
-      if(perFrame > 20000)
+      if(perFrame > 20000) {
+	info("VideoInputFFMPEG::captureImage # Large audio generated");
 	perFrame = 20000;
-      
+      }
+
       m_audioFrames   += perFrame;
       m_capturedAudio += perFrame;
+
+      info("VideoInputFFMPEG::captureImage # %lf %d aufr in total %d vidfr",
+	   secs, (int) m_capturedAudio, (int) m_capturedVideo);
 
       if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
 	Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d",
@@ -381,7 +390,7 @@ namespace Screenplay {
   }
 
   bool VideoInputFFMPEG::open(const char * filename,
-      int flags)
+			      int flags)
   {
     assert(filename != 0 && m_vcodec == 0);
 
@@ -396,6 +405,8 @@ namespace Screenplay {
     AVInputFormat * iformat = 0;
     AVFormatParameters params, *ap = & params;
 
+    m_lastTS = 0;
+    m_firstTS = 0;
     m_offsetTS = 0;
     m_sinceSeek = 0;
 
@@ -534,6 +545,8 @@ namespace Screenplay {
 
   bool VideoInputFFMPEG::seekPosition(double timeSeconds)
   {
+    info("VideoInputFFMPEG::seekPosition # %lf", timeSeconds);
+
     if(m_vcontext)
       avcodec_flush_buffers(m_vcontext);
 

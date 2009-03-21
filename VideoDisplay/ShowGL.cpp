@@ -269,13 +269,13 @@ namespace VideoDisplay {
 
   ShowGL::ShowGL()
     : m_video(0),
-    m_frame(0),
-    m_dsp(0),
-    m_audio(0),
-    m_state(PAUSE),
-    m_updates(0),
-    m_blankReload(false),
-    m_useBlank(false)
+      m_frame(0),
+      m_dsp(0),
+      m_audio(0),
+      m_state(PAUSE),
+      m_updates(0),
+      m_blankReload(false),
+      m_useBlank(false)
   {
     clearHistogram();
   }
@@ -294,6 +294,8 @@ namespace VideoDisplay {
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
 		    float previewpos)
   {
+    info("ShowGL::init # %f", previewpos);
+
     m_filename = filename;
     m_dsp = dsp;
 
@@ -327,7 +329,7 @@ namespace VideoDisplay {
     m_position = 0;
     m_duration = Radiant::TimeStamp::createSecondsD(video.durationSeconds());
 
-    trace(DEBUG, "ShowGL::init # Opened %s", filename);
+    debug("ShowGL::init # Opened %s", filename);
 
     return true;
   }
@@ -368,6 +370,7 @@ namespace VideoDisplay {
     m_frameTime = 0;
     m_count = 0;
     m_frame = 0;
+    m_position = pos;
 
     m_state = PLAY;
 
@@ -441,7 +444,6 @@ namespace VideoDisplay {
     }
   }
 
-
   bool ShowGL::pause()
   {
     if(m_state == PLAY) {
@@ -475,6 +477,9 @@ namespace VideoDisplay {
         stop();
         break;
       }
+
+      info("ShowGL::update # %lf > %lf",
+	   targetTime.secondsD(), m_frameTime.secondsD());
 
       m_frame = m_video->nextFrame();
 
@@ -525,7 +530,6 @@ namespace VideoDisplay {
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
       yuv2rgb->bind();
-
     }
     else {
 

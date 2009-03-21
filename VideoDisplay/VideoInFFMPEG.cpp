@@ -58,16 +58,18 @@ namespace VideoDisplay {
     if(!m_video.open(filename, WITH_VIDEO | WITH_AUDIO))
       return false;
 
+    m_name = filename;
+
     m_seekTarget = -1.0f;
 
     if(!m_video.hasVideoCodec()) {
-      Radiant::trace(Radiant::FAILURE, "%s # No video codec", fname);
+      Radiant::error("%s # No video codec", fname);
       m_video.close();
       return false;
     }
 
     if(!m_video.hasAudioCodec()) {
-      Radiant::trace(Radiant::FAILURE, "%s # No audio codec", fname);
+      Radiant::error("%s # No audio codec", fname);
       /* m_video.close();
 	 return false; */
     }
@@ -200,6 +202,8 @@ namespace VideoDisplay {
 
   bool VideoInFFMPEG::seekTo(double seconds)
   {
+    Radiant::info("VideoInFFMPEG::seekTo # %lf", seconds);
+
     m_seekMutex.lock();
     m_seekTarget = seconds;
     m_seekMutex.unlock();

@@ -72,8 +72,10 @@ namespace VideoDisplay {
  
     int chans = m_channels;
 
-    // Radiant::trace("AudioTransfer::process # %ld + %d", m_frames, m);
-    
+    /* if(m)
+      Radiant::info("AudioTransfer::process # %s %ld + %d", 
+		    m_video->name(), m_frames, m);
+    */
     if(m_sampleFmt == Radiant::ASF_INT16) {
 
       const int16_t * data = (const int16_t *) audio;
@@ -94,7 +96,7 @@ namespace VideoDisplay {
       }
     }
     else
-      Radiant::trace(Radiant::FAILURE, "AudioTransfer::process # Unsupported sample format");
+      Radiant::error("AudioTransfer::process # Unsupported sample format");
 
     m_frames += m;
   }

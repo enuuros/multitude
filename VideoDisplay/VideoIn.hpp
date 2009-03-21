@@ -74,6 +74,8 @@ namespace VideoDisplay {
     uint finalFrames()   const { return m_finalFrames; }
     uint finalAuFrames() const { return m_finalAuFrames; }
 
+    const char * name() { return m_name.c_str(); }
+
     static void setDebug(int level);
     static void toggleDebug();
 
@@ -132,6 +134,8 @@ namespace VideoDisplay {
 
     float          m_fps;
     bool           m_done;
+
+    std::string    m_name;
 
     static int     m_debug;
 

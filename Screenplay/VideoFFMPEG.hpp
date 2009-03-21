@@ -115,6 +115,7 @@ namespace Screenplay {
     int              m_flags;
     int64_t          m_lastPts;
     Radiant::TimeStamp  m_lastTS;
+    Radiant::TimeStamp  m_firstTS;
     double           m_lastSeek;
 
     int              m_sinceSeek;

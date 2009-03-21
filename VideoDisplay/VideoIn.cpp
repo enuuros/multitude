@@ -48,8 +48,8 @@ namespace VideoDisplay {
 
   VideoIn::Frame * VideoIn::nextFrame()
   {
-    /* qDebug("VideoIn::nextFrame # dec = %u cons = %u", 
-       m_decodedFrames, m_consumedFrames); */
+    Radiant::info("VideoIn::nextFrame # dec = %u cons = %u", 
+		  m_decodedFrames, m_consumedFrames);
 
     m_vmutex.lock();
     while(m_decodedFrames <= m_consumedFrames && m_continue)
