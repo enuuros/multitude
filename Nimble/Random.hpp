@@ -50,6 +50,14 @@ namespace Nimble {
       return (float) tmp * (x / (float) ((unsigned) 0xffffffff));
     }
       
+    /// Random numbers between 0 and x
+    inline double rand0X(double x) 
+    { 
+      unsigned tmp = m_val * m_randMul + 1;
+      m_val = tmp;
+      return (double) tmp * (x / (double) ((unsigned) 0xffffffff));
+    }
+      
     /// Random numbers between 0 and x-1
     inline unsigned rand0X(unsigned x) 
     { 
