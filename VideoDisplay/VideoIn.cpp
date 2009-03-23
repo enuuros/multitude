@@ -48,9 +48,9 @@ namespace VideoDisplay {
 
   VideoIn::Frame * VideoIn::nextFrame()
   {
-    Radiant::info("VideoIn::nextFrame # dec = %u cons = %u", 
+    /* Radiant::info("VideoIn::nextFrame # dec = %u cons = %u", 
 		  m_decodedFrames, m_consumedFrames);
-
+    */
     m_vmutex.lock();
     while(m_decodedFrames <= m_consumedFrames && m_continue)
       m_vcond.wait(m_vmutex, 500);

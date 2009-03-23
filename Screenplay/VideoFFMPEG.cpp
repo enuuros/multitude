@@ -223,14 +223,14 @@ namespace Screenplay {
       int perFrame = (int) (frames - m_capturedAudio);
 
       if(perFrame > 20000) {
-	info("VideoInputFFMPEG::captureImage # Large audio generated");
+	debug("VideoInputFFMPEG::captureImage # Large audio generated");
 	perFrame = 20000;
       }
 
       m_audioFrames   += perFrame;
       m_capturedAudio += perFrame;
 
-      info("VideoInputFFMPEG::captureImage # %lf %d aufr in total %d vidfr",
+      debug("VideoInputFFMPEG::captureImage # %lf %d aufr in total %d vidfr",
 	   secs, (int) m_capturedAudio, (int) m_capturedVideo);
 
       if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {

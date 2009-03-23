@@ -294,7 +294,7 @@ namespace VideoDisplay {
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
 		    float previewpos)
   {
-    info("ShowGL::init # %f", previewpos);
+    // info("ShowGL::init # %f", previewpos);
 
     m_filename = filename;
     m_dsp = dsp;
@@ -478,8 +478,8 @@ namespace VideoDisplay {
         break;
       }
 
-      info("ShowGL::update # %lf > %lf",
-	   targetTime.secondsD(), m_frameTime.secondsD());
+      debug("ShowGL::update # %lf > %lf",
+	    targetTime.secondsD(), m_frameTime.secondsD());
 
       m_frame = m_video->nextFrame();
 
