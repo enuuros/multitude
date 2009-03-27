@@ -248,11 +248,10 @@ namespace Luminous {
         projectors/displays that are aligned in portrait mode. */
       LUMINOUS_API void makeQuadSideways(int x, int y, int w, int h, float seam);
 
-      /// The number of windows
-      unsigned windowCount() const { return m_windows.size(); }
-      /// Access one of the windows
+    /// The number of windows
+    unsigned windowCount() const { return m_windows.size(); }
+    /// Access one of the windows
     LUMINOUS_API Window & window(unsigned i);
-
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }
