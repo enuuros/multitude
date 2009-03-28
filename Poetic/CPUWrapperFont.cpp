@@ -112,7 +112,7 @@ namespace Poetic
 
   bool CPUWrapperFont::load(const char * )
   {
-    Radiant::trace(Radiant::FAILURE, "CPUWrapperFont::load # don't call me");
+    Radiant::error("CPUWrapperFont::load # don't call me");
     return false;
   }
 

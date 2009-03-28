@@ -76,7 +76,8 @@ namespace Valuable
       elem = XDOC(m_wrapped)->createElement(xName);
     } catch(const xercesc::DOMException & e) {
       char * msg = xercesc::XMLString::transcode(e.getMessage());
-      Radiant::trace(Radiant::FAILURE, "DOMDocument::createElement # %s", msg);
+      Radiant::error(
+"DOMDocument::createElement # %s", msg);
       xercesc::XMLString::release(&msg);
     }
 
@@ -105,12 +106,14 @@ namespace Valuable
       target.flush();
     } catch(const xercesc::XMLException & e)  {
       char * msg = xercesc::XMLString::transcode(e.getMessage());
-      Radiant::trace(Radiant::FAILURE, "DOMDocument::save # %s", msg);
+      Radiant::error(
+"DOMDocument::save # %s", msg);
       xercesc::XMLString::release(&msg);
       result = false;
     } catch(const xercesc::DOMException & e) {
       char * msg = xercesc::XMLString::transcode(e.msg);
-      Radiant::trace(Radiant::FAILURE, "DOMDocument::save # %s", msg);
+      Radiant::error(
+"DOMDocument::save # %s", msg);
       xercesc::XMLString::release(&msg);
       result = false;
     }
@@ -158,7 +161,8 @@ namespace Valuable
         int line = e.getLocation()->getLineNumber();
         char * msg = xercesc::XMLString::transcode(e.getMessage());
 
-        Radiant::trace(Radiant::FAILURE, "[XML] %s:%d: %s", uri, line, msg);
+        Radiant::error(
+"[XML] %s:%d: %s", uri, line, msg);
 
         xercesc::XMLString::release(&uri);
         xercesc::XMLString::release(&msg);
@@ -195,7 +199,8 @@ namespace Valuable
 	} catch(xercesc::RuntimeException e) {
 		char * msg = xercesc::XMLString::transcode(e.getMessage());
 		
-		Radiant::trace(Radiant::FAILURE, "DOMDocument::readFromFile # %s", msg);
+		Radiant::error(
+"DOMDocument::readFromFile # %s", msg);
 		parser->release();
 		xercesc::XMLString::release(&msg);
 		return false;

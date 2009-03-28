@@ -129,7 +129,8 @@ namespace VideoDisplay {
       int readIndex = atoi(buf);
 
       if(readIndex != index) {
-        Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong chunk index (%d) %d != %d",
+        Radiant::error(
+"SubTitles::readSrt # Wrong chunk index (%d) %d != %d",
             (int) buf[0], readIndex, index);
         errors++;
         continue;
@@ -145,7 +146,8 @@ namespace VideoDisplay {
       Radiant::StringUtils::split(buf, " ", list);
 
       if(list.size() != 3) {
-        Radiant::trace(Radiant::FAILURE, "SubTitles::readSrt # Wrong time format \"%s\"",
+        Radiant::error(
+"SubTitles::readSrt # Wrong time format \"%s\"",
             buf);
         errors++;
         continue;

@@ -42,7 +42,8 @@ namespace VideoDisplay {
     Radiant::trace(Radiant::DEBUG, "AudioTransfer::prepare");
     
     if(!m_video) {
-      Radiant::trace(Radiant::FAILURE, "AudioTransfer::prepare # No video source");
+      Radiant::error(
+"AudioTransfer::prepare # No video source");
       m_stopped = true;
       return false;
     }

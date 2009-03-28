@@ -72,7 +72,7 @@ namespace Poetic
   bool CPUFontBase::setFaceSize(int size, int resolution)
   {
     if(!m_face) {
-      Radiant::trace(Radiant::FAILURE, "CPUFontBase::setSize # no font loaded yet!");
+      Radiant::error("CPUFontBase::setSize # no font loaded yet!");
       return false;
     }
 
@@ -106,7 +106,7 @@ namespace Poetic
       return true;
     }
 
-    Radiant::trace(Radiant::FAILURE, "CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
+    Radiant::error("CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
     return false;
   }
 

@@ -221,7 +221,7 @@ namespace Luminous {
 
     // Get the 'type' attribute
     if(!ce.hasAttribute("type")) {
-      Radiant::trace(Radiant::FAILURE, "MultiHead::Window::readElement # "
+      Radiant::error("MultiHead::Window::readElement # "
 		     "no type attribute on element '%s'", name.c_str());
       return false;
     }

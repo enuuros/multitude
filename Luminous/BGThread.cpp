@@ -112,7 +112,7 @@ namespace Luminous
       task->m_priority = p;
       m_taskQueue.insert(contained(p, task));
     } else {
-      Radiant::trace(Radiant::FAILURE, "BGThread::setPriority # requested task was not found");
+      Radiant::error("BGThread::setPriority # requested task was not found");
     }
 
     m_mutex.unlock();

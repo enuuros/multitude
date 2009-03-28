@@ -134,7 +134,7 @@ namespace VideoDisplay {
       int tmp = getUniformLoc(params[i]);
       m_uniforms[i] = tmp;
       ok = ok && (tmp >= 0);
-      trace(DEBUG, "ShowGL::YUVProgram::link # %s -> %d", params[i], i);
+      debug("ShowGL::YUVProgram::link # %s -> %d", params[i], i);
     }
 
     return ok;
@@ -200,7 +200,7 @@ namespace VideoDisplay {
         // if(i) area.y /= 2;
         // if(i) area.x *= 2;
 
-        trace(DEBUG, "ShowGL::YUVProgram::doTextures # area = [%d %d]",
+        debug("ShowGL::YUVProgram::doTextures # area = [%d %d]",
             area.x, area.y);
 
         ts = area;
@@ -412,7 +412,7 @@ namespace VideoDisplay {
     }
 
     if(i >= 10) {
-      trace(DEBUG, "ShowGL::stop # Forcing quit");
+      debug("ShowGL::stop # Forcing quit");
     }
 
     delete m_audio;
@@ -647,7 +647,7 @@ namespace VideoDisplay {
     else if(time >= m_duration)
       time = m_duration - Radiant::TimeStamp::createSecondsD(2);
 
-    trace(DEBUG, "ShowGL::seekTo # %lf", time.secondsD());
+    debug("ShowGL::seekTo # %lf", time.secondsD());
 
     m_video->seekTo(time.secondsD());
   }
@@ -666,7 +666,7 @@ namespace VideoDisplay {
   /// everytime you call it
   void ShowGL::getPreview(double pos)
   {
-    trace(DEBUG, "ShowGL::getPreview # %lf", pos);
+    debug("ShowGL::getPreview # %lf", pos);
 
     Screenplay::VideoInputFFMPEG video;
     if(!video.open(m_filename.c_str()))
@@ -686,7 +686,7 @@ namespace VideoDisplay {
     if(!Radiant::ImageConversion::convert(img, & m_blankDisplay))
       return;
 
-    trace(DEBUG, "ShowGL::getPreview # EXIT OK");
+    debug("ShowGL::getPreview # EXIT OK");
 
     m_blankReload = true;
     m_useBlank = true;

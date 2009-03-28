@@ -215,7 +215,7 @@ namespace Resonant {
   bool ModuleSamplePlayer::BGLoader::addLoadable(const char * filename,
 						 SampleVoice * waiting)
   {
-    trace(DEBUG, "ModuleSamplePlayer::BGLoader::addLoadable # %s %p",
+    debug("ModuleSamplePlayer::BGLoader::addLoadable # %s %p",
 	  filename, waiting);
 
     for(int i = 0; i < BINS; i++) {
@@ -242,14 +242,14 @@ namespace Resonant {
   {
     while(m_continue) {
 
-      trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # once");
+      debug("ModuleSamplePlayer::BGLoader::childLoop # once");
 
       for(int i = 0; i < BINS; i++) {
 	LoadItem & it = m_loads[i];
 	
 	if(!it.m_free) {
 
-	  trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Something");
+	  debug("ModuleSamplePlayer::BGLoader::childLoop # Something");
 
 	  Sample * s = new Sample();
 
@@ -276,7 +276,7 @@ namespace Resonant {
 	    }
 	  }
 	  else {
-	    trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Loaded "
+	    debug("ModuleSamplePlayer::BGLoader::childLoop # Loaded "
 		  "\"%s\"", it.m_name.str());
 
 	    for(int j = 0; j < LoadItem::WAITING_COUNT; j++) {
@@ -284,7 +284,7 @@ namespace Resonant {
 	      if(!voice)
 		break;
 
-	      trace(DEBUG, "ModuleSamplePlayer::BGLoader::childLoop # Delivering "
+	      debug("ModuleSamplePlayer::BGLoader::childLoop # Delivering "
 		    "\"%s\"", it.m_name.str());
 	      
 	      voice->setSample(s);
@@ -376,7 +376,7 @@ namespace Resonant {
 		 m_samples[sampleind].ptr() : 0, data);
       m_active++;
 
-      trace(DEBUG, "ModuleSamplePlayer::control # Started sample %s (%d/%d)",
+      debug("ModuleSamplePlayer::control # Started sample %s (%d/%d)",
 	    buf, voiceind, m_active);
       // assert(voiceind < (int) m_active);
 
@@ -456,7 +456,7 @@ namespace Resonant {
 	m_samples[i] = s;
 	return true;
       }
-      trace(DEBUG, "ModuleSamplePlayer::addSample # m_samples[%u] = %p",
+      debug("ModuleSamplePlayer::addSample # m_samples[%u] = %p",
 	    i, m_samples[i].ptr());
     }
 

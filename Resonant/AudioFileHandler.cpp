@@ -340,7 +340,7 @@ namespace Resonant {
 
   bool AudioFileHandler::Handle::moveReadHead(long frame, bool clear)
   {
-    trace(DEBUG, "AudioFileHandler::Handle::moveReadHead # %s %ld ", 
+    debug("AudioFileHandler::Handle::moveReadHead # %s %ld ", 
 	  m_fileName.c_str(), frame);
 
     if(!m_data.empty() && clear)

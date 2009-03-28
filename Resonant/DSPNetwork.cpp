@@ -236,7 +236,7 @@ namespace Resonant {
   {
     while(m_newItems.size()) {
 
-      trace(DEBUG, "DSPNetwork::checkNewItems # Next ");
+      debug("DSPNetwork::checkNewItems # Next ");
 
       if(!m_newMutex.tryLock())
         return;
@@ -257,7 +257,7 @@ namespace Resonant {
         m_items.pop_front();
       }
       else {
-        trace(DEBUG, "DSPNetwork::checkNewItems # Added a new module %s", type);
+        debug("DSPNetwork::checkNewItems # Added a new module %s", type);
 
         if(itptr->m_module == m_collect)
           continue;
@@ -292,7 +292,7 @@ namespace Resonant {
             m_collect->control("newmapping", & m_controlData);
           }
           compile( * oi);
-          trace(DEBUG, "DSPNetwork::checkNewItems # Compiled out collector", type);
+          debug("DSPNetwork::checkNewItems # Compiled out collector", type);
         }
       }
     }
@@ -315,7 +315,7 @@ namespace Resonant {
 
         item.m_module->stop();
 
-        trace(DEBUG, "DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
+        debug("DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
         iterator tmp = it;
         tmp++;
         m_items.erase(it);
@@ -375,7 +375,7 @@ namespace Resonant {
         m_collect->control("removemapping", & m_controlData);
       }
       compile( * oi);
-      trace(DEBUG, "DSPNetwork::uncompile # uncompiled \"%s\"", id);
+      debug("DSPNetwork::uncompile # uncompiled \"%s\"", id);
     }
 
     return true;
@@ -412,7 +412,7 @@ namespace Resonant {
       if(strcmp(nc.m_targetId, item.m_module->id()) == 0) {
         item.m_inputs.push_back(Connection(nc.m_sourceId,
               nc.m_sourceChannel));
-        trace(DEBUG, "Item[%d].m_inputs[%d] = [%d,%d]", location, i,
+        debug("Item[%d].m_inputs[%d] = [%d,%d]", location, i,
             nc.m_sourceId, nc.m_sourceChannel);
       }
       i++;
@@ -435,14 +435,14 @@ namespace Resonant {
       Connection & conn = item.m_inputs[i];
       float * ptr = findOutput(conn.m_moduleId, conn.m_channel);
       item.m_ins[i] = ptr;
-      trace(DEBUG, "Item[%d].m_ins[%d] = %p", location, i, ptr);
+      debug("Item[%d].m_ins[%d] = %p", location, i, ptr);
     }
 
     for(i = 0; i < outs; i++) {
       if(item.m_outs[i] == 0) {
         Buf & b = findFreeBuf(location);
         item.m_outs[i] = b.m_data;
-        trace(DEBUG, "Item[%d].m_outs[%d] = %p", location, i, b.m_data);
+        debug("Item[%d].m_outs[%d] = %p", location, i, b.m_data);
       }
     }
 
@@ -450,7 +450,7 @@ namespace Resonant {
 
     Module * m = item.m_module;
 
-    trace(DEBUG, "DSPNetwork::compile # compiled %p %s", m, typeid(*m).name());
+    debug("DSPNetwork::compile # compiled %p %s", m, typeid(*m).name());
 
     return true;
   }

@@ -637,7 +637,7 @@ bool Image::ping(const char * filename, ImageInfo & info)
 
   FILE * file = fopen(filename, "rb");
   if(!file) {
-    Radiant::trace(Radiant::FAILURE, "Image::ping # failed to open file '%s' for reading.", filename);
+    Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
     return result;
   }
   

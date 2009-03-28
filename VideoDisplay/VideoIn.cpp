@@ -84,7 +84,8 @@ namespace VideoDisplay {
     // m_fps = fps();
 
     if(!ok) {
-      Radiant::trace(Radiant::FAILURE, "VideoIn::startDecoding # Could not open file \"%s\"", filename);
+      Radiant::error(
+"VideoIn::startDecoding # Could not open file \"%s\"", filename);
       return false;
     }
 
@@ -108,7 +109,8 @@ namespace VideoDisplay {
     bool ok = waitEnd();
 
     if(!ok) {
-      Radiant::trace(Radiant::FAILURE, "VideoIn::stopDecoding # Failed to stop");
+      Radiant::error(
+"VideoIn::stopDecoding # Failed to stop");
       kill();
       waitEnd();
     }
@@ -246,7 +248,8 @@ namespace VideoDisplay {
     bool ok = f.m_image.copyData(*im);
 
     if(!ok)
-      Radiant::trace(Radiant::FAILURE, "VideoIn::putFrame # Radiant::Image::copyData failed");
+      Radiant::error(
+"VideoIn::putFrame # Radiant::Image::copyData failed");
 
     m_decodedFrames++;
 

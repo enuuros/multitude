@@ -77,7 +77,7 @@ namespace Poetic
       m_managedFonts[name] = mfont;
 
       if(!mfont->load(path.c_str())) {
-        Radiant::trace(Radiant::FAILURE,
+        Radiant::error(
 		       "FontManager::getFont # failed to load '%s'",
 		       path.c_str());
         return 0;
