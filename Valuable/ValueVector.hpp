@@ -25,7 +25,7 @@
 
 #include <sstream>
 
-#define STD_OP emitChange(); return *this;
+#define VALUEMIT_STD_OP emitChange(); return *this;
 
 namespace Valuable
 {
@@ -77,6 +77,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

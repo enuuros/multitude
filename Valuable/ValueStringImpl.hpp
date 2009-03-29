@@ -23,7 +23,7 @@
 #include <Radiant/StringUtils.hpp>
 
 #define STD_EM this->emitChange();
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 namespace Valuable
 {
@@ -97,14 +97,14 @@ namespace Valuable
   ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const ValueStringT<std::wstring> & i)
   {
     m_value = i.m_value;
-    STD_OP
+    VALUEMIT_STD_OP
   }
 
   template <>
   ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const std::wstring & i)
   {
     m_value = i;
-    STD_OP
+    VALUEMIT_STD_OP
   }
 
   template <>
@@ -182,7 +182,7 @@ namespace Valuable
  
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 #undef STD_EN
 
 #endif

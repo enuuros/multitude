@@ -19,7 +19,7 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueNumeric.hpp>
 
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 #define VO_TYPE_INT "int"
 
@@ -37,21 +37,21 @@ namespace Valuable
       : ValueNumeric<T>(parent, name, v, transit)
       {}
 
-      ValueIntT<T> & operator = (T i) { Base::m_value = i; STD_OP }
+      ValueIntT<T> & operator = (T i) { Base::m_value = i; VALUEMIT_STD_OP }
 
       operator const T & () const { return Base::m_value; }
 
       // Postfix
-      ValueIntT<T> & operator ++ (int) { Base::m_value++; STD_OP }
-      ValueIntT<T> & operator -- (int) { Base::m_value--; STD_OP }
+      ValueIntT<T> & operator ++ (int) { Base::m_value++; VALUEMIT_STD_OP }
+      ValueIntT<T> & operator -- (int) { Base::m_value--; VALUEMIT_STD_OP }
 
       // Prefix
-      ValueIntT<T> & operator ++ () { ++Base::m_value; STD_OP }
-      ValueIntT<T> & operator -- () { --Base::m_value; STD_OP }
+      ValueIntT<T> & operator ++ () { ++Base::m_value; VALUEMIT_STD_OP }
+      ValueIntT<T> & operator -- () { --Base::m_value; VALUEMIT_STD_OP }
 
       // Shift
-      ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; STD_OP }
-      ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; STD_OP }
+      ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; VALUEMIT_STD_OP }
+      ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; VALUEMIT_STD_OP }
 
     const char * type() const { return VO_TYPE_INT; }
 
@@ -71,6 +71,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

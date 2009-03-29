@@ -21,7 +21,7 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueNumeric.hpp>
 
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 #define VO_TYPE_FLOAT "float"
 
@@ -39,7 +39,7 @@ namespace Valuable
       : ValueNumeric<T>(parent, name, v, transit)
       {}
 
-      inline ValueFloatT<T> & operator = (T i) { Base::m_value = i; STD_OP }
+      inline ValueFloatT<T> & operator = (T i) { Base::m_value = i; VALUEMIT_STD_OP }
 
       inline operator const T & () const { return Base::m_value; }
 
@@ -59,6 +59,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

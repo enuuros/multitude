@@ -21,7 +21,7 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
-#define STD_OP emitChange(); return *this;
+#define VALUEMIT_STD_OP emitChange(); return *this;
 
 namespace Valuable
 {
@@ -36,13 +36,13 @@ namespace Valuable
       m_value(v)
       {}
 
-      ValueNumeric<T> & operator = (const ValueNumeric<T> & vi) { m_value = vi.m_value; STD_OP }
-      ValueNumeric<T> & operator = (T i) { m_value = i;  STD_OP }
+      ValueNumeric<T> & operator = (const ValueNumeric<T> & vi) { m_value = vi.m_value; VALUEMIT_STD_OP }
+      ValueNumeric<T> & operator = (T i) { m_value = i;  VALUEMIT_STD_OP }
 
-      ValueNumeric<T> & operator -= (T i) { m_value -= i; STD_OP }
-      ValueNumeric<T> & operator += (T i) { m_value += i; STD_OP }
-      ValueNumeric<T> & operator *= (T i) { m_value *= i; STD_OP }
-      ValueNumeric<T> & operator /= (T i) { m_value /= i; STD_OP }
+      ValueNumeric<T> & operator -= (T i) { m_value -= i; VALUEMIT_STD_OP }
+      ValueNumeric<T> & operator += (T i) { m_value += i; VALUEMIT_STD_OP }
+      ValueNumeric<T> & operator *= (T i) { m_value *= i; VALUEMIT_STD_OP }
+      ValueNumeric<T> & operator /= (T i) { m_value /= i; VALUEMIT_STD_OP }
 
       float asFloat(bool * const ok = 0) const { if(ok) *ok = true; return static_cast<float> (m_value); }
       int asInt(bool * const ok = 0) const { if(ok) *ok = true; return static_cast<int> (m_value); }
@@ -57,6 +57,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

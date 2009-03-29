@@ -21,7 +21,7 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 namespace Valuable
 {
@@ -31,7 +31,7 @@ namespace Valuable
   public:
     ValueColor(HasValues * parent, const std::string & name, const Radiant::Color & c, bool transit = false);
     
-    ValueColor & operator = (const Radiant::Color & c) { m_color = c; STD_OP }
+    ValueColor & operator = (const Radiant::Color & c) { m_color = c; VALUEMIT_STD_OP }
     
     const char * type() const { return "color"; }
     
@@ -43,12 +43,17 @@ namespace Valuable
     
     virtual bool set(const Nimble::Vector4f & v);
     
+    inline float red() const   { return m_color[0]; }
+    inline float green() const { return m_color[1]; }
+    inline float blue() const  { return m_color[2]; }
+    inline float alpha() const { return m_color[3]; }
+
   protected:
     Radiant::Color m_color;
   };
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

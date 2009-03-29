@@ -21,7 +21,7 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueNumeric.hpp>
 
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 #define VO_TYPE_STRING "string"
 
@@ -46,8 +46,8 @@ namespace Valuable
       : ValueObject(parent, name, transit)
       {}
     
-    ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; STD_OP }
-    ValueStringT<T> & operator = (const T & i) { m_value = i; STD_OP }
+    ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; VALUEMIT_STD_OP }
+    ValueStringT<T> & operator = (const T & i) { m_value = i; VALUEMIT_STD_OP }
     
     float asFloat(bool * ok = 0) const;
     int asInt(bool * ok = 0) const;
@@ -73,6 +73,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif

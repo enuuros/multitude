@@ -21,7 +21,7 @@
 
 #include <Nimble/Rect.hpp>
 
-#define STD_OP this->emitChange(); return *this;
+#define VALUEMIT_STD_OP this->emitChange(); return *this;
 
 namespace Valuable
 {
@@ -31,7 +31,7 @@ namespace Valuable
     public:
       ValueRect(HasValues * parent, const std::string & name, const Nimble::Rect & r, bool transit = false);
 
-      ValueRect & operator = (const Nimble::Rect & r) { m_rect = r; STD_OP }
+      ValueRect & operator = (const Nimble::Rect & r) { m_rect = r; VALUEMIT_STD_OP }
 
     const char * type() const { return "rect"; }
 
@@ -49,6 +49,6 @@ namespace Valuable
 
 }
 
-#undef STD_OP
+#undef VALUEMIT_STD_OP
 
 #endif
