@@ -681,7 +681,7 @@ namespace Luminous {
     sprintf(buf, "/.imagecache/%.2d_", level);
     name = Radiant::FileUtils::path(m_filename);
     name += buf;
-    name += Radiant::FileUtils::baseFilename(m_filename);
+    name += Radiant::FileUtils::filename(m_filename);
     
     // Put in the right suffix
 
