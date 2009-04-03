@@ -1972,4 +1972,37 @@ namespace Luminous {
     glEnd();
   }
 
+  void Utils::glRedYellowGreenRamp(float x0, float y0, float x1, float y1, const Nimble::Matrix3 & m)
+  {
+    Nimble::Vector2 v0(x0, y0);
+    Nimble::Vector2 v1(x0, y1);
+
+    float w = x1 - x0;
+
+    Nimble::Vector2 h0(x0 + w / 2.f, y1);
+    Nimble::Vector2 h1(x0 + w / 2.f, y0);
+
+    Nimble::Vector2 m0(x0 + w, y0);
+    Nimble::Vector2 m1(x0 + w, y1);
+
+    glBegin(GL_QUADS);
+
+    glColor3f(1, 0, 0);
+    glVertex2fv((m * v0).data());
+    glVertex2fv((m * v1).data());
+
+    glColor3f(1, 1, 0);
+    glVertex2fv((m * h0).data());
+    glVertex2fv((m * h1).data());
+
+    glVertex2fv((m * h0).data());
+    glVertex2fv((m * h1).data());
+
+    glColor3f(0, 1, 0);
+    glVertex2fv((m * m0).data());
+    glVertex2fv((m * m1).data());
+
+    glEnd();
+  }
+
 }

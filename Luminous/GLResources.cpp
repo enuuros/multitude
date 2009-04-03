@@ -86,7 +86,7 @@ namespace Luminous
     iterator it = m_resources.find(key);
 
     if(it == m_resources.end()) {
-      Radiant::error("GLResources::eraseResource # No resource for %p", key);
+      //Radiant::error("GLResources::eraseResource # No resource for %p", key);
       return false;
     }
 
