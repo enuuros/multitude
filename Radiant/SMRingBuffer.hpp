@@ -16,6 +16,7 @@
 #ifndef SHARED_MEMORY_HPP
 #define SHARED_MEMORY_HPP
 
+#include <Radiant/BinaryData.hpp>
 #include <Radiant/Export.hpp>
 
 #ifdef WIN32
@@ -193,15 +194,17 @@ namespace Radiant
     /// @param src Pointer to data source.
     /// @param numBytes Size of the data.
     /// @return Number of bytes written.
-    uint32_t write(const void * const src, const uint32_t numBytes);
+    uint32_t write(const void * src, const uint32_t numBytes);
 
     /// Write multiple blocks of data and (if successful) advance the write position.
     /// @param numBlocks The number of blocks of data.
     /// @param srcArray Array of pointers to data sources.
     /// @param numBytesArray Array of data sizes.
     /// @return Number of bytes written.
-    uint32_t write(const uint32_t numBlocks, const void * const * const srcArray,
+    uint32_t write(const uint32_t numBlocks, const void ** const srcArray,
 		   const uint32_t * const numBytesArray);
+
+    uint32_t write(const BinaryData & data);
 
     /// Peek data in the ring buffer, i.e. read but do not advance the read position.
     /// @param dst Pointer to data destination.
@@ -231,6 +234,10 @@ namespace Radiant
     uint32_t read(const uint32_t numBlocks, void * const * const dstArray,
 		  const uint32_t * const numBytesArray);
 
+    uint32_t read(BinaryData & data);
+
+    bool readString(std::string & str);
+    
     /// Discard data from the ring buffer by advancing the read position.
     /// @param numBytes Number of bytes of data to discard.
     /// @return Number of bytes discarded.

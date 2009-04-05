@@ -125,6 +125,17 @@ namespace Radiant {
       getRef<int32_t>() = 0;
   }
 
+  void BinaryData::writeBlob(const void * ptr, int n)
+  {
+    ensure(8 + n);
+
+    getRef<int32_t>() = BLOB_MARKER;
+    getRef<int32_t>() = n;
+    char * dest =  getPtr<char>(n);
+    if(n)
+      memcpy(dest, ptr, n);
+  }
+
   void BinaryData::writeVector2Float32(Nimble::Vector2f v)
   {
     ensure(12);
@@ -241,14 +252,55 @@ namespace Radiant {
 
     skipParameter(marker);
 
-    if(len > maxbytes) {
+    if(len >= maxbytes) {
       str[0] = 0;
       return false;
     }
     
-    memcpy(str, source, len + 1);
+    memcpy(str, source, len);
+    str[len] = '\0';
 
     return true;
+  }
+
+  bool BinaryData::readString(std::string & str)
+  {
+    int32_t marker = getRef<int32_t>();
+
+    if(marker != STRING_MARKER) {
+      skipParameter(marker);
+      return false;
+    }
+    const char * source = & m_buf[m_current];
+    int len = strlen(source);
+
+    skipParameter(marker);
+
+    str.resize(len);
+
+    memcpy( & str[0], source, len);
+
+    return true;
+  }
+
+  bool BinaryData::readBlob(void * ptr, int n)
+  {
+    int32_t marker = getRef<int32_t>();
+
+    if(marker != BLOB_MARKER) {
+      skipParameter(marker);
+      return false;
+    }
+
+    int32_t recv = getRef<int32_t>();
+
+    const char * source = & m_buf[m_current];
+
+    skipParameter(marker);
+
+    memcpy( ptr, source, Nimble::Math::Min(n, recv));
+    
+    return n == recv;
   }
 
   Nimble::Vector2f BinaryData::readVector2Float32(bool * ok)
@@ -325,9 +377,15 @@ namespace Radiant {
       
       m_size = need + 128 + need / 16;
       m_buf = (char *) realloc(m_buf, m_size);
-      
     }
     m_total = m_current + bytes;
+  }
+
+  void BinaryData::clear()
+  {
+    rewind();
+    
+    bzero(data(), m_size);
   }
 
   void BinaryData::skipParameter(int marker)
@@ -340,6 +398,10 @@ namespace Radiant {
     else if(marker == STRING_MARKER) {
       const char * str = & m_buf[m_current];
       m_current += stringSpace(str);
+    }
+    else if(marker == BLOB_MARKER) {
+      int n = getRef<int32_t>();
+      m_current += n;
     }
   }
   

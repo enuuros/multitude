@@ -59,10 +59,10 @@ namespace Radiant
 
 #ifdef WIN32
   SMRingBuffer::SMRingBuffer(const std::string smName, const uint32_t size)
-  : m_isCreator(false)
-  , m_smName(smName)
-  , m_hMapFile(0)
-  , m_startPtr(0)
+    : m_isCreator(false),
+      m_smName(smName),
+      m_hMapFile(0),
+      m_startPtr(0)
   {
     const char * const  fnName = "SMRingBuffer::SMRingBuffer";
 
@@ -422,8 +422,8 @@ namespace Radiant
     return numBytes;
   }
 
-  uint32_t SMRingBuffer::write(const uint32_t numBlocks, const void * const * const srcArray,
-    const uint32_t * const numBytesArray)
+  uint32_t SMRingBuffer::write(const uint32_t numBlocks, const void ** const srcArray,
+    const uint32_t * numBytesArray)
   {
     if(numBlocks == 0)
     {
@@ -501,6 +501,15 @@ namespace Radiant
     setReadWriteState(prevReadWriteState);
 
     return totalBytes;
+  }
+
+  uint32_t SMRingBuffer::write(const BinaryData & data)
+  {
+    int bytes = data.pos();
+    const void * ptrs[2] = { & bytes, data.data() };
+    uint32_t sizes[2] = { 4, data.pos() };
+
+    return write(2, ptrs, sizes);
   }
 
   uint32_t SMRingBuffer::peek(void * const dst, const uint32_t numBytes)
@@ -682,6 +691,39 @@ namespace Radiant
 
     return bytesPeeked;
   }
+
+  uint32_t SMRingBuffer::read(BinaryData & data)
+  {
+    uint32_t bytes = 0;
+
+    int n = read( & bytes, 4);
+    if(n != 4)
+      return n;
+
+    data.rewind();
+    data.ensure(bytes);
+    n = read(data.data(), bytes);
+
+    return n +  4;
+  }
+
+  bool SMRingBuffer::readString(std::string & str)
+  {
+    int32_t tmp = 0;
+    int n = read( & tmp, 4);
+
+    if(n != 4)
+      return false;
+
+    str.resize(tmp);
+
+    if(tmp) {
+      n = read( & str[0], tmp);
+    }
+
+    return tmp == n;
+  }
+  
 
   uint32_t SMRingBuffer::discard(const uint32_t numBytes)
   {

@@ -3,6 +3,12 @@ TEMPLATE = lib
 
 DESTDIR = $$PWD/lib
 
+isEmpty(EXPORT_SOURCES):EXPORT_SOURCES = $$SOURCES
+contains(EXPORT_SOURCES, nothing) { 
+  EXPORT_SOURCES=
+  PROJECT_FILE=
+}
+
 target.path = /lib
  
 includes.path = /include/$$TARGET
@@ -48,5 +54,18 @@ win32 {
 
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 
+    isEmpty(EXPORT_SOURCES) {
+
+    }
+    else {
+      FRAMEWORK_SOURCES.version = Versions
+      FRAMEWORK_SOURCES.files = $$EXPORT_SOURCES
+      FRAMEWORK_SOURCES.path = Source
+
+      QMAKE_BUNDLE_DATA += FRAMEWORK_SOURCES
+
+      message(Selected sources $$EXPORT_SOURCES)
+
+    }
     message(Creating OSX bundle)
 }

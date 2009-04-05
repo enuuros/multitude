@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+CONFIG += debug
+
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -31,6 +33,8 @@ HEADERS += Semaphore.hpp
 HEADERS += SerialPort.hpp
 HEADERS += Size2D.hpp
 HEADERS += Sleep.hpp
+HEADERS += SMDuplexPipe.hpp
+HEADERS += SMPipe.hpp
 HEADERS += SMRingBuffer.hpp
 # HEADERS += StandardPaths.hpp
 HEADERS += StringUtils.hpp
@@ -65,6 +69,8 @@ SOURCES += Mutex.cpp
 SOURCES += ResourceLocator.cpp
 SOURCES += Size2D.cpp
 SOURCES += Sleep.cpp
+SOURCES += SMDuplexPipe.cpp
+SOURCES += SMPipe.cpp
 SOURCES += SMRingBuffer.cpp
 SOURCES += StringUtils.cpp
 SOURCES += TCPServerSocket.cpp
