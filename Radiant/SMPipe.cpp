@@ -395,10 +395,10 @@ namespace Radiant
 
     m_written += n;
 
-    if(n)
+    /*if(n)
       info("SMPipe::write # Wrote %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
-
+    */
     return n;
   }
 

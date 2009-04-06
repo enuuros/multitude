@@ -306,16 +306,6 @@ namespace Luminous {
     glTexCoord2f(0.0f, 1.0f);
     glVertex4fv(v[3].data());
 
-    /*
-
-    The stuff below is wrong. The Z-value is the homogenous
-    coordinate, and it should be 1 (usually).  Consider using
-    glVertex4f if you really want to pass the value somewhere.
-
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3fv(static_cast<const GLfloat *> (&v[0].x));
-    */
-
     glEnd();
   }
 
