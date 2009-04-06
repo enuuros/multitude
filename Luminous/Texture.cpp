@@ -172,6 +172,10 @@ namespace Luminous
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
 
+    float whitef[4] = { 1, 1, 1, 1 };
+
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, whitef);
+
     if(buildMipmaps)
       gluBuild2DMipmaps(GL_TEXTURE_2D, srcFormat.numChannels(),
 			w, h, srcFormat.layout(), srcFormat.type(), data);
