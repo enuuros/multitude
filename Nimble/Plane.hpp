@@ -9,7 +9,7 @@ namespace Nimble
   /// Plane is represented by dot(N, X) = c, where N is a unit-length normal
   /// vector, c is the plane constant and X is any point on the plane. User must
   /// ensure the normal vector satisfied this condition.
-  class Plane
+  class NIMBLE_API Plane
   {
   public:
     Plane();
