@@ -17,6 +17,7 @@
 
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Sleep.hpp>
+#include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <Nimble/Math.hpp>
@@ -327,7 +328,7 @@ namespace Radiant
 
   int SMPipe::read(void * ptr, int n)
   {
-    int orig = n;
+    // int orig = n;
 
     uint32_t avail = readAvailable();
 
@@ -344,9 +345,10 @@ namespace Radiant
 
     storeHeaderValue(SHM_READ_LOC, m_read);
 
-    if(n)
+    /* if(n)
       info("SMPipe::read # Read %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
+    */
 
     return n;
   }
@@ -394,7 +396,8 @@ namespace Radiant
     m_written += n;
 
     if(n)
-      info("SMPipe::write # Wrote %d vs %d", n, orig);
+      info("SMPipe::write # Wrote %d vs %d (%d vs %d)",
+	   n, orig, readPos(), writePos());
 
     return n;
   }
@@ -425,18 +428,34 @@ namespace Radiant
     if(require) {
       int times = 0;
 
+      TimeStamp entry = TimeStamp::getTime();
+
       while((int) avail < require && times < 100) {
+
+	/* if(!times) {
+	  info("SMPipe::writeAvailable # Blocking");
+	}
+	*/
 	uint32_t rp = readPos() + size();
 	uint32_t wp = writePos();
     
-	uint32_t avail = rp - wp;
+	avail = rp - wp;
 	if(avail)
 	  avail--;
 
-	Sleep::sleepMs(5);
+	Sleep::sleepMs(2);
 	times++;
       }
-      
+
+      if(times) {
+	TimeStamp now = TimeStamp::getTime();
+
+	float spent = TimeStamp(now - entry).secondsD() * 1000.0;
+	if(spent > 100) {
+	  debug("SMPipe::writeAvailable # Blocked for %.3f avail %u vs %u",
+		spent, avail, require);
+	}
+      }
     }
     
     return avail;
