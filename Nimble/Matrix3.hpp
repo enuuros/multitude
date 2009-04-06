@@ -117,6 +117,7 @@ namespace Nimble {
     { return translate2D(Vector2T<T>(x, y)); }
     /// Create a matrix that performs 2D scaling
     inline static Matrix3T<T> scale2D(const Vector2T<T> & s);
+    inline static Matrix3T<T> scale2D(const T & xscale, const T & yscale);
     /// Create a matrix that performs 2D scaling
     inline static Matrix3T<T> scaleUniform2D(const T & s)
     { return scale2D(Vector2T<T>(s, s)); }
@@ -562,6 +563,19 @@ inline Matrix3T<T> Matrix3T<T>::scale2D(const Vector2T<T> & s)
 
   return m;
 }
+
+template<class T>
+inline Matrix3T<T> Matrix3T<T>::scale2D(const T & xscale, const T & yscale)
+{
+  Matrix3T<T> m;
+  m.identity();
+
+  m.set(0, 0, xscale);
+  m.set(1, 1, yscale);
+
+  return m;
+}
+
 
 template<class T>
 inline Matrix3T<T> Matrix3T<T>::rotate2D(T radians)
