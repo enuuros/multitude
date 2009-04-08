@@ -21,6 +21,8 @@
 namespace Radiant
 {
   
+  /** Ful-duplex shared memory data pipe. This utility class packs two
+      #SMPipe objects into one object. */
   class RADIANT_API SMDuplexPipe
   {
   public:

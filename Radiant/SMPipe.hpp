@@ -32,7 +32,17 @@
 namespace Radiant
 {
 
-  /** One-directional shared-memory data pipe. */
+  /** One-directional shared-memory data pipe. This type of a pipe is
+      used to transfer (binary) data between two separate
+      processes.
+
+      <B>Hint:</B> Often it is easiest to format the data using one
+      #BinaryData as the data container, as #BinaryData allows easy
+      storage of integers, floats, strings etc, without too much
+      overhead.
+
+      @see SMDuplexPipe
+  */
   class RADIANT_API SMPipe
   {
   public:
@@ -57,6 +67,7 @@ namespace Radiant
     // Reads data from the buffer.
     int read(void * ptr, int n);
     int read(BinaryData &);
+    // The number of bytes available for reading
     uint32_t readAvailable();
 
     /// Stores data into the buffer, without flushing it.
@@ -66,7 +77,6 @@ namespace Radiant
     /// Flush the written data to the buffer
     void flush() { storeHeaderValue(SHM_WRITE_LOC, m_written); }
     
-
     uint32_t size() const { return m_size; }
 
   private:

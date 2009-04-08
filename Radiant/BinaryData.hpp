@@ -87,6 +87,7 @@ namespace Radiant {
 
     /// Write a null-terminated string to the buffer
     void writeString(const char *);
+    void writeString(const std::string & str) { writeString(str.c_str()); }
 
     void writeBlob(const void * ptr, int n);
 
