@@ -14,17 +14,17 @@
  */
 
 
-#include "SMDuplexPipe.hpp"
+#include "SHMDuplexPipe.hpp"
 
 namespace Radiant
 {
   
-  SMDuplexPipe::SMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
+  SHMDuplexPipe::SHMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
 			     const key_t readKey,  const uint32_t readSize)
     : m_out(writeKey, writeSize),
       m_in(readKey, readSize)
   {}
 
-  SMDuplexPipe::~SMDuplexPipe()
+  SHMDuplexPipe::~SHMDuplexPipe()
   {}
 }

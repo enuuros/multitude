@@ -41,9 +41,9 @@ namespace Radiant
       storage of integers, floats, strings etc, without too much
       overhead.
 
-      @see SMDuplexPipe
+      @see SHMDuplexPipe
   */
-  class RADIANT_API SMPipe
+  class RADIANT_API SHMPipe
   {
   public:
 
@@ -53,16 +53,16 @@ namespace Radiant
     /// @param size Size in bytes of the ring buffer: if size > 0,
     /// creates a new ring buffer of that size; if size == 0,
     /// references the existing buffer identified by smKey.
-    SMPipe::SMPipe(const std::string smName, const uint32_t size);
+    SHMPipe::SHMPipe(const std::string smName, const uint32_t size);
 #else
     /// @param smKey User-defined key to shared memory.
     /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
     /// of that size; if size == 0, references the existing buffer identified by smKey.
-    SMPipe(const key_t smKey, const uint32_t size);
+    SHMPipe(const key_t smKey, const uint32_t size);
 #endif
 
     /// Destructor.
-    virtual ~SMPipe();
+    virtual ~SHMPipe();
 
     // Reads data from the buffer.
     int read(void * ptr, int n);

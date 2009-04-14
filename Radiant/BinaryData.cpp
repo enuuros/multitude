@@ -53,6 +53,7 @@ namespace Radiant {
 
   const int FLOAT_MARKER  = makeMarker(',', 'f', '\0', '\0');
   const int VECTOR2F_MARKER  = makeMarker(',', 'f', '2', '\0');
+  const int VECTOR2I_MARKER  = makeMarker(',', 'i', '2', '\0');
   const int INT32_MARKER  = makeMarker(',', 'i', '\0', '\0');
   const int INT64_MARKER  = makeMarker(',', 'l', '\0', '\0');
   const int TS_MARKER     = makeMarker(',', 't', '\0', '\0');
@@ -140,6 +141,14 @@ namespace Radiant {
   {
     ensure(12);
     getRef<int32_t>() = VECTOR2F_MARKER;
+    getRef<float>() = v[0];
+    getRef<float>() = v[1];
+  }
+
+  void BinaryData::writeVector2Int32(Nimble::Vector2i v)
+  {
+    ensure(12);
+    getRef<int32_t>() = VECTOR2I_MARKER;
     getRef<float>() = v[0];
     getRef<float>() = v[1];
   }
@@ -312,14 +321,45 @@ namespace Radiant {
 
     int32_t marker = getRef<int32_t>();
 
-    if(marker != VECTOR2F_MARKER) {
+    if(marker == VECTOR2F_MARKER) {
+      return getRef<Nimble::Vector2f>();
+    }
+    else if(marker == VECTOR2I_MARKER) {
+      return getRef<Nimble::Vector2i>();
+    }
+    else {
       skipParameter(marker);
       if(ok)
 	*ok = false;
+
       return Nimble::Vector2f(0, 0);
     }
     
-    return getRef<Nimble::Vector2f>();
+  }
+
+  Nimble::Vector2f BinaryData::readVector2Int32(bool * ok)
+  {
+    if(!available(12)) {
+      if(ok) * ok = false;
+      return Nimble::Vector2f(0, 0);
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == VECTOR2I_MARKER) {
+      return getRef<Nimble::Vector2i>();
+    }
+    else if(marker == VECTOR2F_MARKER) {
+      return getRef<Nimble::Vector2f>();
+    }
+    else {
+      skipParameter(marker);
+      if(ok)
+	*ok = false;
+
+      return Nimble::Vector2f(0, 0);
+    }
+    
   }
 
   bool BinaryData::write(Radiant::BinaryStream * stream)
@@ -393,7 +433,9 @@ namespace Radiant {
     if(marker == INT32_MARKER ||
        marker == FLOAT_MARKER)
       m_current += 4;
-    else if(marker == TS_MARKER)
+    else if(marker == TS_MARKER ||
+	    marker == VECTOR2F_MARKER ||
+	    marker == VECTOR2I_MARKER)
       m_current += 8;
     else if(marker == STRING_MARKER) {
       const char * str = & m_buf[m_current];

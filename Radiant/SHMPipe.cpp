@@ -13,7 +13,7 @@
  * 
  */
 
-#include "SMPipe.hpp"
+#include "SHMPipe.hpp"
 
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Sleep.hpp>
@@ -39,26 +39,26 @@
 namespace Radiant
 {
 
-  // Class SMPipe.
+  // Class SHMPipe.
 
 
   // Static data initialization.
 
 #ifdef WIN32
-  uint32_t  SMPipe::smDefaultPermissions() { return PAGE_EXECUTE_READWRITE; }
+  uint32_t  SHMPipe::smDefaultPermissions() { return PAGE_EXECUTE_READWRITE; }
 #else
   // rw-rw-rw-.
-  uint32_t  SMPipe::smDefaultPermissions() { return 0666; }
+  uint32_t  SHMPipe::smDefaultPermissions() { return 0666; }
 #endif
 
   // Set maximum buffer size to the largest possible value of a 32-bit integer less (header size + 1).
-  // uint32_t  SMPipe::maxSize = 4294967295u - (smHeaderSize + 1);
+  // uint32_t  SHMPipe::maxSize = 4294967295u - (smHeaderSize + 1);
 
 
   // Construction / destruction.
 
 #ifdef WIN32
-  SMPipe::SMPipe(const std::string smName, const uint32_t size)
+  SHMPipe::SHMPipe(const std::string smName, const uint32_t size)
     : m_isCreator(false),
       m_smName(smName),
       m_hMapFile(0),
@@ -69,7 +69,7 @@ namespace Radiant
       m_shm(0),
       m_pipe(0)
   {
-    const char * const  fnName = "SMPipe::SMPipe";
+    const char * const  fnName = "SHMPipe::SHMPipe";
 
     if(size > 0)
     // Create new shared memory area (SMA)
@@ -162,7 +162,7 @@ namespace Radiant
     assert(isValid());
   }
 #else
-  SMPipe::SMPipe(const key_t smKey, const uint32_t size)
+  SHMPipe::SHMPipe(const key_t smKey, const uint32_t size)
     : m_isCreator(false),
       m_smKey(smKey),
       m_id(-1),
@@ -173,7 +173,7 @@ namespace Radiant
       m_shm(0),
       m_pipe(0)
   {
-    const char * const  fnName = "SMPipe::SMPipe";
+    const char * const  fnName = "SHMPipe::SHMPipe";
 
     if(size > 0)
     // Create new shared memory area (SMA)
@@ -264,9 +264,9 @@ namespace Radiant
 #endif
 
 #ifdef WIN32
-  SMPipe::~SMPipe()
+  SHMPipe::~SHMPipe()
   {
-    const char * const  fnName = "SMPipe::~SMPipe";
+    const char * const  fnName = "SHMPipe::~SHMPipe";
 
     assert(isValid());
 
@@ -295,9 +295,9 @@ namespace Radiant
     }
   }
 #else
-  SMPipe::~SMPipe()
+  SHMPipe::~SHMPipe()
   {
-    const char * const  fnName = "SMPipe::~SMPipe";
+    const char * const  fnName = "SHMPipe::~SHMPipe";
 
     // assert(isValid());
 
@@ -326,7 +326,7 @@ namespace Radiant
 #endif
 
 
-  int SMPipe::read(void * ptr, int n)
+  int SHMPipe::read(void * ptr, int n)
   {
     // int orig = n;
 
@@ -346,14 +346,14 @@ namespace Radiant
     storeHeaderValue(SHM_READ_LOC, m_read);
 
     /* if(n)
-      info("SMPipe::read # Read %d vs %d (%d vs %d)",
+      info("SHMPipe::read # Read %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
     */
 
     return n;
   }
 
-  int SMPipe::read(BinaryData & data)
+  int SHMPipe::read(BinaryData & data)
   {
     uint32_t bytes = 0;
 
@@ -369,7 +369,7 @@ namespace Radiant
     return n +  4;
   }
 
-  uint32_t SMPipe::readAvailable()
+  uint32_t SHMPipe::readAvailable()
   {
     uint32_t rp = readPos();
     uint32_t wp = writePos();
@@ -377,7 +377,7 @@ namespace Radiant
     return wp - rp;
   }
 
-  int SMPipe::write(const void * ptr, int n)
+  int SHMPipe::write(const void * ptr, int n)
   {
     int orig = n;
 
@@ -396,16 +396,16 @@ namespace Radiant
     m_written += n;
 
     /*if(n)
-      info("SMPipe::write # Wrote %d vs %d (%d vs %d)",
+      info("SHMPipe::write # Wrote %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
     */
     return n;
   }
 
-  int SMPipe::write(const BinaryData & data)
+  int SHMPipe::write(const BinaryData & data)
   {
     if(!writeAvailable(data.pos() + 4)) {
-      error("SMPipe::write # Not enough space in the pipe");
+      error("SHMPipe::write # Not enough space in the pipe");
       return 0;
     }
 
@@ -416,7 +416,7 @@ namespace Radiant
     return write(data.data(), bytes) + 4;
   }
 
-  uint32_t SMPipe::writeAvailable(int require)
+  uint32_t SHMPipe::writeAvailable(int require)
   {
     uint32_t rp = readPos() + size();
     uint32_t wp = writePos();
@@ -433,7 +433,7 @@ namespace Radiant
       while((int) avail < require && times < 100) {
 
 	/* if(!times) {
-	  info("SMPipe::writeAvailable # Blocking");
+	  info("SHMPipe::writeAvailable # Blocking");
 	}
 	*/
 	uint32_t rp = readPos() + size();
@@ -452,7 +452,7 @@ namespace Radiant
 
 	float spent = TimeStamp(now - entry).secondsD() * 1000.0;
 	if(spent > 100) {
-	  debug("SMPipe::writeAvailable # Blocked for %.3f avail %u vs %u",
+	  debug("SHMPipe::writeAvailable # Blocked for %.3f avail %u vs %u",
 		spent, avail, require);
 	}
       }
@@ -464,7 +464,7 @@ namespace Radiant
   // Diagnostics.
 
 #ifndef WIN32
-  std::string SMPipe::shmError()
+  std::string SHMPipe::shmError()
   {
     std::string   errMsg;
 
@@ -502,7 +502,7 @@ namespace Radiant
   }
 #endif
 
-  void SMPipe::dump() const
+  void SHMPipe::dump() const
   {
     debug("m_isCreator = %s", m_isCreator ? "true" : "false");
 #ifdef WIN32

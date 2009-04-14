@@ -93,6 +93,8 @@ namespace Radiant {
 
     /// Writes a 2D 32-bit floating point vector to the data buffer
     void writeVector2Float32(Nimble::Vector2f);
+    /// Writes a 2D 32-bit integer vector to the data buffer
+    void writeVector2Int32(Nimble::Vector2i);
 
     void append(const BinaryData & that);
 
@@ -111,8 +113,10 @@ namespace Radiant {
     /// Reads a blob of expected size
     bool readBlob(void * ptr, int n);
     
-    /// Reads a 64-bit time-stamp from the data buffer
+    /// Reads a 2D 32-bit floating point vector from the buffer
     Nimble::Vector2f readVector2Float32(bool * ok = 0);
+    /// Reads a 2D 32-bit integer vector from the buffer
+    Nimble::Vector2f readVector2Int32(bool * ok = 0);
 
     /// Tells the current position of the read/write pointer
     inline int pos() const { return m_current; } 

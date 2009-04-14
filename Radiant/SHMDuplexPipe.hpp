@@ -16,19 +16,19 @@
 #ifndef RADIANT_SM_DUPLEX_PIPE_HPP
 #define RADIANT_SM_DUPLEX_PIPE_HPP
 
-#include <Radiant/SMPipe.hpp>
+#include <Radiant/SHMPipe.hpp>
 
 namespace Radiant
 {
   
   /** Ful-duplex shared memory data pipe. This utility class packs two
-      #SMPipe objects into one object. */
-  class RADIANT_API SMDuplexPipe
+      #SHMPipe objects into one object. */
+  class RADIANT_API SHMDuplexPipe
   {
   public:
-    SMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
+    SHMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
 		 const key_t readKey,  const uint32_t readSize);
-    virtual ~SMDuplexPipe();
+    virtual ~SHMDuplexPipe();
 
     int read(void * ptr, int n) { return m_in.read(ptr, n); }
     int read(BinaryData & bd) { return m_in.read(bd); }
@@ -42,8 +42,8 @@ namespace Radiant
     void flush() { m_out.flush(); }
 
   private:
-    SMPipe m_out;
-    SMPipe m_in;
+    SHMPipe m_out;
+    SHMPipe m_in;
   };
   
 }
