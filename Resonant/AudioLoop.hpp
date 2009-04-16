@@ -18,8 +18,6 @@
 
 #include <Resonant/Export.hpp>
 
-//#include <portaudio.h>
-
 namespace Resonant {
 
   /** A simple audio IO class that uses PortAudio to handle the real work. */

@@ -18,6 +18,8 @@
 #include "ControlData.hpp"
 #include "DSPNetwork.hpp"
 
+#include <Nimble/Random.hpp>
+
 #include <Radiant/Trace.hpp>
 
 #include <algorithm>
@@ -49,6 +51,8 @@ namespace Resonant {
     assert(m_channels != 0);
 
     m_interleaved.resize(m_channels * MAX_CYCLE);
+
+    Radiant::debug("ModuleOutCollect::prepare # %d", (int) m_channels);
 
     return true;
   }
@@ -120,6 +124,14 @@ namespace Resonant {
 	dest += chans;
       }
     }
+
+    /*
+    static Nimble::RandomUniform __r;
+
+    uint nn = chans * n;
+    for(uint i = 0; i < nn; i++)
+      m_interleaved[i] = __r.rand11();
+    */
   }
     
     
