@@ -42,6 +42,11 @@ namespace Radiant {
     g_enableVerboseOutput = enable;
   }
 
+  bool enabledVerboseOutput()
+  {
+    return g_enableVerboseOutput;
+  }
+
   static void __output(Severity s, const char * msg)
   {
     FILE * out = (s > WARNING) ? stdout : stderr;

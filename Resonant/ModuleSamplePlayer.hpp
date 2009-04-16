@@ -35,164 +35,168 @@ namespace Resonant {
 
   class RESONANT_API ModuleSamplePlayer : public Module
   {
-    public:
+  public:
 
-      class SampleInfo
-      {
-        public:
-          std::string m_name;
-          std::string m_filename;
-      };
-
-      class Sample
-      {
-        public:
-          Sample();
-          ~Sample();
-
-          bool load(const char * filename, const char * name);
-
-          inline const std::vector<float> & data() const { return m_data; }
-          const float * buf(unsigned i) const;
-
-          const std::string & name() const { return m_name; }
-
-        private:
-          class Internal;
-
-          Internal * m_d;
-
-          std::vector<float> m_data;
-
-          std::string m_name;
-      };
-
-      class SampleVoice
-      {
-        public:
-          SampleVoice(Sample * s = 0)
-            : m_state(INACTIVE), m_gain(1), m_relPitch(1.0f),
-            m_sample(s), m_position(0)	  
-        {}
-
-          bool synthesize(float ** out, int n);
-
-          void init(Sample * sample, ControlData * data);
-
-          bool isActive() { return m_state != INACTIVE; }
-
-          void loadFailed() { m_state = INACTIVE; }
-
-          void setSample(Sample * s);
-
-          void clear() { m_state = INACTIVE; m_sample = 0; }
-
-        private:
-          enum State {
-            INACTIVE,
-            WAITING_FOR_SAMPLE,
-            PLAYING
-          };
-
-          State m_state;
-
-          float m_gain;
-          float m_relPitch;
-          double m_dpos;
-
-          Sample * m_sample;
-          unsigned m_position;
-      };
-
-      class LoadItem
-      {
-        public:
-          enum { WAITING_COUNT = 64 };
-
-          LoadItem();
-
-          void init(const char * filename, SampleVoice * waiting)
-          {
-            bzero(m_waiting, sizeof(m_waiting));
-            m_waiting[0] = waiting;
-            m_name = filename;
-            m_free = false;
-          }
-
-          inline bool addWaiting(SampleVoice * voice)
-          {
-            for(int i = 0; i < WAITING_COUNT; i++) {
-              if(m_waiting[i] == 0) {
-                m_waiting[i] = voice;
-                return true;
-              }
-            }
-
-            return false;
-          }
-
-          bool m_free;
-          Radiant::FixedStrT<256> m_name;
-
-          SampleVoice * m_waiting[WAITING_COUNT];
-      };
-
-      class BGLoader : public Radiant::Thread
+    class SampleInfo
     {
-      public:
-
-        BGLoader(ModuleSamplePlayer * host);
-        ~BGLoader();
-
-        bool addLoadable(const char * filename, SampleVoice * waiting);
-
-      private:
-
-        virtual void childLoop();
-
-        enum { BINS = 256};
-
-        Radiant::Condition m_cond;
-        Radiant::MutexAuto m_mutex;
-
-        LoadItem m_loads[BINS];
-
-        ModuleSamplePlayer * m_host;
-
-        volatile bool m_continue;
+    public:
+      std::string m_name;
+      std::string m_filename;
     };
 
-      ModuleSamplePlayer(Application *);
-      virtual ~ModuleSamplePlayer();
+    class Sample
+    {
+    public:
+      Sample();
+      ~Sample();
 
-      virtual bool prepare(int & channelsIn, int & channelsOut);
-      virtual void control(const char * address, ControlData *);
-      virtual void process(float ** in, float ** out, int n);
+      bool load(const char * filename, const char * name);
 
-      bool addSample(const char * filename, const char * name);
+      inline const std::vector<float> & data() const { return m_data; }
+      const float * buf(unsigned i) const;
 
-      int findFreeVoice();
-      int findSample(const char * );
+      const std::string & name() const { return m_name; }
+      /** Number of samples available */
+      unsigned available(unsigned pos) const;
+      unsigned channels() const;
+      unsigned frames() const;
 
-      void loadSamples();
+    private:
+      class Internal;
 
-      bool addSample(Sample * s);
+      Internal * m_d;
+
+      std::vector<float> m_data;
+
+      std::string m_name;
+    };
+
+    class SampleVoice
+    {
+    public:
+      SampleVoice(Sample * s = 0)
+        : m_state(INACTIVE), m_gain(1), m_relPitch(1.0f),
+          m_sample(s), m_position(0)	  
+      {}
+
+      bool synthesize(float ** out, int n);
+
+      void init(Sample * sample, ControlData * data);
+
+      bool isActive() { return m_state != INACTIVE; }
+
+      void loadFailed() { m_state = INACTIVE; }
+
+      void setSample(Sample * s);
+
+      void clear() { m_state = INACTIVE; m_sample = 0; }
+
+    private:
+      enum State {
+        INACTIVE,
+        WAITING_FOR_SAMPLE,
+        PLAYING
+      };
+
+      State m_state;
+
+      float m_gain;
+      float m_relPitch;
+      double m_dpos;
+
+      Sample * m_sample;
+      unsigned m_position;
+    };
+
+    class LoadItem
+    {
+    public:
+      enum { WAITING_COUNT = 64 };
+
+      LoadItem();
+
+      void init(const char * filename, SampleVoice * waiting)
+      {
+        bzero(m_waiting, sizeof(m_waiting));
+        m_waiting[0] = waiting;
+        m_name = filename;
+        m_free = false;
+      }
+
+      inline bool addWaiting(SampleVoice * voice)
+      {
+        for(int i = 0; i < WAITING_COUNT; i++) {
+          if(m_waiting[i] == 0) {
+            m_waiting[i] = voice;
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      bool m_free;
+      Radiant::FixedStrT<256> m_name;
+
+      SampleVoice * m_waiting[WAITING_COUNT];
+    };
+
+    class BGLoader : public Radiant::Thread
+    {
+    public:
+
+      BGLoader(ModuleSamplePlayer * host);
+      ~BGLoader();
+
+      bool addLoadable(const char * filename, SampleVoice * waiting);
 
     private:
 
-      void dropVoice(unsigned index);
+      virtual void childLoop();
 
-      std::list<SampleInfo> m_sampleList;
+      enum { BINS = 256};
 
-      std::vector<Radiant::RefPtr<Sample> > m_samples;
+      Radiant::Condition m_cond;
+      Radiant::MutexAuto m_mutex;
 
-      std::vector<SampleVoice> m_voices;
-      std::vector<SampleVoice *> m_voiceptrs;
+      LoadItem m_loads[BINS];
 
-      unsigned m_channels;
-      unsigned m_active;
+      ModuleSamplePlayer * m_host;
 
-      BGLoader * m_loader;
+      volatile bool m_continue;
+    };
+
+    ModuleSamplePlayer(Application *);
+    virtual ~ModuleSamplePlayer();
+
+    virtual bool prepare(int & channelsIn, int & channelsOut);
+    virtual void control(const char * address, ControlData *);
+    virtual void process(float ** in, float ** out, int n);
+
+    bool addSample(const char * filename, const char * name);
+
+    int findFreeVoice();
+    int findSample(const char * );
+
+    void loadSamples();
+
+    bool addSample(Sample * s);
+
+  private:
+
+    void dropVoice(unsigned index);
+
+    std::list<SampleInfo> m_sampleList;
+
+    std::vector<Radiant::RefPtr<Sample> > m_samples;
+
+    std::vector<SampleVoice> m_voices;
+    std::vector<SampleVoice *> m_voiceptrs;
+
+    unsigned m_channels;
+    unsigned m_active;
+
+    BGLoader * m_loader;
   };
 
 }

@@ -19,15 +19,20 @@
 #include <Resonant/DSPNetwork.hpp>
 #include <Resonant/ModuleSamplePlayer.hpp>
 
-#include <conio.h>
+#include <stdlib.h>
 
 int main(int argc, char ** argv)
 {
   const char * file = "../test.wav";
+  float pitch = 1.0f;
 
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
       file = argv[++i];
+    else if(strcmp(argv[i], "--pitch") == 0 && (i + 1) < argc)
+      pitch = atof(argv[++i]);
+    else if(strcmp(argv[i], "--verbose") == 0)
+      Radiant::enableVerboseOutput(true);
     else
       printf("%s # Unknown argument \"%s\"\n", argv[0], argv[i]);
   }
@@ -51,22 +56,19 @@ int main(int argc, char ** argv)
   // Gain
   control.writeFloat32(0.745f);
   // Relative pitch
-  control.writeFloat32(0.25);
+  control.writeFloat32(pitch);
 
   Radiant::Sleep::sleepMs(500);
 
   for(int i = 0; i < 5; i++) {
-    Radiant::trace("Playing sample %s", file);
+    Radiant::info("Playing sample %s", file);
     dsp.send(control);
     Radiant::Sleep::sleepMs(900);
-    // Radiant::Sleep::sleepS(3);
   }
 
   Radiant::Sleep::sleepS(3);
 
   dsp.stop();
-
-  _getch();
 
   return 0;
 }

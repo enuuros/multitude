@@ -31,13 +31,15 @@ namespace Resonant {
   class ModuleSamplePlayer::Sample::Internal
   {
     public:
+    Internal()
+    { bzero( & m_info, sizeof(m_info)); };
+
       SF_INFO m_info;
   };
 
   ModuleSamplePlayer::Sample::Sample()
   {
     m_d = new Internal();
-    bzero(&m_d, sizeof(m_d));
   }
 
   ModuleSamplePlayer::Sample::~Sample()
@@ -84,7 +86,28 @@ namespace Resonant {
 
     sf_close(sndf);
 
+    Radiant::debug
+      ("ModuleSamplePlayer::Sample::load # %s from %s %d frames %d channels",
+       filename, name, (int) m_d->m_info.frames, (int) m_d->m_info.channels);
+
     return true;
+  }
+
+  
+  unsigned ModuleSamplePlayer::Sample::available(unsigned pos) const
+  {
+    // pos /=m_d->m_info.channels;
+    return (pos < m_d->m_info.frames) ? m_d->m_info.frames - pos : 0;
+  }
+
+  unsigned ModuleSamplePlayer::Sample::channels() const
+  {
+    return m_d->m_info.channels;
+  }
+
+  unsigned ModuleSamplePlayer::Sample::frames() const
+  {
+    return m_d->m_info.frames;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -99,7 +122,7 @@ namespace Resonant {
     
     // printf("+"); fflush(0);
    
-    unsigned avail = m_sample->data().size() - m_position;
+    unsigned avail = m_sample->available(m_position);
 
     if((int) avail > n)
       avail = n;
@@ -110,12 +133,14 @@ namespace Resonant {
 
     bool more;
 
+    int chans = m_sample->channels();
+
     if(pitch == 1.0f) {
       const float * src = m_sample->buf(m_position);
     
       for(unsigned i = 0; i < avail; i++) {
-	*b1++ += *src++ * gain;
-	
+	*b1++ += *src * gain;
+	src += chans;
       }
 
       m_position += avail;
@@ -124,7 +149,7 @@ namespace Resonant {
     }
     else {
       double dpos = m_dpos;
-      double dmax = m_sample->data().size() - 1;
+      double dmax = m_sample->frames() - 1;
 
       const float * src = m_sample->buf(0);
 
@@ -132,7 +157,7 @@ namespace Resonant {
 
 	int base = (int) dpos;
 	double w2 = dpos - (double) base;
-	*b1++ = float((src[base] * (1.0 - w2) + src[base+1] * w2) * gain);
+	*b1++ = float((src[base * chans] * (1.0 - w2) + src[(base+1) * chans] * w2) * gain);
 	dpos += pitch;
       }
 
@@ -308,7 +333,6 @@ namespace Resonant {
     : Module(a),
       m_channels(1),
       m_active(0)
-//      m_loader(this)
   {
     m_voices.resize(256);
     m_voiceptrs.resize(m_voices.size());

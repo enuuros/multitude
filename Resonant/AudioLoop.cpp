@@ -20,6 +20,8 @@
 #include <portaudio.h>
 
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 
 #ifdef WIN32
@@ -119,12 +121,56 @@ namespace Resonant {
     bzero( &m_d->m_inParams,  sizeof(m_d->m_inParams));
     bzero( &m_d->m_outParams, sizeof(m_d->m_outParams));
 
-    m_d->m_outParams.device = Pa_GetDefaultOutputDevice();
-    if(m_d->m_outParams.device == paNoDevice) {
-      Radiant::error("AudioLoop::startReadWrite # No default output device available");
-      return false;
+    const char * devkey = getenv("RESONANT_DEVICE");
+
+    if(!devkey) {
+
+      m_d->m_outParams.device = Pa_GetDefaultOutputDevice();
+      if(m_d->m_outParams.device == paNoDevice) {
+        Radiant::error("AudioLoop::startReadWrite # No default output device available");
+        return false;
+      }
+    }
+    else {
+      
+      char * end = 0;
+      int i = strtol(devkey, & end, 10);
+      
+      long decoded = end - devkey;
+      if(decoded == (long) strlen(devkey)) {
+        m_d->m_outParams.device = i;
+        Radiant::debug("AudioLoop::startReadWrite # Selected device %d (%s)",
+                       (int) m_d->m_outParams.device, devkey);
+
+      }
+      else {
+        int n = Pa_GetDeviceCount();
+
+        for( i = 0; i < n; i++) {
+          const PaDeviceInfo * info = Pa_GetDeviceInfo(i);
+          if(strstr(info->name, devkey) != 0) {
+            m_d->m_outParams.device = i;
+            
+            Radiant::debug("AudioLoop::startReadWrite # Selected device %d %s",
+                           (int) m_d->m_outParams.device, info->name);
+          }
+        }
+      }
     }
 
+    if(Radiant::enabledVerboseOutput()) {
+      const PaDeviceInfo * info = Pa_GetDeviceInfo(m_d->m_outParams.device);
+      Radiant::debug("AudioLoop::startReadWrite # Got device %d = %s",
+                     (int) m_d->m_outParams.device, info->name);
+      int n = Pa_GetDeviceCount();
+
+      for(int i = 0; i < n; i++) {
+         info = Pa_GetDeviceInfo(i);
+         Radiant::debug("AudioLoop::startReadWrite # Available %d: %s",
+                        i, info->name);
+      }
+    }
+    
     m_d->m_outParams.channelCount = channels;
     m_d->m_outParams.sampleFormat = paFloat32;
     m_d->m_outParams.suggestedLatency = Pa_GetDeviceInfo( m_d->m_outParams.device )->defaultLowOutputLatency;

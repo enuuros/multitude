@@ -28,6 +28,7 @@
 
 namespace Resonant {
 
+  using Radiant::debug;
   using Radiant::error;
   
   ModuleOutCollect::ModuleOutCollect(Application * a , DSPNetwork * host)
@@ -72,8 +73,8 @@ namespace Resonant {
     }
     else if(strcmp(address, "newmapping") == 0) {
       m_map.push_back(tmp);
-     error("ModuleOutCollect::control # newmapping %s %d -> %d",
-		     tmp.sourceId, tmp.from, tmp.to);
+      debug("ModuleOutCollect::control # newmapping %s %d -> %d",
+            tmp.sourceId, tmp.from, tmp.to);
     }
     else if(strcmp(address, "removemapping") == 0) {
       std::vector<Move>::iterator it =
