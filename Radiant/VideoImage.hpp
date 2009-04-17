@@ -80,6 +80,7 @@ namespace Radiant {
   public:
     VideoImage(ImageFormat fmt = IMAGE_UNKNOWN, int w = 0, int h = 0) 
       : m_format(fmt), m_width(w), m_height(h) {}
+    ~VideoImage();
 
     class RADIANT_API Plane {
     public:

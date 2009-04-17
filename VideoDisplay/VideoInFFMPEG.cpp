@@ -29,7 +29,9 @@ namespace VideoDisplay {
   {}
 
   VideoInFFMPEG::~VideoInFFMPEG()
-  {}
+  {
+	close();	
+  }
 
   void VideoInFFMPEG::getAudioParameters(int * channels, 
 				     int * sample_rate,

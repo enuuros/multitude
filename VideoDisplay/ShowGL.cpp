@@ -282,7 +282,9 @@ namespace VideoDisplay {
 
   ShowGL::~ShowGL()
   {
+    stop();
     m_blankDisplay.freeMemory();
+    delete m_video;
   }
 
 
