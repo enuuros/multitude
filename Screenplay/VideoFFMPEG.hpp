@@ -39,7 +39,7 @@ namespace Screenplay {
   public:
 
     VideoInputFFMPEG();
-    ~VideoInputFFMPEG();
+    virtual ~VideoInputFFMPEG();
 
     virtual const Radiant::VideoImage * captureImage();
     Radiant::TimeStamp frameTime() { return m_lastTS; }
