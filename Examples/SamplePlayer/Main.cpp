@@ -63,6 +63,8 @@ int main(int argc, char ** argv)
     Radiant::error("Could not open sound file \"%s\"", file);
     return EINVAL;
   }
+  
+  sf_close(sndf);
 
   Resonant::DSPNetwork dsp;
 
@@ -134,7 +136,7 @@ int main(int argc, char ** argv)
     Radiant::Sleep::sleepS(fileduration + 1);
   }
   
-  Radiant::Sleep::sleepS(loop ? 100 : 3);
+  Radiant::Sleep::sleepS(loop ? fileduration * 1000 : 1);
 
   dsp.stop();
 

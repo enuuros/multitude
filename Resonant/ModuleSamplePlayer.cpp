@@ -14,10 +14,13 @@
  */
 
 #include "ModuleSamplePlayer.hpp"
+
 #include "ControlData.hpp"
+#include "DSPNetwork.hpp"
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/Directory.hpp>
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
 
@@ -167,13 +170,13 @@ namespace Resonant {
     
     if(!more) {
       if(m_loop) {
-        debug("ModuleSamplePlayer::SampleVoice::synthesize # rewind");
+        // debug("ModuleSamplePlayer::SampleVoice::synthesize # rewind");
         m_position = 0;
         m_dpos = 0.0f;
         more = 1;
       }
       else {
-        debug("ModuleSamplePlayer::SampleVoice::synthesize # done");
+        // debug("ModuleSamplePlayer::SampleVoice::synthesize # done");
         m_sample = 0;
         m_state = INACTIVE;
       }
@@ -495,6 +498,62 @@ namespace Resonant {
     return true;
   }
 
+  void ModuleSamplePlayer::createAmbientBackground
+  (DSPNetwork * network, const char * directory, float gain)
+  {
+    using Radiant::Directory;
+    Directory dir(directory, Directory::Files);
+    
+    int n = 0;
+
+    for(int i = 0; i < dir.count(); i++) {
+      
+      std::string file = dir.fileNameWithPath(i);
+
+      SF_INFO info;
+      SNDFILE * sndf = sf_open(file.c_str(), SFM_READ, & info);
+
+      if(!sndf) {
+        continue;
+      }
+      
+      sf_close(sndf);
+
+      n++;
+      
+      for(int c = 0; c < info.channels; c++) {
+        
+        Resonant::ControlData control;
+        control.writeString(std::string(id()) + "/playsample");
+
+        control.writeString(file);
+
+        control.writeString("gain");
+        control.writeFloat32(gain);
+
+        // Relative pitch
+        control.writeString("relpitch");
+        control.writeFloat32(info.samplerate / 44100.0f);
+
+        // Infinite looping;
+        control.writeString("loop");
+        control.writeInt32(1);
+
+        control.writeString("samplechannel");
+        control.writeInt32(c);
+
+        control.writeString("targetchannel");
+        control.writeInt32(c);
+
+        control.writeString("end");
+
+        network->send(control);
+      }
+    }
+
+    debug("ModuleSamplePlayer::createAmbientBackground # %d samples", n);
+  }
+  
   int ModuleSamplePlayer::findFreeVoice()
   {
     for(unsigned i = 0; i < m_voices.size(); i++) {
