@@ -155,8 +155,8 @@ namespace Resonant {
 
 	int base = (int) dpos;
 	double w2 = dpos - (double) base;
-	*b1++ +=
-          float((src[base * chans] * (1.0 - w2) + src[(base+1) * chans] * w2) * gain);
+	*b1++ += gain * 
+          float((src[base * chans] * (1.0 - w2) + src[(base+1) * chans] * w2));
 	dpos += pitch;
       }
 
@@ -165,13 +165,15 @@ namespace Resonant {
       more = dpos < dmax;
     }
     
-
     if(!more) {
       if(m_loop) {
+        debug("ModuleSamplePlayer::SampleVoice::synthesize # rewind");
         m_position = 0;
         m_dpos = 0.0f;
+        more = 1;
       }
       else {
+        debug("ModuleSamplePlayer::SampleVoice::synthesize # done");
         m_sample = 0;
         m_state = INACTIVE;
       }
