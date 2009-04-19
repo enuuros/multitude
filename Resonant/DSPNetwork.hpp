@@ -119,9 +119,21 @@ namespace Resonant {
 
     class RESONANT_API Item
     {
+      friend class DSPNetwork;
+
     public:
       Item();
       ~Item();
+
+      void setModule(Module *m) { m_module = m; }
+      Module * module() { return m_module; }
+
+      void setTargetChannel(int channel)
+      {
+        m_targetChannel = channel;
+      }
+
+    private:
 
       inline void process(int n)
       {
@@ -145,6 +157,8 @@ namespace Resonant {
       
       bool m_compiled;
       bool m_done;
+
+      int  m_targetChannel;
     };
 
     typedef std::list<Item> container;

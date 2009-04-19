@@ -36,6 +36,8 @@ int main(int argc, char ** argv)
   int repeats = 5;
   bool loop = false;
 
+  Resonant::DSPNetwork::Item item;
+
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--loop") == 0)
       loop = true;
@@ -45,6 +47,8 @@ int main(int argc, char ** argv)
       pitch = atof(argv[++i]);
     else if(strcmp(argv[i], "--repeat") == 0 && (i + 1) < argc)
       repeats = atoi(argv[++i]);
+    else if(strcmp(argv[i], "--targetchannel") == 0 && (i + 1) < argc)
+      item.setTargetChannel(atoi(argv[++i]) - 1);
     else if(strcmp(argv[i], "--verbose") == 0)
       Radiant::enableVerboseOutput(true);
     else {
@@ -72,14 +76,13 @@ int main(int argc, char ** argv)
 
   Resonant::ControlData control, control2;
 
-  Resonant::DSPNetwork::Item item;
-  item.m_module = new Resonant::ModuleSamplePlayer(0);
-  item.m_module->setId("sampleplayer");
+  item.setModule(new Resonant::ModuleSamplePlayer(0));
+  item.module()->setId("sampleplayer");
   
   control.writeInt32(2);
   control.rewind();
 
-  item.m_module->control("channels", & control);
+  item.module()->control("channels", & control);
   
   dsp.addModule(item);
 

@@ -22,7 +22,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-/** A simple application that plays audio samples.
+/** A simple application that plays ambient background.
     
     
 */
@@ -50,17 +50,17 @@ int main(int argc, char ** argv)
 
   dsp.start();
 
-  Resonant::ControlData control, control2;
+  Resonant::ControlData control;
 
   Resonant::DSPNetwork::Item item;
   Resonant::ModuleSamplePlayer * player = new Resonant::ModuleSamplePlayer(0);
-  item.m_module = player;
-  item.m_module->setId("sampleplayer");
+  item.setModule(player);
+  item.module()->setId("sampleplayer");
   
   control.writeInt32(2);
   control.rewind();
 
-  item.m_module->control("channels", & control);
+  item.module()->control("channels", & control);
 
   player->createAmbientBackground(& dsp, directory, gain);
   

@@ -41,21 +41,18 @@ int main(int argc, char ** argv)
   const char * filename = 0;
 
   for(int i = 1; i < argc; i++) {
-    filename = argv[i];
+    if(strcmp(argv[i], "--verbose") == 0)
+      Radiant::enableVerboseOutput(true);
+    else {
+      filename = argv[i];
 
-    if(!vw->open(filename, 0)) {
-      delete vw;
-      return -1;
+      if(!vw->open(filename, 0)) {
+        delete vw;
+        return -1;
+      }
     }
   }
 
-  /*std::string basename = Radiant::FileUtils::baseFilename(filename);
-  
-  basename += ".srt";
-
-  if(Radiant::FileUtils::fileReadable(basename.c_str()))
-    vw->
-  */
   vw->show();
   vw->raise();
 

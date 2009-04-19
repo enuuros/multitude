@@ -35,8 +35,9 @@ namespace Resonant {
 
   DSPNetwork::Item::Item()
     : m_module(0),
-    m_compiled(false),
-    m_done(false)
+      m_compiled(false),
+      m_done(false),
+      m_targetChannel(-1)
   {}
 
   DSPNetwork::Item::~Item()
@@ -262,20 +263,41 @@ namespace Resonant {
           continue;
 
         int mchans = itptr->m_outs.size();
+        int tchan  = itptr->m_targetChannel;
         int outchans = m_collect->channels(); // hardware output channels
         const char * id = itptr->m_module->id();
-        if(mchans) {
 
-          /* Add mappings for the new module, so that it is
+        Item * oi = findItem(m_collect->id());
+
+        if(!oi)
+          Radiant::fatal("DSPNetwork::checkNewItems # No collector \"%s\"",
+                           m_collect->id());
+
+        if(mchans && tchan >= 0) {
+
+          for(int i = 0; i < mchans; i++) {
+            Connection conn;
+            conn.setModuleId(id);
+            conn.m_channel = i;
+            oi->m_inputs.push_back(conn);
+
+            m_controlData.rewind();
+            m_controlData.writeString(id); // Source id
+            m_controlData.writeInt32(i);// Source module output channel
+            m_controlData.writeInt32(i + tchan); // Target channels
+            m_controlData.rewind();
+            m_collect->control("newmapping", & m_controlData);
+          }
+          compile( * oi);
+          debug("DSPNetwork::checkNewItems # Compiled out collector");
+        }
+        else if(mchans) {
+
+          /* Heuristically add mappings for the new module, so that it is
              heard. Realistically, this behavior should be overridable
              as needed, now one cannot really make too clever DSP
              networks.
              */
-          Item * oi = findItem(m_collect->id());
-
-          if(!oi)
-            Radiant::fatal("DSPNetwork::checkNewItems # No collector \"%s\"",
-                           m_collect->id());
 
           for(int i = 0; i < outchans; i++) {
             Connection conn;
@@ -291,7 +313,7 @@ namespace Resonant {
             m_collect->control("newmapping", & m_controlData);
           }
           compile( * oi);
-          debug("DSPNetwork::checkNewItems # Compiled out collector", type);
+          debug("DSPNetwork::checkNewItems # Compiled out collector");
         }
       }
     }

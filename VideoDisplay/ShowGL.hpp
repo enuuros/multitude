@@ -58,27 +58,27 @@ namespace VideoDisplay {
 
     class YUVProgram : public Luminous::GLSLProgramObject
     {
-      public:
-        YUVProgram(Luminous::GLResources * resources);
-        virtual ~YUVProgram();
+    public:
+      YUVProgram(Luminous::GLResources * resources);
+      virtual ~YUVProgram();
 
-        bool init();
-        virtual void bind();
-        virtual void unbind();
-        virtual bool link();
-        virtual void clear();
+      bool init();
+      virtual void bind();
+      virtual void unbind();
+      virtual bool link();
+      virtual void clear();
 
-      private:
+    private:
 
-        enum {
-          PARAM_YTEX,
-          PARAM_UTEX,
-          PARAM_VTEX,
-          PARAM_MATRIX,
-          PARAM_SIZEOF
-        };
+      enum {
+        PARAM_YTEX,
+        PARAM_UTEX,
+        PARAM_VTEX,
+        PARAM_MATRIX,
+        PARAM_SIZEOF
+      };
 
-        int m_uniforms[PARAM_SIZEOF];
+      int m_uniforms[PARAM_SIZEOF];
     };
 
     class MyTextures : public Luminous::GLResource
@@ -102,49 +102,50 @@ namespace VideoDisplay {
       Luminous::Texture2D  m_blankTex;
     };
 
-      enum State {
-        PLAY,
-        PAUSE
-      };
+    enum State {
+      PLAY,
+      PAUSE
+    };
 
-      enum {
-        HISTOGRAM_POINTS = 256
-      };
+    enum {
+      HISTOGRAM_POINTS = 256
+    };
 
-      VIDEODISPLAY_API ShowGL();
-      VIDEODISPLAY_API ~ShowGL();
+    VIDEODISPLAY_API ShowGL();
+    VIDEODISPLAY_API ~ShowGL();
 
-      VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
+    VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
-      /// Initialize the file, but does not play it.
-    VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp, float previewpos = 0.05f);
-      /// Opens the file for playing.
-      VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
-          Radiant::TimeStamp pos = 0);
-      /// Stops file playback
-      VIDEODISPLAY_API bool start();
-      /// Stops file playback
-      VIDEODISPLAY_API bool stop();
+    /// Initialize the file, but does not play it.
+    VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp, float previewpos = 0.05f,
+                               int targetChannel = -1);
+    /// Opens the file for playing.
+    VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
+                               Radiant::TimeStamp pos = 0);
+    /// Stops file playback
+    VIDEODISPLAY_API bool start();
+    /// Stops file playback
+    VIDEODISPLAY_API bool stop();
 
-      /// Toggles play/pause state
-      VIDEODISPLAY_API bool togglePause();
+    /// Toggles play/pause state
+    VIDEODISPLAY_API bool togglePause();
 
 
-      VIDEODISPLAY_API bool pause();
+    VIDEODISPLAY_API bool pause();
 
-      VIDEODISPLAY_API bool unpause();
+    VIDEODISPLAY_API bool unpause();
 
-      State state() const { return m_state; }
+    State state() const { return m_state; }
 
-      /// Create OpenGL resources
+    /// Create OpenGL resources
     // bool contextInit();
-      /// Free OpenGL resources
-      // bool contextCleanup();
+    /// Free OpenGL resources
+    // bool contextCleanup();
 
-      /// Update the video image from reader-thread
-      VIDEODISPLAY_API void update();
-      /// Render the video to the specified rectangle
-      /** 
+    /// Update the video image from reader-thread
+    VIDEODISPLAY_API void update();
+    /// Render the video to the specified rectangle
+    /** 
         @arg topleft Top-left corner of the video image
 
         @arg bottomright Bottom-right corner of the video image. If
@@ -154,55 +155,57 @@ namespace VideoDisplay {
         @arg ransform The coordinates can be optionally transformed
         with the "transform" matrix. */
     VIDEODISPLAY_API void render(Luminous::GLResources * resources,
-		Vector2 topleft, Vector2 bottomright,
-		const Nimble::Matrix3f * transform = 0,
-		Poetic::GPUFont * subtitleFont = 0,
-		float subTitleSpace = 0);
+                                 Vector2 topleft, Vector2 bottomright,
+                                 const Nimble::Matrix3f * transform = 0,
+                                 Poetic::GPUFont * subtitleFont = 0,
+                                 float subTitleSpace = 0);
 
-      /// Pixel size of the video image.
-      VIDEODISPLAY_API Nimble::Vector2i size() const;
+    /// Pixel size of the video image.
+    VIDEODISPLAY_API Nimble::Vector2i size() const;
 
-      Radiant::TimeStamp duration() { return m_duration; }
-      Radiant::TimeStamp position() { return m_position; }
-      double relativePosition() { return position() / (double) duration(); }
+    Radiant::TimeStamp duration() { return m_duration; }
+    Radiant::TimeStamp position() { return m_position; }
+    double relativePosition() { return position() / (double) duration(); }
 
-      VIDEODISPLAY_API void seekTo(Radiant::TimeStamp time);
-      VIDEODISPLAY_API void seekToRelative(double relative);
-      void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
+    VIDEODISPLAY_API void seekTo(Radiant::TimeStamp time);
+    VIDEODISPLAY_API void seekToRelative(double relative);
+    void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
 
-      /// Information on how the frames have been displayed.
-      int histogramPoint(int index) const { return m_histogram[index]; } 
-      int histogramIndex() const { return m_updates; }
+    /// Information on how the frames have been displayed.
+    int histogramPoint(int index) const { return m_histogram[index]; } 
+    int histogramIndex() const { return m_updates; }
 
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
-    private:
+  private:
 
-      void clearHistogram();
-      void getPreview(double pos);
+    void clearHistogram();
+    void getPreview(double pos);
 
 
-      std::string             m_filename;
-      VideoIn               * m_video;
-      VideoIn::Frame        * m_frame;
-      VideoIn::Frame          m_preview;
-      Resonant::DSPNetwork  * m_dsp;
-      Resonant::DSPNetwork::Item m_dspItem;
-      AudioTransfer         * m_audio;
-      Radiant::TimeStamp      m_frameTime;
-      int                     m_count;
-      State                   m_state;
-      int                     m_histogram[HISTOGRAM_POINTS];
-      uint                    m_updates;
+    std::string             m_filename;
+    VideoIn               * m_video;
+    VideoIn::Frame        * m_frame;
+    VideoIn::Frame          m_preview;
+    Resonant::DSPNetwork  * m_dsp;
+    Resonant::DSPNetwork::Item m_dspItem;
+    AudioTransfer         * m_audio;
+    int                     m_targetChannel;
+    Radiant::TimeStamp      m_frameTime;
+    int                     m_count;
+    State                   m_state;
+    int                     m_histogram[HISTOGRAM_POINTS];
+    uint                    m_updates;
 
-      Radiant::TimeStamp      m_duration;
-      Radiant::TimeStamp      m_position;
+    Radiant::TimeStamp      m_duration;
+    Radiant::TimeStamp      m_position;
 
-      Radiant::VideoImage     m_blankDisplay;
-      bool                    m_blankReload;
-      bool                    m_useBlank;
+    Radiant::VideoImage     m_blankDisplay;
+    bool                    m_blankReload;
+    bool                    m_useBlank;
 
-      SubTitles               m_subTitles;
+    SubTitles               m_subTitles;
+    
   };
 
 }

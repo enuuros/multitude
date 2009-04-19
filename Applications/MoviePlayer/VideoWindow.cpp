@@ -64,7 +64,7 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
 
   item->m_show.loadSubTitles(srtfile.c_str());
 
-  if(!item->m_show.init(filename, & m_dsp))
+  if(!item->m_show.init(filename, & m_dsp, 0, 0))
     return false;
   
   m_movies.push_back(item);
@@ -125,9 +125,9 @@ void VideoWindow::mouseReleaseEvent(QMouseEvent *)
 
 void VideoWindow::initializeGL()
 {
-  // ALL_MOVIES(contextInit());
+
   const char * ttf = "DejaVuSans.ttf";
-  /// @todo öh?
+  /// @todo Font fixing
   const char * path = ".:/Users/tommi/screenapps/Fonts/";
   std::string filename = Radiant::FileUtils::findFile(ttf, path);
 

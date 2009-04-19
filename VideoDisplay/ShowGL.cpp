@@ -272,6 +272,7 @@ namespace VideoDisplay {
       m_frame(0),
       m_dsp(0),
       m_audio(0),
+      m_targetChannel(-1),
       m_state(PAUSE),
       m_updates(0),
       m_blankReload(false),
@@ -294,12 +295,14 @@ namespace VideoDisplay {
   }
 
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
-		    float previewpos)
+		    float previewpos,
+                    int targetChannel)
   {
     // info("ShowGL::init # %f", previewpos);
 
     m_filename = filename;
     m_dsp = dsp;
+    m_targetChannel = targetChannel;
 
     Screenplay::VideoInputFFMPEG video;
 
@@ -363,7 +366,8 @@ namespace VideoDisplay {
     au->setId(buf);
 
     m_dspItem = Resonant::DSPNetwork::Item();
-    m_dspItem.m_module = au;
+    m_dspItem.setModule(au);
+    m_dspItem.setTargetChannel(m_targetChannel);
 
     m_dsp->addModule(m_dspItem);
 
