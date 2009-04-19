@@ -53,6 +53,8 @@ int main(int argc, char ** argv)
     }
   }
 
+  if(loop)
+    repeats = 1;
   
   SF_INFO info;
   SNDFILE * sndf = sf_open(file, SFM_READ, & info);
@@ -120,6 +122,8 @@ int main(int argc, char ** argv)
 
   Radiant::Sleep::sleepMs(500);
 
+  float fileduration = info.frames / (44100 * pitch);
+
   for(int i = 0; i < repeats; i++) {
     Radiant::info("Playing sample %s (%d of %d)", file, i + 1, repeats);
     dsp.send(control);
@@ -127,7 +131,7 @@ int main(int argc, char ** argv)
     if(info.channels >= 2)
       dsp.send(control2);
 
-    Radiant::Sleep::sleepS(info.frames / (44100 * pitch) + 1);
+    Radiant::Sleep::sleepS(fileduration + 1);
   }
   
   Radiant::Sleep::sleepS(loop ? 100 : 3);
