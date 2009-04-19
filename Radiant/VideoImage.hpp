@@ -204,6 +204,8 @@ namespace Radiant {
     /// Fill the image with 0
     void zero();
 
+    void clearPointers();
+
     /// Plane information
     Plane m_planes[4];
     /// Image format

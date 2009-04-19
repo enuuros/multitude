@@ -26,7 +26,6 @@ namespace Radiant {
 
   void VideoImage::Plane::freeMemory()
   { 
-    Radiant::info("VideoImage::Plane::freeMemory # %p", m_data);
     delete[] m_data; 
     m_data = 0; 
   }
@@ -214,6 +213,12 @@ namespace Radiant {
         Radiant::error("VideoImage::zero # unsupported format");
         break;
     };
+  }
+
+  void VideoImage::clearPointers()
+  {
+    for(int i = 0; i < 4; i++)
+      m_planes[i].set(0, 0, PLANE_UNKNOWN);
   }
 
 }
