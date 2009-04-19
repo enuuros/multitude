@@ -49,7 +49,7 @@ namespace Resonant {
 
   const float * ModuleSamplePlayer::Sample::buf(unsigned i) const 
   {
-    return &m_data[i * m_d->m_info.channels];
+    return & m_data[i * m_d->m_info.channels];
   }
 
   bool ModuleSamplePlayer::Sample::load(const char * filename,
@@ -120,14 +120,12 @@ namespace Resonant {
       return m_state == WAITING_FOR_SAMPLE;
     }
     
-    // printf("+"); fflush(0);
-   
     unsigned avail = m_sample->available(m_position);
 
     if((int) avail > n)
       avail = n;
 
-    float * b1 = out[0];
+    float * b1 = out[m_targetChannel];
     float gain = m_gain;
     float pitch = m_relPitch;
 
@@ -136,7 +134,7 @@ namespace Resonant {
     int chans = m_sample->channels();
 
     if(pitch == 1.0f) {
-      const float * src = m_sample->buf(m_position);
+      const float * src = m_sample->buf(m_position) + m_sampleChannel;
     
       for(unsigned i = 0; i < avail; i++) {
 	*b1++ += *src * gain;
@@ -151,13 +149,14 @@ namespace Resonant {
       double dpos = m_dpos;
       double dmax = m_sample->frames() - 1;
 
-      const float * src = m_sample->buf(0);
+      const float * src = m_sample->buf(0) + m_sampleChannel;
 
       for(int i = 0 ; i < n && dpos < dmax; i++) {
 
 	int base = (int) dpos;
 	double w2 = dpos - (double) base;
-	*b1++ = float((src[base * chans] * (1.0 - w2) + src[(base+1) * chans] * w2) * gain);
+	*b1++ +=
+          float((src[base * chans] * (1.0 - w2) + src[(base+1) * chans] * w2) * gain);
 	dpos += pitch;
       }
 
@@ -168,8 +167,14 @@ namespace Resonant {
     
 
     if(!more) {
-      m_sample = 0;
-      m_state = INACTIVE;
+      if(m_loop) {
+        m_position = 0;
+        m_dpos = 0.0f;
+      }
+      else {
+        m_sample = 0;
+        m_state = INACTIVE;
+      }
     }
 
     return more != 0;
@@ -180,25 +185,65 @@ namespace Resonant {
   {
     m_sample = sample;
     m_position = 0;
-    bool ok = true;
 
-    float gain = data->readFloat32( & ok);
+    m_gain = 1.0f;
+    m_relPitch = 1.0f;
+    m_sampleChannel = 0;
+    m_targetChannel = 0;
+    m_dpos = 0.0f;
+    m_loop = false;
 
-    if(ok)
-      m_gain = gain;
-    else
-      m_gain = 1.0f;
+    const int buflen = 64;
+    char name[buflen] = { '\0' };
 
-    float pitch = data->readFloat32( & ok);
+    if(!data->readString(name, buflen)) {
+      error("ModuleSamplePlayer::SampleVoice::init # Invalid beginning");
+      
+      return;
+    }
 
-    if(ok)
-      m_relPitch = pitch;
-    else
-      m_relPitch = 1.0f;
+    while(name[0] != '\0' && strcmp(name, "end") != 0) {
+
+      bool ok = true;
+
+      if(strcmp(name, "gain") == 0)
+        m_gain = data->readFloat32( & ok);
+      else if(strcmp(name, "relpitch") == 0)
+        m_relPitch = data->readFloat32( & ok);
+      else if(strcmp(name, "samplechannel") == 0)
+        m_sampleChannel = data->readInt32( & ok);
+      else if(strcmp(name, "targetchannel") == 0)
+        m_targetChannel = data->readInt32( & ok);
+      else if(strcmp(name, "loop") == 0)
+        m_loop = data->readInt32( & ok);
+      else {
+        error("ModuleSamplePlayer::SampleVoice::init # Invalid parameter \"%s\"",
+              name);
+        break;
+      }
+
+      if(!ok) {
+        error("ModuleSamplePlayer::SampleVoice::init # Error parsing value for %s",
+              name);
+      }
+      else {
+        debug("ModuleSamplePlayer::SampleVoice::init # got %s", name);
+      }
+      
+      name[0] = '\0';
+      if(!data->readString(name, buflen)) {
+        error("ModuleSamplePlayer::SampleVoice::init # Error reading parameter");
+        break;
+      }
+    }
 
     m_dpos = 0.0;
 
     m_state = sample ? PLAYING : WAITING_FOR_SAMPLE;
+
+    debug("ModuleSamplePlayer::SampleVoice::init # Playing gain = %.3f "
+          "rp = %.3f, ss = %d, ts = %d", m_gain, m_relPitch,
+          m_sampleChannel, m_targetChannel);
   }
 
   void ModuleSamplePlayer::SampleVoice::setSample(Sample * s)
@@ -367,6 +412,8 @@ namespace Resonant {
   {
     const int bufsize = 256;
     char buf[bufsize];
+    
+    bool ok = true;
 
     if(strcmp(id, "playsample") == 0) {
       int voiceind = findFreeVoice();
@@ -376,7 +423,7 @@ namespace Resonant {
         return;
       }
 
-      bool ok = data->readString(buf, bufsize);
+      ok = data->readString(buf, bufsize);
 
       if(!ok) {
         error("ModuleSamplePlayer::control # Could not get sample name ");
@@ -405,8 +452,15 @@ namespace Resonant {
       // assert(voiceind < (int) m_active);
 
     }
+    else if(strcmp(id, "channels") == 0) {
+      m_channels = data->readInt32( & ok);
+    }
     else
       error("ModuleSamplePlayer::control # Unknown message \"%s\"", id);
+
+    if(!ok) {
+      error("ModuleSamplePlayer::control # When processing \"%s\"", id);
+    }
   }
 
   void ModuleSamplePlayer::process(float ** , float ** out, int n)

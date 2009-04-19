@@ -251,7 +251,6 @@ namespace Resonant {
 
       Item * itptr = & (*m_items.begin());
 
-
       if(!compile(*itptr, 0)) {
         error("DSPNetwork::checkNewItems # Could not add module %s", type);
         m_items.pop_front();
@@ -263,7 +262,7 @@ namespace Resonant {
           continue;
 
         int mchans = itptr->m_outs.size();
-        int outchans = 2; // hardware output channels
+        int outchans = m_collect->channels(); // hardware output channels
         const char * id = itptr->m_module->id();
         if(mchans) {
 
@@ -275,8 +274,8 @@ namespace Resonant {
           Item * oi = findItem(m_collect->id());
 
           if(!oi)
-            Radiant::trace(FATAL, "DSPNetwork::checkNewItems # No collector \"%s\"",
-                m_collect->id());
+            Radiant::fatal("DSPNetwork::checkNewItems # No collector \"%s\"",
+                           m_collect->id());
 
           for(int i = 0; i < outchans; i++) {
             Connection conn;
@@ -435,7 +434,8 @@ namespace Resonant {
       Connection & conn = item.m_inputs[i];
       float * ptr = findOutput(conn.m_moduleId, conn.m_channel);
       item.m_ins[i] = ptr;
-      debug("Item[%d].m_ins[%d] = %p", location, i, ptr);
+      debug("Item[%d].m_ins[%d] = %p from %s:%d", location, i, ptr,
+            conn.m_moduleId, conn.m_channel);
     }
 
     for(i = 0; i < outs; i++) {
@@ -460,13 +460,17 @@ namespace Resonant {
     uint s = m_buffers.size();
 
     for(uint i = 0; i < s; i++) {
-      if(bufIsFree(i, location))
+      if(bufIsFree(i, location)) {
+        debug("DSPNetwork::findFreeBuf # Found %d -> %u", location, i);
         return m_buffers[i];
+      }
     }
 
     m_buffers.resize(s + 1);
 
     m_buffers[s].init();
+
+    debug("DSPNetwork::findFreeBuf # Created %d -> %u", location, s);
 
     return m_buffers[s];
   }
@@ -476,13 +480,13 @@ namespace Resonant {
     iterator it = m_items.begin();
     int i;
 
-    for(i = 0; i < location; i++)
+    for(i = 0; i <= location; i++)
       it++;
 
     float * ptr = m_buffers[channel].m_data;
 
     if((*it).findInOutput(ptr) >= 0)
-      return true;
+      return false;
 
     iterator other = it;
 
@@ -496,7 +500,7 @@ namespace Resonant {
       if(item.findInInput(ptr) >= 0)
         return false;
       else if(item.findInOutput(ptr) >= 0)
-        return true;
+        return false;
     }
 
     return true;

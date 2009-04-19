@@ -50,6 +50,8 @@ namespace Resonant {
     
     const float * interleaved() const { return & m_interleaved[0]; }
 
+    int channels() const { return m_channels; }
+
   private:
 
     int  m_channels;

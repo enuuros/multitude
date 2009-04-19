@@ -76,7 +76,8 @@ namespace Resonant {
     public:
       SampleVoice(Sample * s = 0)
         : m_state(INACTIVE), m_gain(1), m_relPitch(1.0f),
-          m_sample(s), m_position(0)	  
+          m_sampleChannel(0), m_targetChannel(0), 
+          m_sample(s), m_position(0)
       {}
 
       bool synthesize(float ** out, int n);
@@ -104,6 +105,9 @@ namespace Resonant {
       float m_relPitch;
       double m_dpos;
 
+      int      m_sampleChannel;
+      int      m_targetChannel;
+      bool     m_loop;
       Sample * m_sample;
       unsigned m_position;
     };

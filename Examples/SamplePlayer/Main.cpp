@@ -19,54 +19,118 @@
 #include <Resonant/DSPNetwork.hpp>
 #include <Resonant/ModuleSamplePlayer.hpp>
 
+#include <sndfile.h>
+
+#include <errno.h>
 #include <stdlib.h>
+
+/** A simple application that plays audio samples.
+    
+    
+*/
 
 int main(int argc, char ** argv)
 {
   const char * file = "../test.wav";
   float pitch = 1.0f;
+  int repeats = 5;
+  bool loop = false;
 
   for(int i = 1; i < argc; i++) {
-    if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
+    if(strcmp(argv[i], "--loop") == 0)
+      loop = true;
+    else if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
       file = argv[++i];
-    else if(strcmp(argv[i], "--pitch") == 0 && (i + 1) < argc)
+    else if(strcmp(argv[i], "--relpitch") == 0 && (i + 1) < argc)
       pitch = atof(argv[++i]);
+    else if(strcmp(argv[i], "--repeat") == 0 && (i + 1) < argc)
+      repeats = atoi(argv[++i]);
     else if(strcmp(argv[i], "--verbose") == 0)
       Radiant::enableVerboseOutput(true);
-    else
+    else {
       printf("%s # Unknown argument \"%s\"\n", argv[0], argv[i]);
+      return EINVAL;
+    }
+  }
+
+  
+  SF_INFO info;
+  SNDFILE * sndf = sf_open(file, SFM_READ, & info);
+
+  if(!sndf) {
+    Radiant::error("Could not open sound file \"%s\"", file);
+    return EINVAL;
   }
 
   Resonant::DSPNetwork dsp;
 
   dsp.start();
 
+  Resonant::ControlData control, control2;
+
   Resonant::DSPNetwork::Item item;
   item.m_module = new Resonant::ModuleSamplePlayer(0);
   item.m_module->setId("sampleplayer");
   
+  control.writeInt32(2);
+  control.rewind();
+
+  item.m_module->control("channels", & control);
+  
   dsp.addModule(item);
 
-  Resonant::ControlData control;
 
+  control.rewind();
   // Id of the receiving module
   control.writeString("sampleplayer/playsample");
+
   // File name
   control.writeString(file);
+
   // Gain
+  control.writeString("gain");
   control.writeFloat32(0.745f);
+
   // Relative pitch
+  control.writeString("relpitch");
   control.writeFloat32(pitch);
+
+  // Infinite looping;
+  control.writeString("loop");
+  control.writeInt32(loop);
+
+  if(info.channels >= 2) {
+
+    control2 = control;
+
+    // control2.writeString("gain");
+    // control2.writeFloat32(0.03);
+
+    control2.writeString("samplechannel");
+    control2.writeInt32(1);
+
+    control2.writeString("targetchannel");
+    control2.writeInt32(1);
+
+
+    control2.writeString("end");
+  }
+
+  control.writeString("end");
 
   Radiant::Sleep::sleepMs(500);
 
-  for(int i = 0; i < 5; i++) {
-    Radiant::info("Playing sample %s", file);
+  for(int i = 0; i < repeats; i++) {
+    Radiant::info("Playing sample %s (%d of %d)", file, i + 1, repeats);
     dsp.send(control);
-    Radiant::Sleep::sleepMs(900);
-  }
 
-  Radiant::Sleep::sleepS(3);
+    if(info.channels >= 2)
+      dsp.send(control2);
+
+    Radiant::Sleep::sleepS(info.frames / (44100 * pitch) + 1);
+  }
+  
+  Radiant::Sleep::sleepS(loop ? 100 : 3);
 
   dsp.stop();
 

@@ -176,7 +176,8 @@ namespace Resonant {
       }
     }
     
-    int minchans = Nimble::Math::Min(info->maxInputChannels, info->maxOutputChannels);
+    // int minchans = Nimble::Math::Min(info->maxInputChannels, info->maxOutputChannels);
+    int minchans = info->maxOutputChannels; 
 
     
     Radiant::info("AudioLoop::startReadWrite # channels = %d limits = %d %d",
@@ -192,7 +193,8 @@ namespace Resonant {
 
     m_d->m_outParams.channelCount = channels;
     m_d->m_outParams.sampleFormat = paFloat32;
-    m_d->m_outParams.suggestedLatency = Pa_GetDeviceInfo( m_d->m_outParams.device )->defaultLowOutputLatency;
+    m_d->m_outParams.suggestedLatency =
+      Pa_GetDeviceInfo( m_d->m_outParams.device )->defaultLowOutputLatency;
     m_d->m_outParams.hostApiSpecificStreamInfo = 0;
 
     m_d->m_inParams = m_d->m_outParams;
