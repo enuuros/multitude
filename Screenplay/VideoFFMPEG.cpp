@@ -504,7 +504,7 @@ namespace Screenplay {
     }
 
     if(!acname) {
-      info("%s # File %s has unsupported audio codec.", fname, filename);
+      debug("%s # File %s has unsupported audio codec.", fname, filename);
       // return false;
     }
 
@@ -549,7 +549,7 @@ namespace Screenplay {
 
   bool VideoInputFFMPEG::seekPosition(double timeSeconds)
   {
-    info("VideoInputFFMPEG::seekPosition # %lf", timeSeconds);
+    debug("VideoInputFFMPEG::seekPosition # %lf", timeSeconds);
 
     if(m_vcontext)
       avcodec_flush_buffers(m_vcontext);

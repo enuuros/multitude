@@ -18,7 +18,7 @@ LIB_NIMBLE = -lNimble
 LIB_OPENGL = -lGL -lGLU
 LIB_GLU = -lGLU
 LIB_RADIANT = -lRadiant
-LIB_RESONANT = -lResonant
+LIB_RESONANT = -lResonant 
 LIB_SCREENPLAY = -lScreenplay
 LIB_VIDEODISPLAY = -lVideoDisplay
 LIB_VALUABLE = -lValuable
@@ -48,7 +48,7 @@ macx {
     LIB_LUMINOUS = -framework,Luminous
     LIB_NIMBLE = -framework,Nimble
     LIB_RADIANT = -framework,Radiant
-    LIB_RESONANT = -framework,Resonant
+    LIB_RESONANT = -framework,Resonant -lsndfile
     LIB_SCREENPLAY = -framework,Screenplay
     LIB_VALUABLE = -framework,Valuable
     LIB_VIDEODISPLAY = -framework,VideoDisplay

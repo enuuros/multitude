@@ -130,6 +130,8 @@ namespace Luminous
       layout = PixelFormat::LAYOUT_LUMINANCE;
     } else if(cinfo.output_components == 3) {
       layout = PixelFormat::LAYOUT_RGB;
+    } else if(cinfo.output_components == 4) {
+      layout = PixelFormat::LAYOUT_RGBA;
     } else {
       Radiant::error("ImageCodecJPEG::read # Unsupported number of components (%d) found", cinfo.output_components);
       jpeg_destroy_decompress(&cinfo);

@@ -3,6 +3,7 @@ include(../multitude.pri)
 HEADERS += BGThread.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
+HEADERS += CPUMipmapStore.hpp
 HEADERS += DynamicTexture.hpp
 HEADERS += EnableStep.hpp
 HEADERS += Error.hpp
@@ -45,6 +46,7 @@ SOURCES += ImageCodecTGA.cpp
 SOURCES += BGThread.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
+SOURCES += CPUMipmapStore.cpp
 SOURCES += DynamicTexture.cpp
 SOURCES += Error.cpp
 SOURCES += FramebufferObject.cpp

@@ -17,6 +17,7 @@
 #define LUMINOUS_CPU_MIPMAPS_HPP
 
 #include <Luminous/BGThread.hpp>
+#include <Luminous/Collectable.hpp>
 #include <Luminous/Image.hpp>
 #include <Luminous/Task.hpp>
 
@@ -41,14 +42,14 @@ namespace Luminous {
       exceeded. The classes work in both single- and multi-threaded
       environments.
   */
-  class CPUMipmaps
+  class CPUMipmaps : Collectable
   {
   private:
   public:
     
     friend class GPUMipmaps;
 
-    LUMINOUS_API CPUMipmaps();
+    LUMINOUS_API CPUMipmaps(GarbageCollector * collector = 0);
     LUMINOUS_API virtual ~CPUMipmaps();
 
     /** Drop old CPU mipmaps from memory.

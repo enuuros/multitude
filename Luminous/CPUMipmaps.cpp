@@ -39,6 +39,7 @@ namespace Luminous {
       m_file(file)
   {
     assert(dest);
+    // info("CPUMipmaps::Loader::Loader # %s", file.c_str());
   }
 
   CPUMipmaps::Loader::~Loader()
@@ -61,7 +62,7 @@ namespace Luminous {
           m_file.c_str(), (int) ok);
     */
     /* Now we may need to skip some pixels so that dimensions are
-       multipels of 4. Why NVidia, why??? */
+       multiples of 4. Why NVidia, why??? */
     
     while(image->height() & 0x3)
       image->forgetLastLine();
@@ -81,9 +82,11 @@ namespace Luminous {
       assert(m_dest->m_state != FINISHED);
 
       if(!ok) {
-        error("Loading failed for %s", m_file.c_str());
+        error("CPUMipmaps::Loader::doTask # Loading failed for %s",
+	      m_file.c_str());
         m_dest->m_state = FAILED;
 	delete image;
+	m_master->m_ok = false;
       }
       else {
         m_dest->m_image = image;
@@ -276,12 +279,13 @@ namespace Luminous {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   
-  CPUMipmaps::CPUMipmaps()
-    : m_nativeSize(100, 100),
+  CPUMipmaps::CPUMipmaps(GarbageCollector * collector)
+    : Collectable(collector),
+      m_nativeSize(100, 100),
       m_maxLevel(0),
       m_fileMask(0),
       m_hasAlpha(false),
-      m_ok(false)
+      m_ok(true)
   {}
 
   CPUMipmaps::~CPUMipmaps()
@@ -311,7 +315,7 @@ namespace Luminous {
     float bigdim = Nimble::Math::Min(size.maximum(),
 				     (float) m_nativeSize.maximum());
 
-    int bestlevel = Nimble::Math::Round(log(bigdim) / log(2.0) + 0.3f);
+    int bestlevel = Nimble::Math::Round(log(bigdim) / log(2.0) + 0.0f);
     
     if(bestlevel > m_maxLevel)
       bestlevel = m_maxLevel;
@@ -516,6 +520,8 @@ namespace Luminous {
   void CPUMipmaps::createLevelScalers(int level)
   {
     // trace("CPUMipmaps::createLevelScalers # %d", level);
+    if(!m_ok)
+      return;
 
     CPUItem * item = m_stack[level].ptr();
 

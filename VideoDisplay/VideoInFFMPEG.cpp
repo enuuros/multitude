@@ -71,7 +71,7 @@ namespace VideoDisplay {
     }
 
     if(!m_video.hasAudioCodec()) {
-      Radiant::error("%s # No audio codec", fname);
+      Radiant::debug("%s # No audio codec", fname);
       /* m_video.close();
 	 return false; */
     }
