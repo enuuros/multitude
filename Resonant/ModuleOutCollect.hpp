@@ -57,7 +57,10 @@ namespace Resonant {
     int  m_channels;
     DSPNetwork * m_host;
     std::vector<float> m_interleaved;
-    std::vector<Move>  m_map;
+
+    typedef std::vector<Move> container;
+    typedef container::iterator iterator;
+    container m_map;
   };
 
   inline bool operator == (const ModuleOutCollect::Move & a,

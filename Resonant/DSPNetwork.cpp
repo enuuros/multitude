@@ -68,6 +68,29 @@ namespace Resonant {
     return -1;
   }
 
+  
+  void DSPNetwork::Item::removeInputsFrom(const char * id)
+  {
+    for(std::list<NewConnection>::iterator it = m_connections.begin();
+	it != m_connections.end(); ) {
+
+      if(strcmp(id, (*it).m_sourceId) == 0) {
+	it = m_connections.erase(it);
+      }
+      else
+	it++;
+    }
+
+    for(unsigned i = 0; i < m_inputs.size(); ) {
+      if(strcmp(id, m_inputs[i].m_moduleId) == 0) {
+	m_inputs.erase(m_inputs.begin() + i);
+	m_ins.erase(m_ins.begin() + i);
+      }
+      else
+	i++;
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
@@ -372,7 +395,7 @@ namespace Resonant {
       return true;
 
     int mchans = item.m_outs.size();
-    int outchans = 2; // hardware output channels
+    // int outchans = 2; // hardware output channels
     const char * id = m->id();
 
     if(mchans) {
@@ -382,6 +405,7 @@ namespace Resonant {
         Radiant::trace(FATAL, "DSPNetwork::checkNewItems # No collector \"%s\"",
             m_collect->id());
 
+      /*
       for(int i = 0; i < outchans; i++) {
         Connection conn;
         conn.setModuleId(id);
@@ -395,6 +419,14 @@ namespace Resonant {
         m_controlData.rewind();
         m_collect->control("removemapping", & m_controlData);
       }
+      */
+      m_controlData.rewind();
+      m_controlData.writeString(id);
+      m_controlData.rewind();
+      m_collect->control("removemappings", & m_controlData);
+      
+      oi->removeInputsFrom(id);
+
       compile( * oi);
       debug("DSPNetwork::uncompile # uncompiled \"%s\"", id);
     }
@@ -432,7 +464,7 @@ namespace Resonant {
       NewConnection & nc = *conit;
       if(strcmp(nc.m_targetId, item.m_module->id()) == 0) {
         item.m_inputs.push_back(Connection(nc.m_sourceId,
-              nc.m_sourceChannel));
+					   nc.m_sourceChannel));
         debug("Item[%d].m_inputs[%d] = [%d,%d]", location, i,
             nc.m_sourceId, nc.m_sourceChannel);
       }
@@ -441,7 +473,11 @@ namespace Resonant {
 
     item.m_module->prepare(ins, outs);
 
-    assert(ins == (int) item.m_inputs.size());
+    if(ins != (int) item.m_inputs.size()) {
+      fatal("DSPNetwork::compile # input size mismatch %d != %d",
+	    ins, (int) item.m_inputs.size());
+    }
+
 
     item.m_ins.resize(ins);
 

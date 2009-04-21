@@ -146,6 +146,7 @@ namespace Resonant {
       void eraseInput(const Connection & c);
       int findInInput(float * ptr) const;
       int findInOutput(float * ptr) const;
+      void removeInputsFrom(const char * id);
 
       Module * m_module;
 

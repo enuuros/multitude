@@ -31,6 +31,7 @@
 namespace Resonant {
 
   using Radiant::debug;
+  using Radiant::info;
   using Radiant::error;
   
   ModuleOutCollect::ModuleOutCollect(Application * a , DSPNetwork * host)
@@ -48,6 +49,15 @@ namespace Resonant {
     channelsIn = m_map.size();
     m_channels = m_host->outChannels();
 
+    /* For debugging pusposes you can override (=expand) the number of
+       output channels. */ 
+    const char * forcechans = getenv("RESONANT_FORCE_CHANNELS");
+    if(forcechans) {
+      m_channels =  atoi(forcechans);
+      Radiant::info("ModuleOutCollect::prepare # forcing channel count to %d",
+		    m_channels);
+    }
+    
     assert(m_channels != 0);
 
     m_interleaved.resize(m_channels * MAX_CYCLE);
@@ -65,33 +75,49 @@ namespace Resonant {
     Move tmp;
     
     ok = control->readString(tmp.sourceId, Module::MAX_ID_LENGTH);
-    tmp.from = control->readInt32( & ok);
-    tmp.to   = control->readInt32( & ok);
 
-    Radiant::debug("ModuleOutCollect::control # %s", address);
-    
-    if(!ok) {
-     error("ModuleOutCollect::control # Could not parse control # %s",
-                     tmp.sourceId);
-      return;
-    }
-    else if(strcmp(address, "newmapping") == 0) {
-      m_map.push_back(tmp);
-      debug("ModuleOutCollect::control # newmapping %s %d -> %d",
-            tmp.sourceId, tmp.from, tmp.to);
-    }
-    else if(strcmp(address, "removemapping") == 0) {
-      std::vector<Move>::iterator it =
-	std::find(m_map.begin(), m_map.end(), tmp);
+    if(strcmp(address, "removemappings") == 0) {
+      // Remove all the mappings that match the given input.
 
-      if(it != m_map.end()) {
-	m_map.erase(it);
+      for(iterator it = m_map.begin(); it != m_map.end(); ) {
+	if(strcmp(tmp.sourceId, (*it).sourceId) == 0) {
+	  info("ModuleOutCollect::control # dropping connection to %s:%d",
+		tmp.sourceId, (*it).from);
+	  it = m_map.erase(it);
+	}
+	else 
+	  it++;
       }
-      else
-	error("ModuleOutCollect::control # Could not erase mapping");
     }
     else {
-     error("ModuleOutCollect::control # No param \"%s\"", address);
+      tmp.from = control->readInt32( & ok);
+      tmp.to   = control->readInt32( & ok);
+      
+      Radiant::debug("ModuleOutCollect::control # %s", address);
+      
+      if(!ok) {
+	error("ModuleOutCollect::control # Could not parse control # %s",
+	      tmp.sourceId);
+	return;
+      }
+      else if(strcmp(address, "newmapping") == 0) {
+	m_map.push_back(tmp);
+	debug("ModuleOutCollect::control # newmapping %s %d -> %d",
+	      tmp.sourceId, tmp.from, tmp.to);
+      }
+      else if(strcmp(address, "removemapping") == 0) {
+	iterator it = std::find(m_map.begin(), m_map.end(), tmp);
+	
+	if(it != m_map.end()) {
+	  m_map.erase(it);
+	}
+	else
+	  error("ModuleOutCollect::control # Could not erase mapping # %s:%d -> %d",
+		tmp.sourceId, tmp.from, tmp.to);
+      }
+      else {
+	error("ModuleOutCollect::control # No param \"%s\"", address);
+      }
     }
   }
 
