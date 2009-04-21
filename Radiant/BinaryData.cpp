@@ -24,6 +24,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef WIN32
+# include <WinPort.h>
+#endif
+ 
 namespace Radiant {
 
   static bool __verbose = true;
