@@ -81,7 +81,7 @@ namespace Resonant {
 
       for(iterator it = m_map.begin(); it != m_map.end(); ) {
 	if(strcmp(tmp.sourceId, (*it).sourceId) == 0) {
-	  info("ModuleOutCollect::control # dropping connection to %s:%d",
+	  debug("ModuleOutCollect::control # dropping connection to %s:%d",
 		tmp.sourceId, (*it).from);
 	  it = m_map.erase(it);
 	}
