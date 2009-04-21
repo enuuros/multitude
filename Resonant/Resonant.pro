@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-CONFIG += debug
-
 HEADERS += Application.hpp 
 HEADERS += AudioFileHandler.hpp
 HEADERS += AudioLoop.hpp 
