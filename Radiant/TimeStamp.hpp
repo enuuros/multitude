@@ -101,7 +101,7 @@ namespace Radiant {
     int64_t days() const { return m_val / ticksPerDay(); }
     double  daysD() const { return m_val / (double) ticksPerDay(); }
     int64_t seconds() const { return m_val >> 24; }
-    int64_t fractions() const { return m_val >> 24; }
+    int64_t fractions() const { return m_val & 0xFFFFFF; }
     double secondsD()  const { return m_val / (double) FRACTIONS_PER_SECOND; }
     double subSecondsD() const 
     { return (m_val & 0xFFFFFF) / (double) FRACTIONS_PER_SECOND; }
@@ -113,6 +113,9 @@ namespace Radiant {
     { return (that.m_val - m_val) / (double) FRACTIONS_PER_SECOND; }
     double usecsTo(const TimeStamp & that)
     { return (that.m_val - m_val) * 1000000.0/(double) FRACTIONS_PER_SECOND; }
+
+    /** Returns the amount of time passed since this timestamp. */ 
+    TimeStamp since() const { return getTime() - *this; }
 
     inline operator type & () { return m_val; }
     inline operator const type & () const { return m_val; }

@@ -29,6 +29,7 @@ namespace Radiant {
       m_hour(0),
       m_minute(0),
       m_second(0),
+      m_microsecond(0),
       m_summerTime(false)
   {}
 
@@ -51,6 +52,9 @@ namespace Radiant {
     m_minute   = tms.tm_min;
     m_second   = tms.tm_sec;
     m_summerTime = (tms.tm_isdst == 0) ? false : true;
+
+    TimeStamp fract = t.fractions();
+    m_microsecond = fract.secondsD() * 1000000.0;
   }
 
   DateTime::~DateTime()
@@ -128,5 +132,11 @@ namespace Radiant {
     //trace("tval as ctime = %s (%d %d %d)", ctime( & tval), year, month, day);
 
     return TimeStamp(tval * TimeStamp::ticksPerSecond());
+  }
+
+  void DateTime::print(char * buf, bool withmillisecs)
+  {
+    sprintf(buf, "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d",
+	    monthDay() + 1, month() + 1, year(), hour(), minute(), second());
   }
 }

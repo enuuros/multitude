@@ -44,6 +44,8 @@ namespace Radiant {
     int minute() const { return m_minute; }
     /// Seconds since last full minute (0-59)
     int second() const { return m_second; }
+    int milliSecond() const { return m_microsecond / 1000; }
+    int microSecond() const { return m_microsecond; }
     /// Reset the hour, minute and second values to zero
     void clearTime();
 
@@ -72,7 +74,8 @@ namespace Radiant {
     int daysInMonth();
 
     TimeStamp asTimeStamp() const;
-    
+
+    void print(char * buf, bool withmillisecs = false);
 
   private:
     int m_year;
@@ -82,6 +85,7 @@ namespace Radiant {
     int m_hour;
     int m_minute;
     int m_second;
+    int m_microsecond;
     bool m_summerTime;
   };
 }
