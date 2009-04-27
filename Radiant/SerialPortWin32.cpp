@@ -51,7 +51,7 @@ namespace Radiant
     if(m_hPort == INVALID_HANDLE_VALUE)
     {
       const std::string   strErr = StringUtils::getLastErrorMessage();
-      //error("%s # Failed to open serial port (%s): %s", fName, device, strErr.c_str());
+      error("%s # Failed to open serial port (%s): %s", fName, device, strErr.c_str());
 
       m_hPort = 0;
       return false;
