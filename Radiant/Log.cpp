@@ -23,6 +23,8 @@
 
 #include <list>
 #include <string>
+#include <cassert>
+#include <stdarg.h>
 
 namespace Radiant {
 
