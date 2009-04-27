@@ -1030,6 +1030,8 @@ void Video1394::sendSoftwareTrigger()
 	{
 		assert(isInitialized());
 
+		m_image.clearPointers();
+
 		if (!cmu_camera)
 			return false;
 
