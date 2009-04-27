@@ -25,7 +25,7 @@ namespace Poetic
 {
 
   /// A wrapper class for convenience
-  class GPUWrapperFont : public GPUFont, public Luminous::GLResource
+  class GPUWrapperFont : public GPUFont
   {
     public:
       GPUWrapperFont(GPUManagedFont * gf, CPUWrapperFont * cf);

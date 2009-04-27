@@ -12,6 +12,7 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "CPUFontBase.hpp"
 #include "GPUFontBase.hpp"
 
@@ -253,27 +254,6 @@ namespace Poetic
     return 0;
   }
 
-  GPUFont * CPUFontBase::getGPUFont(Luminous::GLResources * resources) 
-  {
-    Luminous::GLResource * gf = resources->getResource(this);
-
-    if(gf) {
-      GPUFont * font = dynamic_cast<GPUFont *> (gf);
-      assert(font);
-      return font;
-    }
-
-    // puts("CPUFontBase::getGPUFont # New GPU font");
-    
-    GPUFontBase * font = createGPUFont();
-    assert(font != 0);
-    
-    resources->addResource(this, font);
-
-    m_gpuFonts.push_back(font);
-    
-    return font;
-  }
 
 }
 

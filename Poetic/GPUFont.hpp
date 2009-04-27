@@ -15,6 +15,8 @@
 #ifndef POETIC_GPU_FONT_HPP
 #define POETIC_GPU_FONT_HPP
 
+#include <Luminous/GLResource.hpp>
+
 #include <Poetic/Export.hpp>
 
 #include <Nimble/Matrix3.hpp>
@@ -24,7 +26,7 @@ namespace Poetic
   class CPUFont;
 
   /// A common interface for all fonts that reside on the GPU
-  class POETIC_API GPUFont
+  class POETIC_API GPUFont : public Luminous::GLResource
   {
     public:
       virtual ~GPUFont() {}

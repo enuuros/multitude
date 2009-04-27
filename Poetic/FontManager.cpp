@@ -36,6 +36,7 @@ namespace Poetic
 #elif __linux__
     "/usr/share/fonts/truetype/ttf-dejavu"
 #else
+    // Mac OSX
     "/Library/Frameworks/MultiTouch.framework/Fonts"
 #endif
   );

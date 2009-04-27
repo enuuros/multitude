@@ -17,8 +17,6 @@
 
 #include <Nimble/Matrix3.hpp>
 
-#include <Luminous/GLResource.hpp>
-
 #include <Poetic/Export.hpp>
 #include <Poetic/GPUFont.hpp>
 #include <Poetic/CPUFontBase.hpp>
@@ -29,7 +27,7 @@ namespace Poetic
   class Glyph;
 
   /// A base class for different fonts that reside on the GPU
-  class POETIC_API GPUFontBase : public GPUFont, public Luminous::GLResource
+  class POETIC_API GPUFontBase : public GPUFont
   {
     public:
       GPUFontBase(CPUFontBase * font);

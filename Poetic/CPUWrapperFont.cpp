@@ -116,5 +116,10 @@ namespace Poetic
     return false;
   }
 
+  GPUFont * CPUWrapperFont::createGPUFont()
+  {
+    Radiant::error("CPUWrapperFont::createGPUFont # Should not be called");
+    return 0;
+  }
 }
 

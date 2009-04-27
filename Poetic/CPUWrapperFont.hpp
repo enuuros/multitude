@@ -55,6 +55,8 @@ namespace Poetic
     GPUWrapperFont * getGPUFont(Luminous::GLResources * resources);
 
   protected:
+
+    virtual GPUFont * createGPUFont();
     CPUManagedFont * m_managedFont;
     int m_pointSize;
     float m_minimumRenderSize;

@@ -26,16 +26,16 @@
 namespace Poetic
 {
 
+  class GPUFont;
+
   /// An abstract base class providing a common interface for all fonts residing
   /// in CPU memory.
   class POETIC_API CPUFont
   {
-    public:
-      virtual ~CPUFont() {}
-  
-
-      virtual float advance(const char * str, int n = -1) = 0;
-      virtual float advance(const wchar_t * str, int n = -1) = 0;
+  public:
+    virtual ~CPUFont() {}
+    virtual float advance(const char * str, int n = -1) = 0;
+    virtual float advance(const wchar_t * str, int n = -1) = 0;
 
     float advance(const std::string & str)
     {
@@ -57,6 +57,9 @@ namespace Poetic
       virtual void bbox(const wchar_t * wstr, BBox & bbox) = 0;
 
       virtual bool load(const char * fontFilePath) = 0;
+
+      virtual GPUFont * createGPUFont() = 0;
+      GPUFont * getGPUFont(Luminous::GLResources * resources);
   };
 
 }

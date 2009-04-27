@@ -27,6 +27,7 @@ SOURCES += BBox.cpp
 SOURCES += Charmap.cpp
 SOURCES += CPUBitmapFont.cpp
 SOURCES += CPUBitmapGlyph.cpp
+SOURCES += CPUFont.cpp
 SOURCES += CPUFontBase.cpp
 SOURCES += CPUManagedFont.cpp
 SOURCES += CPUWrapperFont.cpp

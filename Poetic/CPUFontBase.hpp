@@ -57,8 +57,6 @@ namespace Poetic
 
       virtual bool load(const char * fontFilePath);
 
-      virtual GPUFontBase * createGPUFont() = 0;
-      GPUFont * getGPUFont(Luminous::GLResources * resources);
 
     protected:
       virtual Glyph * makeGlyph(unsigned int g) = 0;
