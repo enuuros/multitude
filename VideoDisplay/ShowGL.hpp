@@ -54,8 +54,6 @@ namespace VideoDisplay {
   /// Objects throws the video to an OpenGL device
   class ShowGL
   {
-  public:
-
     class YUVProgram : public Luminous::GLSLProgramObject
     {
     public:
@@ -101,6 +99,8 @@ namespace VideoDisplay {
       Vector2i             m_texSizes[3];
       Luminous::Texture2D  m_blankTex;
     };
+
+  public:
 
     enum State {
       PLAY,
@@ -165,16 +165,21 @@ namespace VideoDisplay {
 
     Radiant::TimeStamp duration() { return m_duration; }
     Radiant::TimeStamp position() { return m_position; }
+    /// The relative playback position of the current video
     double relativePosition() { return position() / (double) duration(); }
 
+    /** Seek to given position. Due to limitations of underlying seek
+	algorithms, this method is usually not exact. */
     VIDEODISPLAY_API void seekTo(Radiant::TimeStamp time);
     VIDEODISPLAY_API void seekToRelative(double relative);
     void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
 
-    /// Information on how the frames have been displayed.
+    /** Information on how the frames have been displayed. The
+	histogram information is useful mostly for debug purposes. */
     int histogramPoint(int index) const { return m_histogram[index]; } 
     int histogramIndex() const { return m_updates; }
-
+    
+    /** Returns true if this video has been loaded with subtitles. */
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
   private:

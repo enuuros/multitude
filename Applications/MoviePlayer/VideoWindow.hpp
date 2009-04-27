@@ -71,8 +71,8 @@ protected:
 
   QTimer m_timer;
   Radiant::TimeStamp m_lastActivity;
-  Poetic::CPUFontBase * m_subCPUFont;
-  Poetic::GPUFont * m_subGPUFont;
+  Poetic::CPUFont  * m_subCPUFont;
+  // Poetic::GPUFont * m_subGPUFont;
 
   Radiant::ResourceLocator m_resourceLocator;
   Luminous::GLResources m_glResources;

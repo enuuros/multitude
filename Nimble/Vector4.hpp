@@ -69,7 +69,8 @@ namespace Nimble {
     T             maximum() const { T q = x>y?x:y; T a = z>w?z:w; return q>a?q:a; }
 
     /// Cast to Vector2T
-    Vector2T<T> & vector2() { return * (Vector2T<T> *) this; }
+    const Vector2T<T> & xy() const { return * (Vector2T<T> *) this; }
+    /// Cast to Vector2T
     const Vector2T<T> & vector2() const { return * (Vector2T<T> *) this; }
     /// Cast to Vector3T
     Vector3T<T> & vector3() { return * (Vector3T<T> *) this; }

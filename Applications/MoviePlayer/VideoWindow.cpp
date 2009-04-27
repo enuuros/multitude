@@ -18,6 +18,7 @@
 #include <Luminous/MatrixStep.hpp>
 #include <Luminous/Utils.hpp>
 
+#include <Radiant/DateTime.hpp>
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
 
@@ -25,8 +26,9 @@
 
 #include <VideoDisplay/SubTitles.hpp>
 
-#include <Poetic/CPUBitmapFont.hpp>
-#include <Poetic/GPUTextureFont.hpp>
+#include <Poetic/FontManager.hpp>
+// #include <Poetic/CPUBitmapFont.hpp>
+// #include <Poetic/GPUTextureFont.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QKeyEvent>
@@ -36,7 +38,7 @@ using namespace Nimble;
 
 VideoWindow::VideoWindow()
   : m_subCPUFont(0),
-    m_subGPUFont(0),
+    // m_subGPUFont(0),
     m_glResources(m_resourceLocator),
     m_showProgress(true),
     m_showSteps(false)
@@ -132,12 +134,15 @@ void VideoWindow::initializeGL()
   std::string filename = Radiant::FileUtils::findFile(ttf, path);
 
   if(filename.size()) {
-    m_subCPUFont = new Poetic::CPUBitmapFont();
+    m_subCPUFont = Poetic::FontManager::instance().getFont(ttf);
+    /*
+    new Poetic::CPUBitmapFont();
     if(m_subCPUFont->load(filename.c_str())) {
       m_subCPUFont->setFaceSize(25, 72);
       m_subGPUFont = new Poetic::GPUTextureFont(m_subCPUFont);
       Radiant::trace(Radiant::DEBUG, "VideoWindow::initializeGL # Got font");
     }
+    */
   }
 }
 
@@ -145,6 +150,12 @@ void VideoWindow::paintGL()
 {
   // puts("VideoWindow::paintGL");
   
+  Poetic::GPUFont * gpufont = 0;
+  
+  if(m_subCPUFont) {
+    gpufont = m_subCPUFont->getGPUFont(& m_glResources);
+  }
+
   int w = width();
   int h = height();
 
@@ -210,11 +221,12 @@ void VideoWindow::paintGL()
     span *= 0.5f;
 
     Luminous::MatrixStep mstep;
-    glTranslatef(float((index % cols) * itemw), float((index / cols) * itemh), 0.0f);
+    glTranslatef(float((index % cols) * itemw),
+		 float((index / cols) * itemh), 0.0f);
     index++;
 
     show.render(& m_glResources,
-		center - span, center + span, 0, m_subGPUFont, h);
+		center - span, center + span, 0, gpufont, h);
     
     if(!m_showProgress)
       continue;
@@ -248,7 +260,8 @@ void VideoWindow::paintGL()
       
 	glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
 	
-	glVertex2f(float(i) * sscale, float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
+	glVertex2f(float(i) * sscale,
+		   float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
       }
       
       glEnd();
@@ -261,7 +274,17 @@ void VideoWindow::paintGL()
     
     float relative = show.relativePosition();
 
-    glRectf(0.0f, float(itemh) - 30.0f, float(itemw) * relative, float(itemh) - 5.0f);
+    glRectf(0.0f, float(itemh) - 30.0f,
+	    float(itemw) * relative, float(itemh) - 5.0f);
+
+    if(gpufont) {
+      Radiant::DateTime dt(show.position());
+      char buf[64];
+      sprintf(buf, "%d:%.2d:%.2d", dt.hour(), dt.minute(), dt.second());
+      
+      gpufont->render
+	(buf, Vector2(10.0f, itemh - m_subCPUFont->lineHeight()));
+    }
   }
 }
 
