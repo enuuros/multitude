@@ -479,7 +479,6 @@ namespace Radiant {
                        int height, 
                        FrameRate framerate)
   {
-
     // Only one thread at a time, just to make things sure.
     Guard guard( & __mutex);
 
@@ -555,7 +554,7 @@ namespace Radiant {
     if(dc1394_video_set_framerate(m_camera, fps) != DC1394_SUCCESS) {
       trace(FATAL, "%s # dc1394_video_set_framerate failed",
           fname);
-    }  
+    }
 
     // If the camera is already running (eg. unclean exit), stop it
     dc1394switch_t isoWasOn;
@@ -819,7 +818,10 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
   {
     assert(isInitialized());
 
-    assert(m_started == false);
+    if(m_started)
+      return true;
+
+    // assert(m_started == false);
 
     if (dc1394_video_set_transmission(m_camera, DC1394_ON) != DC1394_SUCCESS) {
       Radiant::error("Video1394::start # unable to start camera iso transmission");
@@ -1196,15 +1198,17 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     int flags = DC1394_CAPTURE_FLAGS_DEFAULT;
 
 #ifdef __linux__
-    if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC"))
+    if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC")) {
       flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
+      debug("Video1394::captureSetup # Ignoring bandwidth allocation");
+    }
 #endif
     dc1394error_t res = dc1394_capture_setup(m_camera, buffers, flags);
     if(res != DC1394_SUCCESS) {
 
       Radiant::error("Video1394::captureSetup # "
-          "unable to setup camera- check that the video mode,"
-          "framerate and format are supported (%s)", 
+		     "unable to setup camera- check that the video mode,"
+		     "framerate and format are supported (%s)", 
 		     dc1394_error_get_string(res));
     }
 
