@@ -62,6 +62,7 @@ namespace Radiant {
   const int INT64_MARKER  = makeMarker(',', 'l', '\0', '\0');
   const int TS_MARKER     = makeMarker(',', 't', '\0', '\0');
   const int STRING_MARKER = makeMarker(',', 's', '\0', '\0');
+  const int WSTRING_MARKER = makeMarker(',', 'S', '\0', '\0');
   const int BLOB_MARKER   = makeMarker(',', 'b', '\0', '\0');
 
   BinaryData::BinaryData()
@@ -128,6 +129,18 @@ namespace Radiant {
       memcpy(ptr, s, len + 1);
     else
       getRef<int32_t>() = 0;
+  }
+
+  void BinaryData::writeWString(const std::wstring & str)
+  {
+    ensure(8 + str.size() * 4);
+
+    getRef<int32_t>() = WSTRING_MARKER;
+    getRef<int32_t>() = str.size();
+
+    for(unsigned i = 0; i < str.size(); i++) {
+      getRef<int32_t>() = str[i];
+    }
   }
 
   void BinaryData::writeBlob(const void * ptr, int n)
@@ -296,6 +309,25 @@ namespace Radiant {
     return true;
   }
 
+  bool BinaryData::readWString(std::wstring & str)
+  {
+    int32_t marker = getRef<int32_t>();
+
+    if(marker != WSTRING_MARKER) {
+      skipParameter(marker);
+      return false;
+    }
+    int len = getRef<int32_t>();
+
+    str.resize(len);
+
+    for(int i = 0; i < len; i++) {
+      str[i] = getRef<int32_t>();
+    }
+
+    return true;
+  }
+
   bool BinaryData::readBlob(void * ptr, int n)
   {
     int32_t marker = getRef<int32_t>();
@@ -417,7 +449,7 @@ namespace Radiant {
     unsigned need = m_current + bytes;
     if(need > m_size) {
       if(m_shared)
-        Radiant::trace(FATAL, "BinaryData::ensure # Sharing data, cannot ensure required space");
+	fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
       
       m_size = need + 128 + need / 16;
       m_buf = (char *) realloc(m_buf, m_size);
@@ -444,6 +476,10 @@ namespace Radiant {
     else if(marker == STRING_MARKER) {
       const char * str = & m_buf[m_current];
       m_current += stringSpace(str);
+    }
+    else if(marker == WSTRING_MARKER) {
+      int len = getRef<int32_t>();
+      m_current += len * 4;
     }
     else if(marker == BLOB_MARKER) {
       int n = getRef<int32_t>();

@@ -88,7 +88,12 @@ namespace Radiant {
     /// Write a null-terminated string to the buffer
     void writeString(const char *);
     void writeString(const std::string & str) { writeString(str.c_str()); }
-
+    /** Writes a wide-string to the buffer. The string is internally
+	stored as 32-bit integers, since that is the typical
+	wchar_t.*/
+    void writeWString(const std::wstring & str);
+    
+    /// Writes binary blob to the buffer.
     void writeBlob(const void * ptr, int n);
 
     /// Writes a 2D 32-bit floating point vector to the data buffer
@@ -110,6 +115,8 @@ namespace Radiant {
     /// Read a null-terminated string from the buffer
     bool readString(char * str, int maxbytes);
     bool readString(std::string & str);
+    /// Reads a wide string from the buffer
+    bool readWString(std::wstring & str);
     /// Reads a blob of expected size
     bool readBlob(void * ptr, int n);
     
