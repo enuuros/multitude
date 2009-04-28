@@ -1048,14 +1048,12 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
     m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
 
-    if(euid != 0)
-      debug("Video1394::open # %.8x%.8x (%s)", 
+    // if(euid != 0)
+    debug("Video1394::open # m_euid = %.8x%.8x (%s)", 
           (int) (m_euid >> 32), (int) m_euid, euid);
-
 
     if (m_initialized)
       close();
-
 
     {
       std::vector<CameraInfo> cameras;
@@ -1162,7 +1160,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       else
         is1394b = true;
 
-      info("%s # is1394b = %d", (int) is1394b);
+      info("%s # is1394b = %d", fname, (int) is1394b);
 
       if(is1394b) {
         if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
@@ -1172,14 +1170,14 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
           if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
 	     != DC1394_SUCCESS) {
-            trace(FATAL, "%s # dc1394_video_set_iso_speed failed",
+            trace(FATAL, "%s # dc1394_video_set_iso_speed 400 failed",
                 fname);
           }
         }
       }
       else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
 	      != DC1394_SUCCESS) {
-	error("%s # dc1394_video_set_iso_speed failed", fname);
+	error("%s # dc1394_video_set_iso_speed 400 failed", fname);
 	return false;
       }
     }
@@ -1201,15 +1199,13 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC"))
       flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
 #endif
-    
-
-    if(dc1394_capture_setup(m_camera, buffers, flags)
-       != DC1394_SUCCESS) {
+    dc1394error_t res = dc1394_capture_setup(m_camera, buffers, flags);
+    if(res != DC1394_SUCCESS) {
 
       Radiant::error("Video1394::captureSetup # "
           "unable to setup camera- check that the video mode,"
           "framerate and format are supported (%s)", 
-          m_videodevice.c_str());
+		     dc1394_error_get_string(res));
     }
 
   }
