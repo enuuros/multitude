@@ -1157,6 +1157,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       if(dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_1394B)
           != DC1394_SUCCESS) {
         dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_LEGACY);
+	debug("%s # Could not set operation mode to 1394B", fname);
       }
       else
         is1394b = true;
@@ -1164,8 +1165,11 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       if(is1394b) {
         if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
             != DC1394_SUCCESS) {
+	  
+	  debug("%s # Could not set ISO speed to 800", fname);
+
           if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
-              != DC1394_SUCCESS) {
+	     != DC1394_SUCCESS) {
             trace(FATAL, "%s # dc1394_video_set_iso_speed failed",
                 fname);
           }
@@ -1198,6 +1202,7 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
 #endif
     
+
     if(dc1394_capture_setup(m_camera, buffers, flags)
        != DC1394_SUCCESS) {
 
