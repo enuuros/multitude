@@ -32,7 +32,6 @@ namespace Radiant {
 
   VideoImage::~VideoImage()
   {
-    //freeMemory();
   }
 
   bool VideoImage::allocateMemory(ImageFormat fmt, int w, int h)
@@ -215,10 +214,9 @@ namespace Radiant {
     };
   }
 
-  void VideoImage::clearPointers()
-  {
-    for(int i = 0; i < 4; i++)
-      m_planes[i].set(0, 0, PLANE_UNKNOWN);
+  void VideoImage::freeMemory() 
+  { 
+    for(int i = 0; i < 4; i++) 
+      m_planes[i].freeMemory(); 
   }
-
 }

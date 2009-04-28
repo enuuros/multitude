@@ -170,7 +170,7 @@ namespace Radiant {
     bool copyData(const VideoImage & that);
 
     /// Free memory on all the planes
-    void freeMemory() { for(int i = 0; i < 4; i++) m_planes[i].freeMemory(); }
+    void freeMemory();
 
     /** Partially unimplemented function that returns the size of the
      * image data in bytes.*/
@@ -203,8 +203,6 @@ namespace Radiant {
 
     /// Fill the image with 0
     void zero();
-
-    void clearPointers();
 
     /// Plane information
     Plane m_planes[4];

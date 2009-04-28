@@ -1018,8 +1018,6 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       dc1394_camera_free(m_camera);
     }
 
-    m_image.clearPointers();
-
     m_initialized = false;
     m_camera = 0;
 
