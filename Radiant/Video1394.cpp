@@ -1162,6 +1162,8 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       else
         is1394b = true;
 
+      info("%s # is1394b = %d", (int) is1394b);
+
       if(is1394b) {
         if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
             != DC1394_SUCCESS) {
@@ -1174,8 +1176,6 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
                 fname);
           }
         }
-	else
-	  dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400);
       }
       else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
 	      != DC1394_SUCCESS) {
