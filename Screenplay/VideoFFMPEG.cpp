@@ -518,8 +518,6 @@ namespace Screenplay {
 //    if(!m_ic)
 //      return false;
 
-    m_image.clearPointers();
-
     if(m_frame)
       av_free(m_frame);
 
