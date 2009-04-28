@@ -64,6 +64,7 @@ namespace Nimble {
     Vector2T&	negate		(void)						      { x=-x; y=-y; return *this; }
     Vector2T&	normalize	(T len = T(1))			{ T l = length(); if (l!= T(0)) *this *= (len/l); return *this; }
     Vector2T&	scale		(const Vector2T& v)				{ x *= v.x; y *= v.y; return *this; }
+    Vector2T&	scale		(const T & xs, const T & ys)				{ x *= xs; y *= ys; return *this; }
     Vector2T&	descale		(const Vector2T& v)			{ x /= v.x; y /= v.y; return *this; }
     Vector2T&	rotate		(double s, double c)		{ T t = x; x = (T)(x*c+y*-s); y = (T)(t*s+y*c); return *this; }
     Vector2T&	rotate		(double angle)					{ return rotate(sin(angle), cos(angle)); }
