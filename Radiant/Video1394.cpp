@@ -1193,17 +1193,15 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
 
   void Video1394::captureSetup(int buffers)
   {
-    if(dc1394_capture_setup
+    int flags = DC1394_CAPTURE_FLAGS_DEFAULT;
+
 #ifdef __linux__
-        /* On Linux, only allocate channel, no bandwidth. This way you
-           can get more cameras into a single FW bus. */
-        (m_camera, buffers, DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC)
-        //(m_camera, NUM_BUFFERS, DC1394_CAPTURE_FLAGS_DEFAULT)
-#else
-        // On Others, allocate both channels and bandwidth.
-        (m_camera, buffers, DC1394_CAPTURE_FLAGS_DEFAULT)
+    if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC"))
+      flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
 #endif
-        != DC1394_SUCCESS) {
+    
+    if(dc1394_capture_setup(m_camera, buffers, flags)
+       != DC1394_SUCCESS) {
 
       Radiant::error("Video1394::captureSetup # "
           "unable to setup camera- check that the video mode,"
