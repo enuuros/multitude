@@ -32,7 +32,7 @@ namespace Radiant {
 
   VideoImage::~VideoImage()
   {
-    freeMemory();
+    //freeMemory();
   }
 
   bool VideoImage::allocateMemory(ImageFormat fmt, int w, int h)
