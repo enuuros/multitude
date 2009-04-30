@@ -31,37 +31,37 @@ namespace Nimble {
   class RandomUniform
   {
   public:
-    RandomUniform(unsigned val = 0) : m_val(val) {}
+    RandomUniform(uint32_t val = 0) : m_val(val) {}
     ~RandomUniform() {}
 
     /// Random numbers between 0 and 1
     inline float rand01() 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (float) tmp * (1.0f / (float) ((unsigned) 0xffffffff));
+      return (float) tmp * (1.0f / (float) ((uint32_t) 0xffffffff));
     }
 
     /// Random numbers between 0 and x
     inline float rand0X(float x) 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (float) tmp * (x / (float) ((unsigned) 0xffffffff));
+      return (float) tmp * (x / (float) ((uint32_t) 0xffffffff));
     }
       
     /// Random numbers between 0 and x
     inline double rand0X(double x) 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (double) tmp * (x / (double) ((unsigned) 0xffffffff));
+      return (double) tmp * (x / (double) ((uint32_t) 0xffffffff));
     }
       
     /// Random numbers between 0 and x-1
-    inline unsigned rand0X(unsigned x) 
+    inline uint32_t rand0X(uint32_t x) 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
       return tmp % x;
     }
@@ -69,17 +69,17 @@ namespace Nimble {
     /// Random numbers between -1 and 1
     inline float rand11() 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (float) tmp * (2.0f / (float) ((unsigned) 0xffffffff)) - 1.0f;
+      return (float) tmp * (2.0f / (float) ((uint32_t) 0xffffffff)) - 1.0f;
     }
 
     /// Random numbers between -x and x
     inline float randXX(float x) 
     { 
-      unsigned tmp = m_val * m_randMul + 1;
+      uint32_t tmp = m_val * m_randMul + 1;
       m_val = tmp;
-      return (float) tmp * (2.0f * x / (float) ((unsigned) 0xffffffff)) - x;
+      return (float) tmp * (2.0f * x / (float) ((uint32_t) 0xffffffff)) - x;
     }
 
     /// Random numbers between min and max
@@ -88,10 +88,17 @@ namespace Nimble {
       return rand0X(max - min) + min;
     }
     
-    inline unsigned rand() 
+    /* */
+    inline uint32_t rand() 
     { 
       m_val = m_val * m_randMul + 1;
       return m_val;
+    }
+
+    inline uint32_t randN(uint32_t range) 
+    { 
+      m_val = m_val * m_randMul + 1;
+      return (m_val >> 3) % range;
     }
 
     // Random 2d unit vector
@@ -103,8 +110,8 @@ namespace Nimble {
     static RandomUniform & instance() { return m_instance; }
 
   private:
-    unsigned m_val;
-    static const unsigned m_randMul = 134695621;  
+    uint32_t m_val;
+    static const uint32_t m_randMul = 134695621;  
     static RandomUniform  m_instance;
   };
 
@@ -117,7 +124,7 @@ namespace Nimble {
       /// @param mean the mean of the normal distribution
       /// @param stdDev the standard deviation for the normal distribution
       /// @param seed seed value for the pseudo-random sequence
-      RandomGaussian(float mean = 0.0f, float stdDev = 1.0f, unsigned seed = 0) : m_uniform(seed), m_mean(mean), m_stdDev(stdDev) {}
+      RandomGaussian(float mean = 0.0f, float stdDev = 1.0f, uint32_t seed = 0) : m_uniform(seed), m_mean(mean), m_stdDev(stdDev) {}
 
       /// Generate a random number from the distribution
       /// @return a pseudo-random number

@@ -387,6 +387,10 @@ namespace VideoDisplay {
 
   bool ShowGL::start()
   {
+    if(m_state == PLAY) {
+      return true;
+    }
+    
     return open(m_filename.c_str(), m_dsp, 0.0f); 
   }
 
