@@ -25,6 +25,8 @@
 
 #include <Luminous/GLResources.hpp>
 
+#include <Nimble/Random.hpp>
+
 #include <Resonant/DSPNetwork.hpp>
 
 #include <VideoDisplay/ShowGL.hpp>
@@ -36,11 +38,22 @@
 
 class VideoWindow : public QGLWidget
 {
+  Q_OBJECT;
 public:
   VideoWindow();
   virtual ~VideoWindow();
 
+  /** Adds a new movie to the player. Calling open multiple times will
+      open several videos inside the window.  */
   bool open(const char * filename, const char * audiodev);
+
+  /** Performs a stress test, using all the movies that are available. */
+  void stressTest();
+
+public slots:
+  
+  /** Perform some random operation as part of the stress testing. */
+  void randomOperation();
 
 protected:
 
@@ -75,8 +88,8 @@ protected:
   // Poetic::GPUFont * m_subGPUFont;
 
   Radiant::ResourceLocator m_resourceLocator;
-  Luminous::GLResources m_glResources;
-
+  Luminous::GLResources    m_glResources;
+  Nimble::RandomUniform m_rand;
   bool   m_showProgress;
   bool   m_showSteps;
 };

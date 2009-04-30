@@ -76,6 +76,56 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
   return true;
 }
 
+void VideoWindow::stressTest()
+{
+  Radiant::info("Start stress testing");
+  QTimer::singleShot(1000, this, SLOT(randomOperation()));
+}
+
+void VideoWindow::randomOperation()
+{
+  enum Operations {
+    START,
+    STOP,
+    TOGGLE_PLAYBACK,
+    SEEK,
+    OPERATIONS_COUNT
+  };
+
+  // Select movie object to stress:
+  int index = m_rand.randN(m_movies.size());
+  
+  iterator it = m_movies.begin();
+
+  for(int i = 0; i < index; i++)
+    it++;
+
+  VideoDisplay::ShowGL & show = (*it).ptr()->m_show;
+
+  int operation = m_rand.randN(OPERATIONS_COUNT);
+  
+  Radiant::info("Random operation %d on item %d", operation, index);
+
+  if(operation == START) {
+    show.start();
+  }
+  else if(operation == STOP) {
+    show.stop();
+  }
+  else if(operation == TOGGLE_PLAYBACK) {
+    show.togglePause();
+  }
+  else if(operation == SEEK) {
+    float loc = m_rand.rand01();
+    Radiant::info("Seek to %.4f", loc);
+    show.seekToRelative(loc);
+  }
+
+  // Call this function again, after a random interval:
+  int time = m_rand.randN(2000.0f / (float) m_movies.size());
+  QTimer::singleShot(time, this, SLOT(randomOperation()));
+}
+
 #define ALL_MOVIES(X) for(iterator it = m_movies.begin(); it != m_movies.end(); it++) (*it)->m_show.X
 
 void VideoWindow::keyPressEvent(QKeyEvent * e)
