@@ -514,6 +514,7 @@ namespace Resonant {
       SNDFILE * sndf = sf_open(file.c_str(), SFM_READ, & info);
 
       if(!sndf) {
+        Radiant::debug("ModuleSamplePlayer::createAmbientBackground # failed to load '%s'", file.c_str());
         continue;
       }
       
