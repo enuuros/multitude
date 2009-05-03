@@ -59,12 +59,7 @@ namespace Luminous {
     glLoadIdentity();
     m_keyStone.applyGlState();
     glPushMatrix(); // Recovered in cleanEdges
-/*
-    gluOrtho2D(m_graphicsLocation[0] - m_seams[0],
-        m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
-        m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
-        m_graphicsLocation[1] - m_seams[3]);
-*/
+
     glOrtho(m_graphicsLocation[0] - m_seams[0],
         m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
         m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
@@ -324,7 +319,17 @@ namespace Luminous {
   MultiHead::Window & MultiHead::window(unsigned i)
   {
     if(i >= m_windows.size()) {
-      Radiant::trace(Radiant::FATAL, "MultiHead::window # Array index %u exceeds array size %u",
+      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
+		     i, (unsigned) m_windows.size());
+    }
+
+    return * m_windows[i].ptr();
+  }
+
+  const MultiHead::Window & MultiHead::window(unsigned i) const
+  {
+    if(i >= m_windows.size()) {
+      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
 		     i, (unsigned) m_windows.size());
     }
 

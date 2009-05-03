@@ -45,6 +45,7 @@ namespace Radiant {
   static std::vector<dc1394camera_t *> __infos;
 
   static std::set<int> __iso_channels;
+  static std::set<int> __taken;
 
   inline int diFPS2dcFPS(FrameRate fps)
   {
@@ -677,7 +678,7 @@ namespace Radiant {
 
     /* Tricky to get the frame-rate right:
 
-http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the_packet_size_for_a_wanted_frame_rate
+       http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the_packet_size_for_a_wanted_frame_rate
 */
 
     float busPeriod; // Bus period in seconds
@@ -1016,12 +1017,17 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
       stop();
 
     if(m_camera) {
-      // dc1394_release_camera(m_camera);
       dc1394_camera_free(m_camera);
     }
 
     m_initialized = false;
     m_camera = 0;
+
+    std::set<int>::iterator it = __taken.find(m_cameraNum);
+    if(it == __taken.end())
+      error("Video1394::close # taken mismatch %d", (int) m_cameraNum);
+    else
+      __taken.erase(it);
 
     return true;
   }
@@ -1108,9 +1114,16 @@ http://damien.douxchamps.net/ieee1394/libdc1394/v2.x/faq/#How_can_I_work_out_the
     }
 
     if(m_euid != 0 && !foundCorrect) {
-      debug("%s # Could not find the camera with euid = %llx", fname, (long long) m_euid);
+      debug("%s # Could not find the camera with euid = %llx",
+	    fname, (long long) m_euid);
       return false;
     }
+
+    if(__taken.find(m_cameraNum) != __taken.end()) {
+      error("%s # Camera index %d is already taken", fname, (int) m_cameraNum);
+    }
+
+    __taken.insert(m_cameraNum);
 
     assert(m_cameraNum < (int) __infos.size());
 

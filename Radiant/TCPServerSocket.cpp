@@ -76,7 +76,7 @@ namespace Radiant {
     //puts("Binding");
 
     if(bind(m_fd, ( struct sockaddr * ) & server_address,
-	     sizeof ( server_address ) ) < 0 ){
+	    sizeof ( server_address ) ) < 0 ){
       close();
       return errno;
     }
@@ -99,7 +99,7 @@ namespace Radiant {
 #ifndef WIN32
     ::close(m_fd);
 #else
-	 ::closesocket((SOCKET)m_fd);
+    ::closesocket((SOCKET)m_fd);
 #endif
 
     m_fd = -1;
@@ -120,20 +120,20 @@ namespace Radiant {
     poll(&pfd, 1, waitMicroSeconds / 1000);
     return pfd.revents & POLLIN;
 #else
-	  // -- emulate using select()
-	  struct timeval timeout;
-	  timeout.tv_sec = 0;
-	  timeout.tv_usec = waitMicroSeconds;
-	  fd_set readfds;
-	  FD_ZERO(&readfds);
+    // -- emulate using select()
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = waitMicroSeconds;
+    fd_set readfds;
+    FD_ZERO(&readfds);
 #pragma warning (disable:4127 4389)  
-	  FD_SET(m_fd, &readfds);
+    FD_SET(m_fd, &readfds);
 #pragma warning (default:4127 4389)
-	  int status = select(m_fd, &readfds, 0,0, &timeout);
-	  if (status < 0)
-		  return false;
-	  char data;
-	  return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
+    int status = select(m_fd, &readfds, 0,0, &timeout);
+    if (status < 0)
+      return false;
+    char data;
+    return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
 #endif
   }
 

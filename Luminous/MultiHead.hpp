@@ -184,6 +184,8 @@ namespace Luminous {
         unsigned areaCount() const { return m_areas.size(); }
         /// Get one of the areas
         Area & area(unsigned i) { return * m_areas[i].ptr(); }
+        /// Get one of the areas
+        const Area & area(unsigned i) const { return * m_areas[i].ptr(); }
 
         LUMINOUS_API void setSeam(float seam);
 
@@ -252,6 +254,7 @@ namespace Luminous {
     unsigned windowCount() const { return m_windows.size(); }
     /// Access one of the windows
     LUMINOUS_API Window & window(unsigned i);
+    LUMINOUS_API const Window & window(unsigned i) const;
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }
