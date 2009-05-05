@@ -120,8 +120,9 @@ namespace VideoDisplay {
     VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp, float previewpos = 0.05f,
                                int targetChannel = -1);
     /// Opens the file for playing.
-    VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
+    /* VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
                                Radiant::TimeStamp pos = 0);
+    */
     /// Stops file playback
     VIDEODISPLAY_API bool start();
     /// Stops file playback
@@ -130,17 +131,11 @@ namespace VideoDisplay {
     /// Toggles play/pause state
     VIDEODISPLAY_API bool togglePause();
 
-
     VIDEODISPLAY_API bool pause();
 
     VIDEODISPLAY_API bool unpause();
 
     State state() const { return m_state; }
-
-    /// Create OpenGL resources
-    // bool contextInit();
-    /// Free OpenGL resources
-    // bool contextCleanup();
 
     /// Update the video image from reader-thread
     VIDEODISPLAY_API void update();
@@ -185,8 +180,6 @@ namespace VideoDisplay {
   private:
 
     void clearHistogram();
-    void getPreview(double pos);
-
 
     std::string             m_filename;
     VideoIn               * m_video;
@@ -196,7 +189,7 @@ namespace VideoDisplay {
     Resonant::DSPNetwork::Item m_dspItem;
     AudioTransfer         * m_audio;
     int                     m_targetChannel;
-    Radiant::TimeStamp      m_frameTime;
+    int                     m_videoFrame;
     int                     m_count;
     State                   m_state;
     int                     m_histogram[HISTOGRAM_POINTS];
@@ -204,10 +197,6 @@ namespace VideoDisplay {
 
     Radiant::TimeStamp      m_duration;
     Radiant::TimeStamp      m_position;
-
-    Radiant::VideoImage     m_blankDisplay;
-    bool                    m_blankReload;
-    bool                    m_useBlank;
 
     SubTitles               m_subTitles;
     

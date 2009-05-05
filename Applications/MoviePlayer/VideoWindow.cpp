@@ -49,6 +49,7 @@ VideoWindow::VideoWindow()
 
 VideoWindow::~VideoWindow()
 {
+  m_movies.clear();
   m_dsp.stop();
 }
 
@@ -143,6 +144,7 @@ void VideoWindow::keyPressEvent(QKeyEvent * e)
   else if(e->key() == Qt::Key_Escape) {
     makeCurrent();
     m_glResources.clear();
+    m_movies.clear();
     QCoreApplication::exit();
   }
   else if(e->key() == Qt::Key_Space)

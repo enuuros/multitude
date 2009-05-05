@@ -220,6 +220,7 @@ namespace FireView {
       m_video.disableTrigger();
 
 #ifndef WIN32
+    // Only unsder Linux & OSX
     int pola = CamView::triggerPolarity();
     if(pola > 0) {
       info("Setting trigger polarity to %d", pola);

@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+CONFIG += debug
+
 HEADERS += AudioTransfer.hpp
 HEADERS += Export.hpp
 HEADERS += ShowGL.hpp
@@ -7,11 +9,12 @@ HEADERS += SubTitles.hpp
 HEADERS += VideoIn.hpp
 HEADERS += VideoInFFMPEG.hpp
 
+SOURCES += VideoIn.cpp
+SOURCES += VideoInFFMPEG.cpp
+
 SOURCES += AudioTransfer.cpp
 SOURCES += ShowGL.cpp
 SOURCES += SubTitles.cpp
-SOURCES += VideoIn.cpp
-SOURCES += VideoInFFMPEG.cpp
 
 unix:PKGCONFIG += libavutil
 

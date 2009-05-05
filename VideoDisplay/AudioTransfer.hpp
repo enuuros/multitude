@@ -21,9 +21,9 @@
 
 #include <Resonant/Module.hpp>
 
-namespace VideoDisplay {
+#include <VideoDisplay/VideoIn.hpp>
 
-  class VideoIn;
+namespace VideoDisplay {
 
   class AudioTransfer : public Resonant::Module
   {
@@ -38,15 +38,31 @@ namespace VideoDisplay {
     bool started() const { return m_started; }
     bool stopped() const { return m_stopped; }
 
-    Radiant::TimeStamp audioTime();
+    unsigned videoFrame();
 
   private:
+
+    static void deInterleave(float ** dest, const float * src,
+			     int chans, int frames, int offset);
+    static void zero(float ** dest,
+		     int chans, int frames, int offset);
+
     VideoIn * m_video;
     int       m_channels;
     bool      m_started;
     bool      m_stopped;
     Radiant::AudioSampleFormat m_sampleFmt;
     long      m_frames;
+
+    int       m_videoFrame;
+    int       m_showFrame;
+    int       m_availAudio;
+    int       m_total;
+    Radiant::TimeStamp m_startTime;
+
+    // Time stamp at the beginning of the current audio package.
+    Radiant::TimeStamp m_baseTS;
+    int                m_sinceBase;
   };
 
 }

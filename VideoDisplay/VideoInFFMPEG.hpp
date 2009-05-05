@@ -41,17 +41,20 @@ namespace VideoDisplay {
     virtual double durationSeconds();
     
     /// Seek to some time in the movie
-    virtual bool seekTo(double seconds);
+    // virtual bool seekTo(double seconds);
   
   private:
 
     virtual bool open(const char * filename, Radiant::TimeStamp pos);
-    virtual void close();
-    virtual void getNextFrame();
+
+    virtual void videoGetSnapshot(Radiant::TimeStamp pos);
+    virtual void videoPlay(Radiant::TimeStamp pos);
+    virtual void videoGetNextFrame();
+    virtual void videoStop();
 
     void doSeek(const Radiant::VideoImage * im, const void * audio, int audioframes);
-    void needResync();
-    void doSync(int aframes, Radiant::TimeStamp vt);
+    // void needResync();
+    // void doSync(int aframes, Radiant::TimeStamp vt);
     void endOfFile();
 
     int m_needSync;
@@ -59,7 +62,18 @@ namespace VideoDisplay {
     Radiant::TimeStamp m_syncAccu;
     Radiant::TimeStamp m_syncOffset;
 
+    Radiant::TimeStamp m_duration;
+    Radiant::TimeStamp m_frameTime;
+    double m_frameDelta;
+
     Screenplay::VideoInputFFMPEG m_video;
+
+    std::vector<float> m_audiobuf;
+    int m_buffered;
+    
+    int m_channels;
+    int m_sampleRate;
+    Radiant::AudioSampleFormat m_auformat;
   };
 
 }

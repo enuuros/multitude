@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+CONFIG += debug
+
 HEADERS += Export.hpp
 HEADERS += VideoFFMPEG.hpp
 
@@ -7,7 +9,7 @@ SOURCES += VideoFFMPEG.cpp
 
 unix:PKGCONFIG += libavutil libavformat libavcodec
 
-LIBS += $$LIB_RADIANT
+LIBS += $$LIB_RADIANT $$LIB_PATTERNS
 
 win32 {
 	DEFINES += SCREENPLAY_EXPORT

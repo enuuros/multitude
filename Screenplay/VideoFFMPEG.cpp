@@ -15,6 +15,7 @@
 
 #include "VideoFFMPEG.hpp"
 
+#include <Radiant/Mutex.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/Types.hpp>
 
@@ -43,7 +44,9 @@ namespace Screenplay {
 
   using namespace Radiant;
 
-  int VideoInputFFMPEG::m_debug = 0;
+  static Radiant::MutexStatic __openmutex;
+  
+  int VideoInputFFMPEG::m_debug = 1;
 
   VideoInputFFMPEG::VideoInputFFMPEG()
     : m_acodec(0),
@@ -89,6 +92,8 @@ namespace Screenplay {
 
   const Radiant::VideoImage * VideoInputFFMPEG::captureImage()
   {
+    assert(this != 0);
+
     static const char * fname = "VideoInputFFMPEG::captureImage";
 
     int got = false;
@@ -184,14 +189,21 @@ namespace Screenplay {
       if (m_pkt->stream_index == m_aindex && (m_flags & Radiant::WITH_AUDIO)
           && m_acodec) {
 
-        /* int64_t pts = m_pkt.pts;
-           if(!pts)
-           pts = m_pkt.dts;
-           if(!pts)
-           pts = m_acontext->frame_number;
+	int64_t pts = m_pkt->pts;
+	if(!pts)
+	  pts = m_pkt->dts;
+	if(!pts)
+	  pts = m_acontext->frame_number;
+	
+	debug("VideoInputFFMPEG::captureImage # Audiof = %d pts = %d, dts = %d",
+	      m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts);
 
-           trace("VideoInputFFMPEG::captureImage # Audio pts = %d", (int) pts);
-           */
+	if(m_audioFrames == 0) {
+	  if(pts)
+	    m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
+	  else
+	    m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
+	}
 
         int index = m_audioFrames * m_audioChannels;
 
@@ -201,10 +213,11 @@ namespace Screenplay {
             & m_audioBuffer[index],
             & aframes, m_pkt->data, m_pkt->size);
 
-        // trace("Decoding audio # %d", aframes);
-
         aframes /= (2 * m_audioChannels);
 
+	if(m_debug)
+	  debug("Decoding audio # %d", aframes);
+	
         m_audioFrames   += aframes;
         m_capturedAudio += aframes;
 
@@ -229,15 +242,18 @@ namespace Screenplay {
 	perFrame = 20000;
       }
 
+      debug("VideoInputFFMPEG::captureImage # %lf %d %d %d aufr in total %d vidfr",
+	    secs, perFrame, (int) m_audioFrames, (int) m_capturedAudio, (int) m_capturedVideo);
+
+      m_audioTS = m_lastTS;
+
       m_audioFrames   += perFrame;
       m_capturedAudio += perFrame;
 
-      debug("VideoInputFFMPEG::captureImage # %lf %d aufr in total %d vidfr",
-	   secs, (int) m_capturedAudio, (int) m_capturedVideo);
-
       if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-	Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d",
-		       perFrame, m_audioFrames);
+	error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d %lf",
+	      perFrame, m_audioFrames, secs);
+	assert(perFrame > 0);
       }
     }
 
@@ -394,6 +410,10 @@ namespace Screenplay {
   bool VideoInputFFMPEG::open(const char * filename,
 			      int flags)
   {
+
+    if(m_vcodec)
+      close();
+
     assert(filename != 0 && m_vcodec == 0);
 
     m_flags = 0;
@@ -413,6 +433,8 @@ namespace Screenplay {
     m_sinceSeek = 0;
 
     bzero( & params, sizeof(params));
+
+    GuardStatic g( & __openmutex);
 
     int err = av_open_input_file( & m_ic, filename, iformat, 0, ap);
 
@@ -473,6 +495,7 @@ namespace Screenplay {
       m_flags = m_flags | WITH_AUDIO;
 
     m_audioFrames = 0;
+    m_capturedAudio = 0;
 
     if(m_aindex >= 0 && m_acontext) {
       m_audioBuffer.resize(300000 * 2);
@@ -517,6 +540,8 @@ namespace Screenplay {
   {
 //    if(!m_ic)
 //      return false;
+
+    GuardStatic g( & __openmutex);
 
     if(m_frame)
       av_free(m_frame);

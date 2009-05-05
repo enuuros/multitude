@@ -17,10 +17,13 @@
 #ifndef VIDEODISPLAY_VIDEO_IN_HPP
 #define VIDEODISPLAY_VIDEO_IN_HPP
 
+#include <Nimble/Vector2.hpp>
+
 #include <Radiant/Condition.hpp>
 #include <Radiant/VideoImage.hpp>
 #include <Radiant/IODefs.hpp>
 #include <Radiant/Mutex.hpp>
+#include <Radiant/RefPtr.hpp>
 #include <Radiant/Thread.hpp>
 #include <Radiant/TimeStamp.hpp>
 
@@ -37,21 +40,65 @@ namespace VideoDisplay {
   {
   public:
 
+    enum {
+      MAX_AUDIO_CHANS = 5,
+      MAX_AUDIO_SAMPLES_IN_FRAME = MAX_AUDIO_CHANS * 28000
+    };
+    
+    enum FrameType {
+      FRAME_INVALID,
+      FRAME_STREAM,
+      FRAME_LAST,
+      FRAME_SNAPSHOT
+    };
+
+    /* Request from the host. */ 
+    enum Request {
+      NO_REQUEST,
+      START,
+      SEEK,
+      STOP,
+    };
+
     class Frame
     {
     public:
+      Frame();
+      ~Frame();
+
       Radiant::VideoImage m_image;
       Radiant::TimeStamp m_time;
       Radiant::TimeStamp m_absolute;
+      Radiant::TimeStamp m_audioTS;
+      float     m_audio[MAX_AUDIO_SAMPLES_IN_FRAME];
+      int       m_audioFrames;
+      FrameType m_type;
+    };
+
+    class VideoInfo
+    {
+    public:
+      VideoInfo()
+	: m_videoFrameSize(0, 0),
+	  m_videoDurationSecs(0),
+	  m_fps(-1)
+      {}
+
+      Nimble::Vector2i m_videoFrameSize;
+      double           m_videoDurationSecs;
+      double           m_fps;
     };
 
     VideoIn();
     virtual ~VideoIn();
 
-    Frame * nextFrame();
+    
+    Frame * getFrame(int i, bool updateCounter);
 
-    virtual bool startDecoding(const char * filename, Radiant::TimeStamp pos);
-    virtual void stopDecoding();
+    virtual bool init(const char * filename, Radiant::TimeStamp pos);
+    virtual bool play();
+    virtual void stop();
+    virtual bool seek(Radiant::TimeStamp pos);
 
     virtual void getAudioParameters(int * channels, 
 				    int * sample_rate,
@@ -59,33 +106,42 @@ namespace VideoDisplay {
 
     virtual float fps() = 0;
 
-    const void * getAudio(int * frames, bool block);
+    int latestFrame() const { return m_decodedFrames - 1; }
     bool atEnd();
+    bool isFrameAvailable(int frame) const
+    { return(int) m_decodedFrames > frame && frame >= 0;}
 
+    /// Finds the closest frame to the given time
+    int selectFrame(int starfrom, Radiant::TimeStamp time) const;
     uint decodedFrames() const { return m_decodedFrames; }
     uint frameRingBufferSize() const { return m_frames.size(); }
 
-    bool done() { return m_done && 
-	((m_consumedFrames + 4) >= m_decodedFrames);}
-
     virtual double durationSeconds() = 0;
-    virtual bool seekTo(double seconds) = 0;
 
     uint finalFrames()   const { return m_finalFrames; }
-    uint finalAuFrames() const { return m_finalAuFrames; }
 
     const char * name() { return m_name.c_str(); }
 
     static void setDebug(int level);
     static void toggleDebug();
 
+    const VideoInfo & vinfo() const { return m_info; }
+
   protected:
 
     virtual void childLoop () ;
 
     virtual bool open(const char * filename, Radiant::TimeStamp pos) = 0;
-    virtual void close() = 0;
-    virtual void getNextFrame() = 0;
+
+    bool playing() { return m_playing; }
+    // Get snapshot of the video in the given position
+    virtual void videoGetSnapshot(Radiant::TimeStamp pos) = 0;
+    // Start playing the video in the given position
+    virtual void videoPlay(Radiant::TimeStamp pos) = 0;
+    // Get the next next frame
+    virtual void videoGetNextFrame() = 0;
+    // Stop the video
+    virtual void videoStop() = 0;
 
     /** An implmentation should use the methods below: */
     void allocateFrames(uint frameCount, uint width, uint height, 
@@ -93,8 +149,10 @@ namespace VideoDisplay {
 
     void deallocateFrames();
 
-    void putFrame(const Radiant::VideoImage *, Radiant::TimeStamp show, 
-                  Radiant::TimeStamp absolute);
+    Frame * putFrame(const Radiant::VideoImage *,
+		     FrameType type,
+		     Radiant::TimeStamp show, 
+		     Radiant::TimeStamp absolute);
 
     void allocateAudioBuffer(uint frameCount, 
 			     uint channels, 
@@ -102,11 +160,12 @@ namespace VideoDisplay {
 
     void putAudio(const void * audio_data, int audio_frames);
 
-    std::vector<Frame> m_frames;
 
-    std::vector<char> m_audio;
+    std::vector<Radiant::RefPtr<Frame> > m_frames;
 
-    volatile uint m_decodedFrames;  
+    VideoInfo m_info;
+
+    volatile uint m_decodedFrames;
     volatile uint m_consumedFrames;
     volatile uint m_finalFrames;
 
@@ -115,6 +174,11 @@ namespace VideoDisplay {
     volatile uint m_consumedAuFrames;
     volatile uint m_finalAuFrames;
     volatile bool m_breakBack;
+    volatile bool m_playing;
+
+    int m_channels;
+    int m_sample_rate;
+    Radiant::AudioSampleFormat m_auformat;
 
     uint m_auBufferSize;
     uint m_auFrameBytes;
@@ -127,10 +191,6 @@ namespace VideoDisplay {
     Radiant::Condition m_acond;
     Radiant::MutexAuto m_amutex;
 
-    Radiant::MutexAuto m_seekMutex;
-
-    double         m_seekTarget;
-    int            m_seekNot;
 
     float          m_fps;
     bool           m_done;
@@ -138,6 +198,10 @@ namespace VideoDisplay {
     std::string    m_name;
 
     static int     m_debug;
+
+    volatile Request   m_request;
+    Radiant::TimeStamp m_requestTime;
+    Radiant::MutexAuto m_requestMutex;
 
   private:
     /// Disabled

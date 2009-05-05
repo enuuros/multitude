@@ -24,20 +24,32 @@ namespace VideoDisplay {
   using namespace Radiant;
 
   VideoInFFMPEG::VideoInFFMPEG()
-    : m_needSync(0),
-      m_gotSync(0)
-  {}
+    : m_channels(0),
+      m_sampleRate(44100),
+      m_auformat(ASF_INT16)
+  
+  {
+    m_audiobuf.resize(2 * 44100);
+  }
 
   VideoInFFMPEG::~VideoInFFMPEG()
   {
-	close();	
+    info("VideoInFFMPEG::~VideoInFFMPEG");
+    if(isRunning()) {
+      m_continue = false;
+      m_vcond.wakeAll(m_vmutex);
+      waitEnd();
+    }
+    info("VideoInFFMPEG::~VideoInFFMPEG # EXIT");
   }
 
   void VideoInFFMPEG::getAudioParameters(int * channels, 
-				     int * sample_rate,
-				     AudioSampleFormat * format)
+					 int * sample_rate,
+					 AudioSampleFormat * format)
   {
-    m_video.getAudioParameters(channels, sample_rate, format);
+    * channels = m_channels;
+    * sample_rate = m_sample_rate;
+    * format = m_auformat;
   }
 
   float VideoInFFMPEG::fps()
@@ -57,12 +69,16 @@ namespace VideoDisplay {
   {
     static const char * fname = "VideoInFFMPEG::open";
 
+    Radiant::info(fname);
+
     if(!m_video.open(filename, WITH_VIDEO | WITH_AUDIO))
       return false;
 
+    m_video.getAudioParameters( & m_channels, & m_sample_rate, & m_auformat);
+
     m_name = filename;
 
-    m_seekTarget = -1.0f;
+    m_buffered = 0;
 
     if(!m_video.hasVideoCodec()) {
       Radiant::error("%s # No video codec", fname);
@@ -75,9 +91,9 @@ namespace VideoDisplay {
       /* m_video.close();
 	 return false; */
     }
-
+    pos = TimeStamp::createSecondsD(10.0);
     if(pos != 0) {
-      Radiant::trace(Radiant::DEBUG, "%s # Doing a seek", fname);
+      debug("%s # Doing a seek", fname);
       if(!m_video.seekPosition(pos.secondsD()))
 	m_video.seekPosition(0);
     }
@@ -90,62 +106,90 @@ namespace VideoDisplay {
     if(!img->m_width)
       return false;
 
+    m_info.m_videoFrameSize.make(img->m_width, img->m_height);
+
     float fp = fps();
 
-    Radiant::trace(Radiant::DEBUG, "%s # %f fps", fname, fp);
+    m_duration = TimeStamp::createSecondsD(m_video.durationSeconds());
+
+    debug("%s # %f fps", fname, fp);
 
     float latency = 1.5f;
-
-    allocateFrames((uint) (fp * latency), 
-		   img->m_width, img->m_height, img->m_format);
+    m_frames.resize(latency * fp);
 
     int channels, sample_rate;
     AudioSampleFormat fmt;
 
     m_video.getAudioParameters( & channels, & sample_rate, & fmt);
 
-    if(channels) {
-      allocateAudioBuffer((uint) (sample_rate * latency), channels, fmt);
-    }
+    putFrame(img, FRAME_SNAPSHOT, m_video.frameTime(), m_video.frameTime());
 
-    putFrame(img, m_video.frameTime(), m_video.frameTime());
+    m_video.close();
 
-    needResync();
-    
-    m_finalFrames   = (uint) -1;
-    m_finalAuFrames = (uint) -1;
+    info("%s # EXIT OK", fname);
 
     return true;
   }
 
-  void VideoInFFMPEG::close()
+
+  void VideoInFFMPEG::videoGetSnapshot(Radiant::TimeStamp pos)
   {
+    info("VideoInFFMPEG::videoGetSnapshot");
+
+    if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
+      endOfFile();
+      return;
+    }
+
+    if(pos)
+      m_video.seekPosition(pos.secondsD());
+    
+    const VideoImage * img = m_video.captureImage();
+
+    putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime());
+
     m_video.close();
   }
 
-  void VideoInFFMPEG::getNextFrame()
+  void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)
   {
-    double st = -1.0;
-
-    bool seek = false;
-
-    if(m_seekNot == 0) {
-      m_seekMutex.lock();    
-      st = m_seekTarget;
-      m_seekTarget = -1.0f;
-      m_seekMutex.unlock();
-    }
-    else
-      m_seekNot--;
+    info("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
     
-    if(st >= 0.0f) {
-      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::getNextFrame # Doing a seek to %lf", st);
-      m_video.seekPosition(st);
-      seek = true;
-      needResync();
-      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::getNextFrame # Seek done");
-      m_seekNot = 4;
+    if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
+      endOfFile();
+      info("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
+	   m_name.c_str());
+      return;
     }
+
+    m_channels = 0;
+    m_sampleRate = 44100;
+    m_auformat = ASF_INT16;
+
+    m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
+
+    if(pos > 0)
+      m_video.seekPosition(pos.secondsD());
+
+    const VideoImage * img = m_video.captureImage();
+
+    if(!img) {
+      info("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
+	   m_name.c_str());
+      endOfFile();
+      return;
+    }
+
+    m_frameTime = m_video.frameTime();
+
+    putFrame(img, FRAME_STREAM, 0, m_video.frameTime());
+
+    info("VideoInFFMPEG::videoPlay # EXIT OK");
+  }
+
+  void VideoInFFMPEG::videoGetNextFrame()
+  {
+    info("VideoInFFMPEG::videoGetNextFrame");
 
     const VideoImage * img = m_video.captureImage();
 
@@ -155,27 +199,39 @@ namespace VideoDisplay {
     }
 
     int aframes = 0;
-    
     const void * audio = m_video.captureAudio( & aframes);
 
-    while(seek && aframes == 0 && img) {
-      // We must find a frame with some audio so we can sync to that.
-
-      img = m_video.captureImage();
-      audio = m_video.captureAudio( & aframes);      
-    }
+    TimeStamp vt = m_video.frameTime();
     
-    if(!img) {
-      endOfFile();
-      return;
-    }
+    m_frameDelta = m_frameTime.secsTo(vt);
+    
+    Frame * f = putFrame(img, FRAME_STREAM, vt + m_syncOffset, vt);
+    
+    if(aframes && f) {
+      int n = aframes * m_channels;
+      
+      if(m_auformat == ASF_INT16) {
+	const int16_t * au16 = (const int16_t *) audio;
 
-    if(seek) {
-      doSeek(img, audio, aframes);
-      return;
+	for(int i = 0; i < n; i++)
+	  f->m_audio[i] = au16[i] * (1.0f / (1 << 16));
+	
+	f->m_audioFrames = aframes;
+	f->m_audioTS = m_video.audioTime();
+      }
     }
+    else if(f) {
+      f->m_audioFrames = 0;
+      f->m_audioTS = 0;
+    }
+    m_frameTime = vt;
+  }
 
-    TimeStamp show, vt = m_video.frameTime();
+  void VideoInFFMPEG::videoStop()
+  {
+    info("VideoInFFMPEG::videoStop");
+    m_video.close();
+  }
 
     /* Now comes a tricky part. The audio lacks timestamp and
        therefore we do not know how to sync audio and video if the
@@ -183,120 +239,16 @@ namespace VideoDisplay {
        guess that new audio chunks always match frame they come with
        (to the extent possible). */
     
-    if(aframes && (m_gotSync < m_needSync)) {
-      doSync(aframes, vt);
-    }
-    else if(m_gotSync == 0) {
-      vt = 0;
-    }
-
-    if(audio && aframes) {
-      putAudio(audio, aframes);
-    }
-    
-    putFrame(img, vt + m_syncOffset, vt);
-  }
 
   double VideoInFFMPEG::durationSeconds()
   {
-    return m_video.durationSeconds();
-  }
-
-  bool VideoInFFMPEG::seekTo(double seconds)
-  {
-    Radiant::info("VideoInFFMPEG::seekTo # %lf", seconds);
-
-    m_seekMutex.lock();
-    m_seekTarget = seconds;
-    m_seekMutex.unlock();
-
-    m_breakBack = true;
-    m_acond.wakeAll();
-
-    return true;
-  }
-
-  void VideoInFFMPEG::doSeek(const Radiant::VideoImage * im,
-                             const void * audio, int audioframes)
-  {
-    /* Here we trash part of our (excessive) buffer, so that seek
-       happens with short latency. */
-    TimeStamp ts;
-
-    {
-      Radiant::Guard gv( & m_vmutex);
-      Radiant::Guard ga( & m_amutex);
-      
-      long i, sr = m_video.audioSampleRate();
-      
-      long interval = m_decodedAuFrames - m_consumedAuFrames;
-      long maxinterval = sr / 10;
-      
-      if(interval > maxinterval) {
-        interval = maxinterval;
-      }
-      
-      long hitAFrame = m_consumedAuFrames + interval;
-      
-      ts = TimeStamp::createSecondsD(hitAFrame / (double) sr);
-      
-      long hitVFrame = m_consumedFrames + 1;
-      
-      for(i = hitVFrame; i < (long) m_decodedFrames; i++) {
-        Frame & f = m_frames[i % m_frames.size()];
-        if(f.m_time > ts)
-          break;
-        else
-          hitVFrame = i;
-      }
-
-      Radiant::trace(Radiant::DEBUG, "VideoInFFMPEG::doSeek # VF: %u -> %ld AF: %u -> %ld",
-            m_decodedFrames, hitVFrame, m_decodedAuFrames, hitAFrame);
-    
-      m_decodedFrames = hitVFrame;
-      m_decodedAuFrames = hitAFrame;
-    }
-
-    doSync(audioframes, m_video.frameTime());
-
-    putFrame(im, ts, m_video.frameTime());
-    putAudio(audio, audioframes);
-  }
-
-  void VideoInFFMPEG::needResync()
-  {
-    m_needSync = 20;
-    m_gotSync = 0;
-    m_syncAccu = 0;
-  }
-
-  void VideoInFFMPEG::doSync(int aframes, Radiant::TimeStamp vt)
-  {
-    uint frameSample = m_decodedAuFrames;
-    double frameTime = frameSample / (double) m_video.audioSampleRate();
-    Radiant::TimeStamp frameTS = Radiant::TimeStamp::createSecondsD(frameTime);
-    Radiant::TimeStamp offset = frameTS - vt;
-    m_syncAccu += offset;
-    m_gotSync++;
-    m_syncOffset = m_syncAccu / m_gotSync;
-    
-    if(aframes >= 10000) {
-      // Big burst of frames is good enough.
-      m_needSync = 1;
-    }
-    
-    Radiant::trace(Radiant::DEBUG, "Sync offset is now %ld (%.2lf)", (long) m_syncOffset, 
-          m_syncOffset.secondsD());    
+    return m_duration.secondsD();
   }
 
   void VideoInFFMPEG::endOfFile()
   {
     m_finalFrames = m_decodedFrames;
     m_finalAuFrames = m_decodedAuFrames;
-    
-    m_done = true;
-    m_continue = false;
-
-    
+    m_playing = false;
   }
 }

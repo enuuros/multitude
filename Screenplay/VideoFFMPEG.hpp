@@ -34,15 +34,22 @@ extern "C" {
 
 namespace Screenplay {
 
+  /** Video decoder based on the FFMPEG library. */
   class SCREENPLAY_API VideoInputFFMPEG : public Radiant::VideoInput
   {
   public:
 
     VideoInputFFMPEG();
     virtual ~VideoInputFFMPEG();
-
+    
     virtual const Radiant::VideoImage * captureImage();
+    /// The time-stamp of the latest video frame
     Radiant::TimeStamp frameTime() { return m_lastTS; }
+    /// The time stamp of curren audio buffer
+    /** This timestamp is timed to match the beginning of the current
+	audio buffer. This is absolute time within the time-system of
+	the video file.  */
+    Radiant::TimeStamp audioTime() const { return m_audioTS; }
 
     virtual const void * captureAudio(int * frameCount);
     virtual void getAudioParameters(int * channels, 
@@ -56,7 +63,7 @@ namespace Screenplay {
     /// The frame rate of the video stream.
     virtual float fps() const;
     /// Native image format of the stream.
-    virtual Radiant::ImageFormat imageFormat() const;  
+    virtual Radiant::ImageFormat imageFormat() const;
     virtual unsigned int size() const;
 
     bool open(const char * filename,
@@ -114,6 +121,7 @@ namespace Screenplay {
 
     int              m_flags;
     int64_t          m_lastPts;
+    Radiant::TimeStamp  m_audioTS;
     Radiant::TimeStamp  m_lastTS;
     Radiant::TimeStamp  m_firstTS;
     double           m_lastSeek;

@@ -48,7 +48,7 @@ namespace Luminous
     void allocate()
     {
       if(!m_textureId)
-        glGenTextures(1, &m_textureId);
+        glGenTextures(1, & m_textureId);
     }
 
     /** Activate textureUnit and bind this texture to that unit. */

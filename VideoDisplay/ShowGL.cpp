@@ -182,35 +182,22 @@ namespace VideoDisplay {
       tex->bind();
 
       Vector2i & ts = m_texSizes[i];
-
+      
       if(m_frame < 0) {
 
-        Vector2i area = planeSize(img, i);
-
-        // Texture dimensions must be even numbers:
-        /*if(area.x & 0x1)
-          area.x--; */
-
-        // area.x -= 4;
-
-        /* if(area.y & 0x1)
-           area.y--;
-           */
-
-        // if(i) area.y /= 2;
-        // if(i) area.x *= 2;
-
-        debug("ShowGL::YUVProgram::doTextures # area = [%d %d]",
-            area.x, area.y);
-
+	Vector2i area = planeSize(img, i);
+	
         ts = area;
+
+	info("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
+	     area.x, area.y, img->m_planes[i].m_data);
 
         tex->setWidth(area.x);
         tex->setHeight(area.y);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
-            area.x, area.y, 0, 
-            GL_LUMINANCE, GL_UNSIGNED_BYTE, img->m_planes[i].m_data);
+		     area.x, area.y, 0, 
+		     GL_LUMINANCE, GL_UNSIGNED_BYTE, img->m_planes[i].m_data);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -223,19 +210,13 @@ namespace VideoDisplay {
       }
       else {
 
-        // memset(img->m_planes[i].m_data, 128, ts.x * ts.y);
+	info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+	     frame, ts.x, ts.y);
 
-        /* trace("ShowGL::YUVProgram::doTextures # ts = [%d %d]",
-           ts.x, ts.y); */
-
-        /* glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
-           ts.x, ts.y, 0, 
-           GL_LUMINANCE, GL_UNSIGNED_BYTE, img->m_planes[i].m_data);
-           */
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-            ts.x, ts.y,
-            GL_LUMINANCE, GL_UNSIGNED_BYTE,
-            img->m_planes[i].m_data);
+			ts.x, ts.y,
+			GL_LUMINANCE, GL_UNSIGNED_BYTE,
+			img->m_planes[i].m_data);
 
         Luminous::Utils::glCheck
           ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
@@ -273,10 +254,9 @@ namespace VideoDisplay {
       m_dsp(0),
       m_audio(0),
       m_targetChannel(-1),
+      m_videoFrame(-1),
       m_state(PAUSE),
-      m_updates(0),
-      m_blankReload(false),
-      m_useBlank(false)
+      m_updates(0)
   {
     clearHistogram();
   }
@@ -284,10 +264,8 @@ namespace VideoDisplay {
   ShowGL::~ShowGL()
   {
     stop();
-    m_blankDisplay.freeMemory();
     delete m_video;
   }
-
 
   bool ShowGL::loadSubTitles(const char * filename, const char * )
   {
@@ -303,52 +281,11 @@ namespace VideoDisplay {
     m_filename = filename;
     m_dsp = dsp;
     m_targetChannel = targetChannel;
-
-    Screenplay::VideoInputFFMPEG video;
-
-    if(!video.open(filename))
-      return false;
-
-    // Seek a bit into the file (at most 60 secs)
-    double len = video.durationSeconds();
-    double pos = len * previewpos;
-    if(pos > 60)
-      pos = 60;
-
-    video.seekPosition(pos);
-
-    const Radiant::VideoImage * img = video.captureImage();
-
-    if(!img)
-      return false;
-
-    m_blankDisplay.allocateMemory
-      (Radiant::IMAGE_RGBA, img->m_width, img->m_height);
-
-    if(!Radiant::ImageConversion::convert(img, & m_blankDisplay)) {
-      return false;
-    }
-
-    m_blankReload = true;
-    m_useBlank = true;
-    m_position = 0;
-    m_duration = Radiant::TimeStamp::createSecondsD(video.durationSeconds());
-
-    debug("ShowGL::init # Opened %s", filename);
-
-    return true;
-  }
-
-  bool ShowGL::open(const char * filename, Resonant::DSPNetwork  * dsp,
-		    Radiant::TimeStamp pos)
-  {
-    m_filename = filename;
-    m_dsp = dsp;
     delete m_video;
 
     VideoInFFMPEG * ffmpg = new VideoInFFMPEG();
 
-    bool ok = ffmpg->startDecoding(filename, pos);
+    bool ok = ffmpg->init(filename, 0);
 
     if(!ok) {
       Radiant::error("ShowGL::open # Could not open %s", filename);
@@ -357,6 +294,24 @@ namespace VideoDisplay {
     }
 
     m_video = ffmpg;
+
+    m_position = 0;
+    m_duration = Radiant::TimeStamp::createSecondsD(m_video->durationSeconds());
+
+    debug("ShowGL::init # Opened %s (%lf secs)",
+	  filename, m_duration.secondsD());
+
+    return true;
+  }
+
+
+  bool ShowGL::start()
+  {
+    info("ShowGL::start");
+    
+    if(m_state == PLAY) {
+      return false;
+    }
 
     AudioTransfer * au = new AudioTransfer(0, m_video);
 
@@ -373,29 +328,17 @@ namespace VideoDisplay {
 
     m_audio = au;
 
-    m_frameTime = 0;
-    m_count = 0;
-    m_frame = 0;
-    m_position = pos;
+    m_video->play();
 
     m_state = PLAY;
-
-    clearHistogram();
 
     return true;
   }
 
-  bool ShowGL::start()
-  {
-    if(m_state == PLAY) {
-      return true;
-    }
-    
-    return open(m_filename.c_str(), m_dsp, 0.0f); 
-  }
-
   bool ShowGL::stop()
   {
+    info("ShowGL::stop");
+
     if(m_state != PLAY)
       return false;
 
@@ -415,24 +358,9 @@ namespace VideoDisplay {
 
     m_dsp->markDone(m_dspItem);
 
-    i = 0;
-    while(!m_audio->stopped() && i < 20) {
-      Radiant::Sleep::sleepMs(5);
-      i++;
-    }
-
-    if(i >= 10) {
-      debug("ShowGL::stop # Forcing quit");
-    }
-
-    delete m_audio;
     m_audio = 0;
 
-    m_video->stopDecoding();
-    delete m_video;
-    m_video = 0;
-
-    m_dspItem = Resonant::DSPNetwork::Item();
+    m_video->stop();
 
     m_state = PAUSE;
 
@@ -450,7 +378,9 @@ namespace VideoDisplay {
       if(Radiant::TimeStamp(m_duration - m_position).secondsD() < 2.5)
         pos = 0;
 
-      return open(m_filename.c_str(), m_dsp, pos);
+      start();
+
+      return false; // open(m_filename.c_str(), m_dsp, pos);
     }
   }
 
@@ -468,46 +398,45 @@ namespace VideoDisplay {
       return true;
 
     Radiant::TimeStamp pos = m_position;
+
     if(Radiant::TimeStamp(m_duration - m_position).secondsD() < 2.5)
       pos = 0;
     
-    return open(m_filename.c_str(), m_dsp, pos);
+    return false; // play(pos);
   }
 
   void ShowGL::update()
   {
-    Radiant::TimeStamp targetTime = m_audio ?
-      m_audio->audioTime() : Radiant::TimeStamp(0);
+    int videoFrame;
 
-    int tries = 0;
+    if(m_audio) 
+      videoFrame = m_audio->videoFrame();
+    else
+      videoFrame = m_video->latestFrame();
 
-    while(targetTime > m_frameTime) {
+    if(videoFrame < 0)
+      return;
 
-      if(m_video->atEnd()) {
-        stop();
-        break;
-      }
+    VideoIn::Frame * f = m_video->getFrame(videoFrame, true);
 
-      debug("ShowGL::update # %lf > %lf",
-	    targetTime.secondsD(), m_frameTime.secondsD());
-
-      m_frame = m_video->nextFrame();
-
-      if(!m_frame)
-        break;
-
-      m_frameTime = m_frame->m_time;
-      tries++;
-      m_count++;
-      m_useBlank = false;
-      m_position = m_frame->m_absolute;
+    if(!f) {
+      info("ShowGL::update # NO FRAME %d", videoFrame);
+      return;
     }
 
-    m_histogram[m_updates % HISTOGRAM_POINTS] = tries;
+    m_position = f->m_absolute;
 
-    if(m_video)
-      if(!m_video->atEnd())
-        m_updates++;
+    m_histogram[m_updates % HISTOGRAM_POINTS] = videoFrame - m_videoFrame;
+
+    m_updates++;
+    m_frame = f;
+
+    if(m_videoFrame != videoFrame) {
+      info("ShowGL::update # Move %d -> %d (%lf)",
+	   m_videoFrame, videoFrame, m_position.secondsD());
+      m_count++;
+      m_videoFrame = videoFrame;
+    }
 
     m_subTitles.update(m_position);
   }
@@ -521,7 +450,7 @@ namespace VideoDisplay {
 		      Poetic::GPUFont * subtitleFont,
 		      float subTitleSpace)
   {
-    GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, &yuvkey, resources);
+    GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, & yuvkey, resources);
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
  
     assert(yuv2rgb != 0);
@@ -533,28 +462,18 @@ namespace VideoDisplay {
       bottomright.y = topleft.y + s.y;
     }
 
-    if(m_frame && !m_useBlank) {
+    if(m_frame) {
 
-      // trace("ShowGL::render # %p", m_frame);
+      // info("ShowGL::render # %p", m_frame);
 
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
       yuv2rgb->bind();
     }
-    else {
-
-      glEnable(GL_TEXTURE_2D);
-
-      if(s.x != 0 && (textures->blankTex().width() == 0 || m_blankReload)) {
-	textures->blankTex().loadBytes(GL_RGBA, s.x, s.y, 
-				      m_blankDisplay.m_planes[0].m_data,
-				      Luminous::PixelFormat::rgbaUByte());
-        m_blankReload = false;
-      }
-      textures->blankTex().bind();
-    }
 
     glBegin(GL_QUADS);
+
+    glColor3f(1, 0, 1);
 
     Vector2 txcoord[4] = {
       Vector2(0, 0),
@@ -577,8 +496,9 @@ namespace VideoDisplay {
 
       if(transform)
 	glVertex4fv(Luminous::Utils::project(*transform , co).data());
-      else
+      else {
 	glVertex2fv(co.data());
+      }
     }
 
     glEnd();
@@ -589,7 +509,7 @@ namespace VideoDisplay {
     const SubTitles::Text * sub = m_subTitles.current();
 
     if(!subtitleFont && sub) {
-		Radiant::error("ShowGL::render # Missing the subtitle font");
+      Radiant::error("ShowGL::render # Missing the subtitle font");
     }
 
     if(subtitleFont && sub) {
@@ -635,7 +555,9 @@ namespace VideoDisplay {
 
   Nimble::Vector2i ShowGL::size() const
   {
-    return Nimble::Vector2i(m_blankDisplay.m_width, m_blankDisplay.m_height);
+    assert(m_video != 0);
+
+    return m_video->vinfo().m_videoFrameSize;
   }
 
   void ShowGL::seekTo(Radiant::TimeStamp time)
@@ -647,11 +569,6 @@ namespace VideoDisplay {
 
     m_position = time;
 
-    if(!m_video) {
-      getPreview(time.secondsD());
-      return;
-    }
-
     if(time < 0)
       time = 0;
     else if(time >= m_duration)
@@ -659,7 +576,7 @@ namespace VideoDisplay {
 
     debug("ShowGL::seekTo # %lf", time.secondsD());
 
-    m_video->seekTo(time.secondsD());
+    // m_video->seekTo(time.secondsD());
   }
 
   void ShowGL::seekToRelative(double relative)
@@ -671,34 +588,5 @@ namespace VideoDisplay {
   {
     bzero(m_histogram, sizeof(m_histogram));
   }
-
-  /// @todo this should be done in another thread, now it hangs the app
-  /// everytime you call it
-  void ShowGL::getPreview(double pos)
-  {
-    debug("ShowGL::getPreview # %lf", pos);
-
-    Screenplay::VideoInputFFMPEG video;
-    if(!video.open(m_filename.c_str()))
-      return;
-
-    if(pos > 0.01)
-      video.seekPosition(pos);
-
-    const Radiant::VideoImage * img = video.captureImage();
-
-    if(!img)
-      return;
-
-    m_blankDisplay.allocateMemory
-      (Radiant::IMAGE_RGBA, img->m_width, img->m_height);
-
-    if(!Radiant::ImageConversion::convert(img, & m_blankDisplay))
-      return;
-
-    debug("ShowGL::getPreview # EXIT OK");
-
-    m_blankReload = true;
-    m_useBlank = true;
-  }
+  
 }

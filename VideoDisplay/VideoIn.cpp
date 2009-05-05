@@ -13,159 +13,161 @@
  * 
  */
 
-#include <Radiant/Trace.hpp>
-
 #include "VideoIn.hpp"
+
+#include <Radiant/Sleep.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <assert.h>
 #include <string.h>
 
+#include <map>
+
 namespace VideoDisplay {
 
-  int VideoIn::m_debug = 0;
+  using namespace Radiant;
+
+  VideoIn::Frame::Frame()
+    : m_audioFrames(0),
+      m_type(FRAME_INVALID)
+  {
+    bzero(m_audio, sizeof(m_audio));
+  }
+
+  VideoIn::Frame::~Frame()
+  {
+    m_image.freeMemory();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  static std::map<std::string, VideoIn::VideoInfo> __infos;
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  int VideoIn::m_debug = 1;
 
   VideoIn::VideoIn()
     : m_decodedFrames(0),
       m_consumedFrames(0),
       m_decodedAuFrames(0),
       m_consumedAuFrames(0),
+      m_playing(false),
+
+      m_channels(0),
+      m_sample_rate(44100),
+      m_auformat(ASF_INT16),
+
       m_auBufferSize(0),
       m_auFrameBytes(0),
       m_continue(true),
-      m_seekTarget(-1),
-      m_seekNot(0),
       m_fps(0.0),
-      m_done(false)
+      m_done(false),
+      m_request(NO_REQUEST)
   {}
 
   VideoIn::~VideoIn()
   {
-    deallocateFrames();
+    assert(!isRunning());
+
+    /*
+      The code below cannot be used to do anything. We are in the
+      destructor, and virtual tables are long gone :-|
+
+    if(isRunning()) {
+      m_continue = false;
+      m_vcond.wakeAll(m_vmutex);
+      waitEnd();
+    }
+    */
   }
 
-  /** Gets the next frame from the video stream to be shown on the
-      screen. */
+  /** Gets a frame from the video stream to be shown on the screen. */
 
-  VideoIn::Frame * VideoIn::nextFrame()
+  VideoIn::Frame * VideoIn::getFrame(int index, bool updateCount)
   {
+    if(index < 0)
+      return 0;
+
     /* Radiant::info("VideoIn::nextFrame # dec = %u cons = %u", 
 		  m_decodedFrames, m_consumedFrames);
     */
-    m_vmutex.lock();
-    while(m_decodedFrames <= m_consumedFrames && m_continue)
-      m_vcond.wait(m_vmutex, 500);
-    // m_vcond.wait(1000);
-    m_vmutex.unlock();
+    assert((int) m_decodedFrames > index);
 
     if(!m_continue && m_decodedFrames <= m_consumedFrames)
       return 0;
 
-    Frame * im = & m_frames[m_consumedFrames % m_frames.size()];
+    Frame * im = m_frames[index % m_frames.size()].ptr();
 
-    m_consumedFrames++;
+    if(updateCount) {
+      m_consumedFrames = index;
 
-    // Signal that one frame was consumed:
-    m_vcond.wakeAll();
+      // Signal that one frame was consumed:
+      m_vcond.wakeAll();
+    }
 
     return im;
   }
 
-  bool VideoIn::startDecoding(const char * filename, Radiant::TimeStamp pos)
+  bool VideoIn::init(const char * filename, Radiant::TimeStamp pos)
   {
     assert(!isRunning());
 
     m_finalFrames   = (uint) -1;
     m_finalAuFrames = (uint) -1;
 
-    m_continue = false;
+    m_continue = true;
 
     bool ok = open(filename, pos);
 
-    // m_fps = fps();
-
     if(!ok) {
-      Radiant::error(
-"VideoIn::startDecoding # Could not open file \"%s\"", filename);
+      error("VideoIn::start # Could not open file \"%s\"", filename);
+      m_continue = false;
       return false;
     }
-
-    m_continue = true;
 
     run();
 
     return true;
   }
 
-  void VideoIn::stopDecoding()
+  bool VideoIn::play()
   {
+    info("VideoIn::play");
+
+    Guard g( & m_requestMutex);
+
+    m_request = START;
+    m_requestTime = 0;
+
+    return true;
+  }
+
+  void VideoIn::stop()
+  {
+    info("VideoIn::stop");
+
     if(!m_continue && !isRunning())
       return;
 
-    m_continue = false;
+    Guard g( & m_requestMutex);
 
-    m_acond.wakeOne();
-    m_vcond.wakeOne();
-
-    bool ok = waitEnd();
-
-    if(!ok) {
-      Radiant::error(
-"VideoIn::stopDecoding # Failed to stop");
-      kill();
-      waitEnd();
-    }
+    m_request = STOP;
+    m_requestTime = 0;
   }
 
-  const void * VideoIn::getAudio(int * frames, bool block)
+  bool VideoIn::seek(Radiant::TimeStamp pos)
   {
-    if((uint) (m_consumedAuFrames + *frames) >= m_finalAuFrames)
-      *frames = m_finalAuFrames - m_consumedAuFrames;
+    info("VideoIn::seek");
 
-    if(! *frames) {
-      return 0;
-    }
+    Guard g( & m_requestMutex);
 
-    uint index = m_consumedAuFrames % m_auBufferSize;
+    m_request = SEEK;
+    m_requestTime = pos;
 
-    uint untilWrap = m_auBufferSize - index;
-
-    uint n = * frames;
-
-    if(n >= untilWrap)
-      n = untilWrap;
-
-    if(m_debug)
-      Radiant::trace(Radiant::DEBUG, "VideoIn::getAudio # n = %u dec = %u cons = %u cont = %d", 
-            n, m_decodedAuFrames, m_consumedAuFrames, (int) m_continue);
-    m_amutex.lock();
-
-    if(block) {
-      while(m_decodedAuFrames <= (m_consumedAuFrames + n) && m_continue)
-	// m_acond.wait(1000);
-	m_acond.wait(m_amutex, 500);
-    }
-    else {
-      if(m_decodedAuFrames <= (m_consumedAuFrames + n) && !m_continue) {
-	* frames = 0;
-	return 0;
-      }
-    }
-    m_amutex.unlock();
-    
-    * frames = n;
-    m_consumedAuFrames += n;
-
-    // assert(m_consumedAuFrames <= m_decodedAuFrames);
-    if(m_consumedAuFrames > m_decodedAuFrames) {
-      Radiant::trace(Radiant::DEBUG, "VideoIn::getAudio # Dangerous times, I guess you were seeking");
-      m_consumedAuFrames -= n;
-      * frames = 0;
-      return 0;
-    }
-
-    m_acond.wakeAll();
-
-    return & m_audio[index * m_auFrameBytes];
+    return true;
   }
 
   bool VideoIn::atEnd()
@@ -177,10 +179,36 @@ namespace VideoDisplay {
     return false;
   }
 
+  int VideoIn::selectFrame(int startfrom, Radiant::TimeStamp time) const
+  {
+    int latest = latestFrame();
+
+    int best = Nimble::Math::Min(latest, startfrom);
+    int low = Nimble::Math::Max(0, (int) (best - frameRingBufferSize() / 2));
+    TimeStamp bestdiff = TimeStamp::createSecondsD(10000);
+
+    for(int i = best; i >= low; i--) {
+      const Frame * f = m_frames[i % m_frames.size()].ptr();
+
+      if(!f)
+	continue;
+
+      TimeStamp diff = Nimble::Math::Abs(f->m_absolute - time);
+      if(diff < bestdiff) {
+	best = i;
+	bestdiff = diff;
+      }
+      else
+	break;
+    }
+
+
+    return best;
+  }
+
   void VideoIn::setDebug(int level)
   {
     m_debug = level;
-
   }
 
 
@@ -194,40 +222,48 @@ namespace VideoDisplay {
 
   void VideoIn::childLoop()
   {
+    info("VideoIn::childLoop # ENTRY");
+
     while(m_continue) {
-      getNextFrame();
+
+      m_requestMutex.lock();
+      Request r = m_request;
+      TimeStamp rt = m_requestTime;
+      m_request = NO_REQUEST;
+      m_requestMutex.unlock();
+
+      if(r != NO_REQUEST)
+	info("VideoIn::childLoop # REQ = %d", (int) r);
+
+      if(r == START) {
+	videoPlay(rt);
+	m_playing = true;
+      }
+      else if(r == STOP) {
+	videoStop();
+	m_playing = false;
+      }
+      else if(r == SEEK) {
+	if(playing())
+	  videoPlay(rt);
+	else 
+	  videoGetSnapshot(rt);
+      }
+      else if(playing())
+	videoGetNextFrame();
+
+      Radiant::Sleep::sleepMs(5);
     }
+
+    info("VideoIn::childLoop # EXIT");
   }
 
-  void VideoIn::allocateFrames(uint frameCount, uint width, uint height, 
-			       Radiant::ImageFormat fmt)
+
+  VideoIn::Frame * VideoIn::putFrame(const Radiant::VideoImage * im,
+				     FrameType type,
+				     Radiant::TimeStamp show, 
+				     Radiant::TimeStamp absolute)
   {
-    deallocateFrames();
-
-    m_frames.resize(frameCount);
-
-    for(uint i = 0; i < frameCount; i++) {
-      m_frames[i].m_image.allocateMemory(fmt, width, height);
-      m_frames[i].m_time = 0;
-    }
-  }
-
-
-  void VideoIn::deallocateFrames()
-  {
-    for(uint i = 0; i < m_frames.size(); i++) {
-      m_frames[i].m_image.freeMemory();
-      m_frames[i].m_time = 0;
-    }
-  }
-
-  void VideoIn::putFrame(const Radiant::VideoImage * im,  Radiant::TimeStamp show, 
-                         Radiant::TimeStamp absolute)
-  {
-
-    if(m_debug)
-      Radiant::trace(Radiant::DEBUG, "VideoIn::putFrame # %u %u", m_decodedFrames, m_consumedFrames);
-
     assert(m_frames.size() != 0);
 
     m_vmutex.lock();
@@ -238,93 +274,41 @@ namespace VideoDisplay {
     m_vmutex.unlock();
 
     if(!m_continue)
-      return;
+      return 0;
 
-    Frame & f = m_frames[m_decodedFrames % m_frames.size()];
+    RefPtr<Frame> & rf = m_frames[m_decodedFrames % m_frames.size()];
+    
+    if(!rf.ptr())
+      rf = new Frame;
 
+    Frame & f = * rf.ptr();
+    
+    f.m_type = type;
     f.m_time = show;
     f.m_absolute = absolute;
+    f.m_audioFrames = 0;
+    f.m_audioTS = 0;
+    
+    if(!f.m_image.m_planes[0].m_data)
+      f.m_image.allocateMemory(*im);
 
     bool ok = f.m_image.copyData(*im);
 
     if(!ok)
-      Radiant::error(
-"VideoIn::putFrame # Radiant::Image::copyData failed");
+      error("VideoIn::putFrame # Radiant::Image::copyData failed");
 
     m_decodedFrames++;
 
     // Signal that one frame was produced:
     m_vcond.wakeAll();
 
+    if(m_debug)
+      info("VideoIn::putFrame # %p %u %u",
+	   & f, m_decodedFrames, m_consumedFrames);
+
+    return & f;
     // qDebug("VideoIn::putFrame # EXIT");
   }
 
-  void VideoIn::allocateAudioBuffer(uint frameCount, 
-				    uint channels, 
-				    Radiant::AudioSampleFormat fmt)
-  {
-    uint sampleBytes = Radiant::sampleWidth(fmt);
-    m_auBufferSize = frameCount;
-    m_auFrameBytes = sampleBytes * channels;
-
-    m_audio.resize(frameCount * m_auFrameBytes);
-  }
-
-  void VideoIn::putAudio(const void * audio_data, int audio_frames)
-  {
-    if(m_debug)
-      Radiant::trace(Radiant::DEBUG, "VideoIn::putAudio # n = %d dec = %u cons = %u cont = %d", 
-	    audio_frames, m_decodedAuFrames, m_consumedAuFrames,
-	    (int) m_continue);
-
-    if(!audio_frames)
-      return;
-
-    while(audio_frames >= (int) m_auBufferSize) {
-      const char * abuf = (const char *) audio_data;
-      unsigned take = m_auBufferSize / 2;
-      putAudio(abuf, take);
-      audio_data = abuf + take * m_auFrameBytes;
-      audio_frames -= take;
-    }
-
-    m_amutex.lock();
-    m_breakBack = false;
-    while(((m_decodedAuFrames + audio_frames) >= 
-	   (m_consumedAuFrames + m_auBufferSize)) && 
-	  m_continue && !m_breakBack)
-      // m_acond.wait(1000);
-      m_acond.wait(m_amutex, 500);
-    m_amutex.unlock();
-
-    if(!m_continue)
-      return;
-
-    uint pos = m_decodedAuFrames % m_auBufferSize;
-    uint avail = m_auBufferSize - pos;
-  
-    if((int) avail < audio_frames) {
-      uint bytes = avail * m_auFrameBytes;
-
-      memcpy( & m_audio[(m_decodedAuFrames % m_auBufferSize) * m_auFrameBytes], 
-	      audio_data, bytes);
-
-      audio_frames -= avail;
-      m_decodedAuFrames += avail;
-
-      const char * tmp = (const char *) audio_data;
-      tmp += bytes;
-      audio_data = tmp;
-    }
-
-    uint bytes = audio_frames * m_auFrameBytes;
-
-    memcpy( & m_audio[(m_decodedAuFrames % m_auBufferSize) * m_auFrameBytes], 
-	    audio_data, bytes);
-
-    m_decodedAuFrames += audio_frames;
-  
-    m_acond.wakeAll();
-  }
 
 }
