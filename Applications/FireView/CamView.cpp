@@ -78,6 +78,7 @@ namespace FireView {
     m_lastCheckTime = Radiant::TimeStamp::getTime();
     m_lastCheckFrame = 0;
     m_lastCheckFps = 0;
+
     if(!run())
       return false;
     
@@ -218,6 +219,14 @@ namespace FireView {
     else
       m_video.disableTrigger();
 
+#ifndef WIN32
+    int pola = CamView::triggerPolarity();
+    if(pola > 0) {
+      info("Setting trigger polarity to %d", pola);
+      m_video.setTriggerPolarity((dc1394trigger_polarity_t) pola);
+    }
+#endif
+
     debug("Getting features");
 
     m_video.getFeatures( & m_features);
@@ -351,6 +360,7 @@ namespace FireView {
   /////////////////////////////////////////////////////////////////////////////
 
   bool CamView::m_verbose = false;
+  int  CamView::m_triggerPolarity = -1;
 
   static int __interval = 50;
 

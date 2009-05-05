@@ -59,6 +59,12 @@ namespace FireView {
 
     static void setVerbose(bool verbose) { m_verbose = verbose; }
     static bool verbose() { return m_verbose; }
+
+    static void setTriggerPolarity(dc1394trigger_polarity_t p)
+    { m_triggerPolarity = p; }
+
+    static int triggerPolarity() { return m_triggerPolarity; }
+
   public slots:
     
     void openParams();
@@ -177,6 +183,7 @@ namespace FireView {
     Analysis   m_averages[AREA_COUNT]; // Grid.
     QImage     m_foo;
     static bool m_verbose;
+    static int  m_triggerPolarity;
   };
 
 }

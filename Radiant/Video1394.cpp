@@ -445,12 +445,25 @@ namespace Radiant {
 
     if(dc1394_external_trigger_set_mode(m_camera, mode)
         != DC1394_SUCCESS) {
-      Radiant::error("Video1394::setTriggerMode # Could not set trigger mode");
+      error("Video1394::setTriggerMode # Could not set trigger mode");
       return false;
     }
 
     return true;
   }
+
+  bool Video1394::setTriggerPolarity(dc1394trigger_polarity_t polarity)
+  {
+    dc1394error_t e = dc1394_external_trigger_set_polarity(m_camera, polarity);
+    
+    if(e != DC1394_SUCCESS) {
+      error("Video1394::setTriggerPolarity # %s", dc1394_error_get_string(e));
+      return false;
+    }
+
+    return true;
+  }
+
 
   bool Video1394::disableTrigger()
   {

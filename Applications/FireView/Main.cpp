@@ -38,6 +38,8 @@ void helper(const char * app)
      " --rate +int    - Selects one of the standard frame rates (15, 30, 60...)\n"
      " --scanbus      - Scans and reports all available cameras\n"
      " --triggermode   +int - Selects the trigger mode, range: 0-%d\n"
+     " --triggerpolarity   +up/down - Selects the trigger polarity, either "
+          "\"up\" or \"down\"\n"
      " --triggersource +int - Selects the trigger source, range: 0-%d\n"
      "\nEXAMPLES:\n"
      " %s             - Run all cameras at 15 fps\n"
@@ -45,7 +47,7 @@ void helper(const char * app)
      " %s --fps 47    - Run all cameras at 47 fps (with SW triggering)\n"
      " %s --rate 30   - Run all cameras at 30 fps (internal triggering)\n"
      " %s --rate 60 --triggersource 0  - Run all cameras at max 60 fps with hardware trigger\n"
-     " %s --rate 60 --triggersource 0 --triggermode 1 - Run all cameras at max 60 fps with trigger source 0 and trigger mode 1\n"
+     " %s --rate 60 --triggersource 0 --triggermode 0 - Run all cameras at max 60 fps with trigger source 0 and trigger mode 0\n"
      , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
      app, app, app, app, app, app);
   fflush(0);
@@ -90,6 +92,13 @@ int main(int argc, char ** argv)
     }
     else if(strcmp(arg, "--triggermode") == 0 && (i+1) < argc) {
       triggerMode = (atoi(argv[++i]) + DC1394_TRIGGER_MODE_0);
+    }
+    else if(strcmp(arg, "--triggerpolarity") == 0 && (i+1) < argc) {
+      i++;
+      if(strcmp(argv[i], "up") == 0)
+	FireView::CamView::setTriggerPolarity(DC1394_TRIGGER_ACTIVE_HIGH);
+      else if(strcmp(argv[i], "down") == 0)
+	FireView::CamView::setTriggerPolarity(DC1394_TRIGGER_ACTIVE_LOW);
     }
     else if(strcmp(arg, "--triggersource") == 0 && (i+1) < argc) {
       triggerSource = (atoi(argv[++i]) + DC1394_TRIGGER_SOURCE_0);
