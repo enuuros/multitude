@@ -38,7 +38,10 @@ namespace VideoDisplay {
     bool started() const { return m_started; }
     bool stopped() const { return m_stopped; }
 
+    bool atEnd() const { return m_end; } 
+
     unsigned videoFrame();
+
 
   private:
 

@@ -115,7 +115,7 @@ namespace VideoDisplay {
 
     debug("%s # %f fps", fname, fp);
 
-    float latency = 1.5f;
+    float latency = 2.0f;
     m_frames.resize(latency * fp);
 
     int channels, sample_rate;

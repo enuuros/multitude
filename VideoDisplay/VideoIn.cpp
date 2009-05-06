@@ -187,10 +187,14 @@ namespace VideoDisplay {
     int latest = latestFrame();
 
     int best = latest; // Nimble::Math::Min(latest, startfrom);
-    int low = Nimble::Math::Max(0, (int) (best - frameRingBufferSize() / 2));
-    low = Nimble::Math::Max(low, (int) m_consumedFrames, (int) m_consumedAuFrames);
+    int low = Nimble::Math::Min((int) m_consumedFrames, 
+				(int) m_consumedAuFrames);
+    // (int) (best - frameRingBufferSize() / 2));
+    low = Nimble::Math::Max(low, 0);
     TimeStamp bestdiff = TimeStamp::createSecondsD(10000);
 
+    double close = -1.0;
+    
     for(int i = best; i >= low; i--) {
       const Frame * f = m_frames[i % m_frames.size()].ptr();
 
@@ -201,11 +205,15 @@ namespace VideoDisplay {
       if(diff < bestdiff) {
 	best = i;
 	bestdiff = diff;
+	close = f->m_absolute.secondsD();
       }
       else
 	break;
     }
-
+    
+    debug("VideoIn::selectFrame # %d (%d %d) (%d %d) %lf %lf",
+	  best, low, latest, m_consumedFrames, m_consumedAuFrames,
+	  close, time.secondsD());
 
     return best;
   }
@@ -236,8 +244,8 @@ namespace VideoDisplay {
       m_request = NO_REQUEST;
       m_requestMutex.unlock();
 
-      if(r != NO_REQUEST)
-	debug("VideoIn::childLoop # REQ = %d", (int) r);
+      // if(r != NO_REQUEST)
+      debug("VideoIn::childLoop # REQ = %d p = %d", (int) r, (int) playing());
 
       if(r == START) {
 	videoPlay(rt);
@@ -308,8 +316,8 @@ namespace VideoDisplay {
     m_vcond.wakeAll();
 
     if(m_debug)
-      debug("VideoIn::putFrame # %p %u %u",
-	   & f, m_decodedFrames, m_consumedFrames);
+      debug("VideoIn::putFrame # %p %u %u %lf",
+	    & f, m_decodedFrames, m_consumedFrames, absolute.secondsD());
 
     return & f;
     // qDebug("VideoIn::putFrame # EXIT");

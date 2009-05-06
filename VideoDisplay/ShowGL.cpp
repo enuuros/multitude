@@ -409,8 +409,13 @@ namespace VideoDisplay {
   {
     int videoFrame;
 
-    if(m_audio) 
+    if(m_audio) {
       videoFrame = m_audio->videoFrame();
+      if(m_audio->atEnd()) {
+	info("ShowGL::update # At end");
+	stop();
+      }
+    }
     else
       videoFrame = m_video->latestFrame();
 

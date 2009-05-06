@@ -70,7 +70,12 @@ namespace VideoDisplay {
     m_started = true;
     m_stopped = false;
     m_availAudio = 1000000;
-    m_videoFrame = m_video->latestFrame();
+    m_videoFrame = m_video->latestFrame() + 1;
+
+    if(m_videoFrame < 0)
+      m_videoFrame = 0;
+
+    m_video->getFrame(m_videoFrame - 1, false);
 
     m_baseTS = 0;
     m_sinceBase = 0;
@@ -99,6 +104,8 @@ namespace VideoDisplay {
         debug("AudioTransfer::process # END detected.");
         m_end = true;
       }
+
+      debug("AudioTransfer::process # No frame %d", m_videoFrame);
 
       return;
     }
