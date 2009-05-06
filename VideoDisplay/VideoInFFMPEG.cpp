@@ -91,7 +91,8 @@ namespace VideoDisplay {
       /* m_video.close();
 	 return false; */
     }
-    pos = TimeStamp::createSecondsD(10.0);
+    pos = TimeStamp::createSecondsD(0.0);
+
     if(pos != 0) {
       debug("%s # Doing a seek", fname);
       if(!m_video.seekPosition(pos.secondsD()))
@@ -141,9 +142,10 @@ namespace VideoDisplay {
       return;
     }
 
-    if(pos)
+    /* if(pos)
       m_video.seekPosition(pos.secondsD());
-    
+    */
+
     const VideoImage * img = m_video.captureImage();
 
     putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime());

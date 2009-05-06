@@ -220,7 +220,6 @@ namespace Screenplay {
 	      aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts, 
               (int) m_acontext->frame_number, secs);
 
-
         if(aframes > 10000)
           pts = m_capturedAudio;
 
@@ -444,6 +443,7 @@ namespace Screenplay {
     AVInputFormat * iformat = 0;
     AVFormatParameters params, *ap = & params;
 
+    m_capturedVideo = 0;
     m_lastTS = 0;
     m_firstTS = 0;
     m_offsetTS = 0;
