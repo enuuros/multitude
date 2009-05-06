@@ -189,7 +189,7 @@ namespace VideoDisplay {
 	
         ts = area;
 
-	info("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
+	debug("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
 	     area.x, area.y, img->m_planes[i].m_data);
 
         tex->setWidth(area.x);
@@ -210,7 +210,7 @@ namespace VideoDisplay {
       }
       else {
 
-	info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+	debug("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
 	     frame, ts.x, ts.y);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
@@ -276,7 +276,7 @@ namespace VideoDisplay {
 		    float previewpos,
                     int targetChannel)
   {
-    // info("ShowGL::init # %f", previewpos);
+    // debug("ShowGL::init # %f", previewpos);
 
     m_filename = filename;
     m_dsp = dsp;
@@ -307,7 +307,7 @@ namespace VideoDisplay {
 
   bool ShowGL::start()
   {
-    info("ShowGL::start");
+    debug("ShowGL::start");
     
     if(m_state == PLAY) {
       return false;
@@ -337,7 +337,7 @@ namespace VideoDisplay {
 
   bool ShowGL::stop()
   {
-    info("ShowGL::stop");
+    debug("ShowGL::stop");
 
     if(m_state != PLAY)
       return false;
@@ -420,7 +420,7 @@ namespace VideoDisplay {
     VideoIn::Frame * f = m_video->getFrame(videoFrame, true);
 
     if(!f) {
-      info("ShowGL::update # NO FRAME %d", videoFrame);
+      debug("ShowGL::update # NO FRAME %d", videoFrame);
       return;
     }
 
@@ -432,7 +432,7 @@ namespace VideoDisplay {
     m_frame = f;
 
     if(m_videoFrame != videoFrame) {
-      info("ShowGL::update # Move %d -> %d (%lf)",
+      debug("ShowGL::update # Move %d -> %d (%lf)",
 	   m_videoFrame, videoFrame, m_position.secondsD());
       m_count++;
       m_videoFrame = videoFrame;
@@ -464,7 +464,7 @@ namespace VideoDisplay {
 
     if(m_frame) {
 
-      // info("ShowGL::render # %p", m_frame);
+      // debug("ShowGL::render # %p", m_frame);
 
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
@@ -557,7 +557,7 @@ namespace VideoDisplay {
   {
     assert(m_video != 0);
 
-    return m_video->vinfo().m_videoFrameSize;
+    return m_video->vdebug().m_videoFrameSize;
   }
 
   void ShowGL::seekTo(Radiant::TimeStamp time)

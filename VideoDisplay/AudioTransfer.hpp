@@ -47,6 +47,12 @@ namespace VideoDisplay {
     static void zero(float ** dest,
 		     int chans, int frames, int offset);
 
+    void checkEnd(const VideoIn::Frame * f)
+    {
+      if(f->m_absolute.secondsD() > m_video->durationSeconds() - 0.5f)
+        m_ending = true;
+    }
+
     VideoIn * m_video;
     int       m_channels;
     bool      m_started;
@@ -63,6 +69,9 @@ namespace VideoDisplay {
     // Time stamp at the beginning of the current audio package.
     Radiant::TimeStamp m_baseTS;
     int                m_sinceBase;
+    bool      m_ending;
+    bool      m_end;
+    bool      m_first;
   };
 
 }

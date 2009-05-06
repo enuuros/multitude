@@ -52,7 +52,6 @@ namespace VideoDisplay {
   VideoIn::VideoIn()
     : m_decodedFrames(0),
       m_consumedFrames(0),
-      m_decodedAuFrames(0),
       m_consumedAuFrames(0),
       m_playing(false),
 
@@ -91,7 +90,7 @@ namespace VideoDisplay {
     if(index < 0)
       return 0;
 
-    /* Radiant::info("VideoIn::nextFrame # dec = %u cons = %u", 
+    /* Radiant::debug("VideoIn::nextFrame # dec = %u cons = %u", 
 		  m_decodedFrames, m_consumedFrames);
     */
     assert((int) m_decodedFrames > index);
@@ -107,6 +106,12 @@ namespace VideoDisplay {
       // Signal that one frame was consumed:
       m_vcond.wakeAll();
     }
+    else {
+      m_consumedAuFrames = index;
+
+      // Signal that one frame was consumed:
+      m_vcond.wakeAll();
+    }
 
     return im;
   }
@@ -116,7 +121,6 @@ namespace VideoDisplay {
     assert(!isRunning());
 
     m_finalFrames   = (uint) -1;
-    m_finalAuFrames = (uint) -1;
 
     m_continue = true;
 
@@ -135,7 +139,7 @@ namespace VideoDisplay {
 
   bool VideoIn::play()
   {
-    info("VideoIn::play");
+    debug("VideoIn::play");
 
     Guard g( & m_requestMutex);
 
@@ -147,7 +151,7 @@ namespace VideoDisplay {
 
   void VideoIn::stop()
   {
-    info("VideoIn::stop");
+    debug("VideoIn::stop");
 
     if(!m_continue && !isRunning())
       return;
@@ -160,7 +164,7 @@ namespace VideoDisplay {
 
   bool VideoIn::seek(Radiant::TimeStamp pos)
   {
-    info("VideoIn::seek");
+    debug("VideoIn::seek");
 
     Guard g( & m_requestMutex);
 
@@ -172,19 +176,19 @@ namespace VideoDisplay {
 
   bool VideoIn::atEnd()
   {
-    if((m_consumedAuFrames >= m_finalAuFrames) ||
-       (m_consumedFrames >= m_finalFrames))
+    if((m_consumedFrames >= m_finalFrames))
       return true;
 
     return false;
   }
 
-  int VideoIn::selectFrame(int startfrom, Radiant::TimeStamp time) const
+  int VideoIn::selectFrame(int, Radiant::TimeStamp time) const
   {
     int latest = latestFrame();
 
-    int best = Nimble::Math::Min(latest, startfrom);
+    int best = latest; // Nimble::Math::Min(latest, startfrom);
     int low = Nimble::Math::Max(0, (int) (best - frameRingBufferSize() / 2));
+    low = Nimble::Math::Max(low, (int) m_consumedFrames, (int) m_consumedAuFrames);
     TimeStamp bestdiff = TimeStamp::createSecondsD(10000);
 
     for(int i = best; i >= low; i--) {
@@ -222,7 +226,7 @@ namespace VideoDisplay {
 
   void VideoIn::childLoop()
   {
-    info("VideoIn::childLoop # ENTRY");
+    debug("VideoIn::childLoop # ENTRY");
 
     while(m_continue) {
 
@@ -233,7 +237,7 @@ namespace VideoDisplay {
       m_requestMutex.unlock();
 
       if(r != NO_REQUEST)
-	info("VideoIn::childLoop # REQ = %d", (int) r);
+	debug("VideoIn::childLoop # REQ = %d", (int) r);
 
       if(r == START) {
 	videoPlay(rt);
@@ -255,7 +259,7 @@ namespace VideoDisplay {
       Radiant::Sleep::sleepMs(5);
     }
 
-    info("VideoIn::childLoop # EXIT");
+    debug("VideoIn::childLoop # EXIT");
   }
 
 
@@ -267,8 +271,9 @@ namespace VideoDisplay {
     assert(m_frames.size() != 0);
 
     m_vmutex.lock();
-    while((m_decodedFrames + 1)
-	  >= (m_consumedFrames + m_frames.size()) && m_continue)
+    while(((m_decodedFrames + 4) >= (m_consumedFrames + m_frames.size()) ||
+           (m_decodedFrames + 4) >= (m_consumedAuFrames + m_frames.size())) && 
+          m_continue)
       // m_vcond.wait(1000);
       m_vcond.wait(m_vmutex, 500);
     m_vmutex.unlock();
@@ -303,7 +308,7 @@ namespace VideoDisplay {
     m_vcond.wakeAll();
 
     if(m_debug)
-      info("VideoIn::putFrame # %p %u %u",
+      debug("VideoIn::putFrame # %p %u %u",
 	   & f, m_decodedFrames, m_consumedFrames);
 
     return & f;

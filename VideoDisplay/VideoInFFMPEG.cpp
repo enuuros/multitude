@@ -34,13 +34,13 @@ namespace VideoDisplay {
 
   VideoInFFMPEG::~VideoInFFMPEG()
   {
-    info("VideoInFFMPEG::~VideoInFFMPEG");
+    debug("VideoInFFMPEG::~VideoInFFMPEG");
     if(isRunning()) {
       m_continue = false;
       m_vcond.wakeAll(m_vmutex);
       waitEnd();
     }
-    info("VideoInFFMPEG::~VideoInFFMPEG # EXIT");
+    debug("VideoInFFMPEG::~VideoInFFMPEG # EXIT");
   }
 
   void VideoInFFMPEG::getAudioParameters(int * channels, 
@@ -69,7 +69,7 @@ namespace VideoDisplay {
   {
     static const char * fname = "VideoInFFMPEG::open";
 
-    Radiant::info(fname);
+    Radiant::debug(fname);
 
     if(!m_video.open(filename, WITH_VIDEO | WITH_AUDIO))
       return false;
@@ -126,7 +126,7 @@ namespace VideoDisplay {
 
     m_video.close();
 
-    info("%s # EXIT OK", fname);
+    debug("%s # EXIT OK", fname);
 
     return true;
   }
@@ -134,7 +134,7 @@ namespace VideoDisplay {
 
   void VideoInFFMPEG::videoGetSnapshot(Radiant::TimeStamp pos)
   {
-    info("VideoInFFMPEG::videoGetSnapshot");
+    debug("VideoInFFMPEG::videoGetSnapshot");
 
     if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
       endOfFile();
@@ -153,11 +153,11 @@ namespace VideoDisplay {
 
   void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)
   {
-    info("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
+    debug("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
     
     if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
       endOfFile();
-      info("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
+      debug("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
 	   m_name.c_str());
       return;
     }
@@ -174,7 +174,7 @@ namespace VideoDisplay {
     const VideoImage * img = m_video.captureImage();
 
     if(!img) {
-      info("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
+      debug("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
 	   m_name.c_str());
       endOfFile();
       return;
@@ -182,14 +182,21 @@ namespace VideoDisplay {
 
     m_frameTime = m_video.frameTime();
 
-    putFrame(img, FRAME_STREAM, 0, m_video.frameTime());
+    Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime());
 
-    info("VideoInFFMPEG::videoPlay # EXIT OK");
+    int aframes = 0;
+    const void * audio = m_video.captureAudio( & aframes);
+
+    if(aframes && f) {
+      f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
+    }
+
+    debug("VideoInFFMPEG::videoPlay # EXIT OK %d %p", aframes, f);
   }
 
   void VideoInFFMPEG::videoGetNextFrame()
   {
-    info("VideoInFFMPEG::videoGetNextFrame");
+    debug("VideoInFFMPEG::videoGetNextFrame");
 
     const VideoImage * img = m_video.captureImage();
 
@@ -198,27 +205,17 @@ namespace VideoDisplay {
       return;
     }
 
-    int aframes = 0;
-    const void * audio = m_video.captureAudio( & aframes);
-
     TimeStamp vt = m_video.frameTime();
     
     m_frameDelta = m_frameTime.secsTo(vt);
     
     Frame * f = putFrame(img, FRAME_STREAM, vt + m_syncOffset, vt);
     
-    if(aframes && f) {
-      int n = aframes * m_channels;
-      
-      if(m_auformat == ASF_INT16) {
-	const int16_t * au16 = (const int16_t *) audio;
+    int aframes = 0;
+    const void * audio = m_video.captureAudio( & aframes);
 
-	for(int i = 0; i < n; i++)
-	  f->m_audio[i] = au16[i] * (1.0f / (1 << 16));
-	
-	f->m_audioFrames = aframes;
-	f->m_audioTS = m_video.audioTime();
-      }
+    if(aframes && f) {
+      f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
     }
     else if(f) {
       f->m_audioFrames = 0;
@@ -229,7 +226,7 @@ namespace VideoDisplay {
 
   void VideoInFFMPEG::videoStop()
   {
-    info("VideoInFFMPEG::videoStop");
+    debug("VideoInFFMPEG::videoStop");
     m_video.close();
   }
 
@@ -248,7 +245,6 @@ namespace VideoDisplay {
   void VideoInFFMPEG::endOfFile()
   {
     m_finalFrames = m_decodedFrames;
-    m_finalAuFrames = m_decodedAuFrames;
     m_playing = false;
   }
 }

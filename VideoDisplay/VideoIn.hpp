@@ -66,6 +66,24 @@ namespace VideoDisplay {
       Frame();
       ~Frame();
 
+      void copyAudio(const void * audio, int channels, int frames,
+                     Radiant::AudioSampleFormat format,
+                     Radiant::TimeStamp ts)
+      {
+
+        m_audioFrames = frames;
+
+        int n = frames * channels;
+        m_audioTS = ts;
+        
+        if(format == Radiant::ASF_INT16) {
+          const int16_t * au16 = (const int16_t *) audio;
+          
+          for(int i = 0; i < n; i++)
+            m_audio[i] = au16[i] * (1.0f / (1 << 16));
+        }
+      }
+
       Radiant::VideoImage m_image;
       Radiant::TimeStamp m_time;
       Radiant::TimeStamp m_absolute;
@@ -125,7 +143,7 @@ namespace VideoDisplay {
     static void setDebug(int level);
     static void toggleDebug();
 
-    const VideoInfo & vinfo() const { return m_info; }
+    const VideoInfo & vdebug() const { return m_info; }
 
   protected:
 
@@ -167,12 +185,9 @@ namespace VideoDisplay {
 
     volatile uint m_decodedFrames;
     volatile uint m_consumedFrames;
+    volatile uint m_consumedAuFrames;
     volatile uint m_finalFrames;
 
-    /// Audio frames:
-    volatile uint m_decodedAuFrames;  
-    volatile uint m_consumedAuFrames;
-    volatile uint m_finalAuFrames;
     volatile bool m_breakBack;
     volatile bool m_playing;
 
@@ -194,6 +209,7 @@ namespace VideoDisplay {
 
     float          m_fps;
     bool           m_done;
+    bool           m_ending;
 
     std::string    m_name;
 

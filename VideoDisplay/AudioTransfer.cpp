@@ -18,6 +18,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <assert.h>
+
 namespace VideoDisplay {
 
   using namespace Radiant;
@@ -31,7 +33,9 @@ namespace VideoDisplay {
       m_sampleFmt(Radiant::ASF_INT16),
       m_frames(0),
       m_videoFrame(0),
-      m_showFrame(-1)
+      m_showFrame(-1),
+      m_ending(false),
+      m_end(false)
   {
     Radiant::debug("AudioTransfer::AudioTransfer # %p", this);
   }
@@ -65,13 +69,16 @@ namespace VideoDisplay {
     m_frames = 0;
     m_started = true;
     m_stopped = false;
-    m_availAudio = 0;
+    m_availAudio = 1000000;
     m_videoFrame = m_video->latestFrame();
 
     m_baseTS = 0;
     m_sinceBase = 0;
     m_showFrame = -1;
     m_total = 0;
+    m_ending = false;
+    m_end = false;
+    m_first = true;
 
     m_startTime = TimeStamp::getTime();
 
@@ -87,16 +94,28 @@ namespace VideoDisplay {
 
     if(!m_video->isFrameAvailable(m_videoFrame)) {
       zero(out, m_channels, n, 0);
+
+      if(m_ending && !m_end) {
+        debug("AudioTransfer::process # END detected.");
+        m_end = true;
+      }
+
       return;
     }
 
-    Radiant::info("AudioTransfer::process # %d %d %d %d",
+    Radiant::debug("AudioTransfer::process # %d %d %d %d",
 		  m_channels, m_videoFrame, n, m_availAudio);
 
     const VideoIn::Frame * f = m_video->getFrame(m_videoFrame, false);
 
-    if(m_availAudio > f->m_audioFrames)
+    checkEnd(f);
+
+    if(m_availAudio > f->m_audioFrames) {
       m_availAudio = f->m_audioFrames;
+      Radiant::debug("AudioTransfer::process # taking audio %d %d",
+                     m_availAudio, m_videoFrame);
+      m_baseTS = f->m_audioTS;
+    }
     
     int take  = Nimble::Math::Min(n, m_availAudio);
     int taken = 0;
@@ -120,15 +139,18 @@ namespace VideoDisplay {
 
       m_videoFrame++;
 
-      info("AudioTransfer::process # To new frame %d", m_videoFrame);
+      debug("AudioTransfer::process # To new frame %d", m_videoFrame);
 
       if(!m_video->isFrameAvailable(m_videoFrame)) {
-	info("AudioTransfer::process # NOT ENOUGH DECODED : RETURN");
+	debug("AudioTransfer::process # NOT ENOUGH DECODED : RETURN");
 	m_availAudio = 1000000000;
+        m_first = true;
 	break;
       }
 
       f = m_video->getFrame(m_videoFrame, false);
+
+      checkEnd(f);
       
       m_availAudio = f->m_audioFrames;
       
@@ -144,9 +166,8 @@ namespace VideoDisplay {
 	continue;
       }
 
-      info("AudioTransfer::process # Got new %d %lf", m_availAudio,
-	   f->m_audioTS.secondsD());
-
+      debug("AudioTransfer::process # Got new i = %d a = %d %lf", m_videoFrame,
+            m_availAudio, f->m_audioTS.secondsD());
 
       deInterleave(out, f->m_audio, m_channels, take, taken);
 
@@ -172,7 +193,7 @@ namespace VideoDisplay {
       }
     }
     */
-    info("AudioTransfer::process # EXIT %d %d (%lf)",
+    debug("AudioTransfer::process # EXIT %d %d (%lf)",
 	 m_availAudio, m_total, m_startTime.since().secondsD());
 
   }
@@ -185,7 +206,7 @@ namespace VideoDisplay {
 
   unsigned AudioTransfer::videoFrame()
   {
-    info("AudioTransfer::videoFrame # %d", m_showFrame);
+    debug("AudioTransfer::videoFrame # %d", m_showFrame);
     return m_showFrame;
   }
 
@@ -194,7 +215,7 @@ namespace VideoDisplay {
   {
     assert(frames >= 0);
 
-    info("AudioTransfer::deInterleave # %d %d %d", chans, frames, offset);
+    debug("AudioTransfer::deInterleave # %d %d %d", chans, frames, offset);
 
     for(int c = 0; c < chans; c++) {
       float * d = dest[c] + offset;

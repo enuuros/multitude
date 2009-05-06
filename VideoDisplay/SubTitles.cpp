@@ -224,7 +224,7 @@ namespace VideoDisplay {
       full += '\n' + m_texts[index].m_lines[j];
     }
 
-    Radiant::info("LONGEST SUB %s", full.c_str());
+    Radiant::debug("LONGEST SUB %s", full.c_str());
     return full;
   }
 

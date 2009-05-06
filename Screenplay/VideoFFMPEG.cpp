@@ -134,9 +134,6 @@ namespace Screenplay {
           if(pts <= 0)
             pts = 0;
 
-          /* printf("pts = %d %d %d\n", (int) m_frame->pts,
-             (int) m_pkt.pts, (int) m_pkt.dts); */
-
           AVRational time_base = m_vcontext->time_base;
 
           if(!time_base.num || !time_base.den)
@@ -170,6 +167,11 @@ namespace Screenplay {
           else
             m_lastTS = Radiant::TimeStamp::createSecondsD(secs);
 
+          debug("VideoInputFFMPEG::captureImage # pts = %d %d %d lts = %lf\n",
+                (int) m_frame->pts, (int) m_pkt->pts, (int) m_pkt->dts,
+                m_lastTS.secondsD()); 
+
+
 	  if(m_capturedVideo == 0)
 	    m_firstTS = m_lastTS;
         }
@@ -189,34 +191,49 @@ namespace Screenplay {
       if (m_pkt->stream_index == m_aindex && (m_flags & Radiant::WITH_AUDIO)
           && m_acodec) {
 
-	int64_t pts = m_pkt->pts;
-	if(!pts)
-	  pts = m_pkt->dts;
-	if(!pts)
-	  pts = m_acontext->frame_number;
-	
-	debug("VideoInputFFMPEG::captureImage # Audiof = %d pts = %d, dts = %d",
-	      m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts);
-
-	if(m_audioFrames == 0) {
-	  if(pts)
-	    m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
-	  else
-	    m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
-	}
-
         int index = m_audioFrames * m_audioChannels;
 
         int aframes = (m_audioBuffer.size() - index) * 2;
 
         avcodec_decode_audio2(m_acontext, 
-            & m_audioBuffer[index],
-            & aframes, m_pkt->data, m_pkt->size);
+                              & m_audioBuffer[index],
+                              & aframes, m_pkt->data, m_pkt->size);
 
         aframes /= (2 * m_audioChannels);
+	int64_t pts = m_pkt->pts;
+	if(!pts)
+	  pts = m_pkt->dts;
+	if(!pts)
+	  pts = m_acontext->frame_number;
 
-	if(m_debug)
-	  debug("Decoding audio # %d", aframes);
+        AVRational time_base = m_acontext->time_base;
+
+        if(!time_base.num || !time_base.den)
+          time_base = m_ic->streams[m_aindex]->time_base;
+        if(pts != m_frame->pts && m_ic->streams[m_aindex]->time_base.num)
+          time_base = m_ic->streams[m_aindex]->time_base;
+
+        double rate = av_q2d(time_base);
+        double secs = pts * rate;
+	
+	debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf",
+	      aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts, 
+              (int) m_acontext->frame_number, secs);
+
+
+        if(aframes > 10000)
+          pts = m_capturedAudio;
+
+	if(m_audioFrames == 0) {
+          if(secs > 0.0001)
+            m_audioTS = TimeStamp::createSecondsD(secs);
+          else if(pts)
+	    m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
+	  else
+	    m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
+	}
+
+        debug("Decoding audio # %d %lf", aframes, m_audioTS.secondsD());
 	
         m_audioFrames   += aframes;
         m_capturedAudio += aframes;

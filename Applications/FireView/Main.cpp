@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
 #ifndef WIN32
 	Radiant::Video1394 tmp;
 	char idbuf[32];
-	sprintf(idbuf, "%llx", cam.m_euid64);
+	sprintf(idbuf, "%llx", (long long) cam.m_euid64);
 	tmp.printFormat7Modes(idbuf);
 #endif
       }
