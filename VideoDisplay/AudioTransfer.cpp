@@ -35,9 +35,16 @@ namespace VideoDisplay {
       m_videoFrame(0),
       m_showFrame(-1),
       m_ending(false),
-      m_end(false)
+      m_end(false),
+      m_audioLatency(0.0f)
   {
     Radiant::debug("AudioTransfer::AudioTransfer # %p", this);
+    const char * lat = getenv("RESONANT_LATENCY");
+    if(lat) {
+      double ms = atof(lat);
+      info("Adjusted audio latency to %lf milliseconds", ms);
+      m_audioLatency = ms * 0.001;
+    }
   }
 
   AudioTransfer::~AudioTransfer()
@@ -189,7 +196,7 @@ namespace VideoDisplay {
     zero(out, m_channels, n, taken);
 
     TimeStamp time =
-      m_baseTS + TimeStamp::createSecondsD(m_sinceBase / 44100.0);
+      m_baseTS + TimeStamp::createSecondsD(m_sinceBase / 44100.0 - m_audioLatency);
 
     m_showFrame = m_video->selectFrame(m_videoFrame, time);
 

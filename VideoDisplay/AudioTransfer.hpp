@@ -75,6 +75,7 @@ namespace VideoDisplay {
     bool      m_ending;
     bool      m_end;
     bool      m_first;
+    double    m_audioLatency;
   };
 
 }
