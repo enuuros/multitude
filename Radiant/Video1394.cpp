@@ -565,13 +565,15 @@ namespace Radiant {
 
     if(dc1394_video_set_mode(m_camera, video_mode)
         != DC1394_SUCCESS) {
-      trace(FATAL, "%s # dc1394_video_set_mode failed",
-          fname);
+      error("%s # dc1394_video_set_mode failed",
+            fname);
+      return false;
     }
 
     if(dc1394_video_set_framerate(m_camera, fps) != DC1394_SUCCESS) {
-      trace(FATAL, "%s # dc1394_video_set_framerate failed",
-          fname);
+      error("%s # dc1394_video_set_framerate failed",
+            fname);
+      return false;
     }
 
     // If the camera is already running (eg. unclean exit), stop it
@@ -1231,8 +1233,9 @@ namespace Radiant {
 
           if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
 	     != DC1394_SUCCESS) {
-            trace(FATAL, "%s # dc1394_video_set_iso_speed 400 failed",
-                fname);
+            error("%s # dc1394_video_set_iso_speed 400 failed",
+                  fname);
+            return false;
           }
         }
       }
@@ -1244,7 +1247,8 @@ namespace Radiant {
     }
 
     if (dc1394_video_get_iso_speed(m_camera, &m_speed) != DC1394_SUCCESS) {
-      trace(FATAL, "%s # dc1394_video_get_iso_speed failed", fname);
+      error("%s # dc1394_video_get_iso_speed failed", fname);
+      return false;
     }
     else
       debug("%s # ISO speed = %u", fname, (uint) m_speed);
