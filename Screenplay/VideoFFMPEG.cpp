@@ -86,11 +86,9 @@ namespace Screenplay {
     close();
     av_free_packet(m_pkt);
     delete m_pkt;
-
-    //m_image.allocateMemory(IMAGE_GRAYSCALE, 1, 1);
   }
 
-  const Radiant::VideoImage * VideoInputFFMPEG::captureImage()
+  const Radiant::VideoImage * VideoInputFFMPEG::captureImage(int)
   {
     assert(this != 0);
 

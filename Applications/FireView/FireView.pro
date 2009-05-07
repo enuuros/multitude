@@ -1,5 +1,7 @@
 include(../Applications.pri)
 
+CONFIG += debug
+
 HEADERS += CamView.hpp 
 HEADERS += MainWindow.hpp 
 HEADERS += ParamView.hpp

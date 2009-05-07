@@ -42,7 +42,7 @@ namespace Screenplay {
     VideoInputFFMPEG();
     virtual ~VideoInputFFMPEG();
     
-    virtual const Radiant::VideoImage * captureImage();
+    virtual const Radiant::VideoImage * captureImage(int timeoutus = -1);
     /// The time-stamp of the latest video frame
     Radiant::TimeStamp frameTime() { return m_lastTS; }
     /// The time stamp of curren audio buffer

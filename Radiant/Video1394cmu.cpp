@@ -936,7 +936,7 @@ void Video1394::sendSoftwareTrigger()
 	// ----------------------------------------------------------------------------
 	// Capture a camera frame.
 	//
-	const VideoImage* Video1394::captureImage()
+	const VideoImage* Video1394::captureImage(int)
 	{
 		// trace("Video1394::captureImage");
 		assert(isInitialized());

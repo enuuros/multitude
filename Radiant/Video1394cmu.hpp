@@ -57,7 +57,7 @@ public:
     static bool queryCameras(std::vector<CameraInfo> * cameras);
     static bool queryCamera(u_int64_t euid64, CameraInfo * camera);
 
-    virtual const VideoImage * captureImage();
+    virtual const VideoImage * captureImage(int timeoutus = -1);
     virtual void doneImage();
 
     /// The width of the video stream images.

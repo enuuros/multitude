@@ -126,6 +126,8 @@ namespace FireView {
 
       virtual void childLoop();
 
+      bool openCamera();
+
       Radiant::Video1394 m_video;
       Radiant::MutexAuto m_mutex;
       Radiant::VideoImage m_frame;

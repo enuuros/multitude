@@ -90,7 +90,9 @@ namespace FireView {
     for(unsigned i = 0; i < infos.size(); i++) {
       u_int64_t euid = infos[i].m_euid64;
       
-      if(m_cameras.find(euid) == m_cameras.end()) {
+      if(euid < 0x10000)
+        ;
+      else if(m_cameras.find(euid) == m_cameras.end()) {
 
 	qDebug("Adding camera %d %llx",
 	       (int) m_cameras.size() + 1, (long long) euid);

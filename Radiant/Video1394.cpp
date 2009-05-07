@@ -150,8 +150,12 @@ namespace Radiant {
       close();
 
     __count--;
-    if(!__count)
+
+    /*if(!__count) {
       dc1394_free(__dc);
+      __dc = 0;
+    }
+    */
   }
 
   ImageFormat Video1394::imageFormat() const
@@ -174,10 +178,10 @@ namespace Radiant {
     return false;
   }
 
-  dc1394error_t has_mode(dc1394camera_t *camera,
-      dc1394feature_t feature,
-      dc1394feature_mode_t mode,
-      dc1394bool_t * val)
+  dc1394error_t has_mode(dc1394camera_t * camera,
+                         dc1394feature_t feature,
+                         dc1394feature_mode_t mode,
+                         dc1394bool_t * val)
   {
     dc1394feature_modes_t modes;
     modes.num = 0;
@@ -913,6 +917,8 @@ namespace Radiant {
       return false;
     }
 
+    __infos.clear();
+
     for(i = 0; i < camlist->num; i++) {
       bool already = false;
 
@@ -930,6 +936,9 @@ namespace Radiant {
       dc1394camera_t * c = __infos[i];
       CameraInfo ci;
 
+      if(!c->guid || !c->vendor || !c->model)
+        continue;
+      
       ci.m_euid64 = c->guid;
       ci.m_vendor = c->vendor;
       ci.m_model  = c->model;
@@ -964,7 +973,7 @@ namespace Radiant {
   /**
    * Capture a camera frame.
    */
-  const VideoImage * Video1394::captureImage()
+  const VideoImage * Video1394::captureImage(int timeoutus)
   {
     // trace("Video1394::captureImage");
 
@@ -974,8 +983,33 @@ namespace Radiant {
       start();
 
     m_frame = 0;
+
+    if(timeoutus > 0) {
+
+      int fd = dc1394_capture_get_fileno(m_camera);
+      fd_set fds;
+      struct timeval tv;
+
+      FD_ZERO(& fds);
+      FD_SET(fd, & fds);
+
+      tv.tv_sec = timeoutus / 1000000;
+      tv.tv_usec = timeoutus % 1000000;
+
+      select(fd + 1, &fds, 0, 0, &tv);
+
+      if(FD_ISSET(fd, & fds))
+        ;
+      else {
+        FD_ZERO( & fds);
+        // error("Video1394::captureImage # no image available fd = %d r = %d", fd, r);
+        return 0;
+      }
+      FD_ZERO( & fds);
+    }
+
     int err = dc1394_capture_dequeue(m_camera,
-        DC1394_CAPTURE_POLICY_WAIT, & m_frame);
+                                     DC1394_CAPTURE_POLICY_WAIT, & m_frame);
 
     if(err ) {
       Radiant::error("Video1394::captureImage # Unable to capture a frame!");
@@ -1065,12 +1099,11 @@ namespace Radiant {
     uint32_t i;
 
     bzero( & m_camera, sizeof(m_camera));
-    // bzero( & m_features, sizeof(m_features));
 
     m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
 
     // if(euid != 0)
-    debug("Video1394::open # m_euid = %.8x%.8x (%s)", 
+    debug("Video1394::findCamera # m_euid = %.8x%.8x (%s)", 
           (int) (m_euid >> 32), (int) m_euid, euid);
 
     if (m_initialized)

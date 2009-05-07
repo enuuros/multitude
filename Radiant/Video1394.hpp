@@ -71,7 +71,7 @@ namespace Radiant {
      */
     static bool queryCamera(uint64_t euid64, CameraInfo * camera);
 
-    virtual const VideoImage * captureImage();
+    virtual const VideoImage * captureImage(int timeoutus = -1);
     virtual void doneImage();
 
     /// The width of the video stream images.

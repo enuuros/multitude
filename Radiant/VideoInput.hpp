@@ -71,7 +71,7 @@ namespace Radiant {
      * @see #open()
      * @see #start()
      */
-    virtual const Radiant::VideoImage * captureImage() = 0;
+    virtual const Radiant::VideoImage * captureImage(int timeoutus = -1) = 0;
     /// Inform the video handler that the application has used the image
     /** This function is necessary as some handlers need to release
 	the resources that relate to a particular frame. */

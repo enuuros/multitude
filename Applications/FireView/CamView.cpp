@@ -109,10 +109,124 @@ namespace FireView {
 
     return "unknown";
   }
+
+  using Radiant::StringUtils::yesNo;
+
   void CamView::InputThread::childLoop()
   {
-    using Radiant::StringUtils::yesNo;
-    
+
+    if(!openCamera())
+      return;
+
+    m_state = RUNNING;
+
+    Radiant::TimeStamp starttime(Radiant::TimeStamp::getTime());
+    Radiant::SleepSync sync;
+    sync.resetTiming();
+
+    debug("Capturing video");
+
+    m_lastCheckTime = Radiant::TimeStamp::getTime();
+
+    while(m_continue) {
+
+      // printf("<"); fflush(0);
+
+      if(m_customFps > 0.0f && !m_format7) {
+	sync.sleepSynchroUs((long) (1000000 / m_customFps));
+	m_video.sendSoftwareTrigger();
+      }
+
+      int timeout = m_frameCount ? 500000 : 5000000;
+
+      const Radiant::VideoImage * img = m_video.captureImage(timeout);
+
+      if (img == 0) {
+        error("No video image after waiting %lf ms", timeout * 0.001);
+
+        m_video.close();
+        if(m_frameCount > 10) {
+          // Wait ten seconds and try re-opening the camera
+
+          Radiant::Sleep::sleepS(10);
+
+          debug("Attempting to re-open camera.");
+
+          m_frameCount = 0;
+          
+          if(!openCamera()) {
+            m_continue = false;
+            break;
+          }
+          else
+            continue;
+        }
+        else {
+          m_continue = false;
+          // m_frameCount = m_frameCount;
+          break;
+        }
+      }
+
+      // qDebug("CamView::InputThread::childLoop # Captured");
+
+      Radiant::Guard g( & m_mutex);
+
+#ifndef WIN32
+      m_frame.allocateMemory(*img);
+#endif
+      m_frame.copyData(*img);
+      m_frameCount++;
+      m_video.doneImage();
+     
+      for(unsigned i = 0; i < m_features.size(); i++) {
+	if(m_featureSend[i]) {
+	  m_video.setFeature1394Raw(m_features[i].id, m_features[i].value);
+	  m_featureSend[i] = false;
+	}
+	else if(m_autoSend[i]) {
+	  m_video.setFeature1394(m_features[i].id, -1);
+	  m_autoSend[i] = false;
+	}
+      }
+
+      Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
+
+      double dt = Radiant::TimeStamp(now - m_lastCheckTime).secondsD();
+
+      if(dt > 3.0f) {
+        int frames = m_frameCount - m_lastCheckFrame;
+        m_lastCheckFps = frames / dt;
+        m_lastCheckFrame = m_frameCount;
+        m_lastCheckTime = now;
+
+        // qDebug("FPS = %f", m_lastCheckFps);
+      }
+
+      // printf(">"); fflush(0);
+      // qDebug("CamView::InputThread::childLoop # Frame");
+    }
+
+    // qDebug("CamView::InputThread::childLoop # DONE");
+
+    float fps = m_frameCount /
+      Radiant::TimeStamp(Radiant::TimeStamp::getTime() - starttime).secondsD();
+
+    m_frame.freeMemory();
+
+
+    qDebug("CamView::InputThread::childLoop # camid = %llx # EXIT (%.2f fps, %d frames)",
+	   (long long) m_video.cameraInfo().m_euid64, fps, (int) m_frameCount);
+
+    m_video.stop();
+    m_video.close();
+
+    m_state = UNINITIALIZED;
+
+  }
+
+  bool CamView::InputThread::openCamera()
+  {
     bool ok;
     
     if(!m_format7)
@@ -133,7 +247,7 @@ namespace FireView {
     
     if(!ok) {
       m_state = FAILED;
-      return;
+      return false;
     }
 
     if(m_verbose) {
@@ -202,7 +316,7 @@ namespace FireView {
     if((int) trig > 0) {
       if(!m_video.enableTrigger(trig)) {
 	m_state = FAILED;
-	return;
+	return false;
       }
       else
 	debug("Enabled trigger source %d (%d) %f %d",
@@ -262,99 +376,16 @@ namespace FireView {
     if(!m_video.start()) {
       m_state = UNINITIALIZED;
       Radiant::error("Could not start video capture");
-      return;
+      return false;
     }
 
 #ifdef WIN32
-	const Radiant::VideoImage * initialGrab = m_video.captureImage();
-	m_frame.allocateMemory(*initialGrab);
-	m_video.doneImage();
+    const Radiant::VideoImage * initialGrab = m_video.captureImage();
+    m_frame.allocateMemory(*initialGrab);
+    m_video.doneImage();
 #endif
 
-    m_state = RUNNING;
-
-    Radiant::TimeStamp starttime(Radiant::TimeStamp::getTime());
-    Radiant::SleepSync sync;
-    sync.resetTiming();
-
-    debug("Capturing video");
-
-    m_lastCheckTime = Radiant::TimeStamp::getTime();
-    while(m_continue) {
-
-      // printf("<"); fflush(0);
-
-      if(m_customFps > 0.0f && !m_format7) {
-	sync.sleepSynchroUs((long) (1000000 / m_customFps));
-	m_video.sendSoftwareTrigger();
-      }
-
-      const Radiant::VideoImage * img = m_video.captureImage();
-
-#ifdef WIN32
-	  if (img == 0)
-	  {
-		  m_continue = false;
-		  m_frameCount = m_frameCount;
-		  break;
-	  }
-#endif
-
-      // qDebug("CamView::InputThread::childLoop # Captured");
-
-      Radiant::Guard g( & m_mutex);
-
-#ifndef WIN32
-	  m_frame.allocateMemory(*img);
-#endif
-	  m_frame.copyData(*img);
-	  m_frameCount++;
-      m_video.doneImage();
-     
-      for(unsigned i = 0; i < m_features.size(); i++) {
-	if(m_featureSend[i]) {
-	  m_video.setFeature1394Raw(m_features[i].id, m_features[i].value);
-	  m_featureSend[i] = false;
-	}
-	else if(m_autoSend[i]) {
-	  m_video.setFeature1394(m_features[i].id, -1);
-	  m_autoSend[i] = false;
-	}
-      }
-
-      Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
-
-      double dt = Radiant::TimeStamp(now - m_lastCheckTime).secondsD();
-
-      if(dt > 3.0f) {
-        int frames = m_frameCount - m_lastCheckFrame;
-        m_lastCheckFps = frames / dt;
-        m_lastCheckFrame = m_frameCount;
-        m_lastCheckTime = now;
-
-        // qDebug("FPS = %f", m_lastCheckFps);
-      }
-
-      // printf(">"); fflush(0);
-      // qDebug("CamView::InputThread::childLoop # Frame");
-    }
-
-    // qDebug("CamView::InputThread::childLoop # DONE");
-
-    float fps = m_frameCount /
-      Radiant::TimeStamp(Radiant::TimeStamp::getTime() - starttime).secondsD();
-
-    m_frame.freeMemory();
-
-
-    qDebug("CamView::InputThread::childLoop # camid = %llx # EXIT (%.2f fps, %d frames)",
-	   (long long) m_video.cameraInfo().m_euid64, fps, (int) m_frameCount);
-
-    m_video.stop();
-    m_video.close();
-
-    m_state = UNINITIALIZED;
-
+    return true;
   }
 
   /////////////////////////////////////////////////////////////////////////////
