@@ -19,6 +19,8 @@
 #include <Radiant/Trace.hpp>
 
 #include <assert.h>
+#include <stdlib.h>
+
 
 namespace VideoDisplay {
 

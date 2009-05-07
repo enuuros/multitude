@@ -22,8 +22,14 @@ namespace Nimble {
 
   /// Random number generator with uniform distribution
   /** This class generates random numbers with uniform
-      distribution. It uses a fast and cheap modulo-based random
-      number generation.
+      distribution.
+      
+      It uses a fast and cheap modulo-based random number
+      generation. The side effext of this is that the lower bits of
+      the random number sequence are not so very random. If you need
+      small integers with random values you will need to use the
+      #rand24 function, which uses only the 24 higher bits that are
+      fairly random.
 
       The random number sequence is identical on all platforms, given
       the same seed value.
@@ -88,17 +94,39 @@ namespace Nimble {
       return rand0X(max - min) + min;
     }
     
-    /* */
+    /** A random number in range 0-2^32. The lower bits of the random
+        number are not totally random. */
     inline uint32_t rand() 
     { 
       m_val = m_val * m_randMul + 1;
       return m_val;
     }
 
+    /** A random number in range 0-2^24. All bits of the value should
+        be fairly random. */
+    inline uint32_t rand24() 
+    { 
+      m_val = m_val * m_randMul + 1;
+      return m_val >> 8;
+    }
+    
+    /** A random number in range 0-2^32. All bits of the value should
+        be fairly random. */
+    inline uint32_t rand32() 
+    { 
+      /* Generate two random numbers are take the 16 higher bits from
+         both. */
+      uint32_t v1 = m_val * m_randMul + 1;
+      uint32_t v2 = v1 * m_randMul + 1;
+      m_val = v2;
+      return (v1 & 0xFFFF0000) | (v2 >> 16);
+    }
+    
+    /** Get random numbers between 0 and range-1. */
     inline uint32_t randN(uint32_t range) 
     { 
       m_val = m_val * m_randMul + 1;
-      return (m_val >> 3) % range;
+      return (m_val >> 8) % range;
     }
 
     // Random 2d unit vector
