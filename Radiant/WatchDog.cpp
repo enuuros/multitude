@@ -16,6 +16,7 @@
 #include "WatchDog.hpp"
 
 #include <Radiant/Sleep.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <math.h>
 #include <stdio.h>
@@ -24,7 +25,7 @@
 namespace Radiant {
 
   WatchDog::WatchDog()
-    : m_continue(false),
+    : m_continue(true),
       m_intervalSeconds(60.0f)
   {}
 
@@ -54,6 +55,8 @@ namespace Radiant {
 	fflush(0);
 	abort();
       }
+
+      info("WATCHDOG CHECK");
 
       m_check = false;
     }
