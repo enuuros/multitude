@@ -54,6 +54,11 @@ namespace Radiant {
 	printf("WatchDog::mainLoop # HOST IS DEAD, ABORTING\n");
 	fflush(0);
 	abort();
+
+	Sleep::sleepS(1);
+	Sleep::sleepS(1);
+	int * bad = 0;
+	*bad = 123456;
       }
 
       info("WATCHDOG CHECK");
