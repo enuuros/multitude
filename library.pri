@@ -32,7 +32,7 @@ win32 {
 	
 	INSTALLS += dlls
 
-        TEMPLATE = vclib
+#        TEMPLATE = vclib
 }
 
   macx {

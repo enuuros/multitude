@@ -13,6 +13,8 @@
  * 
  */
 
+#include <Radiant/TimeStamp.hpp>
+#include <Radiant/Trace.hpp>
 #include <Radiant/TCPServerSocket.hpp>
 #include <Radiant/TCPSocket.hpp>
 
@@ -32,10 +34,13 @@ const char * strerror_s(const char *, int, int err)
 
 #endif
 
-
 using namespace Radiant;
 
 const char * appname = 0;
+
+float __duration = 10000000.0f;
+Radiant::TimeStamp __began;
+
 
 void runServer(const char * host, int port, bool withBlocking)
 {
@@ -115,7 +120,7 @@ void runListener(const char * host, int port, const char *)
     return;
   }
 
-  while(true) {
+  while(__began.since().secondsD() < __duration) {
     char buf[64];
     bzero(buf, sizeof(buf));
 
@@ -126,6 +131,8 @@ void runListener(const char * host, int port, const char *)
     printf(buf);
     fflush(0);
   }
+
+  Radiant::info("%s Closing socket", appname);
 
   socket.close();
 }
@@ -141,6 +148,8 @@ int main(int argc, char ** argv)
 
   appname = argv[0];
 
+  __began = TimeStamp::getTime();
+
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--server") == 0)
       isclient = false;
@@ -152,6 +161,8 @@ int main(int argc, char ** argv)
       port = atoi(argv[++i]);
     else if(strcmp(argv[i], "--message") == 0 && (i + 1) < argc)
       message = argv[++i];
+    else if(strcmp(argv[i], "--time") == 0 && (i + 1) < argc)
+      __duration = atof(argv[++i]);
     else if(strcmp(argv[i], "--withblocking") == 0)
       withBlocking = true;
     else

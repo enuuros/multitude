@@ -12,6 +12,7 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #ifndef PATTERNS_NOTCOPYABLE_HPP
 #define PATTERNS_NOTCOPYABLE_HPP
 
@@ -21,11 +22,11 @@ namespace Patterns
 {
   /// Base class for classes that cannot be copied. By inheriting this
   /// class you can disable copying of your classes.
-  class PATTERNS_API NotCopyable
+  class NotCopyable
   {
     protected:
-      NotCopyable();
-      ~NotCopyable();
+      PATTERNS_API NotCopyable();
+      PATTERNS_API ~NotCopyable();
 
     private:
       NotCopyable(const NotCopyable &);
