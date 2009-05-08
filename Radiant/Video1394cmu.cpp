@@ -542,6 +542,20 @@ bool Video1394::setTriggerMode(dc1394trigger_mode_t mode)
 	return false;
 }
 
+bool Video1394::setTriggerPolarity(bool up)
+{
+  
+	assert(cmu_camera);
+	C1394CameraControlTrigger * pcct = cmu_camera->GetCameraControlTrigger();
+	if (pcct)
+	{
+		pcct->SetPolarity(up);
+		return true;
+	}
+
+	return false;
+}
+
 // ---------------------------------------------------------------------------
 //
 bool Video1394::disableTrigger()

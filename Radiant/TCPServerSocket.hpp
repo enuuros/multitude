@@ -36,7 +36,7 @@ namespace Radiant {
     /// Opens a server TCP socket to desired host:port
     /** @return On successful execution, returns zero, otherwise an
         error code (as in errno.h). */
-    int open(const char * host, int port, int maxconnections = 1);
+    int open(const char * host, int port, int maxconnections = 2);
     /// Closes the socket
     bool close();
     /// Returns true of the socket is open.

@@ -81,7 +81,7 @@ namespace Radiant {
       return errno;
     }
 
-    //puts("Listenging");
+    //puts("Listening");
     
     if(::listen(m_fd, maxconnections) != 0) {
       close();
@@ -133,7 +133,7 @@ namespace Radiant {
     if (status < 0)
       return false;
     char data;
-    return !(FD_ISSET(m_fd, &readfds) && (recv(m_fd, &data, 1, MSG_PEEK) <= 0));
+    return (FD_ISSET(m_fd, &readfds))/* && (recv(m_fd, &data, 1, MSG_PEEK) <= 0))*/;
 #endif
   }
 

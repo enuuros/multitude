@@ -1,4 +1,5 @@
 # Common rules to build multitude libraries
+
 TEMPLATE = lib
 
 DESTDIR = $$PWD/lib
@@ -30,6 +31,8 @@ win32 {
 	dlls.CONFIG += no_check_exist
 	
 	INSTALLS += dlls
+
+        TEMPLATE = vclib
 }
 
   macx {

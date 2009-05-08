@@ -90,6 +90,7 @@ public:
     /// Sets the triggering mode for the camera
     bool enableTrigger(dc1394trigger_source_t source);
     bool setTriggerMode(dc1394trigger_mode_t mode);
+    bool setTriggerPolarity(bool up);
     bool disableTrigger();
     /// Sends a software trigger signal to the camera
     void sendSoftwareTrigger();
