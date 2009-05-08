@@ -38,7 +38,7 @@ namespace Radiant {
   {
     m_check = true; 
   }
-    
+
   void WatchDog::childLoop()
   {
     m_continue = true;
@@ -47,21 +47,29 @@ namespace Radiant {
     while(m_continue) {
       int n = (int) ceilf(m_intervalSeconds * 10.0f);
 
+      /* A single long sleep might get interrupted by system calls and
+	 return early. The method below should be more robust. */
+
       for(int i = 0; i < n && m_continue; i++)
 	Radiant::Sleep::sleepMs(100);
 
       if(!m_check) {
-	printf("WatchDog::mainLoop # HOST IS DEAD, ABORTING\n");
-	fflush(0);
+	error("WatchDog::mainLoop # HOST IS DEAD, ABORTING\n");
+
+	// Stop the app:
 	abort();
 
+	// Stop it again:
 	Sleep::sleepS(1);
 	Sleep::sleepS(1);
 	int * bad = 0;
 	*bad = 123456;
+
+	// And again:
+	exit(0);
       }
 
-      info("WATCHDOG CHECK");
+      debug("WATCHDOG CHECK");
 
       m_check = false;
     }

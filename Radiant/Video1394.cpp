@@ -456,8 +456,11 @@ namespace Radiant {
     return true;
   }
 
-  bool Video1394::setTriggerPolarity(dc1394trigger_polarity_t polarity)
+  bool Video1394::setTriggerPolarity(bool up)
   {
+    dc1394trigger_polarity_t polarity = up ? 
+      DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
+
     dc1394error_t e = dc1394_external_trigger_set_polarity(m_camera, polarity);
     
     if(e != DC1394_SUCCESS) {
