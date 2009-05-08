@@ -26,7 +26,7 @@ namespace Radiant {
 
   void VideoImage::Plane::freeMemory()
   { 
-    delete[] m_data; 
+    delete [] m_data; 
     m_data = 0; 
   }
 
