@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += FireView
-SUBDIRS += ListPortAudioDevices
+# SUBDIRS += ListPortAudioDevices
 SUBDIRS += MoviePlayer
 
 stuff.path = /src/MultiTouch/multitude/Applications
