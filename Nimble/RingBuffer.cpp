@@ -41,10 +41,10 @@ namespace Nimble {
 
       float * target = lag3IntCoeffs + i * 4;
 
-      *target++ = (float) -dm12p6 * dm3;
-      *target++ = (float)  dm03p2 * dm2;
-      *target++ = (float) -dm03p2 * dm1;
-      *target   = (float)  dm12p6 * d;
+      *target++ = (float) (-dm12p6 * dm3);
+      *target++ = (float) ( dm03p2 * dm2);
+      *target++ = (float) (-dm03p2 * dm1);
+      *target   = (float) ( dm12p6 * d);
     }
     return true;
   }

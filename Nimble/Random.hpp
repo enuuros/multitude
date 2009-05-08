@@ -18,6 +18,8 @@
 
 #include <Nimble/Vector2.hpp>
 
+#include <stdint.h>
+
 namespace Nimble {
 
   /// Random number generator with uniform distribution

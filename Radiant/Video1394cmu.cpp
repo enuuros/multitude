@@ -1030,7 +1030,8 @@ void Video1394::sendSoftwareTrigger()
 	{
 		assert(isInitialized());
 
-		m_image.clearPointers();
+		debug("Video1394::close # Leaking some memory, FIX ME");
+		// m_image.clearPointers();
 
 		if (!cmu_camera)
 			return false;
