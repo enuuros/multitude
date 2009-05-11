@@ -1145,7 +1145,7 @@ namespace Radiant {
       else {
         for(int c = 0; c < (int) __infos.size(); c++) {
           dc1394_reset_bus(__infos[c]);
-          Sleep::sleepMs(20);
+          Sleep::sleepMs(100);
         }
       }
     }
