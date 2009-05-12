@@ -176,8 +176,13 @@ namespace VideoDisplay {
 
     m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
 
-    if(pos > 0)
-      m_video.seekPosition(pos.secondsD());
+    if(pos > 0) {
+
+      if(pos.secondsD() >= m_video.durationSeconds() - 2.5)
+        pos = 0;
+      else
+        m_video.seekPosition(pos.secondsD());
+    }
 
     const VideoImage * img = m_video.captureImage();
 
@@ -198,6 +203,8 @@ namespace VideoDisplay {
     if(aframes && f) {
       f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
     }
+
+    ignorePreviousFrames();
 
     debug("VideoInFFMPEG::videoPlay # EXIT OK %d %p", aframes, f);
   }

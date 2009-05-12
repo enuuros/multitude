@@ -47,6 +47,7 @@ namespace VideoDisplay {
     
     enum FrameType {
       FRAME_INVALID,
+      FRAME_IGNORE,
       FRAME_STREAM,
       FRAME_LAST,
       FRAME_SNAPSHOT
@@ -57,7 +58,7 @@ namespace VideoDisplay {
       NO_REQUEST,
       START,
       SEEK,
-      STOP,
+      STOP
     };
 
     class VIDEODISPLAY_API Frame
@@ -70,11 +71,7 @@ namespace VideoDisplay {
                      Radiant::AudioSampleFormat format,
                      Radiant::TimeStamp ts)
       {
-
-        m_audioFrames = frames;
-
         int n = frames * channels;
-        m_audioTS = ts;
         
         if(format == Radiant::ASF_INT16) {
           const int16_t * au16 = (const int16_t *) audio;
@@ -82,6 +79,9 @@ namespace VideoDisplay {
           for(int i = 0; i < n; i++)
             m_audio[i] = au16[i] * (1.0f / (1 << 16));
         }
+
+        m_audioFrames = frames;
+        m_audioTS = ts;
       }
 
       Radiant::VideoImage m_image;
@@ -171,6 +171,8 @@ namespace VideoDisplay {
 		     FrameType type,
 		     Radiant::TimeStamp show, 
 		     Radiant::TimeStamp absolute);
+
+    VIDEODISPLAY_API void ignorePreviousFrames();
 
     std::vector<Radiant::RefPtr<Frame> > m_frames;
 

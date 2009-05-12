@@ -201,6 +201,10 @@ namespace VideoDisplay {
       if(!f)
 	continue;
 
+      if(f->m_type == FRAME_INVALID ||
+         f->m_type == FRAME_IGNORE)
+        continue;
+
       TimeStamp diff = Nimble::Math::Abs(f->m_absolute - time);
       if(diff < bestdiff) {
 	best = i;
@@ -301,6 +305,9 @@ namespace VideoDisplay {
     f.m_absolute = absolute;
     f.m_audioFrames = 0;
     f.m_audioTS = 0;
+
+    if(type == FRAME_SNAPSHOT)
+      m_consumedAuFrames = m_decodedFrames;
     
     if(!f.m_image.m_planes[0].m_data)
       f.m_image.allocateMemory(*im);
@@ -323,5 +330,10 @@ namespace VideoDisplay {
     // qDebug("VideoIn::putFrame # EXIT");
   }
 
+  void VideoIn::ignorePreviousFrames()
+  {
+    for(uint i = m_consumedFrames; (i + 1) < m_decodedFrames; i++)
+      m_frames[i % m_frames.size()].ptr()->m_type = FRAME_IGNORE;
+  }
 
 }

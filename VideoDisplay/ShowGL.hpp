@@ -51,9 +51,13 @@ namespace VideoDisplay {
 
   class AudioTransfer;
 
-  /// Objects throws the video to an OpenGL device
+  /// Objects that displays video using an OpenGL device
+  /** From application-programmers perspective, this is the main class
+      of the VideoDisplay framework. */
   class ShowGL
   {
+  private:
+
     class YUVProgram : public Luminous::GLSLProgramObject
     {
     public:
@@ -114,6 +118,7 @@ namespace VideoDisplay {
     VIDEODISPLAY_API ShowGL();
     VIDEODISPLAY_API ~ShowGL();
 
+    /// Load a subtitle file
     VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
     /// Initialize the file, but does not play it.
@@ -123,7 +128,7 @@ namespace VideoDisplay {
     /* VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
                                Radiant::TimeStamp pos = 0);
     */
-    /// Stops file playback
+    /// Starts file playback, from the last playback position.
     VIDEODISPLAY_API bool start();
     /// Stops file playback
     VIDEODISPLAY_API bool stop();
