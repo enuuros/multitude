@@ -63,7 +63,6 @@ namespace VideoDisplay {
     Radiant::TimeStamp m_syncOffset;
 
     Radiant::TimeStamp m_duration;
-    Radiant::TimeStamp m_frameTime;
     double m_frameDelta;
 
     Screenplay::VideoInputFFMPEG m_video;

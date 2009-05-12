@@ -144,7 +144,7 @@ namespace VideoDisplay {
     Guard g( & m_requestMutex);
 
     m_request = START;
-    m_requestTime = 0;
+    m_requestTime = m_frameTime;
 
     return true;
   }
@@ -244,8 +244,8 @@ namespace VideoDisplay {
       m_request = NO_REQUEST;
       m_requestMutex.unlock();
 
-      // if(r != NO_REQUEST)
-      debug("VideoIn::childLoop # REQ = %d p = %d", (int) r, (int) playing());
+      if(r != NO_REQUEST)
+        debug("VideoIn::childLoop # REQ = %d p = %d",(int) r, (int) playing());
 
       if(r == START) {
 	videoPlay(rt);

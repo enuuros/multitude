@@ -212,6 +212,8 @@ namespace VideoDisplay {
     Radiant::TimeStamp m_requestTime;
     Radiant::MutexAuto m_requestMutex;
 
+    Radiant::TimeStamp m_frameTime;
+
   private:
     /// Disabled
     VideoIn(const VideoIn & ) : Radiant::Thread() {}

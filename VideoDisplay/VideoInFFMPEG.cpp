@@ -135,20 +135,26 @@ namespace VideoDisplay {
 
   void VideoInFFMPEG::videoGetSnapshot(Radiant::TimeStamp pos)
   {
-    debug("VideoInFFMPEG::videoGetSnapshot");
+    debug("VideoInFFMPEG::videoGetSnapshot # %lf", pos.secondsD());
 
     if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
       endOfFile();
       return;
     }
 
-    /* if(pos)
+    if(pos)
       m_video.seekPosition(pos.secondsD());
-    */
 
     const VideoImage * img = m_video.captureImage();
 
+    if(!img) {
+      m_video.close();
+      return;
+    }
+
     putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime());
+
+    m_frameTime = m_video.frameTime();
 
     m_video.close();
   }

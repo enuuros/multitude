@@ -380,7 +380,7 @@ namespace VideoDisplay {
 
       start();
 
-      return false; // open(m_filename.c_str(), m_dsp, pos);
+      return false;
     }
   }
 
@@ -581,12 +581,12 @@ namespace VideoDisplay {
 
     debug("ShowGL::seekTo # %lf", time.secondsD());
 
-    // m_video->seekTo(time.secondsD());
+    m_video->seek(time);
   }
 
   void ShowGL::seekToRelative(double relative)
   {
-    seekTo(static_cast<int64_t> (duration() * relative));
+    seekTo(TimeStamp(duration() * relative));
   }
 
   void ShowGL::clearHistogram()
