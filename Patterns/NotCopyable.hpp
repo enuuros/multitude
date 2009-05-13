@@ -22,11 +22,11 @@ namespace Patterns
 {
   /// Base class for classes that cannot be copied. By inheriting this
   /// class you can disable copying of your classes.
-  class NotCopyable
+  class PATTERNS_API NotCopyable
   {
     protected:
-      PATTERNS_API NotCopyable();
-      PATTERNS_API ~NotCopyable();
+      NotCopyable();
+      ~NotCopyable();
 
     private:
       NotCopyable(const NotCopyable &);

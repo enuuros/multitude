@@ -143,7 +143,7 @@ namespace Nimble {
     /* STORING & INDEXING ELEMENTS */
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = 3*i+j;
+	a[i][j] = T(3*i+j);
   
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
@@ -158,7 +158,7 @@ namespace Nimble {
     /* ROW & COLUMN OPERATORS */
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = 3*i+j;
+	a[i][j] = T(3*i+j);
 
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++) 
@@ -186,7 +186,7 @@ namespace Nimble {
 
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = 3*i+j;  
+	a[i][j] = T(3*i+j);
   
     Matrix3T<T> b(a);
     assert(a == b);
@@ -409,7 +409,7 @@ namespace Nimble {
 	  {
             // WARNING.  Not unique.  XA - ZA = -atan2(r10,r11)
             xa = -Math::ATan2(m[1][0],m[1][1]);
-            ya = -Math::HALF_PI;
+            ya = -(T)Math::HALF_PI;
             za = 0.0f;
             return false;
 	  }
@@ -418,7 +418,7 @@ namespace Nimble {
       {
 	// WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
 	xa = Math::ATan2(m[1][0],m[1][1]);
-	ya = Math::HALF_PI;
+	ya = (T)Math::HALF_PI;
 	za = 0.0f;
 	return false;
       }
@@ -606,7 +606,7 @@ Matrix3T<T> Matrix3T<T>::makeRotation(T radians, const Vector3T<T> & axis)
   Vector3T<T> vn(axis);
   vn.normalize();
 
-  Matrix3T<T> m(); 
+  Matrix3T<T> m; 
  
   T aa[9];
   aa[0] = t * vn.x * vn.x + c;

@@ -42,12 +42,12 @@ namespace Nimble {
     Vector4T&	operator+=  (const Vector4T& v)	               { x += v.x; y += v.y; z += v.z;  w += v.w; return *this; }
     Vector4T&	operator-=  (const Vector4T& v)                { x -= v.x; y -= v.y; z -= v.z;  w -= v.w; return *this; }
     Vector4T&	operator*=  (T s)		               { x = (x*s), y = (y*s); z = (z*s); w = (w*s); return *this; }
-    Vector4T&	operator/=  (T s)		               { s = 1.0/s; x = (x*s), y = (y*s); z = (z*s); w = (w*s); return *this; }
+    Vector4T&	operator/=  (T s)		               { s = T(1)/s; x = (x*s), y = (y*s); z = (z*s); w = (w*s); return *this; }
     bool		isOne	    (void) const		       { return (x == 1.0f && y == 1.0f && z == 1.0f && w == 1.0f); }
     bool		isZero	    (void) const		       { return (x == 0.0f && y == 0.0f && z == 0.0f && w == 0.0f); }
     double	length	    (void) const		       { return sqrt(double(x*x+y*y+z*z+w*w)); }
     double	lengthSqr   (void) const		       { return x*x+y*y+z*z+w*w; }
-    Vector4T&	normalize   (double len = 1.0)		       { double l = length(); if (l!=0.0) *this *= (len/l); return *this; }
+    Vector4T&	normalize   (double len = 1.0)		       { double l = length(); if (l!=0.0) *this *= T(len/l); return *this; }
     Vector4T&	normalize3   (double len = 1.0)		       { vector3().normalize(len); return *this; }
     Vector4T&	scale		(const Vector4T& v)	       { x *= v.x; y *= v.y; z *= v.z; w *= v.w; return *this; }
     Vector4T&	descale		(const Vector4T& v)	       { x /= v.x; y /= v.y; z /= v.z; w /= v.w; return *this; }

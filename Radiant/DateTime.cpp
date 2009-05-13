@@ -134,7 +134,7 @@ namespace Radiant {
     return TimeStamp(tval * TimeStamp::ticksPerSecond());
   }
 
-  void DateTime::print(char * buf, bool withmillisecs)
+  void DateTime::print(char * buf, bool /*withmillisecs*/)
   {
     sprintf(buf, "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d",
 	    monthDay() + 1, month() + 1, year(), hour(), minute(), second());

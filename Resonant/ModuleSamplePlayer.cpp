@@ -220,7 +220,7 @@ namespace Resonant {
       else if(strcmp(name, "targetchannel") == 0)
         m_targetChannel = data->readInt32( & ok);
       else if(strcmp(name, "loop") == 0)
-        m_loop = data->readInt32( & ok);
+        m_loop = (data->readInt32( & ok) != 0);
       else {
         error("ModuleSamplePlayer::SampleVoice::init # Invalid parameter \"%s\"",
               name);

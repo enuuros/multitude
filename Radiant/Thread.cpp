@@ -27,6 +27,7 @@
 #ifdef WIN32
 #include <process.h>
 #include <WinPort.h>
+#pragma warning(disable : 4996)
 #endif
 
 namespace Radiant {

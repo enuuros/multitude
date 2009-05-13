@@ -273,7 +273,7 @@ namespace VideoDisplay {
   }
 
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
-		    float previewpos,
+		    float /*previewpos*/,
                     int targetChannel)
   {
     // debug("ShowGL::init # %f", previewpos);

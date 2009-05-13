@@ -132,8 +132,9 @@ namespace Radiant {
     int status = select(m_fd, &readfds, 0,0, &timeout);
     if (status < 0)
       return false;
-    char data;
-    return (FD_ISSET(m_fd, &readfds))/* && (recv(m_fd, &data, 1, MSG_PEEK) <= 0))*/;
+//    char data;
+	int isset = (FD_ISSET(m_fd, &readfds))/* && (recv(m_fd, &data, 1, MSG_PEEK) <= 0))*/;
+	return isset != 0;
 #endif
   }
 

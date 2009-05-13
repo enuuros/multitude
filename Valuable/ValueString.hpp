@@ -49,10 +49,10 @@ namespace Valuable
     ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; VALUEMIT_STD_OP }
     ValueStringT<T> & operator = (const T & i) { m_value = i; VALUEMIT_STD_OP }
     
-    float asFloat(bool * ok = 0) const;
-    int asInt(bool * ok = 0) const;
-    std::string asString(bool *  ok = 0) const;
-    std::wstring asWString(bool * ok = 0) const;
+    float asFloat(bool * const ok = 0) const;
+    int asInt(bool * const ok = 0) const;
+    std::string asString(bool * const ok = 0) const;
+    std::wstring asWString(bool * const ok = 0) const;
     
     virtual bool set(const std::string & v);
     

@@ -32,8 +32,8 @@ namespace Radiant
     close();
   }
 
-  bool SerialPort::open(const char * device, bool stopBit, bool parityBit,
-    int baud, int bits, int /*waitBytes*/, int waitTimeUS)
+  bool SerialPort::open(const char * device, bool /*stopBit*/, bool parityBit,
+    int baud, int bits, int /*waitBytes*/, int /*waitTimeUS*/)
   {
     // First make sure serial port is closed
     debug("SerialPort::open(%s)", device);
@@ -110,7 +110,7 @@ namespace Radiant
     }
 
     // Set timeouts
-    const int   waitTimeMS = waitTimeUS / 1000;
+//    const int   waitTimeMS = waitTimeUS / 1000;
 	
 //trace(INFO, "SerialPort::open # timeout %dus (%dms)", waitTimeUS, waitTimeMS);
 	

@@ -112,7 +112,7 @@ namespace Nimble {
     /* STORING & INDEXING ELEMENTS */
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = 4*i+j;
+	a[i][j] = T(4*i+j);
   
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
@@ -127,7 +127,7 @@ namespace Nimble {
     /* ROW & COLUMN OPERATORS */
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = 4*i+j;
+	a[i][j] = T(4*i+j);
 
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++) 
@@ -155,7 +155,7 @@ namespace Nimble {
 
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = 4*i+j;  
+	a[i][j] = T(4*i+j);  
   
     Matrix4T<T> b(a);
     assert(a == b);
@@ -179,7 +179,7 @@ namespace Nimble {
     Matrix3T<T> a3,b3;
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = 3*i+j;  
+	a[i][j] = T(3*i+j);  
   
     a.setRotation(a3);
     b3 = a.getRotation();

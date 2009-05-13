@@ -3,7 +3,7 @@
 CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
-CONFIG += release 
+CONFIG += release
 
 INCLUDEPATH += $$PWD
 
@@ -64,7 +64,7 @@ win32 {
 	LIBPATH += $$PWD\Win32x\lib
 	LIB_OPENGL = -lopengl32
 	LIB_GLU = -lglu32
-	QMAKE_CXXFLAGS += -Zc:wchar_t -D_CRT_SECURE_NO_WARNINGS
+	QMAKE_CXXFLAGS += -Zc:wchar_t -D_CRT_SECURE_NO_WARNINGS -wd4244 -wd4251 -wd4355
 	DEFINES += WIN32
 }
 

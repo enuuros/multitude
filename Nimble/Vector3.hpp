@@ -58,16 +58,16 @@ namespace Nimble {
     Vector3T&	operator-=	(const Vector3T& v)		   { x -= v.x; y -= v.y; z -= v.z;  return *this; }
 
     Vector3T&	operator*=	(T s)			   { x = (x*s), y = (y*s); z = (z*s); return *this; }
-    Vector3T&	operator/=	(T s)			   { s = 1.0/s; x = (x*s), y = (y*s); z = (z*s); return *this; }
+    Vector3T&	operator/=	(T s)			   { s = T(1)/s; x = (x*s), y = (y*s); z = (z*s); return *this; }
 
     bool		isOne		(void) const			   { return (x == 1.0f && y == 1.0f && z == 1.0f); }
     bool		isZero		(void) const			   { return (x == 0.0f && y == 0.0f && z == 0.0f); }
 /// @todo Replace this - finite() is obsolete
 //  bool isFinite (void) const { return finite(x) && finite(y) && finite(z); }
-    double	length		(void) const			   { return Math::Sqrt(x*x+y*y+z*z); }
+    double	length		(void) const			   { return (double)Math::Sqrt(x*x+y*y+z*z); }
     double	lengthSqr	(void) const			   { return x*x+y*y+z*z; }
     Vector3T&	negate		(void)				   { x=-x; y=-y; z=-z; return *this; }
-    Vector3T&	normalize	(double len = 1.0)		   { double l = length(); if (l!=0.0) *this *= (len/l); return *this; }
+    Vector3T&	normalize	(double len = 1.0)	   { double l = length(); if (l!=0.0) *this *= T(len/l); return *this; }
     Vector3T&	scale		(const Vector3T& v)		   { x *= v.x; y *= v.y; z *= v.z; return *this; }
     Vector3T&	descale		(const Vector3T& v)		   { x /= v.x; y /= v.y; z /= v.z; return *this; }
     Vector3T&	clampUnit	(void)				   { if(x <= (T)0.0) x = (T)0.0; else if(x >= (T)1.0) x = (T)1.0; if(y <= (T)0.0) y = (T)0.0; else if(y >= (T)1.0) y = (T)1.0; if(z <= (T)0.0) z = (T)0.0; else if(z >= (T)1.0) z = (T)1.0; return *this; }

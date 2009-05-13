@@ -56,10 +56,10 @@ namespace Nimble {
     Vector2T&	operator+=	(const Vector2T& v)				{ x += v.x, y += v.y; return *this; }		
     Vector2T&	operator-=	(const Vector2T& v)				{ x -= v.x, y -= v.y; return *this; }
     Vector2T&	operator*=	(T s)					        { x = (x*s), y = (T)(y*s); return *this; }
-    Vector2T&	operator/=	(T s)					        { s = 1.0/s; x = (x*s), y = (y*s); return *this; }
+    Vector2T&	operator/=	(T s)					        { s = T(1)/s; x = (x*s), y = (y*s); return *this; }
     bool	isOne		(void) const					        { return (x == (T) 1 && y == (T) 1); }
     bool	isZero		(void) const					      { return (x == (T) 0 && y == (T) 0); }
-    T    	length		(void) const				        { return Math::Sqrt(x*x+y*y); }
+    T    	length		(void) const				        { return (T)Math::Sqrt(x*x+y*y); }
     T      	lengthSqr	(void) const				      { return x*x+y*y; }
     Vector2T&	negate		(void)						      { x=-x; y=-y; return *this; }
     Vector2T&	normalize	(T len = T(1))			{ T l = length(); if (l!= T(0)) *this *= (len/l); return *this; }

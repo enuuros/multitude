@@ -150,7 +150,7 @@ namespace Radiant {
 #endif
   }
 
-  bool TCPSocket::isPendingInput(unsigned waitMicroSeconds)
+  bool TCPSocket::isPendingInput(unsigned /*waitMicroSeconds*/)
   {
     if(m_fd < 0)
       return false;
@@ -165,8 +165,9 @@ namespace Radiant {
 	unsigned long value = 0;
 	if(ioctlsocket(m_fd, FIONREAD, &value) != 0) {
 		Radiant::error("TCPSocket::isPendingInput # ioctlsocket failed");
+		return false;
 	}
-	return value;
+	return true;
 #endif
   }
 

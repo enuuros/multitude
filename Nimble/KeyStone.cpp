@@ -138,11 +138,11 @@ namespace Nimble {
 
     tmp.identity();
 
-    tmp[0][0] = m_dpyWidth;
-    tmp[1][1] = m_dpyHeight;
+    tmp[0][0] = (float)m_dpyWidth;
+    tmp[1][1] = (float)m_dpyHeight;
 
-    tmp[0][2] = m_dpyX;
-    tmp[1][2] = m_dpyY;
+    tmp[0][2] = (float)m_dpyX;
+    tmp[1][2] = (float)m_dpyY;
     
     m_matrixOut = tmp * m_matrixExtension * m_matrix;
 
@@ -250,8 +250,7 @@ namespace Nimble {
 
   Nimble::Rect KeyStone::outputBounds()
   {
-    return Nimble::Rect(m_dpyX, m_dpyY,
-				  m_dpyX + m_dpyWidth, m_dpyY + m_dpyHeight);
+    return Nimble::Rect(float(m_dpyX), float(m_dpyY), float(m_dpyX + m_dpyWidth), float(m_dpyY + m_dpyHeight));
   }
 
   void KeyStone::setLensParam(int i, float v)
@@ -272,11 +271,11 @@ namespace Nimble {
     Matrix3 tmp;
     tmp.identity();
 
-    tmp[0][0] = m_dpyWidth;
-    tmp[1][1] = m_dpyHeight;
+    tmp[0][0] = (float)m_dpyWidth;
+    tmp[1][1] = (float)m_dpyHeight;
 
-    tmp[0][2] = m_dpyX;
-    tmp[1][2] = m_dpyY;
+    tmp[0][2] = (float)m_dpyX;
+    tmp[1][2] = (float)m_dpyY;
     
     Nimble::Matrix3 backToNorm = (tmp * m_matrixExtension).inverse();
     
@@ -376,10 +375,10 @@ namespace Nimble {
     if(offsets) {
       
       Vector2 tests[4] = { 
-	project(m_matrix, Vector2(m_width, m_height / 2)),
-	project(m_matrix, Vector2(0, m_height / 2)),
-	project(m_matrix, Vector2(m_width / 2, 0)),
-	project(m_matrix, Vector2(m_width / 2, m_height))
+	project(m_matrix, Vector2(float(m_width), float(m_height / 2))),
+	project(m_matrix, Vector2(float(0), float(m_height / 2))),
+	project(m_matrix, Vector2(float(m_width / 2), float(0))),
+	project(m_matrix, Vector2(float(m_width / 2), float(m_height)))
       };
 
       int i;
@@ -423,7 +422,7 @@ namespace Nimble {
 
       for(int x = 0; x < m_width; x++) {
         
-        Vector2 v1 = m_lensCorrection.correct(Vector2(x, y));
+        Vector2 v1 = m_lensCorrection.correct(Vector2(float(x), float(y)));
         v1 = project(m_matrix, v1);
         
         bool in = bounds.contains(v1);
