@@ -104,6 +104,7 @@ int main(int argc, char ** argv)
       triggerSource = (atoi(argv[++i]) + DC1394_TRIGGER_SOURCE_0);
     }
     else if(strcmp(arg, "--verbose") == 0) {
+      puts("Verbose mode");
       FireView::CamView::setVerbose(true);
       Radiant::enableVerboseOutput(true);
     }

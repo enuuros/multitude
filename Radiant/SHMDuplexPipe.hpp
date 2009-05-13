@@ -23,24 +23,25 @@ namespace Radiant
   
   /** Ful-duplex shared memory data pipe. This utility class packs two
       #SHMPipe objects into one object. */
-  class RADIANT_API SHMDuplexPipe
+  class SHMDuplexPipe
   {
   public:
-    SHMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
+    RADIANT_API SHMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
 		 const key_t readKey,  const uint32_t readSize);
-    virtual ~SHMDuplexPipe();
+    RADIANT_API virtual ~SHMDuplexPipe();
 
-    int read(void * ptr, int n) { return m_in.read(ptr, n); }
-    int read(BinaryData & bd) { return m_in.read(bd); }
-    uint32_t readAvailable() { return m_in.readAvailable(); }
+    RADIANT_API int read(void * ptr, int n) { return m_in.read(ptr, n); }
+    RADIANT_API int read(BinaryData & bd) { return m_in.read(bd); }
+    RADIANT_API uint32_t readAvailable() { return m_in.readAvailable(); }
 
-    int write(const void * ptr, int n) { return m_out.write(ptr, n); }
-    int write(const BinaryData & bd, bool doflush)
+    RADIANT_API int write(const void * ptr, int n) { return m_out.write(ptr, n); }
+    inline int write(const BinaryData & bd, bool doflush)
     { int n = m_out.write(bd); if(doflush) flush(); return n ; }
-    uint32_t writeAvailable() { return m_out.writeAvailable(); }
+    inline uint32_t writeAvailable() { return m_out.writeAvailable(); }
     /// Flush the written data to the buffer
-    void flush() { m_out.flush(); }
-
+    inline void flush() { m_out.flush(); }
+    /** Zeroes out the input- and output pipes.*/
+    inline void zero() { m_out.zero(); m_in.zero(); }
   private:
     SHMPipe m_out;
     SHMPipe m_in;

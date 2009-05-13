@@ -43,7 +43,7 @@ namespace Radiant
 
       @see SHMDuplexPipe
   */
-  class RADIANT_API SHMPipe
+  class SHMPipe
   {
   public:
 
@@ -53,35 +53,40 @@ namespace Radiant
     /// @param size Size in bytes of the ring buffer: if size > 0,
     /// creates a new ring buffer of that size; if size == 0,
     /// references the existing buffer identified by smKey.
-    SHMPipe::SHMPipe(const std::string smName, const uint32_t size);
+    RADIANT_API SHMPipe::SHMPipe(const std::string smName, const uint32_t size);
 #else
     /// @param smKey User-defined key to shared memory.
     /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
     /// of that size; if size == 0, references the existing buffer identified by smKey.
-    SHMPipe(const key_t smKey, const uint32_t size);
+    RADIANT_API SHMPipe(const key_t smKey, const uint32_t size);
 #endif
 
     /// Destructor.
-    virtual ~SHMPipe();
+    RADIANT_API virtual ~SHMPipe();
 
     // Reads data from the buffer.
-    int read(void * ptr, int n);
-    int read(BinaryData &);
+    RADIANT_API int read(void * ptr, int n);
+    RADIANT_API int read(BinaryData &);
     // The number of bytes available for reading
-    uint32_t readAvailable();
+    RADIANT_API uint32_t readAvailable();
 
     /// Stores data into the buffer, without flushing it.
-    int write(const void * ptr, int n);
-    int write(const BinaryData &);
-    uint32_t writeAvailable(int require = 0);
+    RADIANT_API int write(const void * ptr, int n);
+    RADIANT_API int write(const BinaryData &);
+    RADIANT_API uint32_t writeAvailable(int require = 0);
     /// Flush the written data to the buffer
-    void flush() { storeHeaderValue(SHM_WRITE_LOC, m_written); }
-    
-    uint32_t size() const { return m_size; }
+    inline void flush() { storeHeaderValue(SHM_WRITE_LOC, m_written); }
 
+    /// Returns the size of the shared memory area
+    RADIANT_API uint32_t size() const { return m_size; }
+
+    /// Zeroes the buffer and the transfer counters
+    RADIANT_API void zero();
   private:
 
     static uint32_t smDefaultPermissions();
+
+    RADIANT_API const char * shmError();
 
     enum {
       SHM_SIZE_LOC = 0,
@@ -111,13 +116,6 @@ namespace Radiant
     /// Clear and reset the ring buffer.
     // void clear() { setWritePos(0); setReadPos(0); setReadWriteState(RWS_NONE); }
 
-
-    /// Diagnostics.
-
-#ifndef WIN32
-    /// Return error message for the most recent shared memory function error.
-    static std::string shmError();
-#endif
 
     /// Output attributes and properties.
     void dump() const;

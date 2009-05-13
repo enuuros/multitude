@@ -458,6 +458,8 @@ namespace Radiant {
 
   bool Video1394::setTriggerPolarity(bool up)
   {
+    debug("Video1394::setTriggerPolarity # %d", (int) up);
+
     dc1394trigger_polarity_t polarity = up ? 
       DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
 
@@ -884,8 +886,7 @@ namespace Radiant {
 
   bool Video1394::queryCameras(std::vector<CameraInfo> * query)
   {
-    if(!__dc)
-      __dc = dc1394_new();
+    Guard guard( & __mutex);
 
     const char * fname = "Video1394::queryCameras";
 
@@ -893,6 +894,26 @@ namespace Radiant {
     // dc1394camera_t **cameras = 0;
     dc1394error_t err;
     dc1394camera_list_t * camlist = 0;
+
+    if(!__dc)
+      __dc = dc1394_new();
+
+#ifndef __linux__
+    // For OSX
+
+    static bool first = true;
+
+    if(!first) {
+      goto fillquery;
+    }
+
+    first = false;
+    
+	
+#endif
+
+    
+
 
     if((err = dc1394_camera_enumerate(__dc, & camlist))
         != DC1394_SUCCESS) {
@@ -921,6 +942,9 @@ namespace Radiant {
 #endif
       return false;
     }
+    
+
+    debug("Getting %d FireWire cameras", (int) camlist->num);
 
     __infos.clear();
 
@@ -935,15 +959,26 @@ namespace Radiant {
         __infos.push_back(dc1394_camera_new(__dc, camlist->ids[i].guid));
     }
 
+    debug("Copying FireWire camera information to user", (int) camlist->num);
+
+  fillquery:
+
     query->clear();
 
     for(i = 0; i < __infos.size(); i++) {
       dc1394camera_t * c = __infos[i];
       CameraInfo ci;
 
+      if(!c) {
+	error("NULL camera");
+	continue;
+      }
+
       if(!c->guid || !c->vendor || !c->model)
         continue;
       
+      debug("Got camera %p: %s %s (%llx)", c, c->vendor, c->model, c->guid);
+
       ci.m_euid64 = c->guid;
       ci.m_vendor = c->vendor;
       ci.m_model  = c->model;
@@ -951,7 +986,11 @@ namespace Radiant {
       query->push_back(ci);
     }
 
+    debug("Clearing camera list");
+
+#ifdef __linux__
     dc1394_camera_free_list(camlist);
+#endif
 
     return true;
   }
@@ -1196,7 +1235,7 @@ namespace Radiant {
           fname, m_cameraNum);
     }
 
-    bool try1394b = true;
+    bool try1394b = false;
 
     if(getenv("NO_FW800") != 0)
       try1394b = false;

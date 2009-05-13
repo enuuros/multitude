@@ -196,7 +196,7 @@ namespace Radiant
 	  debug("%s # Successfully removed existing shared memory area with same key.", fnName);
         }
         else {
-          error("%s # Failed to remove existing shared memory area with same key (%s).", fnName, shmError().c_str());
+          error("%s # Failed to remove existing shared memory area with same key (%s).", fnName, strerror(errno));
           assert(0);
         }
       }
@@ -214,7 +214,8 @@ namespace Radiant
 	debug("%s # Successfully created new shared memory area.", fnName);
       }
       else {
-        error("%s # Failed to create new shared memory area (%s).", fnName, shmError().c_str());
+        error("%s # Failed to create new shared memory area (%s).",
+	      fnName, shmError());
         assert(0);
       }
     }
@@ -226,7 +227,7 @@ namespace Radiant
        debug("%s # Successfully accessed existing shared memory area.", fnName);
       }
       else {
-        error("%s # Failed to access existing shared memory area (%s).", fnName, shmError().c_str());
+        error("%s # Failed to access existing shared memory area (%s).", fnName, shmError());
         assert(0);
       }
     }
@@ -238,7 +239,7 @@ namespace Radiant
      debug("%s # Successfully obtained pointer to shared memory area.", fnName);
     }
     else {
-      error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError().c_str());
+      error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError());
       assert(0);
     }
 
@@ -308,7 +309,8 @@ namespace Radiant
      debug("%s # Successfully detached shared memory area.", fnName);
     }
     else {
-      error("%s # Failed to detach shared memory area (%s).", fnName, shmError().c_str());
+      error("%s # Failed to detach shared memory area (%s).",
+	    fnName, shmError());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -319,7 +321,8 @@ namespace Radiant
        debug("%s # Successfully destroyed shared memory area.", fnName);
       }
       else {
-        error("%s # Failed to destroy shared memory area (%s).", fnName, shmError().c_str());
+        error("%s # Failed to destroy shared memory area (%s).",
+	      fnName, shmError());
       }
     }
   }
@@ -379,7 +382,7 @@ namespace Radiant
 
   int SHMPipe::write(const void * ptr, int n)
   {
-    int orig = n;
+    // int orig = n;
 
     uint32_t avail = writeAvailable();
 
@@ -390,7 +393,7 @@ namespace Radiant
     
     int m = m_mask;
     for(int i = 0; i < n; i++) {
-      pipe[m_written + i & m] = src[i];
+      pipe[(m_written + i) & m] = src[i];
     }
 
     m_written += n;
@@ -461,46 +464,21 @@ namespace Radiant
     return avail;
   }
 
-  // Diagnostics.
-
-#ifndef WIN32
-  std::string SHMPipe::shmError()
+  void SHMPipe::zero()
   {
-    std::string   errMsg;
-
-    switch(errno)
-    {
-      case EACCES: errMsg = "EACCES"; break;
-
-      case EEXIST: errMsg = "EEXIST"; break;
-
-      case EFAULT: errMsg = "EFAULT"; break;
-
-      case EIDRM:  errMsg = "EIDRM";  break;
-
-      case EINVAL: errMsg = "EINVAL"; break;
-
-      case EMFILE: errMsg = "EMFILE"; break;
-
-      case ENOENT: errMsg = "ENOENT"; break;
-
-      case ENOMEM: errMsg = "ENOMEM"; break;
-
-      case ENOSPC: errMsg = "ENOSPC"; break;
-
-      case EPERM:  errMsg = "EPERM";  break;
-
-      default:
-      {
-        std::stringstream  ss;
-        ss << errno;
-        errMsg = std::string("errno = ") + ss.str();
-      }
-    }
-
-    return errMsg;
+    storeHeaderValue(SHM_WRITE_LOC, 0);
+    storeHeaderValue(SHM_READ_LOC, 0);
+    bzero(m_shm + SHM_PIPE_LOC, m_size);
   }
-#endif
+
+  const char * SHMPipe::shmError()
+  {
+    const char * str = strerror(errno);
+    errno = 0;
+    return str;
+  }
+
+  // Diagnostics.
 
   void SHMPipe::dump() const
   {
