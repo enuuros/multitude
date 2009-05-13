@@ -89,6 +89,9 @@ namespace Luminous {
 
   void CPUMipmapStore::release(CPUMipmaps * mipmaps)
   {
+    if(!mipmaps)
+      return;
+
     Radiant::GuardStatic g( & __mutex);
 
     for(MipMapItemContainer::iterator it = __mipmaps.begin();

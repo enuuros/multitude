@@ -39,6 +39,10 @@ namespace Radiant
     typedef std::list<std::string>    StringList;
     typedef std::list<std::wstring>   WStringList;
 
+    /// Check if wstring a begins with b
+    RADIANT_API bool beginsWith(const std::wstring & a,
+                                const std::wstring & b);
+
     /// Remove non-visible characters from std::string.
     RADIANT_API void eraseNonVisibles(std::string & s);
     RADIANT_API void eraseNonVisibles(std::wstring & s);

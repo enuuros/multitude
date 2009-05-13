@@ -132,7 +132,7 @@ namespace Radiant {
     pfd.fd = m_fd;
     pfd.events = ~0;
     poll(&pfd, 1, 0);
-    return pfd.revents & (POLLERR | POLLHUP | POLLNVAL) != 0;
+    return (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0;
 #else
 	  // -- emulate using select()
 	  struct timeval timeout;
@@ -150,7 +150,7 @@ namespace Radiant {
 #endif
   }
 
-  bool TCPSocket::isPendingInput(unsigned /*waitMicroSeconds*/)
+  bool TCPSocket::isPendingInput(unsigned waitMicroSeconds)
   {
     if(m_fd < 0)
       return false;

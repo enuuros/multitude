@@ -80,6 +80,8 @@ namespace Radiant {
     void writeInt32(int32_t v);
     /// Writes a 64-bit integer to the data buffer
     void writeInt64(int64_t v);
+    /// Writes a 64-bit integer to the data buffer
+    void writePointer(void * ptr) { writeInt64((int64_t) ptr); }
     /// Writes a 64-bit time-stamp to the data buffer
     /** The timestamp uses Radiant::TimeStamp internal structure (40+24
 	bit fixed-point value).*/

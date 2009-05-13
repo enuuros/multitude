@@ -24,8 +24,6 @@
 #include <map>
 #include <string>
 
-//#include <xercesc/dom/DOM.hpp>
-
 #define VO_TYPE_HASVALUES "HasValues"
 
 namespace Valuable

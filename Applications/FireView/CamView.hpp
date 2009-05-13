@@ -31,8 +31,8 @@
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Video1394.hpp>
 
-#include <QtOpenGL/QGLWidget>
-#include <QtCore/QTimer>
+#include <QGLWidget>
+#include <QTimer>
 
 namespace FireView {
 
