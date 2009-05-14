@@ -224,7 +224,7 @@ namespace Radiant
     {
       m_id = shmget(m_smKey, 0, smDefaultPermissions());
       if(m_id != -1) {
-       debug("%s # Successfully accessed existing shared memory area.", fnName);
+	debug("%s # Successfully accessed existing shared memory area.", fnName);
       }
       else {
         error("%s # Failed to access existing shared memory area (%s).", fnName, shmError());
