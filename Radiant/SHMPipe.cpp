@@ -468,7 +468,7 @@ namespace Radiant
   {
     storeHeaderValue(SHM_WRITE_LOC, 0);
     storeHeaderValue(SHM_READ_LOC, 0);
-    bzero(m_shm + SHM_PIPE_LOC, m_size);
+    bzero(m_pipe, m_size);
   }
 
   const char * SHMPipe::shmError()

@@ -31,6 +31,7 @@ win32 {
 	dlls.CONFIG += no_check_exist
 	
 	INSTALLS += dlls
+        CONFIG -= debug
 
 #        TEMPLATE = vclib
 }
