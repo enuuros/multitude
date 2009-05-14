@@ -18,7 +18,9 @@
 
 #include <Radiant/Types.hpp>
 
-#include <unistd.h>
+#ifndef WIN32
+#	include <unistd.h>
+#endif
 
 /* This file contains code to determine the endianness of the
    operating system. If the system is big-endian, then macro

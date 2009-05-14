@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-CONFIG += debug
-
 HEADERS += Export.hpp
 HEADERS += VideoFFMPEG.hpp
 
