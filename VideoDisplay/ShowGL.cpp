@@ -476,9 +476,9 @@ namespace VideoDisplay {
       yuv2rgb->bind();
     }
 
-    glBegin(GL_QUADS);
+    glEnable(GL_BLEND);
 
-    glColor3f(1, 0, 1);
+    glBegin(GL_QUADS);
 
     Vector2 txcoord[4] = {
       Vector2(0, 0),
@@ -494,19 +494,64 @@ namespace VideoDisplay {
       Vector2(topleft.x, bottomright.y)
     };
 
+    // The base rectangle:
     for(int i = 0; i < 4; i++) {
-      Vector2 co = corners[i];
+      Vector2 & co = corners[i];
 
       glTexCoord2fv(txcoord[i].data());
 
       if(transform)
-	glVertex4fv(Luminous::Utils::project(*transform , co).data());
-      else {
-	glVertex2fv(co.data());
-      }
+	co = Luminous::Utils::project(*transform , co).xy();
+
+      glVertex2fv(co.data());
     }
 
     glEnd();
+
+    Nimble::Vector4 opaque(1, 1, 1, 1);
+    Nimble::Vector4 transparent(1, 1, 1, 0);
+
+    Vector2 up = corners[0] - corners[1];
+    up.normalize();
+
+    Vector2 right = corners[3] - corners[0];
+    right.normalize();
+
+    glBegin(GL_TRIANGLE_STRIP);
+    
+    glTexCoord2fv(txcoord[0].data());
+    glColor4fv(opaque.data());
+    glVertex2fv(corners[0].data());
+    glColor4fv(transparent.data());
+    glVertex2fv((corners[0] + up - right).data());
+
+    glTexCoord2fv(txcoord[1].data());
+    glColor4fv(opaque.data());
+    glVertex2fv(corners[1].data());
+    glColor4fv(transparent.data());
+    glVertex2fv((corners[1] - up - right).data());
+
+    glTexCoord2fv(txcoord[2].data());
+    glColor4fv(opaque.data());
+    glVertex2fv(corners[2].data());
+    glColor4fv(transparent.data());
+    glVertex2fv((corners[2] - up + right).data());
+
+    glTexCoord2fv(txcoord[3].data());
+    glColor4fv(opaque.data());
+    glVertex2fv(corners[3].data());
+    glColor4fv(transparent.data());
+    glVertex2fv((corners[3] + up + right).data());
+
+    glTexCoord2fv(txcoord[0].data());
+    glColor4fv(opaque.data());
+    glVertex2fv(corners[0].data());
+    glColor4fv(transparent.data());
+    glVertex2fv((corners[0] + up - right).data());
+
+    glEnd();
+
+    // Then a thin strip around to anti-alias:
 
     yuv2rgb->unbind();
     textures->unbind();

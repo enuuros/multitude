@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+include(multitude.pri)
+
 win32: SUBDIRS += Win32x
 SUBDIRS += Patterns
 SUBDIRS += Nimble
@@ -12,6 +14,7 @@ SUBDIRS += Screenplay
 SUBDIRS += VideoDisplay
 
 exists(Examples/Examples.pro):SUBDIRS += Examples
+
 SUBDIRS += Applications
 
 CONFIG += ordered
