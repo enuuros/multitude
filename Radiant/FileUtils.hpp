@@ -43,6 +43,7 @@ namespace Radiant
 
     /// Check if a given file is readable.
     RADIANT_API bool fileReadable(const char* filename);
+    RADIANT_API bool fileReadable(const std::string & filename);
 
     /// Check if the user can append to a given file.
     /// This function is useful if you want to overwrite a file,

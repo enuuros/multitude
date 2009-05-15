@@ -59,6 +59,11 @@ namespace Radiant
       return PlatformUtils::fileReadable(filename);
     }
 
+    bool fileReadable(const std::string & filename)
+    {
+      return PlatformUtils::fileReadable(filename.c_str());
+    }
+
     bool fileAppendable(const char* filename)
     {
       if(!fileReadable(filename))
