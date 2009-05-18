@@ -129,7 +129,7 @@ namespace VideoDisplay {
                                Radiant::TimeStamp pos = 0);
     */
     /// Starts file playback, from the last playback position.
-    VIDEODISPLAY_API bool start();
+    VIDEODISPLAY_API bool start(bool fromOldPos = true);
     /// Stops file playback
     VIDEODISPLAY_API bool stop();
 

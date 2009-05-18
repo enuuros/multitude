@@ -114,7 +114,7 @@ namespace VideoDisplay {
     VIDEODISPLAY_API Frame * getFrame(int i, bool updateCounter);
 
     VIDEODISPLAY_API virtual bool init(const char * filename, Radiant::TimeStamp pos);
-    VIDEODISPLAY_API virtual bool play();
+    VIDEODISPLAY_API virtual bool play(Radiant::TimeStamp pos = -1);
     VIDEODISPLAY_API virtual void stop();
     VIDEODISPLAY_API virtual bool seek(Radiant::TimeStamp pos);
 

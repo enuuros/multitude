@@ -305,7 +305,7 @@ namespace VideoDisplay {
   }
 
 
-  bool ShowGL::start()
+  bool ShowGL::start(bool fromOldPos)
   {
     debug("ShowGL::start");
     
@@ -328,7 +328,10 @@ namespace VideoDisplay {
 
     m_audio = au;
 
-    m_video->play();
+    if(fromOldPos)
+      m_video->play();
+    else
+      m_video->play(0);
 
     m_state = PLAY;
 

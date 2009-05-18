@@ -137,14 +137,17 @@ namespace VideoDisplay {
     return true;
   }
 
-  bool VideoIn::play()
+  bool VideoIn::play(Radiant::TimeStamp pos)
   {
     debug("VideoIn::play");
 
     Guard g( & m_requestMutex);
 
     m_request = START;
-    m_requestTime = m_frameTime;
+    if(pos < 0)
+      m_requestTime = m_frameTime;
+    else
+      m_requestTime = pos;
 
     return true;
   }
