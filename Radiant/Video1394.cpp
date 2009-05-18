@@ -1235,7 +1235,7 @@ namespace Radiant {
           fname, m_cameraNum);
     }
 
-    bool try1394b = false;
+    bool try1394b = true;
 
     if(getenv("NO_FW800") != 0)
       try1394b = false;
