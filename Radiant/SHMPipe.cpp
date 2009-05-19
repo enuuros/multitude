@@ -178,15 +178,6 @@ namespace Radiant
     if(size > 0)
     // Create new shared memory area (SMA)
     {
-      // Validate requested size
-
-      /* if(size > maxSize)
-      {
-        error("%s # Requested size %ul is greater than maximum size %ul.",
-          fnName, (unsigned long)(size), (unsigned long)(maxSize));
-        assert(0);
-      }
-      */
 
       // Clear any existing SMA with this key
 
@@ -304,7 +295,7 @@ namespace Radiant
 
     // Detach the SMA
 
-    char * const  smPtr = (char *)(m_shm - SHM_HEADER_SIZE);
+    char * const  smPtr = (char *) (m_shm);
     if(shmdt(smPtr) != -1) {
      debug("%s # Successfully detached shared memory area.", fnName);
     }

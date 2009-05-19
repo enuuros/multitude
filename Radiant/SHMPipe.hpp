@@ -82,6 +82,7 @@ namespace Radiant
 
     /// Zeroes the buffer and the transfer counters
     RADIANT_API void zero();
+
   private:
 
     static uint32_t smDefaultPermissions();
