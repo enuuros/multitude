@@ -19,7 +19,7 @@ namespace Radiant
 
   Nimble::Vector2i resize(Nimble::Vector2i oldSize, Nimble::Vector2i newSize, bool keepAspect)
   {
-    if(!keepAspect) {
+    if(!keepAspect || oldSize.x == 0 || oldSize.y == 0) {
       return newSize;
     } else {
       int rw = newSize.y * oldSize.x / oldSize.y;
