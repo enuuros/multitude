@@ -199,9 +199,10 @@ namespace Screenplay {
 
         aframes /= (2 * m_audioChannels);
 	int64_t pts = m_pkt->pts;
-	if(!pts)
+
+	if(pts <= 0)
 	  pts = m_pkt->dts;
-	if(!pts)
+	if(pts <= 0)
 	  pts = m_acontext->frame_number;
 
         AVRational time_base = m_acontext->time_base;
@@ -213,11 +214,13 @@ namespace Screenplay {
 
         double rate = av_q2d(time_base);
         double secs = pts * rate;
-	
-	debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf",
-	      aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts, 
-              (int) m_acontext->frame_number, secs);
 
+	/*
+	debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf tb = %ld/%ld",
+	      aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts, 
+              (int) m_acontext->frame_number, secs,
+	      (long) time_base.num, (long) time_base.den);
+	*/
         if(aframes > 10000)
           pts = m_capturedAudio;
 

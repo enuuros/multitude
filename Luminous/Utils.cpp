@@ -307,7 +307,7 @@ namespace Luminous {
     glEnd();
   }
 
-  void Utils::glTexRectAA(Nimble::Rect & r, const float * rgba)
+  void Utils::glTexRectAA(const Nimble::Rect & r, const float * rgba)
   {
     
     glTexRectAA(r.size(), Matrix3::translate2D(r.low()), rgba);

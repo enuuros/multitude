@@ -480,7 +480,20 @@ namespace VideoDisplay {
     }
 
     glEnable(GL_BLEND);
+    
+    Nimble::Vector4 white(1, 1, 1, 1);
 
+    if(transform) {
+      Nimble::Matrix3 m = *transform * Nimble::Matrix3::translate2D(topleft);
+
+      Luminous::Utils::glTexRectAA(bottomright - topleft, *transform,
+				   white.data());
+    }
+    else {
+      Nimble::Rect r(topleft, bottomright);
+      Luminous::Utils::glTexRectAA(r, white.data());
+    }
+    /*
     glBegin(GL_QUADS);
 
     Vector2 txcoord[4] = {
@@ -553,6 +566,8 @@ namespace VideoDisplay {
     glVertex2fv((corners[0] + up - right).data());
 
     glEnd();
+
+    */
 
     // Then a thin strip around to anti-alias:
 
