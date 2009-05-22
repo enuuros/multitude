@@ -54,6 +54,7 @@ namespace Luminous {
     static void inline glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2)
     { glTexRect(v1.x, v1.y, v2.x, v2.y); }
     static void glTexRect(Nimble::Vector2 size, const Nimble::Matrix3 & m);
+    static void glTexRectAA(Nimble::Rect & r, const float * rgba);
     static void glTexRectAA(Nimble::Vector2 size, const Nimble::Matrix3 & m, const float * rgba);
     static void glTexRect(Nimble::Vector2f v1, Nimble::Vector2f v2,
 			  Nimble::Vector2f uv1, Nimble::Vector2f uv2);

@@ -185,8 +185,29 @@ namespace Nimble {
       return (a + b) * 0.5f;
     }
 
+    template <class T>
+    inline T threePointInterpolation
+    (float x1, const T & v1, float x2, const T & v2, float x3, const T & v3, 
+     float x)
+    {
+      if(x < x1)
+	return v1;
+      else if(x > x3)
+	return v3;
+      else if(x < x2) {
+	float dx = x2 - x1;
+	float rel = (x - x1) / dx;
+	return rel * v2 + (1.0f - rel) * v1;
+      }
+      else {
+	float dx = x3 - x2;
+	float rel = (x - x2) / dx;
+	return rel * v3 + (1.0f - rel) * v2;
+      }
+    }
   }
 
+  
 }
 
 #endif

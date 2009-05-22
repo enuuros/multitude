@@ -148,6 +148,7 @@ namespace Nimble {
     inline Vector2T<T> clamp(const Vector2T<T> &) const;
 
     inline void transform(const Matrix3T<T>& m);
+    inline void shrinkRelative(float xs, float ys);
     /** Returns one quarter of the rectangle. 
 	
 	@arg row The row of the quarter (0-1)
@@ -315,6 +316,21 @@ namespace Nimble {
     m_low.y = ymin;
     m_high.x = xmax;
     m_high.y = ymax;       
+  }
+
+  template<class T>
+  inline void RectT<T>::shrinkRelative(float xs, float ys)
+  {
+    float w = m_high.x - m_low.x;
+    float h = m_high.y - m_low.y;
+
+    float wloss = 0.5f * w * xs;
+    float hloss = 0.5f * h * ys;
+
+    m_low.x += wloss;
+    m_high.x -= wloss;
+    m_low.y += hloss;
+    m_high.y -= hloss;
   }
 
   template<class T>

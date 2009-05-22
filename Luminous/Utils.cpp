@@ -16,8 +16,6 @@
 #include <Luminous/Utils.hpp>
 #include <Luminous/MatrixStep.hpp>
 
-#include <Nimble/Vector3.hpp>
-
 #include <Radiant/Trace.hpp>
 
 #include <cmath>
@@ -307,6 +305,12 @@ namespace Luminous {
     glVertex4fv(v[3].data());
 
     glEnd();
+  }
+
+  void Utils::glTexRectAA(Nimble::Rect & r, const float * rgba)
+  {
+    
+    glTexRectAA(r.size(), Matrix3::translate2D(r.low()), rgba);
   }
 
   void Utils::glTexRectAA(Nimble::Vector2 size, const Nimble::Matrix3 & m,

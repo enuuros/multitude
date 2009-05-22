@@ -80,6 +80,8 @@ namespace Luminous
     { return PixelFormat(LAYOUT_ALPHA, TYPE_UBYTE); }
     static PixelFormat luminanceUByte()
     { return PixelFormat(LAYOUT_LUMINANCE, TYPE_UBYTE); }
+    static PixelFormat luminanceFloat()
+    { return PixelFormat(LAYOUT_LUMINANCE, TYPE_FLOAT); }
 
     inline bool operator == (const PixelFormat & that) const
     {
