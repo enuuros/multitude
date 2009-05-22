@@ -41,6 +41,12 @@ namespace Radiant
       storage of integers, floats, strings etc, without too much
       overhead.
 
+      <B>Internally</B> the pipe works as a ring buffer, that has a read- and
+      write position. The producer process writes bytes into the
+      buffer, and once the write is complete the write head is
+      updated. The writer observes the read head location so that it
+      does not overwrite data that has not been read yet.
+
       @see SHMDuplexPipe
   */
   class SHMPipe
@@ -113,10 +119,6 @@ namespace Radiant
     
     void storeHeaderValue(int loc, uint32_t val)
     { * ((uint32_t *)(m_shm + loc)) = val; }
-
-    /// Clear and reset the ring buffer.
-    // void clear() { setWritePos(0); setReadPos(0); setReadWriteState(RWS_NONE); }
-
 
     /// Output attributes and properties.
     void dump() const;
