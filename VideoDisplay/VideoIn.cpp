@@ -235,7 +235,6 @@ namespace VideoDisplay {
     m_debug = level;
   }
 
-
   void VideoIn::toggleDebug()
   {
     m_debug = !m_debug;

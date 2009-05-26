@@ -278,13 +278,9 @@ namespace Resonant {
 			    PaStreamCallbackFlags /*status*/,
 			    void * self)
   {
-    printf("<>"); fflush(0);
-
     AudioLoop * au = (AudioLoop *) self;
 
     int r = au->callback(in, out, framesPerBuffer/*, time, status*/);
-
-    printf("//%d", (int) au->m_continue); fflush(0);
 
     return au->m_continue ? r : paComplete;
   }
