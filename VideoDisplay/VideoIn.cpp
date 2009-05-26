@@ -15,6 +15,8 @@
 
 #include "VideoIn.hpp"
 
+#include "AudioTransfer.hpp"
+
 #include <Radiant/Sleep.hpp>
 #include <Radiant/Trace.hpp>
 
@@ -69,6 +71,9 @@ namespace VideoDisplay {
 
   VideoIn::~VideoIn()
   {
+    if(m_listener)
+      m_listener->forgetVideo();
+
     assert(!isRunning());
 
     /*
@@ -234,6 +239,12 @@ namespace VideoDisplay {
   void VideoIn::toggleDebug()
   {
     m_debug = !m_debug;
+  }
+
+  void VideoIn::setAudioListener(AudioTransfer * listener)
+  {
+    debug("VideoIn::setAudioListener # from %p to %p", m_listener, listener);
+    m_listener = listener;
   }
 
   /** Before we get here the video stream should be opened successfully

@@ -42,6 +42,7 @@ namespace VideoDisplay {
 
     unsigned videoFrame();
 
+    void forgetVideo();
 
   private:
 
@@ -52,7 +53,9 @@ namespace VideoDisplay {
 
     void checkEnd(const VideoIn::Frame * f)
     {
-      if(f->m_absolute.secondsD() > m_video->durationSeconds() - 0.5f)
+      if(!f)
+        m_ending = true;
+      else if(f->m_absolute.secondsD() > m_video->durationSeconds() - 0.5f)
         m_ending = true;
     }
 

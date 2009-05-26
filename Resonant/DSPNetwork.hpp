@@ -219,7 +219,7 @@ namespace Resonant {
     Radiant::MutexAuto m_inMutex;
 
     char        m_devName[128];
-    bool        m_continue;
+    // bool        m_continue;
     long        m_frames;
     int         m_doneCount;
 

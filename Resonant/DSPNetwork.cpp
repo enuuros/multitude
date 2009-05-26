@@ -98,8 +98,8 @@ namespace Resonant {
   DSPNetwork * DSPNetwork::m_instance = 0;
 
   DSPNetwork::DSPNetwork()
-    : m_continue(false),
-    m_doneCount(0)
+    : // m_continue(false),
+      m_doneCount(0)
   {
     m_devName[0] = 0;
     m_collect = new ModuleOutCollect(0, this);

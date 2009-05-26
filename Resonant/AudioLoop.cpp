@@ -22,6 +22,7 @@
 #include <portaudio.h>
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -277,9 +278,13 @@ namespace Resonant {
 			    PaStreamCallbackFlags /*status*/,
 			    void * self)
   {
+    printf("<>"); fflush(0);
+
     AudioLoop * au = (AudioLoop *) self;
 
     int r = au->callback(in, out, framesPerBuffer/*, time, status*/);
+
+    printf("//%d", (int) au->m_continue); fflush(0);
 
     return au->m_continue ? r : paComplete;
   }
@@ -287,7 +292,7 @@ namespace Resonant {
   void AudioLoop::AudioLoopInternal::paFinished(void * self)
   {
     ((AudioLoop *) self)->finished();
-    // Radiant::trace("AudioLoop::paFinished # %p", self);
+    Radiant::debug("AudioLoop::paFinished # %p", self);
   }
 
   

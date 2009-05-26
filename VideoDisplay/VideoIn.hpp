@@ -35,6 +35,9 @@
 
 namespace VideoDisplay {
 
+
+  class AudioTransfer;
+
   /// Base class for video file inputs, for the VideoDisplay framework
   class VideoIn : public Radiant::Thread
   {
@@ -145,6 +148,8 @@ namespace VideoDisplay {
 
     const VideoInfo & vdebug() const { return m_info; }
 
+    void setAudioListener(AudioTransfer * listener);
+
   protected:
 
     VIDEODISPLAY_API virtual void childLoop () ;
@@ -216,6 +221,7 @@ namespace VideoDisplay {
 
     Radiant::TimeStamp m_frameTime;
 
+    AudioTransfer     *m_listener;
   private:
     /// Disabled
     VideoIn(const VideoIn & ) : Radiant::Thread() {}

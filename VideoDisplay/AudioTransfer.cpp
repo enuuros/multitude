@@ -47,6 +47,9 @@ namespace VideoDisplay {
       info("Adjusted audio latency to %lf milliseconds", ms);
       m_audioLatency = ms * 0.001;
     }
+
+    if(video)
+      video->setAudioListener(this);
   }
 
   AudioTransfer::~AudioTransfer()
@@ -125,6 +128,9 @@ namespace VideoDisplay {
     const VideoIn::Frame * f = m_video->getFrame(m_videoFrame, false);
 
     checkEnd(f);
+
+    if(!f)
+      return;
 
     if(m_availAudio > f->m_audioFrames) {
       m_availAudio = f->m_audioFrames;
@@ -224,6 +230,12 @@ namespace VideoDisplay {
   {
     debug("AudioTransfer::videoFrame # %d", m_showFrame);
     return m_showFrame;
+  }
+
+  void AudioTransfer::forgetVideo()
+  {
+    m_video = 0;
+    m_ending = true;
   }
 
   void AudioTransfer::deInterleave(float ** dest, const float * src,
