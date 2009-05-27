@@ -61,7 +61,7 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
       return false;
   }
 
-  Radiant::RefPtr<Item> item = new Item();
+  Radiant::RefPtr<Item> item = new Item( & m_collector);
 
   std::string srtfile = Radiant::FileUtils::baseFilename(filename) + ".srt";
 

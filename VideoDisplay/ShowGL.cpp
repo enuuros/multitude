@@ -151,6 +151,11 @@ namespace VideoDisplay {
     m_frame = -1;
   }
 
+  ShowGL::MyTextures::~MyTextures()
+  {
+    info("ShowGL::MyTextures::~MyTextures");
+  }
+
   void ShowGL::MyTextures::bind()
   {
     for(int i = 0; i < 3; i++) {
@@ -246,8 +251,9 @@ namespace VideoDisplay {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  ShowGL::ShowGL()
-    : m_video(0),
+  ShowGL::ShowGL(Luminous::GarbageCollector * collector)
+    : Collectable(collector),
+      m_video(0),
       m_frame(0),
       m_dsp(0),
       m_audio(0),
@@ -257,10 +263,13 @@ namespace VideoDisplay {
       m_updates(0)
   {
     clearHistogram();
+    if(!collector)
+      error("ShowGL::ShowGL # NULL garbage collector, memory leaks may occur.");
   }
 
   ShowGL::~ShowGL()
   {
+    info("ShowGL::~ShowGL");
     stop();
     delete m_video;
   }

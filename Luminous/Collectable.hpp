@@ -26,7 +26,7 @@ namespace Luminous
   class LUMINOUS_API Collectable
   {
   public:
-    Collectable(GarbageCollector * collector = 0);
+    Collectable(GarbageCollector * collector);
     virtual ~Collectable();
 
     void setGarbageCollector(GarbageCollector * collector)

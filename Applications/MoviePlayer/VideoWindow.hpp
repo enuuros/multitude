@@ -20,9 +20,10 @@
 #define _WINSOCKAPI_	// timeval struct redefinition
 #endif
 
-#include <Poetic/CPUFontBase.hpp>
 #include <Poetic/GPUFont.hpp>
 
+#include <Luminous/GarbageCollector.hpp>
+// #include <Luminous/GLResources.hpp>
 #include <Luminous/GLResources.hpp>
 
 #include <Nimble/Random.hpp>
@@ -59,7 +60,7 @@ protected:
 
   class Item {
   public:
-    Item() {}
+    Item(Luminous::GarbageCollector * collector) : m_show(collector) {}
     ~Item() {}
     
     VideoDisplay::ShowGL    m_show;
@@ -87,8 +88,9 @@ protected:
   Poetic::CPUFont  * m_subCPUFont;
   // Poetic::GPUFont * m_subGPUFont;
 
-  Radiant::ResourceLocator m_resourceLocator;
-  Luminous::GLResources    m_glResources;
+  Radiant::ResourceLocator   m_resourceLocator;
+  Luminous::GarbageCollector m_collector;
+  Luminous::GLResources      m_glResources;
   Nimble::RandomUniform m_rand;
   bool   m_showProgress;
   bool   m_showSteps;

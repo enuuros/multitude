@@ -17,6 +17,7 @@
 #ifndef VIDEODISPLAY_SHOW_GL_HPP
 #define VIDEODISPLAY_SHOW_GL_HPP
 
+#include <Luminous/Collectable.hpp>
 #include <Luminous/GLSLProgramObject.hpp>
 #include <Luminous/Texture.hpp>
 
@@ -54,7 +55,8 @@ namespace VideoDisplay {
   /// Objects that displays video using an OpenGL device
   /** From application-programmers perspective, this is the main class
       of the VideoDisplay framework. */
-  class ShowGL
+  class ShowGL : public Luminous::Collectable
+
   {
   private:
 
@@ -87,6 +89,7 @@ namespace VideoDisplay {
     {
     public:
       MyTextures(Luminous::GLResources * resources);
+      ~MyTextures();
 
       virtual void bind();
       virtual void unbind();
@@ -115,7 +118,7 @@ namespace VideoDisplay {
       HISTOGRAM_POINTS = 256
     };
 
-    VIDEODISPLAY_API ShowGL();
+    VIDEODISPLAY_API ShowGL(Luminous::GarbageCollector * collector);
     VIDEODISPLAY_API ~ShowGL();
 
     /// Load a subtitle file
