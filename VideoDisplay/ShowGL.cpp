@@ -181,13 +181,11 @@ namespace VideoDisplay {
       Luminous::Texture2D * tex = & m_texIds[i];
       tex->bind();
 
+      Vector2i area = planeSize(img, i);
       Vector2i & ts = m_texSizes[i];
+      ts = area;
       
-      if(m_frame < 0) {
-
-	Vector2i area = planeSize(img, i);
-	
-        ts = area;
+      if(m_frame < 0 || area != tex->size()) {
 
 	debug("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
 	     area.x, area.y, img->m_planes[i].m_data);
@@ -440,8 +438,9 @@ namespace VideoDisplay {
     m_frame = f;
 
     if(m_videoFrame != videoFrame) {
-      debug("ShowGL::update # Move %d -> %d (%lf)",
-	   m_videoFrame, videoFrame, m_position.secondsD());
+      debug("ShowGL::update # Move %d -> %d (%lf, %d x %d)",
+            m_videoFrame, videoFrame, m_position.secondsD(),
+            m_frame->m_image.m_width, m_frame->m_image.m_height);
       m_count++;
       m_videoFrame = videoFrame;
     }
