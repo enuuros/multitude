@@ -153,7 +153,7 @@ namespace VideoDisplay {
 
   ShowGL::MyTextures::~MyTextures()
   {
-    info("ShowGL::MyTextures::~MyTextures");
+    // info("ShowGL::MyTextures::~MyTextures");
   }
 
   void ShowGL::MyTextures::bind()
@@ -269,7 +269,6 @@ namespace VideoDisplay {
 
   ShowGL::~ShowGL()
   {
-    info("ShowGL::~ShowGL");
     stop();
     delete m_video;
   }
