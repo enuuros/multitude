@@ -66,7 +66,8 @@ namespace VideoDisplay {
       m_continue(true),
       m_fps(0.0),
       m_done(false),
-      m_request(NO_REQUEST)
+      m_request(NO_REQUEST),
+      m_listener(0)
   {}
 
   VideoIn::~VideoIn()
