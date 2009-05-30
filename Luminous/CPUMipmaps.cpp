@@ -502,6 +502,20 @@ namespace Luminous {
 
     return gm;
   }
+  
+  bool CPUMipmaps::bind(GLResources * r,
+			const Nimble::Matrix3 & transform, 
+			Nimble::Vector2 pixelsize)
+  {
+    if(!this)
+      return false;
+
+    GPUMipmaps * gpumaps = getGpuMipmaps(r);
+
+    gpumaps->bind(transform, pixelsize);
+
+    return true;
+  }
 
   bool CPUMipmaps::isActive()
   {

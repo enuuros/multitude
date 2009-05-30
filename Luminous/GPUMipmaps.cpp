@@ -107,7 +107,8 @@ namespace Luminous {
       else if(closest >= 0) {
         tex = new Texture2D(resources());
         resources()->addResource(m_keys + closest, tex);
-        tex->loadImage(*m_cpumaps->getImage(closest), false);
+        tex->loadImage(*m_cpumaps->getImage(closest),
+		       closest == CPUMipmaps::lowestLevel());
         tex->bind();
       }      
     }

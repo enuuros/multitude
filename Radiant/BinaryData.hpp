@@ -166,6 +166,8 @@ namespace Radiant {
     { return (m_current + bytes) <= m_total; }
     void skipParameter(int marker);
     int stringSpace(const char * str);
+
+    void unavailable(const char * func);
     
     unsigned m_current;
     unsigned m_total;

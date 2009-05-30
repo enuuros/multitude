@@ -32,13 +32,6 @@ namespace Radiant {
 
   static bool __verbose = true;
 
-  static void unavailable(const char * func)
-  {
-    if(!__verbose)
-      return;
-    Radiant::error("%s # Not enough data available", func);
-  }
-
   static void badmarker(const char * func, int32_t marker)
   {
     if(!__verbose)
@@ -496,5 +489,14 @@ namespace Radiant {
     int pad = rem ? 4 - rem : 0;
     return len + pad;
   }
+
+  void BinaryData::unavailable(const char * func)
+  {
+    if(!__verbose)
+      return;
+    Radiant::error("%s # Not enough data available (at %u/%u)",
+		   func, m_current, m_total);
+  }
+
 
 }

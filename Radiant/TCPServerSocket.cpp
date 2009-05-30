@@ -35,7 +35,6 @@
 
 namespace Radiant {
 
-
   TCPServerSocket::TCPServerSocket()
     : m_fd(-1)
   {}

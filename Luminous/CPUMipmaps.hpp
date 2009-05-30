@@ -21,7 +21,7 @@
 #include <Luminous/Image.hpp>
 #include <Luminous/Task.hpp>
 
-#include <Nimble/Vector2.hpp>
+#include <Nimble/Matrix3.hpp>
 
 #include <Radiant/RefPtr.hpp>
 
@@ -87,13 +87,16 @@ namespace Luminous {
 	GPUMipmaps object does not exist yet, it is created and
 	returned. */
     LUMINOUS_API GPUMipmaps * getGpuMipmaps(GLResources *);
+    LUMINOUS_API bool bind(GLResources *,
+			   const Nimble::Matrix3 & transform, 
+			   Nimble::Vector2 pixelsize);
     
     /** Returns the highest possible mipmap-level. This is basically
 	the level of the mipmap with native resolution. */
     int maxLevel() const { return m_maxLevel; }
     /** Returns the lowest mipmap level that is ever going to be
 	created. */
-    int lowestLevel() const { return 5; }
+    static int lowestLevel() { return 5; }
     /** Returns true if the mipmaps are still being loaded. */
     LUMINOUS_API bool isActive();
     /** Returns the aspect ratio of the image. */
