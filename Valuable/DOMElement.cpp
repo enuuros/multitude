@@ -37,6 +37,9 @@ namespace Valuable
   
   std::string DOMElement::getTagName() const
   {
+    if(!m_wrapped)
+      return std::string();
+
     char * name = xercesc::XMLString::transcode(XELEM(m_wrapped)->getTagName());
     std::string str(name);
     xercesc::XMLString::release(&name);
@@ -64,6 +67,9 @@ namespace Valuable
   {
     NodeList list; 
 
+    if(!m_wrapped)
+      return list;
+
     xercesc::DOMNodeList * xList = XELEM(m_wrapped)->getChildNodes();
 
     for(XMLSize_t i = 0; i < xList->getLength(); i++) {
@@ -74,6 +80,33 @@ namespace Valuable
     }
     
     return list;
+  }
+
+  static void addSpace(FILE * f, int n)
+  {
+    for(int i = 0; i < n; i++) {
+      fprintf(f, "  ");
+    }
+  }
+
+  void DOMElement::dumpInfo(FILE * f, int recursion)
+  {
+    NodeList nodes = getChildNodes();
+
+    addSpace(f, recursion);
+    fprintf(f, "NODE %s (%d children)\n",
+	    getTagName().c_str(), (int) nodes.size());
+
+    int i = 1;
+
+    fflush(f);
+
+    for(NodeList::iterator it = nodes.begin(); it != nodes.end(); it++) {
+      addSpace(f, recursion);
+      fprintf(f, "Child %d/%d\n", i, (int) nodes.size());
+      (*it).dumpInfo(f, recursion + 1);
+      i++;
+    }
   }
 
   void DOMElement::setTextContent(const std::string & s)

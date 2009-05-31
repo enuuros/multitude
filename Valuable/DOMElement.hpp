@@ -52,6 +52,8 @@ namespace Valuable
       typedef std::list<DOMElement> NodeList;
       NodeList getChildNodes() const;
 
+      void dumpInfo(FILE *, int recursion = 0);
+
     private:
       Wrapped * m_wrapped;
 
