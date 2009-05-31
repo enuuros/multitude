@@ -50,7 +50,7 @@ namespace Valuable
 
   void DOMDocument::appendChild(DOMElement element)
   {
-    if(element.null()) return;
+    if(element.isNull()) return;
 
     assert(m_wrapped != 0);
 

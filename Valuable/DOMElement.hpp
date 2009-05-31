@@ -33,7 +33,7 @@ namespace Valuable
       DOMElement(Wrapped * x); 
       ~DOMElement() {}
 
-      bool null() const { return (m_wrapped == 0);  }
+      bool isNull() const { return (m_wrapped == 0);  }
 
       std::string getTagName() const;
 

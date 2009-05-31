@@ -94,7 +94,7 @@ namespace Valuable
     NodeList nodes = getChildNodes();
 
     addSpace(f, recursion);
-    fprintf(f, "NODE %s (%d children)\n",
+    fprintf(f, "NODE <%s> (%d children)\n",
 	    getTagName().c_str(), (int) nodes.size());
 
     int i = 1;
@@ -111,6 +111,9 @@ namespace Valuable
 
   void DOMElement::setTextContent(const std::string & s)
   {
+    if(isNull())
+      return;
+
     XMLCh * xCont = xercesc::XMLString::transcode(s.c_str());
     XELEM(m_wrapped)->setTextContent(xCont);
     xercesc::XMLString::release(&xCont);
@@ -118,6 +121,9 @@ namespace Valuable
 
   void DOMElement::setTextContent(const std::wstring & ws)
   {
+    if(isNull())
+      return;
+
     std::basic_string<XMLCh> xs(ws.begin(), ws.end());
 
     XELEM(m_wrapped)->setTextContent(xs.c_str());
@@ -125,6 +131,9 @@ namespace Valuable
 
   std::string DOMElement::getTextContent() const
   {
+    if(isNull())
+      return std::string();
+
     const XMLCh * xContent = XELEM(m_wrapped)->getTextContent();
     char * content = xercesc::XMLString::transcode(xContent);
 
@@ -136,6 +145,9 @@ namespace Valuable
 
   std::wstring DOMElement::getTextContentW() const
   {
+    if(isNull())
+      return std::wstring();
+
     const XMLCh * xContent = XELEM(m_wrapped)->getTextContent();
     size_t len = xercesc::XMLString::stringLen(xContent);
       
@@ -150,6 +162,9 @@ namespace Valuable
 
   bool DOMElement::hasAttribute(const char * name) const
   {
+    if(isNull())
+      return false;
+
     XMLCh * xName = xercesc::XMLString::transcode(name);
     bool r = XELEM(m_wrapped)->hasAttribute(xName);
     xercesc::XMLString::release(&xName);
@@ -159,12 +174,16 @@ namespace Valuable
 
   std::string DOMElement::getAttribute(const char * name) const
   {
+    if(isNull())
+      return std::string();
+
     XMLCh * xName = xercesc::XMLString::transcode(name);
 
     const XMLCh * xValue = XELEM(m_wrapped)->getAttribute(xName);
     char * value = xercesc::XMLString::transcode(xValue);
 
-    std::string r(value);
+    std::string r;
+    if(value) r = value;
 
     xercesc::XMLString::release(&value);
     xercesc::XMLString::release(&xName);

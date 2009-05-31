@@ -99,7 +99,7 @@ namespace Valuable
   {
     Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
     DOMElement e = serializeXML(doc.ptr());
-    if(e.null()) {
+    if(e.isNull()) {
       Radiant::error(
 "HasValues::saveToFileXML # object failed to serialize");
       return false;
@@ -204,7 +204,7 @@ namespace Valuable
     }
 
     DOMElement elem = doc->createElement(m_name.c_str());
-    if(elem.null()) {
+    if(elem.isNull()) {
       Radiant::error(
 "HasValues::serializeXML # failed to create XML element");
       return DOMElement(0);
@@ -216,7 +216,7 @@ namespace Valuable
       ValueObject * vo = it->second;
   
       DOMElement child = vo->serializeXML(doc);
-      if(!child.null()) 
+      if(!child.isNull()) 
         elem.appendChild(child);
     }
 
