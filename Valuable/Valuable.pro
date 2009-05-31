@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-CONFIG += debug
-
 HEADERS += ChangeMap.hpp
 HEADERS += DOMDocument.hpp
 HEADERS += DOMElement.hpp
