@@ -32,7 +32,7 @@ namespace Luminous
   {
     GLenum err = glewInit();
 
-	std::ostringstream versionMsg;
+    std::ostringstream versionMsg;
 
     if(err != GLEW_OK) { 
       Radiant::error("Failed to initialize GLEW: %s", glewGetErrorString(err));

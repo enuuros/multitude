@@ -101,10 +101,10 @@ namespace Luminous {
     /// Applies the keystone matrix to the current OpenGL context
     /** This method is typically used as the first step in rendering,
 	before drawing anything on the screen. */
-    void applyGlState();
+    void applyGlState() const;
 
     /// Cleans up the exterior after the 
-    void cleanExterior();
+    void cleanExterior() const;
     /// Returns the location of the vertex that is closest to the argument v.
     Nimble::Vector2 closest(Nimble::Vector2 v) const;
 

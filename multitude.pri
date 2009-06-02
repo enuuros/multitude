@@ -26,6 +26,8 @@ LIB_PATTERNS = -lPatterns
 
 MULTI_LIB_FLAG = -L
 
+# DEFINES += GLEW_MX
+
 macx {
   exists(/opt/local/include/xercesc) {
 
@@ -78,6 +80,7 @@ contains(QT_MAJOR_VERSION,4) {
 
   contains(QT_MINOR_VERSION,5) {
     HAS_QT_45=YES
+    DEFINES += USE_QT45
   }
 
 }

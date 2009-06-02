@@ -51,7 +51,7 @@ namespace Luminous {
     return ok;
   }
 
-  void MultiHead::Area::applyGlState()
+  void MultiHead::Area::applyGlState() const
   {
 //     printf("MultiHead::Area::applyGlState # %d %d\n", m_location[0], m_location[1]);
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
@@ -70,7 +70,7 @@ namespace Luminous {
     glLoadIdentity();
   }
 
-  void MultiHead::Area::cleanEdges()
+  void MultiHead::Area::cleanEdges() const
   {
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // From applyGlState

@@ -88,12 +88,13 @@ namespace Luminous {
 
         float maxSeam() { return m_seams.asVector().maximum(); }
 
-        LUMINOUS_API void applyGlState();
-        LUMINOUS_API void cleanEdges();
+        LUMINOUS_API void applyGlState() const;
+        LUMINOUS_API void cleanEdges() const;
 
       virtual const char * type() const { return "area"; }
 
         GLKeyStone & keyStone() { return m_keyStone; }
+      const GLKeyStone & keyStone() const { return m_keyStone; }
 
         /// The pixel location of the area on the window
         const Vector2i & location() const { return m_location.asVector(); }

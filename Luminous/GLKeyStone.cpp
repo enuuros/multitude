@@ -137,9 +137,9 @@ namespace Luminous {
     float f = m_vertices[0][1];
 
     m_matrix.make(a, b, 0, c,
-        d, e, 0, f,
-        0, 0, 1, 0,
-        g, h, 0, 1);
+		  d, e, 0, f,
+		  0, 0, 1, 0,
+		  g, h, 0, 1);
   }
 
   Vector4 GLKeyStone::project(Vector2 v)
@@ -166,7 +166,7 @@ namespace Luminous {
     return p;
   }
 
-  void GLKeyStone::applyGlState()
+  void GLKeyStone::applyGlState() const
   {
     /* if(*m_vertices[0] == Vector2(0, 0) &&
        *m_vertices[1] == Vector2(1, 0) &&
@@ -181,7 +181,7 @@ namespace Luminous {
     glTranslatef(1.0, 1.0, 0.0);
   }
 
-  void GLKeyStone::cleanExterior()
+  void GLKeyStone::cleanExterior() const
   {
     glDisable(GL_BLEND);
     glDisable(GL_TEXTURE_2D);
