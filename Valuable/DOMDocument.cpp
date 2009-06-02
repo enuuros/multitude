@@ -59,8 +59,11 @@ namespace Valuable
 
   DOMDocument * DOMDocument::createDocument()
   {
-    const XMLCh LS[] = {xercesc::chLatin_L, xercesc::chLatin_S, xercesc::chNull};
-    xercesc::DOMImplementation * impl = xercesc::DOMImplementationRegistry::getDOMImplementation(LS);
+    const XMLCh LS[] =
+      { xercesc::chLatin_L, xercesc::chLatin_S, xercesc::chNull };
+
+    xercesc::DOMImplementation * impl =
+      xercesc::DOMImplementationRegistry::getDOMImplementation(LS);
 
     // Create a document & writer
     xercesc::DOMDocument * doc = impl->createDocument();

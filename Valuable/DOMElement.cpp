@@ -81,6 +81,44 @@ namespace Valuable
     
     return list;
   }
+  
+  DOMElement::NodeList DOMElement::selectChildNodes(const char * tagname) const
+  {
+    
+    NodeList list; 
+
+    if(!m_wrapped)
+      return list;
+
+    xercesc::DOMNodeList * xList = XELEM(m_wrapped)->getChildNodes();
+
+    for(XMLSize_t i = 0; i < xList->getLength(); i++) {
+      xercesc::DOMElement * xe = dynamic_cast<xercesc::DOMElement *> (xList->item(i));
+      if(!xe) continue;
+      
+      char * name = xercesc::XMLString::transcode(XELEM((Wrapped *) xe)->getTagName());
+
+      if(strcmp(name, tagname) == 0)
+	list.push_back(DOMElement(ELEM(xe)));
+
+      xercesc::XMLString::release(&name);
+    }
+    
+    return list; 
+  }
+
+  DOMElement DOMElement::getChildNode(const char * tagname)
+  {
+    NodeList nodes = getChildNodes();
+
+    for(NodeList::iterator it = nodes.begin(); it != nodes.end(); it++) {
+      DOMElement e = *it;
+      if(e.getTagName() == tagname)
+	return e;
+    }
+
+    return DOMElement(0);
+  }
 
   static void addSpace(FILE * f, int n)
   {

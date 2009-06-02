@@ -51,10 +51,13 @@ namespace Valuable
 
       typedef std::list<DOMElement> NodeList;
       NodeList getChildNodes() const;
+      NodeList selectChildNodes(const char * tagname) const;
+      DOMElement getChildNode(const char * tagname);
 
       void dumpInfo(FILE *, int recursion = 0);
 
     private:
+
       Wrapped * m_wrapped;
 
       friend class DOMDocument;

@@ -37,7 +37,6 @@ int main(int argc, char ** argv)
 
     Radiant::info("Reading XML file %s", file);
 
-
     Valuable::DOMDocument * doc = Valuable::DOMDocument::createDocument();
 
     if(!doc->readFromFile(file)) {
