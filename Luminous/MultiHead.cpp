@@ -24,6 +24,8 @@
 
 namespace Luminous {
 
+  using namespace Radiant;
+
   MultiHead::Area::Area()
     : HasValues(0, "Area"),
     m_keyStone(this, "keystone"),
@@ -53,7 +55,9 @@ namespace Luminous {
 
   void MultiHead::Area::applyGlState() const
   {
-//     printf("MultiHead::Area::applyGlState # %d %d\n", m_location[0], m_location[1]);
+    /*info("MultiHead::Area::applyGlState # %d %d %d %d",
+	 m_location[0], m_location[1], m_size[0], m_size[1]);
+    */
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -61,10 +65,9 @@ namespace Luminous {
     glPushMatrix(); // Recovered in cleanEdges
 
     glOrtho(m_graphicsLocation[0] - m_seams[0],
-        m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
-        m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
-        m_graphicsLocation[1] - m_seams[3], -1e3, 1e3);
-
+	    m_graphicsLocation[0] + m_graphicsSize[0] + m_seams[1],
+	    m_graphicsLocation[1] + m_graphicsSize[1] + m_seams[2], 
+	    m_graphicsLocation[1] - m_seams[3], -1e3, 1e3);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -363,6 +366,33 @@ namespace Luminous {
     assert(false); // Out of range
 
     return m_windows[0].ptr()->area(0); // Unreachable
+  }
+
+  Nimble::Vector2i MultiHead::totalSize()
+  {
+    if(!windowCount())
+      return Nimble::Vector2i(0, 0);
+
+    Window * w = & window(0);
+
+    Nimble::Vector2i low = w->location();
+    Nimble::Vector2i high = w->location() + w->size();
+    
+    for(unsigned i = 0; i < windowCount(); i++) {
+
+      w = & window(i);
+
+      Nimble::Vector2i low2 = w->location();
+      Nimble::Vector2i high2 = w->location() + w->size();
+
+      low.x = Nimble::Math::Min(low.x, low2.x);
+      low.y = Nimble::Math::Min(low.y, low2.y);
+
+      high.x = Nimble::Math::Max(high.x, high2.x);
+      high.y = Nimble::Math::Max(high.y, high2.y);
+    }
+
+    return high - low;
   }
 
   float MultiHead::seam()
