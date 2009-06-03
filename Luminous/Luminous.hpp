@@ -18,7 +18,9 @@
 
 #include <Luminous/Export.hpp>
 
-#include <Luminous/lumiglew.hpp>
+#include <GL/glew.h>
+
+// #include <Luminous/lumiglew.hpp>
 
 /// Luminous library is a collection of C++ classes for computer graphics, using OpenGL.
 

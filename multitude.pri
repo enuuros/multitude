@@ -4,6 +4,7 @@ CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
 CONFIG += release
+# CONFIG += debug
 
 INCLUDEPATH += $$PWD
 
