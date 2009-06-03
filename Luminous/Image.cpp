@@ -137,13 +137,13 @@ namespace Luminous
           const uint8_t * v11 = & src[(yi1 * sw + xi1) * 3];
 
           float fw00 = wy0 * wx0;
-          float fw10 = wy1 * wx0;
-          float fw01 = wy0 * wx1;
+          float fw10 = wy0 * wx1;
+          float fw01 = wy1 * wx0;
           float fw11 = wy1 * wx1;
 
           for(int c = 0; c < 3; c++) {
             float val = 
-              (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 +  (*v11) * fw11;
+              (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 + (*v11) * fw11;
 
             *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 
@@ -196,8 +196,8 @@ namespace Luminous
           const uint8_t * v11 = & src[(yi1 * sw + xi1) * 4];
 
           float fw00 = wy0 * wx0;
-          float fw10 = wy1 * wx0;
-          float fw01 = wy0 * wx1;
+          float fw10 = wy0 * wx1;
+          float fw01 = wy1 * wx0;
           float fw11 = wy1 * wx1;
 
           float a00 = v00[3];
