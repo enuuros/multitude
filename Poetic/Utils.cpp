@@ -31,7 +31,7 @@ namespace Poetic
 
       lines.clear();
 
-      if(ws.empty())
+      if(ws.empty() || width <= 0.0f)
       {
         return;
       }
