@@ -35,6 +35,8 @@ namespace Poetic
 
     float advance(const char * str, int n = -1);
     float advance(const wchar_t * str, int n = -1);
+    float advance(const std::wstring & str)
+    { return advance(str.c_str(), str.size()); }
     
     int faceSize() const        { return m_pointSize; }
     bool setFaceSize(int size, int = POETIC_DEFAULT_RESOLUTION)
