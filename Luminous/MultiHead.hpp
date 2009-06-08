@@ -275,7 +275,7 @@ namespace Luminous {
     LUMINOUS_API const Window & window(unsigned i) const;
 
     /// Total size of all the windows
-    Nimble::Vector2i totalSize();
+    LUMINOUS_API Nimble::Vector2i totalSize();
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }

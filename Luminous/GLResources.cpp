@@ -170,21 +170,25 @@ namespace Luminous
       resource->m_deleteOnFrame = -1;
   }
 
-  typedef std::map<Thread::id_t, GLResources *> ResourceMap;
+  // Doesn't work under windows where pthread_t (id_t) is a struct
+  //typedef std::map<Thread::id_t, GLResources *> ResourceMap;
+  typedef std::map<unsigned int, GLResources *> ResourceMap;
   static ResourceMap __resources;
   static MutexStatic __mutex;
   
   void GLResources::setThreadResources(GLResources * rsc)
   {
     GuardStatic g(&__mutex);
-    __resources[Thread::myThreadId()] = rsc;
+    //__resources[Thread::myThreadId()] = rsc;
+	__resources[0] = rsc;
   }
 
   GLResources * GLResources::getThreadResources()
   {
     GuardStatic g(&__mutex);
     
-    ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+    //ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+    ResourceMap::iterator it = __resources.find(0);
     
     if(it == __resources.end()) {
       error("No resources for current thread");
