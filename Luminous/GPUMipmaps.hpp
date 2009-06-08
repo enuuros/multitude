@@ -62,7 +62,7 @@ namespace Luminous {
 
     CPUMipmaps * m_cpumaps;
 
-    char m_keys[CPUMipmaps::MAX_MAPS];
+    Collectable m_keys[CPUMipmaps::MAX_MAPS];
 
   };
 

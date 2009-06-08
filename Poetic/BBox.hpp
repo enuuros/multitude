@@ -24,7 +24,7 @@ struct FT_GlyphSlotRec_;
 namespace Poetic
 {
 
-  /// A bounding box class for glyphs.
+  /** A bounding box class for glyphs. */
   class POETIC_API BBox : public Nimble::Rect
   {
     public:

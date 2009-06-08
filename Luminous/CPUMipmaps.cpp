@@ -279,9 +279,8 @@ namespace Luminous {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   
-  CPUMipmaps::CPUMipmaps(GarbageCollector * collector)
-    : Collectable(collector),
-      m_nativeSize(100, 100),
+  CPUMipmaps::CPUMipmaps()
+    : m_nativeSize(100, 100),
       m_maxLevel(0),
       m_fileMask(0),
       m_hasAlpha(false),
@@ -486,7 +485,7 @@ namespace Luminous {
     return true;
   }
   
-  GPUMipmaps * CPUMipmaps::getGpuMipmaps(GLResources * resources)
+  GPUMipmaps * CPUMipmaps::getGPUMipmaps(GLResources * resources)
   {
     GLResource * r = resources->getResource(this);
 
@@ -503,6 +502,11 @@ namespace Luminous {
     return gm;
   }
   
+  GPUMipmaps * CPUMipmaps::getGPUMipmaps()
+  {
+    return getGPUMipmaps(GLResources::getThreadResources());
+  }
+
   bool CPUMipmaps::bind(GLResources * r,
 			const Nimble::Matrix3 & transform, 
 			Nimble::Vector2 pixelsize)
@@ -510,7 +514,7 @@ namespace Luminous {
     if(!this)
       return false;
 
-    GPUMipmaps * gpumaps = getGpuMipmaps(r);
+    GPUMipmaps * gpumaps = getGPUMipmaps(r);
 
     gpumaps->bind(transform, pixelsize);
 

@@ -22,6 +22,7 @@
 
 namespace Resonant {
 
+  /** Audio file player module. */
   class ModuleFilePlay : public Module
   {
   public:

@@ -30,23 +30,25 @@ namespace Poetic
   CPUWrapperFont::~CPUWrapperFont()
   {}
 
-  GPUWrapperFont * CPUWrapperFont::getGPUFont(Luminous::GLResources * resources)
+  GPUWrapperFont * CPUWrapperFont::getGPUFont()
   {
-    GPUWrapperFont * gf = dynamic_cast<GPUWrapperFont *> (resources->getResource(this));
+    Luminous::GLResources * glr = Luminous::GLResources::getThreadResources();
+
+    GPUWrapperFont * gf = dynamic_cast<GPUWrapperFont *> (glr->getResource(this));
 
     if(gf) 
       return gf;
 
     // Get the managed GPU font
-    GPUManagedFont * gmf = dynamic_cast<GPUManagedFont *> (resources->getResource(m_managedFont));
+    GPUManagedFont * gmf = dynamic_cast<GPUManagedFont *> (glr->getResource(m_managedFont));
     if(!gmf) {
-      gmf = new GPUManagedFont(m_managedFont, resources);
-      resources->addResource(m_managedFont, gmf);
+      gmf = new GPUManagedFont(m_managedFont, glr);
+      glr->addResource(m_managedFont, gmf);
     }
 
     // Create the resource                
     GPUWrapperFont * font = new GPUWrapperFont(gmf, this);
-    resources->addResource(this, font);
+    glr->addResource(this, font);
 
     return font;
   }

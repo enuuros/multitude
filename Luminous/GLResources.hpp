@@ -24,6 +24,7 @@
 
 namespace Luminous
 {
+  class Collectable;
   class GarbageCollector;
   class GLResource;
 
@@ -52,20 +53,20 @@ namespace Luminous
   {
   public:
 
-    typedef std::map<const void *, GLResource *> container;
+    typedef std::map<const Collectable *, GLResource *> container;
     typedef container::iterator iterator;
 
     GLResources(Radiant::ResourceLocator & rl);
     virtual ~GLResources();
 
     /// Get a handle to a resource 
-    GLResource * getResource(const void * key);
+    GLResource * getResource(const Collectable * key);
     /// Adds a resource
-    void addResource(const void * key, GLResource * resource);
+    void addResource(const Collectable * key, GLResource * resource);
     /// Erases a single GLResource
-    bool eraseResource(const void * key);
+    bool eraseResource(const Collectable * key);
     /// Erase the resources that are no longer required
-    void eraseResources(GarbageCollector * collector);
+    void eraseResources();
     /// Erases all resources.
     void clear();
     /// Tell the resource manager that byte consumption was changed
@@ -93,6 +94,9 @@ namespace Luminous
     { m_comfortableGPURAM = bytes; }
 
     Radiant::ResourceLocator & resourceLocator() { return m_resourceLocator; }
+
+    static void setThreadResources(GLResources *);
+    static GLResources * getThreadResources();
  
  protected:
     container m_resources;
@@ -118,6 +122,14 @@ namespace Luminous
   if(!name) { \
     name = new type(resources); \
     resources->addResource(key, name); \
+  }
+
+#define GLRESOURCE_ENSURE2(type, name, key)	\
+  GLResources * grs = Luminous::GLResources::getThreadResources(); \
+  type * name = dynamic_cast<type *> (grs->getResource(key));	\
+  if(!name) { \
+    name = new type();	\
+    grs->addResource(key, name); \
   }
 
 #endif

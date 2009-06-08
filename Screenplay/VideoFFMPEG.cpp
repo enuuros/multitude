@@ -548,7 +548,7 @@ namespace Screenplay {
       debug("%s # File %s has unsupported audio codec.", fname, filename);
       // return false;
     }
-
+    
     debug("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;

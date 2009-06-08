@@ -25,6 +25,16 @@
 
 namespace VideoDisplay {
 
+  /** Transer sound stream from video input to audio output. 
+      
+      This class transfers sound data from the low-level video input
+      thread to audio playback engine.
+
+      AudioTransfer object are disposable, so they can be used only
+      once.
+
+      @see VideoIn
+   */
   class AudioTransfer : public Resonant::Module
   {
   public:
@@ -40,8 +50,10 @@ namespace VideoDisplay {
 
     bool atEnd() const { return m_end; } 
 
+    /// Returns the video frame that should be played right now.
     unsigned videoFrame();
 
+    /// Forgets the video source object, and shuts down.
     void forgetVideo();
 
   private:

@@ -17,7 +17,10 @@
 #define RESONANT_APPLICATION_HPP
 
 namespace Resonant {
-
+  /** Abstract application base class for Resonant. The Application
+      object is at the moment mostly unused, but it is included as it
+      will be needed to deliver core information to the audio lugins
+      (application time etc.).*/
   class Application
   {
   public:

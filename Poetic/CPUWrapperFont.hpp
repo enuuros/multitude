@@ -52,7 +52,7 @@ namespace Poetic
 
     bool load(const char * fontFilePath);
 
-    GPUWrapperFont * getGPUFont(Luminous::GLResources * resources);
+    GPUWrapperFont * getGPUFont();
 
   protected:
 

@@ -29,9 +29,10 @@
 
 namespace Radiant {
  
-  /* A time-stamp has 40 bits for the seconds and 24 bits for
-     fractions of a second. The seconds are as they come from the UNIX
-     clock: 1.1.1970 the counter was zero. */
+  /** A high-resolution time-stamp object. A time-stamp has 40 bits
+     for the seconds and 24 bits for fractions of a second. The
+     seconds are as they come from the UNIX clock: 1.1.1970 the
+     counter was zero. */
 
   /// @todo remove suffix from create* functions
   class RADIANT_API TimeStamp

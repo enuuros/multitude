@@ -13,8 +13,11 @@
  * 
  */
 
-#include <Luminous/MultiHead.hpp>
-#include <Luminous/Utils.hpp>
+#include "MultiHead.hpp"
+
+#include "GLResources.hpp"
+#include "Texture.hpp"
+#include "Utils.hpp"
 
 #include <Radiant/Trace.hpp>
 
@@ -28,16 +31,17 @@ namespace Luminous {
 
   MultiHead::Area::Area()
     : HasValues(0, "Area"),
-    m_keyStone(this, "keystone"),
-    m_location(this, "location", Nimble::Vector2i(0, 0)),
-    m_size(this, "size", Nimble::Vector2i(100, 100)),
-    m_graphicsLocation(this, "graphicslocation", Nimble::Vector2i(0, 0)),
-    m_graphicsSize(this, "graphicssize", Nimble::Vector2i(100, 100)),
-    m_seams(this, "seams", Nimble::Vector4f(0, 0, 0, 0)),
-    m_active(this, "active", 1),
-    m_comment(this, "comment", ""),
-    m_graphicsBounds(0, 0, 100, 100),
-    m_pixelSizeCm(0.1f)
+      m_keyStone(this, "keystone"),
+      m_location(this, "location", Nimble::Vector2i(0, 0)),
+      m_size(this, "size", Nimble::Vector2i(100, 100)),
+      m_graphicsLocation(this, "graphicslocation", Nimble::Vector2i(0, 0)),
+      m_graphicsSize(this, "graphicssize", Nimble::Vector2i(100, 100)),
+      m_seams(this, "seams", Nimble::Vector4f(0, 0, 0, 0)),
+      m_active(this, "active", 1),
+      m_method(this, "method", METHOD_MATRIX_TRICK),
+      m_comment(this, "comment"),
+      m_graphicsBounds(0, 0, 100, 100),
+      m_pixelSizeCm(0.1f)
   {
   }
 
@@ -61,7 +65,10 @@ namespace Luminous {
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    m_keyStone.applyGlState();
+    
+    if(m_method == METHOD_MATRIX_TRICK)
+      m_keyStone.applyGlState();
+
     glPushMatrix(); // Recovered in cleanEdges
 
     glOrtho(m_graphicsLocation[0] - m_seams[0],
@@ -75,10 +82,43 @@ namespace Luminous {
 
   void MultiHead::Area::cleanEdges() const
   {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // From applyGlState
+    glLoadIdentity();
 
-    gluOrtho2D(0, 1, 1, 0);
+    if(m_method == METHOD_TEXTURE_READBACK) {
+
+      // info("Going for texture readback");
+
+      GLRESOURCE_ENSURE2(Texture2D, tex, this);
+
+      if(tex->size() != m_size.asVector()) {
+	// Initialize the texture to the right size:
+	tex->loadBytes(GL_RGB, width(), height(), 0, 
+		       Luminous::PixelFormat::rgbUByte(),
+		       false);
+      }
+
+      tex->bind();
+      glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0,width(), height(), 0);
+
+      glEnable(GL_TEXTURE_2D);
+
+      // glPushMatrix();
+
+      m_keyStone.applyGlState();
+
+      gluOrtho2D(0, 1, 1, 0);
+
+      glColor3f(1, 1, 1);
+      Utils::glTexRect(0, 1, 1, 0);
+      
+    }
+    else
+      gluOrtho2D(0, 1, 1, 0);
 
     float gamma = 1.1f;
 
@@ -102,35 +142,35 @@ namespace Luminous {
   }
 
   Nimble::Vector2f MultiHead::Area::windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & isInside)
-    {
-//      Radiant::trace("MultiHead::Area::windowToGraphics");
+  {
+    //      Radiant::trace("MultiHead::Area::windowToGraphics");
 
-      assert((m_size[0] > 0.01f) && (m_size[1] > 0.01f));
-
-      Nimble::Vector2f orig = loc;
-
-      loc.x -= m_location[0];
-      loc.y -= (windowheight - m_size[1] - m_location[1]);
-      loc.descale(m_size.asVector());
-      loc.y = 1.0f - loc.y;
-
-      bool dontCare = false;
-      Nimble::Matrix4 m = m_keyStone.matrix().inverse( &dontCare);
-      assert(dontCare);
-
-      loc = GLKeyStone::projectCorrected(m, loc).vector2();
-
-      Nimble::Rectf rectangle(0.f, 0.f, 1.f, 1.f);    
-      bool ok = rectangle.contains(loc);
-
-      isInside = ok;
-
-      loc.y = 1.0f - loc.y;
-      loc.scale(m_graphicsSize.asVector());
-      loc += m_graphicsLocation.asVector();
-
-      return loc;
-    }
+    assert((m_size[0] > 0.01f) && (m_size[1] > 0.01f));
+    
+    Nimble::Vector2f orig = loc;
+    
+    loc.x -= m_location[0];
+    loc.y -= (windowheight - m_size[1] - m_location[1]);
+    loc.descale(m_size.asVector());
+    loc.y = 1.0f - loc.y;
+    
+    bool dontCare = false;
+    Nimble::Matrix4 m = m_keyStone.matrix().inverse( &dontCare);
+    assert(dontCare);
+    
+    loc = GLKeyStone::projectCorrected(m, loc).vector2();
+    
+    Nimble::Rectf rectangle(0.f, 0.f, 1.f, 1.f);    
+    bool ok = rectangle.contains(loc);
+    
+    isInside = ok;
+    
+    loc.y = 1.0f - loc.y;
+    loc.scale(m_graphicsSize.asVector());
+    loc += m_graphicsLocation.asVector();
+    
+    return loc;
+  }
 
   void MultiHead::Area::updateBBox()
   {

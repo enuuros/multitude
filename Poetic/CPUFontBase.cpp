@@ -25,10 +25,9 @@
 namespace Poetic
 {
 
-  CPUFontBase::CPUFontBase(Luminous::GarbageCollector * gc)
-    : Collectable(gc),
-      m_face(0),
-    m_glyphList(0)
+  CPUFontBase::CPUFontBase()
+    : m_face(0),
+      m_glyphList(0)
   {
   }
 
@@ -99,15 +98,17 @@ namespace Poetic
 
   bool CPUFontBase::load(const char * fontFilePath)
   {
+    delete m_face;
     m_face = new Face(fontFilePath);
 
-     m_error = m_face->error();
-     if(m_error == 0) {
+    m_error = m_face->error();
+    if(m_error == 0) {
+      delete m_glyphList;
       m_glyphList = new GlyphContainer(m_face);
       return true;
     }
 
-    Radiant::error("CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
+     Radiant::error("CPUFontBase::load # loading font '%s' failed (error code: %d)", fontFilePath, m_error);
     return false;
   }
 

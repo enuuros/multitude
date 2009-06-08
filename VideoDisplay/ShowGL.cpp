@@ -251,9 +251,8 @@ namespace VideoDisplay {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  ShowGL::ShowGL(Luminous::GarbageCollector * collector)
-    : Collectable(collector),
-      m_video(0),
+  ShowGL::ShowGL()
+    : m_video(0),
       m_frame(0),
       m_dsp(0),
       m_audio(0),
@@ -263,8 +262,6 @@ namespace VideoDisplay {
       m_updates(0)
   {
     clearHistogram();
-    if(!collector)
-      error("ShowGL::ShowGL # NULL garbage collector, memory leaks may occur.");
   }
 
   ShowGL::~ShowGL()
@@ -424,9 +421,14 @@ namespace VideoDisplay {
 	info("ShowGL::update # At end");
 	stop();
       }
+      // info("Audio reports frame %d", videoFrame);
+      
     }
-    else
+    else {
       videoFrame = m_video->latestFrame();
+
+      // info("Video has frame %d", videoFrame);
+    }
 
     if(videoFrame < 0)
       return;
@@ -456,7 +458,7 @@ namespace VideoDisplay {
     m_subTitles.update(m_position);
   }
 
-  static int yuvkey = 0;
+  static Luminous::Collectable yuvkey;
   // static int yuvkeyaa = 0;
 
   void ShowGL::render(Luminous::GLResources * resources,
@@ -500,81 +502,6 @@ namespace VideoDisplay {
       Nimble::Rect r(topleft, bottomright);
       Luminous::Utils::glTexRectAA(r, white.data());
     }
-    /*
-    glBegin(GL_QUADS);
-
-    Vector2 txcoord[4] = {
-      Vector2(0, 0),
-      Vector2(1, 0),
-      Vector2(1, 1),
-      Vector2(0, 1)
-    };
-
-    Vector2 corners[4] = {
-      Vector2(topleft.x, topleft.y),
-      Vector2(bottomright.x, topleft.y),
-      Vector2(bottomright.x, bottomright.y),
-      Vector2(topleft.x, bottomright.y)
-    };
-
-    // The base rectangle:
-    for(int i = 0; i < 4; i++) {
-      Vector2 & co = corners[i];
-
-      glTexCoord2fv(txcoord[i].data());
-
-      if(transform)
-	co = Luminous::Utils::project(*transform , co).xy();
-
-      glVertex2fv(co.data());
-    }
-
-    glEnd();
-
-    Nimble::Vector4 opaque(1, 1, 1, 1);
-    Nimble::Vector4 transparent(1, 1, 1, 0);
-
-    Vector2 up = corners[0] - corners[1];
-    up.normalize();
-
-    Vector2 right = corners[3] - corners[0];
-    right.normalize();
-
-    glBegin(GL_TRIANGLE_STRIP);
-    
-    glTexCoord2fv(txcoord[0].data());
-    glColor4fv(opaque.data());
-    glVertex2fv(corners[0].data());
-    glColor4fv(transparent.data());
-    glVertex2fv((corners[0] + up - right).data());
-
-    glTexCoord2fv(txcoord[1].data());
-    glColor4fv(opaque.data());
-    glVertex2fv(corners[1].data());
-    glColor4fv(transparent.data());
-    glVertex2fv((corners[1] - up - right).data());
-
-    glTexCoord2fv(txcoord[2].data());
-    glColor4fv(opaque.data());
-    glVertex2fv(corners[2].data());
-    glColor4fv(transparent.data());
-    glVertex2fv((corners[2] - up + right).data());
-
-    glTexCoord2fv(txcoord[3].data());
-    glColor4fv(opaque.data());
-    glVertex2fv(corners[3].data());
-    glColor4fv(transparent.data());
-    glVertex2fv((corners[3] + up + right).data());
-
-    glTexCoord2fv(txcoord[0].data());
-    glColor4fv(opaque.data());
-    glVertex2fv(corners[0].data());
-    glColor4fv(transparent.data());
-    glVertex2fv((corners[0] + up - right).data());
-
-    glEnd();
-
-    */
 
     // Then a thin strip around to anti-alias:
 
@@ -624,6 +551,8 @@ namespace VideoDisplay {
         subtitleFont->render(sub->m_lines[0], loc);
       }
     }
+
+    // info("The video frame is %d", m_videoFrame);
 
     Luminous::Utils::glCheck("ShowGL::render");
   }

@@ -19,6 +19,8 @@
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/Mutex.hpp>
+#include <Radiant/Thread.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <cassert>
@@ -27,6 +29,8 @@
 
 namespace Luminous
 {
+  
+  using namespace Radiant;
 
   GLResources::GLResources(Radiant::ResourceLocator & rl)
     : m_deallocationSum(0),
@@ -56,7 +60,7 @@ namespace Luminous
                      m_consumingBytes);
   }
 
-  GLResource * GLResources::getResource(const void * key)
+  GLResource * GLResources::getResource(const Collectable * key)
   {
     iterator it = m_resources.find(key);
 
@@ -66,7 +70,7 @@ namespace Luminous
     return (*it).second;
   }
 
-  void GLResources::addResource(const void * key, GLResource * resource)
+  void GLResources::addResource(const Collectable * key, GLResource * resource)
   {
     iterator it = m_resources.find(key);
 
@@ -81,7 +85,7 @@ namespace Luminous
     m_allocationSum += bytes;
   }
 
-  bool GLResources::eraseResource(const void * key)
+  bool GLResources::eraseResource(const Collectable * key)
   {
     iterator it = m_resources.find(key);
 
@@ -105,11 +109,11 @@ namespace Luminous
     return true;
   }
 
-  void GLResources::eraseResources(GarbageCollector * collector)
+  void GLResources::eraseResources()
   {
-    for(GarbageCollector::iterator it = collector->begin();
-        it != collector->end(); it++) {
-      const void * key = GarbageCollector::getObject(it);
+    for(GarbageCollector::iterator it = GarbageCollector::begin();
+        it != GarbageCollector::end(); it++) {
+      const Collectable * key = GarbageCollector::getObject(it);
       eraseResource(key);
     }
 
@@ -164,6 +168,30 @@ namespace Luminous
       resource->m_deleteOnFrame = m_frame + frames;
     else
       resource->m_deleteOnFrame = -1;
+  }
+
+  typedef std::map<Thread::id_t, GLResources *> ResourceMap;
+  static ResourceMap __resources;
+  static MutexStatic __mutex;
+  
+  void GLResources::setThreadResources(GLResources * rsc)
+  {
+    GuardStatic g(&__mutex);
+    __resources[Thread::myThreadId()] = rsc;
+  }
+
+  GLResources * GLResources::getThreadResources()
+  {
+    GuardStatic g(&__mutex);
+    
+    ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+    
+    if(it == __resources.end()) {
+      error("No resources for current thread");
+      return 0;
+    }
+    
+    return (*it).second;
   }
 
 }

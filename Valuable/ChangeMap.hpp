@@ -25,6 +25,7 @@ namespace Valuable
 
   class ValueObject;
 
+  /** Stores information about changed ValueObjects. */
   class VALUABLE_API ChangeMap 
   {
     public:

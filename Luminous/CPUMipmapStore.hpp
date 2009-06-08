@@ -22,13 +22,22 @@ namespace Luminous {
 
   class GarbageCollector;
 
+  /** Shared CPUMipmap storage. This class is used as an access point
+      to load CPUMipmap objects from the hard-disk. */
   class LUMINOUS_API CPUMipmapStore
   {
   public:
-    
-    static CPUMipmaps * acquire(const std::string & filename, GarbageCollector * gc = 0);
-    static CPUMipmaps * acquire(const char * filename, GarbageCollector * gc = 0);
+    /** Gets a pointer to an image file CPU-side mipmap.
+	
+	@return If the file already open, then an old pointer is
+	returned. Otherwise CPUMipmapStore will create a new
+	#CPUMipmaps object, and return that (if opened successfully).
+     */
+    static CPUMipmaps * acquire(const std::string & filename);
+    static CPUMipmaps * acquire(const char * filename);
 
+    /** Release a #CPUMipmaps object. If there are no references to
+	the object, then its memory is freed. */
     static void release(CPUMipmaps *);
   };
 }

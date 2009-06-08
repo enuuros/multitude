@@ -22,8 +22,7 @@
 
 #include <Poetic/GPUFont.hpp>
 
-#include <Luminous/GarbageCollector.hpp>
-// #include <Luminous/GLResources.hpp>
+
 #include <Luminous/GLResources.hpp>
 
 #include <Nimble/Random.hpp>
@@ -60,7 +59,7 @@ protected:
 
   class Item {
   public:
-    Item(Luminous::GarbageCollector * collector) : m_show(collector) {}
+    Item() {}
     ~Item() {}
     
     VideoDisplay::ShowGL    m_show;
@@ -89,7 +88,7 @@ protected:
   // Poetic::GPUFont * m_subGPUFont;
 
   Radiant::ResourceLocator   m_resourceLocator;
-  Luminous::GarbageCollector m_collector;
+
   Luminous::GLResources      m_glResources;
   Nimble::RandomUniform m_rand;
   bool   m_showProgress;

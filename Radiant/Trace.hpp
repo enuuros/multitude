@@ -23,6 +23,7 @@
 
 namespace Radiant {
   
+  /// Error severity levels
   enum Severity
   {
     DEBUG,

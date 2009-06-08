@@ -203,18 +203,14 @@ namespace Luminous {
     glVertex2f(1, 0);
     glVertex2fv(closest(Vector2(1, 0)).data());
 
-    // glVertex2fv(m_vertices[(1 + m_rotations) % 4].data());
     glVertex2f(1, 1);
     glVertex2fv(closest(Vector2(1, 1)).data());
-    // glVertex2fv(m_vertices[(2 + m_rotations) % 4].data());
 
     glVertex2f(0, 1);
     glVertex2fv(closest(Vector2(0, 1)).data());
-    // glVertex2fv(m_vertices[(3 + m_rotations) % 4].data());
 
     glVertex2f(0, 0);
     glVertex2fv(closest(Vector2(0, 0)).data());
-    // glVertex2fv(m_vertices[(0 + m_rotations) % 4].data());
 
     glEnd();
   }

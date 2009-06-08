@@ -17,6 +17,7 @@
 #ifndef LUMINOUS_MULTIHEAD_HPP
 #define LUMINOUS_MULTIHEAD_HPP
 
+#include <Luminous/Collectable.hpp>
 #include <Luminous/Export.hpp>
 #include <Luminous/GLKeyStone.hpp>
 
@@ -50,8 +51,11 @@ namespace Luminous {
     public:
 
       /// One OpenGL area
-      /** Areas are roughly equivalent to OpenGL viewports. */
-      class Area : public Valuable::HasValues
+      /** Areas are roughly equivalent to OpenGL viewports. Multiple
+	  areas can share the same OpenGL context, as one window can
+	  have may areas inside it.*/
+    class Area : public Valuable::HasValues,
+                 public Collectable
     {
       public:
         LUMINOUS_API Area();
@@ -141,8 +145,20 @@ namespace Luminous {
         void setPixelSizeCm(float sizeCm) { m_pixelSizeCm = sizeCm; }
         float pixelSizeCm() const { return m_pixelSizeCm; }
         float cmToPixels(float cm) { return cm / m_pixelSizeCm; }
-      protected:
 
+      int width() const { return m_size.asVector().x; }
+      int height() const { return m_size.asVector().y; }
+      private:
+	
+	enum {
+	  /* Render to the screen, using straight coordinates. Then
+	     read-back and re-render, with skewed coordinates. */
+	  METHOD_TEXTURE_READBACK,
+	  /* Render directly with skewed coordinates. Nice for
+	     performance, but a bit tricky for ripple effects etc. */
+	  METHOD_MATRIX_TRICK	  
+	};
+	
         void updateBBox();
 
         GLKeyStone m_keyStone;
@@ -152,6 +168,7 @@ namespace Luminous {
         Valuable::ValueVector2f   m_graphicsSize;
         Valuable::ValueVector4f   m_seams;
         Valuable::ValueInt        m_active;
+        Valuable::ValueInt        m_method;
         Valuable::ValueString m_comment;
         Rect m_graphicsBounds;
         float      m_pixelSizeCm;

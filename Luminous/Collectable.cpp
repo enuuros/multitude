@@ -19,14 +19,12 @@
 
 namespace Luminous
 {
-  Collectable::Collectable(GarbageCollector * collector)
-    : m_collector(collector)
+  Collectable::Collectable()
   {}
 
   Collectable::~Collectable()
   {
-    if(m_collector)
-      m_collector->objectDeleted(this);
+    GarbageCollector::objectDeleted(this);
   }
 
 }

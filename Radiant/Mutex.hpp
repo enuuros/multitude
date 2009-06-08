@@ -160,6 +160,7 @@ namespace Radiant {
 
   };
 
+  /** A guard class for static mutexes. */
   class GuardStatic : public Patterns::NotCopyable
   {
   public:

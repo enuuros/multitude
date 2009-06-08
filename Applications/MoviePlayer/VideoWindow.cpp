@@ -61,7 +61,7 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
       return false;
   }
 
-  Radiant::RefPtr<Item> item = new Item( & m_collector);
+  Radiant::RefPtr<Item> item = new Item();
 
   std::string srtfile = Radiant::FileUtils::baseFilename(filename) + ".srt";
 
@@ -205,7 +205,7 @@ void VideoWindow::paintGL()
   Poetic::GPUFont * gpufont = 0;
   
   if(m_subCPUFont) {
-    gpufont = m_subCPUFont->getGPUFont(& m_glResources);
+    gpufont = m_subCPUFont->getGPUFont();
   }
 
   int w = width();

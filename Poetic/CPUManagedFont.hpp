@@ -33,7 +33,7 @@ namespace Poetic
   class CPUManagedFont : public Luminous::Collectable
   {
     public:
-      CPUManagedFont(Luminous::GarbageCollector * gc = 0);
+      CPUManagedFont();
 
       bool load(const char * fontFilePath);
 

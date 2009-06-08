@@ -49,7 +49,7 @@ namespace Luminous {
     
     friend class GPUMipmaps;
 
-    LUMINOUS_API CPUMipmaps(GarbageCollector * collector = 0);
+    LUMINOUS_API CPUMipmaps();
     LUMINOUS_API virtual ~CPUMipmaps();
 
     /** Drop old CPU mipmaps from memory.
@@ -86,7 +86,8 @@ namespace Luminous {
     /** Fetch corresponding GPU mipmaps from a resource set. If the
 	GPUMipmaps object does not exist yet, it is created and
 	returned. */
-    LUMINOUS_API GPUMipmaps * getGpuMipmaps(GLResources *);
+    LUMINOUS_API GPUMipmaps * getGPUMipmaps(GLResources *);
+    LUMINOUS_API GPUMipmaps * getGPUMipmaps();
     LUMINOUS_API bool bind(GLResources *,
 			   const Nimble::Matrix3 & transform, 
 			   Nimble::Vector2 pixelsize);

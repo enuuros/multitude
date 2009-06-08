@@ -53,7 +53,7 @@ namespace Luminous {
     // trace("GPUMipmaps::bind %f %f %d", pixelsize.x, pixelsize.y, best);
 
 
-    void * key = m_keys + best;
+    Collectable * key = m_keys + best;
 
     GLResource * res = resources()->getResource(key);
     

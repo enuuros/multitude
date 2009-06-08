@@ -30,7 +30,9 @@ namespace VideoDisplay {
   class VIDEODISPLAY_API SubTitles 
   {
   public:
-
+    
+    /** Subtitle text item. This class contains information about the
+	sub-titles that should be displayed at the moment. */
     class Text
     {
     public:

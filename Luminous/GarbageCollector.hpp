@@ -22,41 +22,76 @@
 
 namespace Luminous
 {
+
+  class Collectable;
   
   /// This class is used to keep track of objects that have been deleted.
 
-  /** The objects are represented by simple void pointers. This should
-      be enough to find the objects from stogare tables, in particular
-      from GLResources. */
+  /** The general usage pattern is as follows:
+      
+      <pre>
+      
+      // Application main loop:
+      while(true) {
+
+        // Clean up the collector:
+        GarbageCollector::clear();
+
+        // When Collectable objects are deleted, they store their pointers here
+        updateLogic();
+
+	// Go set the OpenGL context
+	setOpenGLContext1();
+        
+	// Remove the deleted resources:
+	GLResources * rsc1 = getResources1();
+	rsc1->eraseResources();
+	renderOpenGL();
+
+	// Then another OpenGL context:
+	setOpenGLContext2();
+        
+	// Remove the deleted resources:
+	GLResources * rsc2 = getResources2();
+	rsc2->eraseResources();
+	renderOpenGL();
+      }
+      </pre>
+
+      This code snippet is for the single-threaded case, with two
+      OpenGL contexts.
+   */
   class LUMINOUS_API GarbageCollector
   {
   public:
 
-    typedef std::set<void *> container;
+    typedef std::set<Collectable *> container;
     typedef container::iterator iterator;
 
-    GarbageCollector();
-    ~GarbageCollector();
-
     /// Empties the garbage list.
-    void clear();
+    static void clear();
 
     /// Adds the obj to the list of deleted objects
-    void objectDeleted(void * obj);
+    static void objectDeleted(Collectable * obj);
 
     /// Iterator to the beginning of the list
-    iterator begin() { return m_items.begin(); }
+    static iterator begin() { return m_items.begin(); }
     /// Iterator to the end of the list
-    iterator end() { return m_items.end(); }
+    static iterator end() { return m_items.end(); }
 
     /// Gets an object from an interator
     /** By using this method to access the object, you can guarantee
       that your code will work even if the container type is
       changed. */
-    static void * getObject(iterator & it) { return (*it); }
+    static Collectable * getObject(iterator & it) { return (*it); }
 
-  protected:
-    container m_items;
+  private:
+
+    GarbageCollector();
+    ~GarbageCollector();
+
+    static container m_items;
+
   };
 }
 

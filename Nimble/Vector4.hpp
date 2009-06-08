@@ -23,13 +23,22 @@
 
 namespace Nimble {
 
+  /// A four-dimensional homogenic vector class for 3D graphics
+  /** This class is used to represent homogenic coordinates for 3D
+      calculations.
+
+      Vector4T is also widely used to carry RGBA color values.*/
   template <class T>
   class NIMBLE_API Vector4T
   {
   public:
-    T		x;										// x-component of the vector
-    T		y;										// y-component of the vector
-    T		z;										// z-component of the vector
+    /// The x-component
+    T		x;
+    /// The y-component
+    T		y;
+    /// The z-component
+    T		z;
+    /// The w-component
     T   w;
     Vector4T	()					       {}
     Vector4T	(T cx, T cy, T cz, T cw)                       { x = cx;       y = cy;	     z = cz;      w =  cw; }
@@ -115,17 +124,21 @@ inline T abs(Nimble::Vector4T<T> t)
   return t.length();
 }
 
+/// Returns 4D dot product of the two Vector4T objects.
 template <class T>
 inline T dot(const Nimble::Vector4T<T>& a, const Nimble::Vector4T<T>& b)
 {
   return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3];
 }
+
+/// Returns 3D dot product of Vector4T and Vector3T objects.
 template <class T>
 inline T dot3(const Nimble::Vector4T<T>& a, const Nimble::Vector3T<T>& b)
 {
   return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 }
 
+/// Returns 3D dot product of Vector3T and Vector4T objects.
 template <class T>
 inline T dot3(const Nimble::Vector3T<T>& a, const Nimble::Vector4T<T>& b)
 {
@@ -144,6 +157,7 @@ inline T dot4(const Nimble::Vector4T<T>& a, const Nimble::Vector3T<T>& b)
   return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3];
 }
 
+/// Serialize a 4D vector into a stream
 template <class T>
 inline std::ostream &operator<<(std::ostream &os, const Nimble::Vector4T<T> &t)
 {
@@ -151,6 +165,7 @@ inline std::ostream &operator<<(std::ostream &os, const Nimble::Vector4T<T> &t)
   return os;
 }
 
+/// De-serialize a 4D vector from a stream
 template <class T>
 inline std::istream &operator>>(std::istream &is, Nimble::Vector4T<T> &t)
 {

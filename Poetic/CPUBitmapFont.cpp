@@ -24,8 +24,7 @@
 namespace Poetic
 {
 
-  CPUBitmapFont::CPUBitmapFont(Luminous::GarbageCollector * gc)
-  : CPUFontBase(gc)
+  CPUBitmapFont::CPUBitmapFont()
   {
   }
 

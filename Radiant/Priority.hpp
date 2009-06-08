@@ -22,6 +22,11 @@
 
 namespace Radiant {
 
+  /** Priority level definitions. This levels are meant to be
+      platform-agnostic names for different levels of process/thread
+      execution priority. Under POSIX these map into real-time
+      scheduling priorities. Under Windows they should (or will) map
+      into process priorities. */
   enum Priority {
     PRIORITY_AUDIO_IO = 80,
     PRIORITY_MAX = 99

@@ -26,10 +26,10 @@ namespace Poetic
   class GPUFont;
 
   /// A base class for all CPU fonts.
-  class POETIC_API CPUFontBase : public CPUFont, public Luminous::Collectable
+  class POETIC_API CPUFontBase : public CPUFont
   {
     public:
-      CPUFontBase(Luminous::GarbageCollector * gc = 0);
+      CPUFontBase();
       virtual ~CPUFontBase();
 
       Face * face();

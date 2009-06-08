@@ -32,7 +32,7 @@ namespace Radiant {
   extern const char *errorLevelStr(ErrorLevel);
 
   extern const char *ErrorLevels[ERRL_SIZEOF];
-
+  /*
   /// Error codes.
   enum ErrorCode {
     /// No error
@@ -84,11 +84,11 @@ namespace Radiant {
     /// Number of error codes
     ERR_SIZEOF
   };
-
+  */
   extern const char *errorStr(ErrorLevel);
 
   /// Character strings for error codes:
-  extern const char *ErrorCodes[ERR_SIZEOF];
+  // extern const char *ErrorCodes[ERR_SIZEOF];
 
 }
 

@@ -15,7 +15,7 @@
 #ifndef CODINGGUIDE_SOMECLASS_HPP
 #define CODINGGUIDE_SOMECLASS_HPP
 
-/* First we include oue "own" headers in alphabetical order. Different
+/* First we include our "own" headers in alphabetical order. Different
    libraries are separated by an extra line-break. */
 
 #include <Nimble/Math.hpp>
@@ -53,7 +53,7 @@ namespace CodingGuide {
     friend class FooBar1;
 
     /* Internal classes come here. */
-
+    /** Nested class to demonstrate how we keep code in compartments. */
     class Item
     {
     public:
@@ -67,7 +67,7 @@ namespace CodingGuide {
       /** If you expose a typedef in the API, use class-like naming convention */
       typedef std::list<Nimble::Vector2> VectorList;
       
-    protected:
+    private:
       /* Member variables begin with "m_". */
       
       /** Location is named "location", not "position", "loc" or
@@ -76,7 +76,7 @@ namespace CodingGuide {
 	  Also note that we resist the temptation to put "using
 	  Nimble" inside the header. This way another programmer (and
 	  Doxygen!!) can more easily deduce where the data types come
-	  from. In the source files we can be more relaxed.
+	  from. In the source (i.e. cpp) files we can be more relaxed.
       */
       Nimble::Vector2f m_location;
       /* Velocity is "velocity" and nothing else. */

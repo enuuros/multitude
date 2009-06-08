@@ -30,7 +30,7 @@ namespace Poetic
 
   /// An abstract base class providing a common interface for all fonts residing
   /// in CPU memory.
-  class POETIC_API CPUFont
+  class POETIC_API CPUFont : public::Luminous::Collectable
   {
   public:
     virtual ~CPUFont() {}
@@ -59,7 +59,7 @@ namespace Poetic
       virtual bool load(const char * fontFilePath) = 0;
 
       virtual GPUFont * createGPUFont() = 0;
-      GPUFont * getGPUFont(Luminous::GLResources * resources);
+      GPUFont * getGPUFont();
   };
 
 }

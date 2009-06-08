@@ -18,6 +18,8 @@
 namespace Luminous
 {
 
+  GarbageCollector::container GarbageCollector::m_items;
+
   GarbageCollector::GarbageCollector()
   {}
 
@@ -29,7 +31,7 @@ namespace Luminous
     m_items.clear();
   }
 
-  void GarbageCollector::objectDeleted(void * obj)
+  void GarbageCollector::objectDeleted(Collectable * obj)
   {
     m_items.insert(obj);
   }

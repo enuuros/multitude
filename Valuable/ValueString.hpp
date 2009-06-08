@@ -37,14 +37,13 @@ namespace Valuable
   public:
     ValueStringT() : ValueObject() {}
     ValueStringT(HasValues * parent, const std::string & name,
-		 const T & v, bool transit = false)
-      : ValueObject(parent, name, transit), m_value(v)
-    {}
+		 const T & v, bool transit = false);
 
     ValueStringT(HasValues * parent, const std::string & name,
-		 bool transit = false)
-      : ValueObject(parent, name, transit)
-      {}
+		 const char * v, bool transit = false);
+
+    ValueStringT(HasValues * parent, const std::string & name,
+		 bool transit = false);
     
     ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; VALUEMIT_STD_OP }
     ValueStringT<T> & operator = (const T & i) { m_value = i; VALUEMIT_STD_OP }

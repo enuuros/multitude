@@ -29,7 +29,7 @@ namespace Poetic
   class POETIC_API CPUBitmapFont : public CPUFontBase
   {
   public:
-    CPUBitmapFont(Luminous::GarbageCollector * gc = 0);
+    CPUBitmapFont();
     virtual ~CPUBitmapFont();
 
     virtual bool setFaceSize(int size, int resolution = POETIC_DEFAULT_RESOLUTION);

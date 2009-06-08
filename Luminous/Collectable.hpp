@@ -20,22 +20,12 @@
 
 namespace Luminous
 {
-  class GarbageCollector;
-
   /// A utility class to make the work of GarbageCollector easier.
   class LUMINOUS_API Collectable
   {
   public:
-    Collectable(GarbageCollector * collector);
+    Collectable();
     virtual ~Collectable();
-
-    void setGarbageCollector(GarbageCollector * collector)
-    { m_collector = collector; }
-
-    GarbageCollector * gc() { return m_collector; }
-
-  private:
-    GarbageCollector * m_collector;
   };
 
 }

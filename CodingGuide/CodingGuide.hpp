@@ -4,7 +4,8 @@
     a new file, you should copy the copyright from another file in the
     same directory.
 
-    The first line of the notice looks like the line above. This is
+    The first line of the notice
+ looks like the line above. This is
     because then we can replace them atomatically. 
 
     NOTE: Anything written into this space may get lost during the
@@ -55,20 +56,20 @@
     to match this guide. Instead, all new code should follow this
     guide. Old code can be re-formatted as we go.
 
-    This is good place for general author list for the project:
+    This is also good place for general author list for the project:
 
     @author Tommi Ilmonen
 */
 
 namespace CodingGuide {
 
-  /* There is no need to have any real definitions here, this file is
-     only for documentation. For the sake of the example, we will put
-     project-specific global functions here. */
+  /** There is no need to have any real definitions here, this file is
+      only for documentation. For the sake of the example, we will put
+      project-specific global functions here. */
 
   void initCodingGuide();
 
-  /// Global variables prefixed with g_
+  /// Global variables are prefixed with g_
   int g_globalVariable;  
 }
 

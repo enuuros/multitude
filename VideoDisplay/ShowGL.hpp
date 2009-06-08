@@ -118,7 +118,7 @@ namespace VideoDisplay {
       HISTOGRAM_POINTS = 256
     };
 
-    VIDEODISPLAY_API ShowGL(Luminous::GarbageCollector * collector);
+    VIDEODISPLAY_API ShowGL();
     VIDEODISPLAY_API ~ShowGL();
 
     /// Load a subtitle file

@@ -35,9 +35,43 @@ namespace Resonant {
 
   class DSPNetwork;
 
+  /** Audio sample player for Resonant. */
   class RESONANT_API ModuleSamplePlayer : public Module
   {
   public:
+
+
+    ModuleSamplePlayer(Application *);
+    virtual ~ModuleSamplePlayer();
+
+    virtual bool prepare(int & channelsIn, int & channelsOut);
+    virtual void control(const char * address, ControlData *);
+    virtual void process(float ** in, float ** out, int n);
+
+    bool addSample(const char * filename, const char * name);
+
+    int findFreeVoice();
+    int findSample(const char * );
+
+    void loadSamples();
+
+    /** Adds a few voices that will play an ambount sound background.
+        All files in the given directory are loaded looped
+        for-ever. In practice one wants to put 3-5 audio files with
+        different lengths in the directory. The length of the files
+        should be in the 20-30 second range. The end result will be a
+        nice ambient background that does not sound like it is
+        looping.
+
+        @param directory Where the file are loaded from
+
+        @gain The gain (volume) to give to the background material.
+    */
+
+    void createAmbientBackground(DSPNetwork * network,
+                                 const char * directory, float gain);
+
+  private:
 
     class SampleInfo
     {
@@ -172,39 +206,7 @@ namespace Resonant {
       volatile bool m_continue;
     };
 
-    ModuleSamplePlayer(Application *);
-    virtual ~ModuleSamplePlayer();
-
-    virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char * address, ControlData *);
-    virtual void process(float ** in, float ** out, int n);
-
-    bool addSample(const char * filename, const char * name);
-
-    int findFreeVoice();
-    int findSample(const char * );
-
-    void loadSamples();
-
     bool addSample(Sample * s);
-
-    /** Adds a few voices that will play an ambount sound background.
-        All files in the given directory are loaded looped
-        for-ever. In practice one wants to put 3-5 audio files with
-        different lengths in the directory. The length of the files
-        should be in the 20-30 second range. The end result will be a
-        nice ambient background that does not sound like it is
-        looping.
-
-        @param directory Where the file are loaded from
-
-        @gain The gain (volume) to give to the background material.
-    */
-
-    void createAmbientBackground(DSPNetwork * network,
-                                 const char * directory, float gain);
-
-  private:
 
     void dropVoice(unsigned index);
 

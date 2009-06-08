@@ -28,6 +28,27 @@
 namespace Valuable
 {
 
+  
+  template<class T>
+  ValueStringT<T>::ValueStringT(HasValues * parent, const std::string & name,
+				const T & v, bool transit)
+    : ValueObject(parent, name, transit), m_value(v)
+  {}
+
+  template<class T>
+  ValueStringT<T>::ValueStringT(HasValues * parent, const std::string & name,
+				const char * v, bool transit)
+  : ValueObject(parent, name, transit),
+    m_value(v)
+  {}
+
+    
+  template<class T>
+  ValueStringT<T>::ValueStringT(HasValues * parent, const std::string & name,
+				bool transit)
+    : ValueObject(parent, name, transit)
+  {}
+
   template<class T>
   bool ValueStringT<T>::deserializeXML(DOMElement element)
   {
@@ -93,6 +114,17 @@ namespace Valuable
   m_value(v)
   {}
   */
+
+  template<>
+  ValueStringT<std::wstring>::ValueStringT(HasValues * parent, const std::string & name,
+					   const char * v, bool transit)
+    : ValueObject(parent, name, transit)
+  {
+    std::string tmp(v);
+    Radiant::StringUtils::utf8ToStdWstring(m_value, tmp); 
+  }
+
+
   template <>
   ValueStringT<std::wstring> & ValueStringT<std::wstring>::operator=(const ValueStringT<std::wstring> & i)
   {
@@ -110,7 +142,7 @@ namespace Valuable
   template <>
   float ValueStringT<std::wstring>::asFloat(bool * const ok) const 
   { 
-    if(ok) *ok = true; 
+    if(ok) *ok = true;
     std::string tmp;
     Radiant::StringUtils::stdWstringToUtf8(tmp, m_value);
     return float(atof(tmp.c_str()));

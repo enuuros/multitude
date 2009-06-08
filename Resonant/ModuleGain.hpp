@@ -22,6 +22,7 @@
 
 namespace Resonant {
 
+  /** Gain control audio module. */
   class ModuleGain : public Module
   {
   public:

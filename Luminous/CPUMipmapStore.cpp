@@ -52,8 +52,7 @@ namespace Luminous {
   static std::map<std::string, MipmapItem> __mipmaps;
   typedef std::map<std::string, MipmapItem> MipMapItemContainer;
 
-  CPUMipmaps * CPUMipmapStore::acquire(const std::string & filename,
-				       GarbageCollector * gc)
+  CPUMipmaps * CPUMipmapStore::acquire(const std::string & filename)
   {
     Radiant::GuardStatic g( & __mutex);
     
@@ -65,7 +64,7 @@ namespace Luminous {
       return mmi.m_mipmaps;
     }
 
-    CPUMipmaps * mipmaps = new CPUMipmaps(gc);
+    CPUMipmaps * mipmaps = new CPUMipmaps();
 
     if(!mipmaps->startLoading(filename.c_str(), true)) {
       delete mipmaps;
@@ -81,10 +80,9 @@ namespace Luminous {
     return mipmaps;
   }
 
-  CPUMipmaps * CPUMipmapStore::acquire(const char * filename,
-				       GarbageCollector * gc)
+  CPUMipmaps * CPUMipmapStore::acquire(const char * filename)
   {
-    return acquire(std::string(filename), gc);
+    return acquire(std::string(filename));
   }
 
   void CPUMipmapStore::release(CPUMipmaps * mipmaps)

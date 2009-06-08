@@ -74,7 +74,7 @@ namespace Poetic
       }
   
       // Need to create a new managed font
-      mfont = new CPUManagedFont(0);
+      mfont = new CPUManagedFont();
       m_managedFonts[name] = mfont;
 
       if(!mfont->load(path.c_str())) {

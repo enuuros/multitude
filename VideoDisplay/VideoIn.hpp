@@ -64,6 +64,7 @@ namespace VideoDisplay {
       STOP
     };
 
+    /** Video image, for use inside the VideoDisplay library. */
     class VIDEODISPLAY_API Frame
     {
     public:
@@ -95,7 +96,8 @@ namespace VideoDisplay {
       int       m_audioFrames;
       FrameType m_type;
     };
-
+    
+    /** Basic informationa about a video file. */
     class VIDEODISPLAY_API VideoInfo
     {
     public:

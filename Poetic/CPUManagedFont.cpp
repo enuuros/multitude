@@ -24,9 +24,8 @@ namespace Poetic
   // Maintain a user-defined list of the font-sizes i.e. [3,4,6,8,10,16,32//
   static int g_faceSizes[] = { 8, 16, 32, 64, 128};
 
-  CPUManagedFont::CPUManagedFont(Luminous::GarbageCollector * gc)
-  : Collectable(gc),
-    m_metricFont(0)
+  CPUManagedFont::CPUManagedFont()
+  : m_metricFont(0)
   {}
 
   bool CPUManagedFont::load(const char * fontFilePath)
@@ -37,7 +36,7 @@ namespace Poetic
 
     // Load the specified font sizes
     for(uint32_t i = 0; i < sizeof(g_faceSizes) / sizeof(g_faceSizes[0]); i++) {
-      CPUBitmapFont * font = new CPUBitmapFont(Collectable::gc());
+      CPUBitmapFont * font = new CPUBitmapFont();
 
       ok = font->load(m_file.c_str());
       if(!ok) return false;
@@ -47,7 +46,7 @@ namespace Poetic
     }
 
     // Load the specified metric font
-    CPUBitmapFont * bf = new CPUBitmapFont(Collectable::gc());
+    CPUBitmapFont * bf = new CPUBitmapFont();
     ok = bf->load(m_file.c_str());
     assert(ok);
     ok = bf->setFaceSize(METRIC_FONT_POINT_SIZE);

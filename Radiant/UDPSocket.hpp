@@ -7,7 +7,8 @@
 
 namespace Radiant
 {
-
+  
+  /** UPD socket implementation. */
   class RADIANT_API UDPSocket : public Radiant::BinaryStream
   {
     public:

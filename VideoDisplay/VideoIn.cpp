@@ -294,6 +294,7 @@ namespace VideoDisplay {
 				     Radiant::TimeStamp show, 
 				     Radiant::TimeStamp absolute)
   {
+
     assert(m_frames.size() != 0);
 
     m_vmutex.lock();
@@ -339,6 +340,9 @@ namespace VideoDisplay {
     if(m_debug)
       debug("VideoIn::putFrame # %p %u %u %lf",
 	    & f, m_decodedFrames, m_consumedFrames, absolute.secondsD());
+
+    // info("VideoIn::putFrame # %d", m_decodedFrames);
+
 
     return & f;
     // qDebug("VideoIn::putFrame # EXIT");
