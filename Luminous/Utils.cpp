@@ -1645,8 +1645,7 @@ namespace Luminous {
   {
     GLenum e = glGetError();
     if(e) {
-      printf("%s # GL ERROR %s", msg, gluErrorString(e));
-      fflush(stdout);
+      Radiant::error("%s # GL ERROR %s", msg, gluErrorString(e));
     }
 
     return e == 0;

@@ -125,10 +125,18 @@ namespace Luminous
   }
 
 #define GLRESOURCE_ENSURE2(type, name, key)	\
-  GLResources * grs = Luminous::GLResources::getThreadResources(); \
+  Luminous::GLResources * grs = Luminous::GLResources::getThreadResources(); \
   type * name = dynamic_cast<type *> (grs->getResource(key));	\
   if(!name) { \
     name = new type();	\
+    grs->addResource(key, name); \
+  }
+
+#define GLRESOURCE_ENSURE3(type, name, key)	\
+  Luminous::GLResources * grs = Luminous::GLResources::getThreadResources(); \
+  type * name = dynamic_cast<type *> (grs->getResource(key));	\
+  if(!name) { \
+    name = new type(grs);	\
     grs->addResource(key, name); \
   }
 
