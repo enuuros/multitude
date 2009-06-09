@@ -96,6 +96,7 @@ namespace Luminous {
       GLRESOURCE_ENSURE2(Texture2D, tex, this);
 
       if(tex->size() != m_size.asVector()) {
+        info("Area GL init");
 	// Initialize the texture to the right size:
 	tex->loadBytes(GL_RGB, width(), height(), 0, 
 		       Luminous::PixelFormat::rgbUByte(),
@@ -103,11 +104,11 @@ namespace Luminous {
       }
 
       tex->bind();
-      glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0,width(), height(), 0);
+      glReadBuffer(GL_BACK);
+      glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0,
+                       tex->width(), tex->height(), 0);
 
       glEnable(GL_TEXTURE_2D);
-
-      // glPushMatrix();
 
       m_keyStone.applyGlState();
 
