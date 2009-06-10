@@ -35,7 +35,6 @@ HEADERS += Sleep.hpp
 !win32: HEADERS += SHMDuplexPipe.hpp
 !win32: HEADERS += SHMPipe.hpp
 HEADERS += SMRingBuffer.hpp
-# HEADERS += StandardPaths.hpp
 HEADERS += StringUtils.hpp
 HEADERS += TCPServerSocket.hpp
 HEADERS += TCPSocket.hpp
@@ -51,7 +50,6 @@ HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
 
-SOURCES += UDPSocket.cpp
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
@@ -59,8 +57,6 @@ SOURCES += Condition.cpp
 SOURCES += ConfigReader.cpp
 SOURCES += DateTime.cpp
 SOURCES += DirectoryCommon.cpp
-unix:SOURCES += DirectoryNonBoost.cpp
-else:SOURCES += DirectoryBoost.cpp
 SOURCES += FileUtils.cpp
 SOURCES += FixedStr.cpp
 SOURCES += ImageConversion.cpp
@@ -73,7 +69,6 @@ SOURCES += Sleep.cpp
 !win32: SOURCES += SHMPipe.cpp
 SOURCES += SMRingBuffer.cpp
 SOURCES += StringUtils.cpp
-SOURCES += TCPServerSocket.cpp
 SOURCES += TCPSocket.cpp
 SOURCES += Thread.cpp
 SOURCES += Timer.cpp
@@ -95,7 +90,13 @@ macx {
 }
 
 unix {
+  SOURCES += DirectoryNonBoost.cpp
+
 	SOURCES += SerialPortPosix.cpp
+  SOURCES += TCPServerSocketPosix.cpp
+  SOURCES += TCPSocketPosix.cpp
+  SOURCES += UDPSocketPosix.cpp
+
 	SOURCES += Video1394.cpp
 
 	LIBS += -lpthread $$LIB_RT -ldl
@@ -104,10 +105,11 @@ unix {
 
 win32 {
 	DEFINES += RADIANT_EXPORT BOOST_ALL_DYN_LINK
-    SOURCES += Video1394cmu.cpp
+  SOURCES += Video1394cmu.cpp
 	SOURCES += cmu_dc1394.cpp
 	SOURCES += PlatformUtilsWin32.cpp
 	SOURCES += SerialPortWin32.cpp
+  SOURCES += DirectoryBoost.cpp
 		
 	HEADERS += Video1394cmu.hpp
 	HEADERS += cmu_dc1394.hpp
@@ -116,5 +118,7 @@ win32 {
 	QMAKE_CXXFLAGS += -Zc:wchar_t
 }
 
+CONFIG += qt 
+QT = core network
 
 include(../library.pri)

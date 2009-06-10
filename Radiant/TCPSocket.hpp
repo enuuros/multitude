@@ -44,10 +44,10 @@ namespace Radiant {
     bool close();
 
     /// Returns true of the socket is open.
-    bool isOpen() { return m_fd > 0; }
+    bool isOpen() const;
 
-    const char * host() const { return m_host.c_str(); }
-    int port() const { return m_port; }
+    const char * host() const;
+    int port() const;
 
     /// Read bytes from the socket
     /// @param buffer pointer to a buffer to store the read data to
@@ -61,30 +61,19 @@ namespace Radiant {
     bool isHungUp() const;
 
     /// Return 'true' if readable data is pending.
-    bool isPendingInput(unsigned waitMicroSeconds = 0);
+    bool isPendingInput(unsigned int waitMicroSeconds = 0);
 
-    /// Sets the socket to no-delay mode
-    /** Usually the operating system collects data before transmitting
-	it. This is done to increase performance in situations where
-	the application write many small packets to the socket. If the
-	latency of the packets is critical, then calling
-	setNoDelay(true) will disable this feature. 
-	
-	This function only affects the delivery strategy that the
-	operating system uses when data is written to the socket.
-    */
-    bool setNoDelay(bool noDelay);
-    
     /// Convert an IP address to in_addr structure
     static struct in_addr *atoaddr(const char *address);
+
+    void debug();
     
   private:
     TCPSocket(const TCPSocket & ) : BinaryStream() {}
     TCPSocket & operator = (const TCPSocket & )  { return * this; }
 
-    int m_fd;
-    int m_port;
-    std::string m_host;
+    class D;
+    D * m_d;
   };
 
 }

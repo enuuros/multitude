@@ -1,8 +1,6 @@
 #include "UDPSocket.hpp"
 #include "TCPSocket.hpp"
-#include <string.h>
 
-#ifndef WIN32
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
@@ -11,35 +9,47 @@
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#else
-#include <winsock2.h>
-#include <WinPort.h>
-#endif
 
 namespace Radiant
 {
 
+  class UDPSocket::D {
+    public:
+      D() : m_fd(-1), m_port(0) {}
+
+      int m_fd;
+      int m_port;
+      std::string m_host;
+  };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
   UDPSocket::UDPSocket()
-    : m_fd(-1),
-    m_port(0)
-  {}
+  {
+    m_d = new D();
+  }
 
   UDPSocket::UDPSocket(int fd)
-    : m_fd(fd)
-  {}
+  {
+    m_d = new D();
+    m_d->m_fd = fd;
+  }
 
   UDPSocket::~UDPSocket()
-  {}
+  {
+    delete m_d;
+  }
 
   int UDPSocket::open(const char * host, int port)
   {
     close();
+   
+    m_d->m_host = host;
+    m_d->m_port = port;
 
-    m_host = host;
-    m_port = port;
-
-    m_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if(m_fd < 0)
+    m_d->m_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if(m_d->m_fd < 0)
       return errno;
 
     struct sockaddr_in server_address;
@@ -55,7 +65,7 @@ namespace Radiant
 
     server_address.sin_addr.s_addr = addr->s_addr;
 
-    if(connect(m_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
+    if(connect(m_d->m_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
       return errno;
 
     return 0;
@@ -63,41 +73,35 @@ namespace Radiant
 
   bool UDPSocket::close()
   {
-    if(m_fd < 0)
+    if(m_d->m_fd < 0)
       return false;
 
-#ifndef WIN32
-    ::close(m_fd);
-#else
-    ::closesocket((SOCKET)m_fd);
-#endif
+    ::close(m_d->m_fd);
 
-    m_fd = -1;
+    m_d->m_fd = -1;
 
     return true;
   }
 
+  bool UDPSocket::isOpen() const
+  {
+    return (m_d->m_fd > 0);
+  }
+
   int UDPSocket::read(void * buffer, int bytes)
   {
-    if(m_fd < 0) 
+    if(m_d->m_fd < 0) 
       return -1;
 
-#ifndef WIN32
-    return ::read(m_fd, buffer, bytes);
-#else
-    return ::recv((SOCKET)m_fd, (char *)buffer, bytes, 0);
-#endif
+    return ::read(m_d->m_fd, buffer, bytes);
   }
 
   int UDPSocket::write(const void * buffer, int bytes)
   {
-    if(m_fd < 0)
+    if(m_d->m_fd < 0)
       return -1;
 
-#ifndef WIN32
-    return ::write(m_fd, buffer, bytes);
-#else
-    return ::send((SOCKET)m_fd, (char *)buffer, bytes, 0);
-#endif
+    return ::write(m_d->m_fd, buffer, bytes);
   }
+
 }

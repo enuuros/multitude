@@ -19,15 +19,14 @@ namespace Radiant
       int open(const char * host, int port);
       bool close();
 
-      bool isOpen() { return m_fd > 0; }
+      bool isOpen() const;
 
       int read(void * buffer, int bytes);
       int write(const void * buffer, int bytes);
 
     private:
-      int m_fd;
-      int m_port;
-      std::string m_host;
+      class D;
+      D * m_d;
   };
 
 }

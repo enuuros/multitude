@@ -40,13 +40,13 @@ namespace Radiant {
     /// Closes the socket
     bool close();
     /// Returns true of the socket is open.
-    bool isOpen() { return m_fd > 0; }
+    bool isOpen() const;
 
-    const char * host() const { return m_host.c_str(); }
-    int port() const { return m_port; }
+    const char * host() const;
+    int port() const;
 
     /// Return 'true' if connection pending.
-    bool isPendingConnection(unsigned waitMicroSeconds = 0);
+    bool isPendingConnection(unsigned int waitMicroSeconds = 0);
 
     /// Accept new connections
     TCPSocket * accept();
@@ -55,9 +55,8 @@ namespace Radiant {
     TCPServerSocket(const TCPServerSocket & ) {}
     TCPServerSocket & operator = (const TCPServerSocket & ) { return * this; }
 
-    int m_fd;
-    int m_port;
-    std::string m_host;
+    class D;
+    D * m_d;
   };
 
 }
