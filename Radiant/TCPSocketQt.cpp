@@ -78,9 +78,6 @@ namespace Radiant
 
   bool TCPSocket::isPendingInput(unsigned int waitMicroSeconds)
   {
-    Radiant::info("TCPSocket::isPendingInput");
-    debug();
-
     return m_d->waitForReadyRead(waitMicroSeconds);
   }
 
