@@ -8,6 +8,8 @@
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <strings.h>
+#include <string.h>
 
 namespace Radiant
 {
