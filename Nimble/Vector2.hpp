@@ -63,6 +63,7 @@ namespace Nimble {
     T      	lengthSqr	(void) const				      { return x*x+y*y; }
     Vector2T&	negate		(void)						      { x=-x; y=-y; return *this; }
     Vector2T&	normalize	(T len = T(1))			{ T l = length(); if (l!= T(0)) *this *= (len/l); return *this; }
+    Vector2T&	limitLength	(T len)	 { T l = length(); if (l > len) *this *= (len/l); return *this; }
     Vector2T&	scale		(const Vector2T& v)				{ x *= v.x; y *= v.y; return *this; }
     Vector2T&	scale		(const T & xs, const T & ys)				{ x *= xs; y *= ys; return *this; }
     Vector2T&	descale		(const Vector2T& v)			{ x /= v.x; y /= v.y; return *this; }

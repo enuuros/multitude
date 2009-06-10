@@ -59,8 +59,8 @@ namespace Luminous {
 
   void MultiHead::Area::applyGlState() const
   {
-    /*info("MultiHead::Area::applyGlState # %d %d %d %d",
-	 m_location[0], m_location[1], m_size[0], m_size[1]);
+    /* info("MultiHead::Area::applyGlState # %d %d %d %d",
+       m_location[0], m_location[1], m_size[0], m_size[1]);
     */
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_PROJECTION);
@@ -91,8 +91,6 @@ namespace Luminous {
 
     if(m_method == METHOD_TEXTURE_READBACK) {
 
-      // info("Going for texture readback");
-
       GLRESOURCE_ENSURE2(Texture2D, tex, this);
 
       if(tex->size() != m_size.asVector()) {
@@ -103,20 +101,20 @@ namespace Luminous {
 		       false);
       }
 
-      tex->bind();
+      tex->bind(GL_TEXTURE0);
+
       glReadBuffer(GL_BACK);
       glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0,
                        tex->width(), tex->height(), 0);
 
-      glEnable(GL_TEXTURE_2D);
+      tex->bind(GL_TEXTURE0);
 
       m_keyStone.applyGlState();
 
       gluOrtho2D(0, 1, 1, 0);
 
       glColor3f(1, 1, 1);
-      Utils::glTexRect(0, 1, 1, 0);
-      
+      Utils::glTexRect(0, 1, 1, 0);      
     }
     else
       gluOrtho2D(0, 1, 1, 0);
