@@ -108,6 +108,7 @@ namespace Luminous {
                        tex->width(), tex->height(), 0);
 
       tex->bind(GL_TEXTURE0);
+      glEnable(GL_TEXTURE_2D);
 
       m_keyStone.applyGlState();
 
