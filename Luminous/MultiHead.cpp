@@ -90,8 +90,6 @@ namespace Luminous {
     glPopMatrix(); // From applyGlState
     glLoadIdentity();
 
-    info("EDGE CLEANING %d", (int) m_method);
-
     if(m_method == METHOD_TEXTURE_READBACK) {
 
       GLRESOURCE_ENSURE2(Texture2D, tex, this);
