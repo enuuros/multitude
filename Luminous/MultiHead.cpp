@@ -90,6 +90,8 @@ namespace Luminous {
     glPopMatrix(); // From applyGlState
     glLoadIdentity();
 
+    info("EDGE CLEANING %d", (int) m_method);
+
     if(m_method == METHOD_TEXTURE_READBACK) {
 
       GLRESOURCE_ENSURE2(Texture2D, tex, this);
@@ -123,7 +125,8 @@ namespace Luminous {
       glEnable(GL_TEXTURE_2D);
 
       glColor3f(1, 1, 1);
-      Utils::glTexRect(0, 1, 1, 0);
+      Utils::glTexRect(-m_seams[0] / m_size[0], 1 + m_seams[2] / m_size[1],
+		       1 + m_seams[1] / m_size[0], -m_seams[3] / m_size[1]);
     }
     else
       gluOrtho2D(0, 1, 1, 0);
@@ -131,16 +134,16 @@ namespace Luminous {
     float gamma = 1.1f;
 
     if(m_seams[0] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[0] / m_size[0],
+      Utils::fadeEdge(1, 1, 2 * m_seams[0] / m_size[0],
           gamma, Utils::LEFT, false);
     if(m_seams[1] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[1] / m_size[0],
+      Utils::fadeEdge(1, 1, 2 * m_seams[1] / m_size[0],
           gamma, Utils::RIGHT, false);
     if(m_seams[2] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[2] / m_size[1],
+      Utils::fadeEdge(1, 1, 2 * m_seams[2] / m_size[1],
           gamma, Utils::TOP, false);
     if(m_seams[3] != 0.0f)
-      Utils::fadeEdge(1, 1, 1.62f * m_seams[3] / m_size[1],
+      Utils::fadeEdge(1, 1, 2 * m_seams[3] / m_size[1],
           gamma, Utils::BOTTOM, false);
 
     // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
