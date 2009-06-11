@@ -205,6 +205,8 @@ namespace Luminous {
         /// Get one of the areas
         const Area & area(unsigned i) const { return * m_areas[i].ptr(); }
 
+	Nimble::Rect graphicsBounds() const;
+	
         LUMINOUS_API void setSeam(float seam);
 
         void addArea(Area * a) { m_areas.push_back(a); }

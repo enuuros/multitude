@@ -82,6 +82,7 @@ namespace Luminous {
 
   void MultiHead::Area::cleanEdges() const
   {
+    glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -142,7 +143,8 @@ namespace Luminous {
     m_keyStone.cleanExterior();
   }
 
-  Nimble::Vector2f MultiHead::Area::windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & isInside)
+  Nimble::Vector2f MultiHead::Area::windowToGraphics
+  (Nimble::Vector2f loc, int windowheight, bool & isInside)
   {
     //      Radiant::trace("MultiHead::Area::windowToGraphics");
 
@@ -212,6 +214,20 @@ namespace Luminous {
     }
   }
 
+  Nimble::Rect MultiHead::Window::graphicsBounds() const
+  {
+    if(!m_areas.size())
+      return Nimble::Rect(0,0, 1, 1);
+
+    Rect r = m_areas[0].ptr()->graphicsBounds();
+
+    for(unsigned i = 1; i < m_areas.size(); i++) {
+      r.expand(m_areas[i].ptr()->graphicsBounds());
+    }
+  
+    return r;
+  }
+
   void MultiHead::Window::setSeam(float seam)
   {
     for(unsigned i = 0; i < m_areas.size(); i++) {
@@ -225,21 +241,17 @@ namespace Luminous {
     {
 //      Radiant::trace("MultiHead::Window::windowToGraphics # loc(%f,%f), m_size[1] = %d", loc.x, loc.y, m_size[1]);
 
-
       for(unsigned i = 0; i < m_areas.size(); i++) {
         bool ok = false;
         Nimble::Vector2f res = m_areas[i].ptr()->windowToGraphics(loc, m_size[1], ok);
 
         if(ok) {
-          // puts("CONV OK");
-//          if(convOk)
             convOk = true;
           return res;
         }
       }
-
-//      if(convOk)
-        convOk = false;
+      
+      convOk = false;
 
       return Nimble::Vector2f(0, 0);
     }

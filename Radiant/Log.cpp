@@ -20,6 +20,7 @@
 #include "Sleep.hpp"
 #include "Thread.hpp"
 #include "TimeStamp.hpp"
+#include "Trace.hpp"
 
 #include <list>
 #include <string>
@@ -69,6 +70,8 @@ namespace Radiant {
 		    dt.hour(), dt.minute(), dt.second(), dt.milliSecond());
 
 	    fprintf((FILE *) m_file, "%s,%s\n", m_buf, (*it).m_str.c_str());
+	    
+	    // info("LOG: %s", m_buf);
 	  }
 	}
 	
@@ -124,7 +127,7 @@ namespace Radiant {
     DateTime dt(TimeStamp::getTime());
     char buf[128], buf2[128];
     dt.print(buf2);
-    sprintf(buf, "log-%s-%s.txt", appname, buf2);
+    sprintf(buf, "%s-%s-log.txt", appname, buf2);
     return setLogFile(buf);
   }
 
