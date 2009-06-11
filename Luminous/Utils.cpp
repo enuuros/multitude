@@ -151,9 +151,7 @@ namespace Luminous {
     glDisable(GL_CULL_FACE);
     glDisable(GL_TEXTURE_2D);
     glUseProgram(0);
-    // glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glUsualBlend();
     glEnable(GL_BLEND);
     glShadeModel(GL_SMOOTH);
 
@@ -191,7 +189,7 @@ namespace Luminous {
 	float rel = i / (float)n;
 	float x = left + seam * rel;
 	
-	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
+	glColor4f(0.0f, 1.0f, 0.0f, powf(rel, gamma));
 	glVertex2f(x, 0.0f);
 	glVertex2f(x, h);
       }
@@ -202,7 +200,7 @@ namespace Luminous {
 	float rel = i / (float)n;
 	float y = top + seam * rel;
 	
-	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
+	glColor4f(1.0f, 0.0f, 0.0f, powf(rel, gamma));
 	glVertex2f(0.0f, y);
 	glVertex2f(w, y);
       }

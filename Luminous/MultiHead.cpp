@@ -109,15 +109,21 @@ namespace Luminous {
 		       m_location.asVector().x, m_location.asVector().y,
                        tex->width(), tex->height(), 0);
 
-      tex->bind(GL_TEXTURE0);
-      glEnable(GL_TEXTURE_2D);
+      glDisable(GL_TEXTURE_2D);
+      glColor3f(0, 0, 0);
+      gluOrtho2D(0, 1, 1, 0);
+      Utils::glTexRect(0, 1, 1, 0);
 
+      glLoadIdentity();
       m_keyStone.applyGlState();
 
       gluOrtho2D(0, 1, 1, 0);
 
+      tex->bind(GL_TEXTURE0);
+      glEnable(GL_TEXTURE_2D);
+
       glColor3f(1, 1, 1);
-      Utils::glTexRect(0, 1, 1, 0);      
+      Utils::glTexRect(0, 1, 1, 0);
     }
     else
       gluOrtho2D(0, 1, 1, 0);
@@ -140,7 +146,8 @@ namespace Luminous {
     // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
     // puts("MultiHead::Area::cleanEdges # top & bottom unimplemented");
 
-    m_keyStone.cleanExterior();
+    if(m_method != METHOD_TEXTURE_READBACK) 
+      m_keyStone.cleanExterior();
   }
 
   Nimble::Vector2f MultiHead::Area::windowToGraphics
