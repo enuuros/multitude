@@ -104,7 +104,8 @@ namespace Luminous {
       tex->bind(GL_TEXTURE0);
 
       glReadBuffer(GL_BACK);
-      glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0,
+      glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+		       m_location.asVector().x, m_location.asVector().y,
                        tex->width(), tex->height(), 0);
 
       tex->bind(GL_TEXTURE0);
