@@ -185,12 +185,13 @@ namespace Luminous {
 
   Nimble::Matrix3 MultiHead::Area::viewTransform()
   {
+    /*
     Vector gs = m_graphicsBounds.size();
 
     float yscale = gs.y / m_size.asVector().y;
     float xscale = gs.x / m_size.asVector().x;
-
-
+    */
+    return  Nimble::Matrix3();
   }
 
   void MultiHead::Area::updateBBox()
