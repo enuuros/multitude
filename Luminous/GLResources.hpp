@@ -17,6 +17,7 @@
 #define LUMINOUS_GLRESOURCES_HPP
 
 #include <Luminous/Export.hpp>
+#include <Luminous/MultiHead.hpp>
 
 #include <Radiant/ResourceLocator.hpp>
 
@@ -95,8 +96,10 @@ namespace Luminous
 
     Radiant::ResourceLocator & resourceLocator() { return m_resourceLocator; }
 
-    static void setThreadResources(GLResources *);
+    // static void setThreadResources(GLResources *);
+    static void setThreadResources(GLResources *, MultiHead::Window *, MultiHead::Area *);
     static GLResources * getThreadResources();
+    static void getThreadMultiHead(MultiHead::Window ** w, MultiHead::Area **);
  
  protected:
     container m_resources;

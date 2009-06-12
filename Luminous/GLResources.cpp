@@ -172,30 +172,76 @@ namespace Luminous
 
   // Doesn't work under windows where pthread_t (id_t) is a struct
   //typedef std::map<Thread::id_t, GLResources *> ResourceMap;
-  typedef std::map<unsigned int, GLResources *> ResourceMap;
+  class TGLRes
+  {
+  public:
+    TGLRes() : m_glr(0), m_window(0), m_area(0) {}
+    GLResources       * m_glr;
+    MultiHead::Window * m_window;
+    MultiHead::Area   * m_area;
+  };
+
+#ifndef WIN32
+  typedef std::map<Thread::id_t, TGLRes> ResourceMap;
+#else
+  typedef std::map<unsigned int, TGLRes> ResourceMap;
+#endif
+
   static ResourceMap __resources;
   static MutexStatic __mutex;
   
-  void GLResources::setThreadResources(GLResources * rsc)
+  void GLResources::setThreadResources(GLResources * rsc, 
+				       MultiHead::Window *w, MultiHead::Area *a)
   {
     GuardStatic g(&__mutex);
-    //__resources[Thread::myThreadId()] = rsc;
-	__resources[0] = rsc;
+    TGLRes tmp;
+    tmp.m_glr = rsc;
+    tmp.m_window = w;
+    tmp.m_area = a;
+#ifndef WIN32
+    __resources[Thread::myThreadId()] = tmp;
+#else
+    __resources[0] = rsc;
+#endif
   }
 
   GLResources * GLResources::getThreadResources()
   {
     GuardStatic g(&__mutex);
     
-    //ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+#ifndef WIN32
+    ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+#else
     ResourceMap::iterator it = __resources.find(0);
-    
+#endif
+
     if(it == __resources.end()) {
-      error("No resources for current thread");
+      error("No OpenGL resources for current thread");
       return 0;
     }
     
-    return (*it).second;
+    return (*it).second.m_glr;
+  }
+  
+  void GLResources::getThreadMultiHead(MultiHead::Window ** w, MultiHead::Area **a)
+  {
+    GuardStatic g(&__mutex);
+    
+#ifndef WIN32
+    ResourceMap::iterator it = __resources.find(Thread::myThreadId());
+#else
+    ResourceMap::iterator it = __resources.find(0);
+#endif
+
+    if(it == __resources.end()) {
+      error("No OpenGL resources for current thread");
+      return;
+    }
+    
+    if(w)
+      *w = (*it).second.m_window;
+    if(a)
+      *a = (*it).second.m_area;
   }
 
 }
