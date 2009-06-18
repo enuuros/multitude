@@ -101,8 +101,12 @@ namespace Luminous {
 
       /// The pixel location of the area on the window
       const Vector2i & location() const { return m_location.asVector(); }
+      int x() const { return m_location[0]; }
+      int y() const { return m_location[1]; }
       /// The pixel size of the area on the window
       const Vector2i & size() const { return m_size.asVector(); }
+      int width() const { return m_size[0]; }
+      int height() const { return m_size[1]; }
 
       /// The offset of the graphics inside the area (virtual pixels)
       const Vector2f graphicsLocation(bool withseams = true) const
@@ -144,9 +148,6 @@ namespace Luminous {
       void setPixelSizeCm(float sizeCm) { m_pixelSizeCm = sizeCm; }
       float pixelSizeCm() const { return m_pixelSizeCm; }
       float cmToPixels(float cm) { return cm / m_pixelSizeCm; }
-
-      int width() const { return m_size.asVector().x; }
-      int height() const { return m_size.asVector().y; }
 
       Nimble::Matrix3 viewTransform();
     private:

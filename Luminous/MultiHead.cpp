@@ -185,13 +185,18 @@ namespace Luminous {
 
   Nimble::Matrix3 MultiHead::Area::viewTransform()
   {
-    /*
-    Vector gs = m_graphicsBounds.size();
+    Nimble::Vector2 gs = m_graphicsBounds.size();
 
     float yscale = gs.y / m_size.asVector().y;
     float xscale = gs.x / m_size.asVector().x;
-    */
-    return  Nimble::Matrix3();
+
+    Nimble::Vector2 tl = m_graphicsBounds.low();
+
+    Nimble::Matrix3 t1 = Nimble::Matrix3::translate2D(-tl);
+    Nimble::Matrix3 t2 = Nimble::Matrix3::translate2D(tl);
+    Nimble::Matrix3 s = Nimble::Matrix3::scale2D(xscale, yscale);
+    
+    return t2 * s * t1;
   }
 
   void MultiHead::Area::updateBBox()
@@ -201,8 +206,8 @@ namespace Luminous {
        m_graphicsLocation.asVector() + m_graphicsSize.asVector());
     m_graphicsBounds.low().x  -= m_seams[0];
     m_graphicsBounds.high().x += m_seams[1];
-    m_graphicsBounds.low().y  -= m_seams[2];
-    m_graphicsBounds.high().y += m_seams[3];
+    m_graphicsBounds.low().y  -= m_seams[3];
+    m_graphicsBounds.high().y += m_seams[2];
   }
 
 

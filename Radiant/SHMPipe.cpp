@@ -82,6 +82,7 @@ namespace Radiant
 	s = s << 1;
 
       size = s;
+      m_size = size;
 
       if(size > maxSize)
       {
@@ -131,6 +132,8 @@ namespace Radiant
         error("%s # Failed to access existing shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
         assert(0);
       } 
+
+      m_size = readHeaderValue(SHM_SIZE_LOC);
     }
 
     // Get pointer to SMA
@@ -162,7 +165,7 @@ namespace Radiant
     assert(isValid());
   }
 #else
-  SHMPipe::SHMPipe(const key_t smKey, const uint32_t size)
+  SHMPipe::SHMPipe(key_t smKey, uint32_t size)
     : m_isCreator(false),
       m_smKey(smKey),
       m_id(-1),
@@ -178,6 +181,12 @@ namespace Radiant
     if(size > 0)
     // Create new shared memory area (SMA)
     {
+      unsigned s = 1;
+
+      while(s < size)
+	s = s << 1;
+
+      size = s;
 
       // Clear any existing SMA with this key
 
@@ -234,22 +243,35 @@ namespace Radiant
       assert(0);
     }
 
+    m_shm = (uint8_t *) smPtr;
+
     if(m_isCreator) {
+      m_size = size;
+      m_pipe = m_shm + SHM_PIPE_LOC;
+
       // This is the creating object
 
       // initialize header
-      bzero(smPtr, SHM_HEADER_SIZE);
+      bzero(m_shm, SHM_HEADER_SIZE);
+      bzero(m_pipe, m_size);
       // write size to header
-      memcpy(smPtr, & size, sizeof(uint32_t));
-      m_size = size;
+      storeHeaderValue(SHM_SIZE_LOC, m_size);
     }
     else {
-      memcpy( & m_size, smPtr, sizeof(uint32_t));
+      m_size = readHeaderValue(SHM_SIZE_LOC);
+      m_pipe = m_shm + SHM_PIPE_LOC;
+      m_read = readHeaderValue(SHM_READ_LOC);
+
+      for(int i = 0; i < 64; i++) {
+	printf("%.2x ", m_pipe[i]);
+	if((i % 4) == 3)
+	  printf("\n");
+      }
+
+      printf("Opened read SHMPipe with %u buffer bytes", (unsigned) m_size);
     }
     
     m_mask = m_size - 1;
-    m_shm = (uint8_t *) smPtr;
-    m_pipe = m_shm + SHM_PIPE_LOC;
 
     // assert(isValid());
   }
@@ -271,7 +293,8 @@ namespace Radiant
     }
     else
     {
-      error("%s # Failed to detach shared memory area (%s).", fnName, StringUtils::getLastErrorMessage().c_str());
+      error("%s # Failed to detach shared memory area (%s).",
+	    fnName, StringUtils::getLastErrorMessage().c_str());
     }
 
     // Only the creating object can destroy the SMA, after the last detach, i.e. when no more
@@ -326,13 +349,20 @@ namespace Radiant
 
     uint32_t avail = readAvailable();
 
+    if( (int) avail < n) {
+      debug("SHMPipe::read # Only %d available, %d needed (%u %u)",
+	    (int) avail, n, (unsigned) readPos(), (unsigned) writePos());
+      return 0;
+    }
+
     uint8_t * dest = (uint8_t *) ptr;
     const uint8_t  * pipe = m_pipe;
 
     n = Nimble::Math::Min((uint32_t) n, avail);
-    int m = m_mask;
+    uint32_t m = m_mask;
     for(int i = 0; i < n; i++) {
-      dest[i] = pipe[m_read + i & m];
+      dest[i] = pipe[(m_read + i) & m];
+      // printf("b[%d]: %x ", i, pipe[(m_read + i) & m]);
     }
     
     m_read += n;
@@ -351,16 +381,22 @@ namespace Radiant
   {
     uint32_t bytes = 0;
 
-    int n = read( & bytes, 4);
-    if(n != 4)
+    uint32_t n = read( & bytes, 4);
+    if(n != 4) {
+      debug("SHMPipe::read # could not read 4 bytes");
       return n;
+    }
 
     data.rewind();
     data.ensure(bytes);
     n = read(data.data(), bytes);
     data.setTotal(n);
 
-    return n +  4;
+    if(n != bytes) {
+      error("SHMPipe::read # could not read final %d vs %d", n, (int) bytes);
+    }
+
+    return n + 4;
   }
 
   uint32_t SHMPipe::readAvailable()
@@ -403,8 +439,8 @@ namespace Radiant
       return 0;
     }
 
-    int bytes = data.pos();
-    if(write(&bytes, 4) != 4)
+    uint32_t bytes = data.pos();
+    if(write( & bytes, 4) != 4)
       return 0;
 
     return write(data.data(), bytes) + 4;
@@ -413,7 +449,8 @@ namespace Radiant
   uint32_t SHMPipe::writeAvailable(int require)
   {
     uint32_t rp = readPos() + size();
-    uint32_t wp = writePos();
+    // uint32_t wp = writePos();
+    uint32_t wp = m_written;
     
     uint32_t avail = rp - wp;
     if(avail)
@@ -431,7 +468,7 @@ namespace Radiant
 	}
 	*/
 	uint32_t rp = readPos() + size();
-	uint32_t wp = writePos();
+	uint32_t wp = m_written;
     
 	avail = rp - wp;
 	if(avail)
@@ -446,8 +483,8 @@ namespace Radiant
 
 	float spent = TimeStamp(now - entry).secondsD() * 1000.0;
 	if(spent > 100) {
-	  debug("SHMPipe::writeAvailable # Blocked for %.3f avail %u vs %u",
-		spent, avail, require);
+	  info("SHMPipe::writeAvailable # Blocked for %.3f avail %u vs %u",
+	       spent, avail, require);
 	}
       }
     }

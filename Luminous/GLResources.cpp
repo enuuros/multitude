@@ -177,8 +177,8 @@ namespace Luminous
   public:
     TGLRes() : m_glr(0), m_window(0), m_area(0) {}
     GLResources       * m_glr;
-    MultiHead::Window * m_window;
-    MultiHead::Area   * m_area;
+    const MultiHead::Window * m_window;
+    const MultiHead::Area   * m_area;
   };
 
 #ifndef WIN32
@@ -191,7 +191,7 @@ namespace Luminous
   static MutexStatic __mutex;
   
   void GLResources::setThreadResources(GLResources * rsc, 
-				       MultiHead::Window *w, MultiHead::Area *a)
+				       const MultiHead::Window *w, const MultiHead::Area *a)
   {
     GuardStatic g(&__mutex);
     TGLRes tmp;
@@ -223,7 +223,7 @@ namespace Luminous
     return (*it).second.m_glr;
   }
   
-  void GLResources::getThreadMultiHead(MultiHead::Window ** w, MultiHead::Area **a)
+  void GLResources::getThreadMultiHead(const MultiHead::Window ** w, const MultiHead::Area ** a)
   {
     GuardStatic g(&__mutex);
     

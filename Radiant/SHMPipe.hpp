@@ -59,26 +59,31 @@ namespace Radiant
     /// @param size Size in bytes of the ring buffer: if size > 0,
     /// creates a new ring buffer of that size; if size == 0,
     /// references the existing buffer identified by smKey.
-    RADIANT_API SHMPipe::SHMPipe(const std::string smName, const uint32_t size);
+    RADIANT_API SHMPipe::SHMPipe(const std::string smName, uint32_t size);
 #else
     /// @param smKey User-defined key to shared memory.
     /// @param size Size in bytes of the ring buffer: if size > 0, creates a new ring buffer
     /// of that size; if size == 0, references the existing buffer identified by smKey.
-    RADIANT_API SHMPipe(const key_t smKey, const uint32_t size);
+    RADIANT_API SHMPipe(key_t smKey, uint32_t size);
 #endif
 
     /// Destructor.
     RADIANT_API virtual ~SHMPipe();
 
-    // Reads data from the buffer.
+    /// Reads data from the buffer.
+    /** @return This function returns the number of bytes read from the buffer. */
     RADIANT_API int read(void * ptr, int n);
     RADIANT_API int read(BinaryData &);
-    // The number of bytes available for reading
+    /// The number of bytes available for reading immediately
     RADIANT_API uint32_t readAvailable();
 
     /// Stores data into the buffer, without flushing it.
+    /** 
+	@return the number of bytes actually written. This is either n
+	or zero. */
     RADIANT_API int write(const void * ptr, int n);
     RADIANT_API int write(const BinaryData &);
+    /// The number of bytes available for writing immediately
     RADIANT_API uint32_t writeAvailable(int require = 0);
     /// Flush the written data to the buffer
     inline void flush() { storeHeaderValue(SHM_WRITE_LOC, m_written); }
@@ -87,6 +92,7 @@ namespace Radiant
     RADIANT_API uint32_t size() const { return m_size; }
 
     /// Zeroes the buffer and the transfer counters
+    /** Only the owner of the shared memory area should call this function. */
     RADIANT_API void zero();
 
   private:
@@ -99,16 +105,21 @@ namespace Radiant
       SHM_SIZE_LOC = 0,
       SHM_WRITE_LOC  = 4,
       SHM_READ_LOC = 8,
-      SHM_PIPE_LOC = 12,
+      // Leave bytes 12-19 free, so we can use those later, if needed.
+      SHM_PIPE_LOC = 20,
       SHM_HEADER_SIZE = SHM_PIPE_LOC
     };
 
     /// Access functions.
 
     /// Return the read position.
+    uint32_t readHeaderValue(int loc) const
+    { return * ((uint32_t *)(m_shm + loc)); }
+
+    /// Return the read position.
     uint32_t readPos() const
     {
-      return * ((uint32_t *)(m_shm + SHM_READ_LOC));
+      return readHeaderValue(SHM_READ_LOC);
     }
 
     /// Return the read position.

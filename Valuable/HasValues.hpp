@@ -19,6 +19,8 @@
 #include <Valuable/Export.hpp>
 #include <Valuable/ValueObject.hpp>
 
+#include <Patterns/NotCopyable.hpp>
+
 #include <Radiant/Color.hpp>
 
 #include <map>

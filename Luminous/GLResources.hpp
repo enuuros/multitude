@@ -97,11 +97,15 @@ namespace Luminous
     Radiant::ResourceLocator & resourceLocator() { return m_resourceLocator; }
 
     // static void setThreadResources(GLResources *);
-    static void setThreadResources(GLResources *, MultiHead::Window *, MultiHead::Area *);
+    static void setThreadResources(GLResources *,
+				   const MultiHead::Window *,
+				   const MultiHead::Area *);
     static GLResources * getThreadResources();
-    static void getThreadMultiHead(MultiHead::Window ** w, MultiHead::Area **);
+    static void getThreadMultiHead(const MultiHead::Window ** w,
+				   const MultiHead::Area **);
  
  protected:
+
     container m_resources;
 
     long m_deallocationSum;
