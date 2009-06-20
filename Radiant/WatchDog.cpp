@@ -53,7 +53,7 @@ namespace Radiant {
       for(int i = 0; i < n && m_continue; i++)
 	Radiant::Sleep::sleepMs(100);
 
-      if(!m_check) {
+      if(!m_check && m_continue) {
 	error("WatchDog::mainLoop # HOST IS DEAD, ABORTING\n");
 
 	// Stop the app:

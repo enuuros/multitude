@@ -350,8 +350,8 @@ namespace Radiant
     uint32_t avail = readAvailable();
 
     if( (int) avail < n) {
-      debug("SHMPipe::read # Only %d available, %d needed (%u %u)",
-	    (int) avail, n, (unsigned) readPos(), (unsigned) writePos());
+      //debug("SHMPipe::read # Only %d available, %d needed (%u %u)",
+      // (int) avail, n, (unsigned) readPos(), (unsigned) writePos());
       return 0;
     }
 
@@ -383,7 +383,7 @@ namespace Radiant
 
     uint32_t n = read( & bytes, 4);
     if(n != 4) {
-      debug("SHMPipe::read # could not read 4 bytes");
+      // debug("SHMPipe::read # could not read 4 bytes");
       return n;
     }
 
