@@ -23,11 +23,15 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string>
+
 namespace Radiant {
 
   static Radiant::MutexStatic g_mutex;
 
   static bool g_enableVerboseOutput = false;
+
+  std::string g_appname;
 
   const char * prefixes[] = {
     "[DEBUG] ",
@@ -52,7 +56,10 @@ namespace Radiant {
     FILE * out = (s > WARNING) ? stdout : stderr;
 
     g_mutex.lock();
-    fprintf(out, "%s%s\n", prefixes[s], msg);
+    if(g_appname.empty())
+      fprintf(out, "%s%s\n", prefixes[s], msg);
+    else
+      fprintf(out, "%s: %s%s\n", g_appname.c_str(), prefixes[s], msg);
     fflush(out);
     g_mutex.unlock();
   }
@@ -133,4 +140,8 @@ namespace Radiant {
     exit(EXIT_FAILURE);
   }
 
+  void setApplicationName(const char * appname)
+  {
+    g_appname = appname;
+  }
 }

@@ -58,6 +58,7 @@ namespace Radiant
   // Construction / destruction.
 
 #ifdef WIN32
+  /*
   SHMPipe::SHMPipe(const std::string smName, const uint32_t size)
     : m_isCreator(false),
       m_smName(smName),
@@ -125,7 +126,8 @@ namespace Radiant
       m_hMapFile = ::OpenFileMappingA(FILE_MAP_ALL_ACCESS, false, m_smName.c_str());
       if(m_hMapFile)
       {
-        debug("%s # Successfully accessed existing shared memory area (%s).", fnName);
+        debug("%s # Successfully accessed existing shared memory area (%s).",
+	      fnName);
       }
       else
       {
@@ -164,6 +166,7 @@ namespace Radiant
 
     assert(isValid());
   }
+  */
 #else
   SHMPipe::SHMPipe(key_t smKey, uint32_t size)
     : m_isCreator(false),
@@ -224,7 +227,8 @@ namespace Radiant
     {
       m_id = shmget(m_smKey, 0, smDefaultPermissions());
       if(m_id != -1) {
-	debug("%s # Successfully accessed existing shared memory area.", fnName);
+	debug("%s # Successfully accessed existing shared memory area",
+	      fnName);
       }
       else {
         error("%s # Failed to access existing shared memory area (%s).", fnName, shmError());
@@ -236,10 +240,12 @@ namespace Radiant
 
     char * const  smPtr = (char *)(shmat(m_id, 0, 0));
     if(smPtr != (char *)(-1)) {
-     debug("%s # Successfully obtained pointer to shared memory area.", fnName);
+     debug("%s # Successfully obtained pointer %p to shared memory area.",
+	   fnName, smPtr);
     }
     else {
-      error("%s # Failed to obtain pointer to shared memory area (%s)", fnName, shmError());
+      error("%s # Failed to obtain pointer to shared memory area (%s)",
+	    fnName, shmError());
       assert(0);
     }
 
@@ -256,6 +262,8 @@ namespace Radiant
       bzero(m_pipe, m_size);
       // write size to header
       storeHeaderValue(SHM_SIZE_LOC, m_size);
+
+      info("Opened server SHMPipe with %u buffer bytes", (unsigned) m_size);
     }
     else {
       m_size = readHeaderValue(SHM_SIZE_LOC);
@@ -268,7 +276,9 @@ namespace Radiant
 	  printf("\n");
       }
 
-      printf("Opened read SHMPipe with %u buffer bytes", (unsigned) m_size);
+      fflush(0);
+
+      info("Opened client SHMPipe with %u buffer bytes", (unsigned) m_size);
     }
     
     m_mask = m_size - 1;
@@ -278,6 +288,7 @@ namespace Radiant
 #endif
 
 #ifdef WIN32
+  /*
   SHMPipe::~SHMPipe()
   {
     const char * const  fnName = "SHMPipe::~SHMPipe";
@@ -309,6 +320,8 @@ namespace Radiant
       }
     }
   }
+  */
+
 #else
   SHMPipe::~SHMPipe()
   {
@@ -379,21 +392,33 @@ namespace Radiant
 
   int SHMPipe::read(BinaryData & data)
   {
+    data.rewind();
+
     uint32_t bytes = 0;
 
     uint32_t n = read( & bytes, 4);
+
+    debug("SHMPipe::read # reading 4 header bytes, got %u (%u %u)",
+	  n, bytes, (m_read & m_mask));
+
     if(n != 4) {
       // debug("SHMPipe::read # could not read 4 bytes");
       return n;
     }
 
-    data.rewind();
+    if(bytes > m_size) {
+      error("SHMPipe::read # Too large object to read, stream corrupted %u",
+	    (int) bytes);
+      return 0;
+    }
+
     data.ensure(bytes);
     n = read(data.data(), bytes);
     data.setTotal(n);
 
     if(n != bytes) {
-      error("SHMPipe::read # could not read final %d vs %d", n, (int) bytes);
+      error("SHMPipe::read # could not read final %d vs %d (%u %u)",
+	    n, (int) bytes, m_read, readPos());
     }
 
     return n + 4;
@@ -434,8 +459,10 @@ namespace Radiant
 
   int SHMPipe::write(const BinaryData & data)
   {
-    if(!writeAvailable(data.pos() + 4)) {
-      error("SHMPipe::write # Not enough space in the pipe");
+    uint32_t wavail = writeAvailable(data.pos() + 8);
+    if(wavail < (uint32_t) data.pos() + 8) {
+      error("SHMPipe::write # Not enough space in the pipe (%u %u)",
+	    (unsigned) m_written, (unsigned) wavail);
       return 0;
     }
 
@@ -467,8 +494,8 @@ namespace Radiant
 	  info("SHMPipe::writeAvailable # Blocking");
 	}
 	*/
-	uint32_t rp = readPos() + size();
-	uint32_t wp = m_written;
+	rp = readPos() + size();
+	wp = m_written;
     
 	avail = rp - wp;
 	if(avail)
@@ -492,11 +519,19 @@ namespace Radiant
     return avail;
   }
 
+  void SHMPipe::flush()
+  { 
+    storeHeaderValue(SHM_WRITE_LOC, m_written);
+    info("SHMPipe::flush # Flushed out written data (%u)",(unsigned) m_written);
+  }
+
   void SHMPipe::zero()
   {
     storeHeaderValue(SHM_WRITE_LOC, 0);
     storeHeaderValue(SHM_READ_LOC, 0);
     bzero(m_pipe, m_size);
+    m_written = 0;
+    m_read = 0;
   }
 
   const char * SHMPipe::shmError()

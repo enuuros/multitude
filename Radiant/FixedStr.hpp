@@ -53,6 +53,7 @@ namespace Radiant {
     operator char * ();
 
     int length();
+    /// The capacity (maximum size) of the string.
     static inline int capacity();
 
     FixedStrT & operator = (const char * str);

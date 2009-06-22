@@ -86,7 +86,7 @@ namespace Radiant
     /// The number of bytes available for writing immediately
     RADIANT_API uint32_t writeAvailable(int require = 0);
     /// Flush the written data to the buffer
-    inline void flush() { storeHeaderValue(SHM_WRITE_LOC, m_written); }
+    RADIANT_API void flush();
 
     /// Returns the size of the shared memory area
     RADIANT_API uint32_t size() const { return m_size; }

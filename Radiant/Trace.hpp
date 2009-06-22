@@ -26,10 +26,16 @@ namespace Radiant {
   /// Error severity levels
   enum Severity
   {
+    /// Debug information, that is usually not useful for the end user
+    /** Debug mesages are printed out only if verbose output is
+	enabled. */
     DEBUG,
+    /// Useful information to all users.
+    /** Info messages are printed out always. */
     INFO,
     WARNING,
     FAILURE,
+    /// Fatal error, causes application shutdown
     FATAL    
   };
 
@@ -57,6 +63,7 @@ namespace Radiant {
   /// are displayed to the user. Otherwise they are ignored. @sa Trace
   RADIANT_API void enableVerboseOutput(bool enable);
   RADIANT_API bool enabledVerboseOutput();
+  RADIANT_API void setApplicationName(const char * appname);
 
 }
 
