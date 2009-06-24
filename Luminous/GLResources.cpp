@@ -201,7 +201,7 @@ namespace Luminous
 #ifndef WIN32
     __resources[Thread::myThreadId()] = tmp;
 #else
-    __resources[0] = rsc;
+    __resources[0] = tmp;
 #endif
   }
 
