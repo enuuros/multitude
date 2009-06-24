@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-CONFIG += debug
-
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -111,7 +109,8 @@ win32 {
 	SOURCES += cmu_dc1394.cpp
 	SOURCES += PlatformUtilsWin32.cpp
 	SOURCES += SerialPortWin32.cpp
-	SOURCES += DirectoryBoost.cpp
+	#SOURCES += DirectoryBoost.cpp
+	SOURCES += DirectoryQt.cpp
 	SOURCES += TCPServerSocketQt.cpp
 	SOURCES += TCPSocketQt.cpp
 	SOURCES += UDPSocketQt.cpp
