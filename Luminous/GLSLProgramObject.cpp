@@ -18,8 +18,6 @@
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
 
-#include <iostream>
-
 using namespace std;
 
 namespace Luminous
@@ -51,10 +49,10 @@ namespace Luminous
     }
 
     if(!obj->m_isCompiled) {
-      error("GLSLProgramObject::addObject # attempt to add "
+      debug("GLSLProgramObject::addObject # attempt to add "
             "non-compiled object: trying to compile it...");
       if(!obj->compile()) {
-        error("failed");
+        error("GLSLProgramObject::addObject # compilation failed");
         return;
       } else {
         // cerr << "ok." << endl;
@@ -244,8 +242,8 @@ namespace Luminous
       delete [] code;
 
       if(!vs->compile()) {
-        cerr << "GLSLProgramObject::fromFiles # vertex shader compile error:"
-	     << endl << vs->compilerLog() << endl;
+        error("GLSLProgramObject::fromFiles # vertex shader compile error: %s",
+              vs->compilerLog());
         delete vs;
         return 0;
       }
@@ -262,8 +260,8 @@ namespace Luminous
       delete [] code;
 
       if(!fs->compile()) {
-        cerr << "GLSLProgramObject::fromFiles # fragment shader "
-	  "compile error:" << endl << fs->compilerLog() << endl;
+        error("GLSLProgramObject::fromFiles # fragment shader "
+              "compile error:%s", fs->compilerLog());
         delete fs;
         return 0;
       }
@@ -276,7 +274,7 @@ namespace Luminous
     if(fs) program->addObject(fs);
 
     if(!program->link()) {
-      error("GLSLProgramObject::fromFiles # linking shader failed:%s",
+      error("GLSLProgramObject::fromFiles # linking shader failed:\n%s",
             program->linkerLog());
       delete program;
       return 0;
@@ -300,8 +298,8 @@ namespace Luminous
       vs->setSource(vsString);
 
       if(!vs->compile()) {
-        cerr << "GLSLProgramObject::fromStrings # vertex shader compile error:"
-	     << endl << vs->compilerLog() << endl;
+        error("GLSLProgramObject::fromStrings # vertex shader compile error:\n%s",
+              vs->compilerLog());
         delete vs;
         return 0;
       }
@@ -315,8 +313,8 @@ namespace Luminous
       fs->setSource(fsString);
   
       if(!fs->compile()) {
-        cerr << "GLSLProgramObject::fromStrings # fragment shader "
-	  "compile error:" << endl << fs->compilerLog() << endl;
+        error("GLSLProgramObject::fromStrings # fragment shader "
+              "compile error:\n%s", fs->compilerLog());
         delete fs;
         return 0;
       }
@@ -329,8 +327,8 @@ namespace Luminous
     if(fs) program->addObject(fs);
 
     if(!program->link()) {
-      cerr << "GLSLProgramObject::fromStrings # linking shader failed:"
-	   << endl << program->linkerLog() << endl;
+      error("GLSLProgramObject::fromStrings # linking shader failed:\n%s",
+            program->linkerLog());
       delete program;
       return 0;
     }
