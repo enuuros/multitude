@@ -14,13 +14,19 @@
  */
 
 #include <Luminous/GLSLProgramObject.hpp>
+
 #include <Radiant/FileUtils.hpp>
+#include <Radiant/Trace.hpp>
+
 #include <iostream>
 
 using namespace std;
 
 namespace Luminous
 {
+
+  using Radiant::debug;
+  using Radiant::error;
 
   GLSLProgramObject::GLSLProgramObject(GLResources * resources)
     : GLResource(resources),
@@ -39,19 +45,19 @@ namespace Luminous
   void GLSLProgramObject::addObject(GLSLShaderObject* obj)
   {
     if(obj == 0) {
-      cerr << "GLSLProgramObject::addObject # attempt to add "
-	"null shader object" << endl;
+      error("GLSLProgramObject::addObject # attempt to add "
+            "null shader object");
       return;
     }
 
     if(!obj->m_isCompiled) {
-      cerr << "GLSLProgramObject::addObject # attempt to add "
-	"non-compiled object: trying to compile it...";
+      error("GLSLProgramObject::addObject # attempt to add "
+            "non-compiled object: trying to compile it...");
       if(!obj->compile()) {
-        cerr << "failed." << endl;
+        error("failed");
         return;
       } else {
-        cerr << "ok." << endl;
+        // cerr << "ok." << endl;
       }
     }
 
@@ -63,8 +69,8 @@ namespace Luminous
     list<GLSLShaderObject*>::iterator i;
 
     if(m_isLinked) {
-      cerr << "GLSLProgramObject::link # program already "
-	"linked, trying to re-link" << endl;
+      error("GLSLProgramObject::link # program already "
+            "linked, trying to re-link");
       for(i = m_shaderObjects.begin(); i != m_shaderObjects.end(); i++) {
         glDetachShader(m_handle, (*i)->m_handle);
       }
@@ -81,9 +87,11 @@ namespace Luminous
 
     if(linked) {
       m_isLinked = true;
-      cout << linkerLog() << endl;
+      const char * log = linkerLog();
+      if(log)
+        debug("GLSLProgramObject::link # log:\n%s", log);
     } else  {
-      cerr << "GLSLProgramObject::link # linking failed." << endl;
+      error("GLSLProgramObject::link # linking failed");
       m_isLinked = false;
     }
 
@@ -104,7 +112,7 @@ namespace Luminous
   const char* GLSLProgramObject::linkerLog()
   {
     if(m_handle == 0) {
-      cerr << "GLSLProgramObject::linkerLog # program object is null" << endl;
+      error("GLSLProgramObject::linkerLog # program object is null");
       return 0;
     }
 
@@ -133,13 +141,13 @@ namespace Luminous
   void GLSLProgramObject::bind()
   {
     if(m_handle == 0) {
-      cerr << "GLSLProgramObject::bind # attempt to bind null program" << endl;
+      error("GLSLProgramObject::bind # attempt to bind null program");
       return;
     }
 
     if(!m_isLinked) {
-      cerr << "GLSLProgramObject::bind # attempt to "
-	"bind program that is not linked" << endl;
+      error("GLSLProgramObject::bind # attempt to "
+            "bind program that is not linked");
       return;
     }
 
@@ -268,8 +276,8 @@ namespace Luminous
     if(fs) program->addObject(fs);
 
     if(!program->link()) {
-      cerr << "GLSLProgramObject::fromFiles # linking shader failed:"
-	   << endl << program->linkerLog() << endl;
+      error("GLSLProgramObject::fromFiles # linking shader failed:%s",
+            program->linkerLog());
       delete program;
       return 0;
     }
