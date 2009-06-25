@@ -920,22 +920,26 @@ namespace Radiant {
 
       // if(err != DC1394_NO_CAMERA)
 
-#ifdef __linux__      
+#ifdef __linux__
       const char * username = getenv("USERNAME");
       
-      Radiant::error("%s # dc1394_find_cameras failed (%s)\n"
+      if(username)
+	username = "username";
+      
+      error("%s # dc1394_find_cameras failed (%s)\n"
           "*************************************************************\n"
           "Please check that FireWire device files exist:\n"
           "/dev/raw1394\n"
-          "/dev/video (or /dev/video/0 etc)\n"
+          "/dev/video1394 (or /dev/video1394/0 etc)\n"
           "And that you have permissions to use them.\n"
           "\n"
           "To gain permissions, try the following commands:\n\n"
           "> sudo addgroup %s video\n"
           "> sudo addgroup %s disk\n\n"
-          "You may need to log in again for the changes to be effective.\n"
+          "You may need to log in again for the changes to be effective.\n\n"
+          "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/linux\n"
           "*************************************************************\n\n",
-                     fname, dc1394_error_get_string(err), username, username);
+	    fname, dc1394_error_get_string(err), username, username);
 #else
       Radiant::error("%s # dc1394_find_cameras failed (%s)\n",
           fname, dc1394_error_get_string(err));

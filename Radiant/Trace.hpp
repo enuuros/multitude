@@ -59,10 +59,25 @@ namespace Radiant {
       effectively the same as calling trace(FATAL, ...). */
   RADIANT_API void fatal(const char * msg, ...);
 
-  /// Toggle verbose output. If enabled, messages sent with the Trace function
-  /// are displayed to the user. Otherwise they are ignored. @sa Trace
+  /** Toggle verbose output.
+
+      If enabled, messages sent with the #debug function are displayed
+      to the user. Otherwise they are silently ignored
+  */
   RADIANT_API void enableVerboseOutput(bool enable);
   RADIANT_API bool enabledVerboseOutput();
+  
+  /** Sets the application name to be used in debug output. 
+      
+      By default the info/debug/error functions will print out the
+      error message, without further information. You can set the
+      application name with this function, and once this is done each
+      output line will begin with the application name. This is handy
+      if there are several applications throwing output to the same
+      terminal window, and you want to know which application is
+      responsible for which output.
+   */
+
   RADIANT_API void setApplicationName(const char * appname);
 
 }
