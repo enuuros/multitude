@@ -65,8 +65,14 @@ namespace FireView {
 
     static int triggerPolarity() { return m_triggerPolarity; }
 
+    static void setFormat7area(int x1, int y1, int x2, int y2)
+    { m_format7rect.low().make(x1, y1); m_format7rect.high().make(x2, y2);  }
+
+    static Nimble::Recti format7Area()
+    { return m_format7rect; }
+
   public slots:
-    
+
     void openParams();
     void showAverages();
     void toggleHalfInchToThirdInch();
@@ -186,6 +192,8 @@ namespace FireView {
     QImage     m_foo;
     static bool m_verbose;
     static int  m_triggerPolarity;
+
+    static Nimble::Recti m_format7rect;
   };
 
 }
