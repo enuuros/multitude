@@ -96,7 +96,11 @@ namespace Luminous
     TGAHeader header;
 
     // Read header
-    fread(&header, sizeof(TGAHeader), 1, file);
+    size_t r = fread(&header, sizeof(TGAHeader), 1, file);
+    if(r != 1) {
+      Radiant::error("ImageCodecTGA::read # failed to read image header");
+	    return false;
+    }
 
     // Check image type
     bool typeGood = false;
@@ -111,7 +115,7 @@ namespace Luminous
 
     int width = header.widthLo + (header.widthHi << 8);
     int height = header.heightLo + (header.heightHi << 8);
-    int bytesPerPixel = (header.bpp >> 3);
+    size_t bytesPerPixel = (header.bpp >> 3);
 
     if(!typeGood || width == 0 || height == 0) 
       return false;
@@ -147,7 +151,10 @@ namespace Luminous
     if(header.imageType == 2 || header.imageType == 3) {
 
       // Uncompressed image
-      fread(image.bytes(), size, 1, file);
+      if(fread(image.bytes(), size, 1, file) != 1) {
+        Radiant::error("ImageCodecTGA::read # failed to read uncompressed pixel data");
+        return false;
+      }
 
     } else {
 
@@ -159,14 +166,20 @@ namespace Luminous
 
       do {
         unsigned char chunkHeader = 0;
-        fread(&chunkHeader, 1, 1, file);
+        if(fread(&chunkHeader, 1, 1, file) != 1) {
+          Radiant::error("ImageCodecTGA::read # failed to read compressed chunk header");
+          return false;
+        }
 
         if(chunkHeader < 128) {
           chunkHeader++;
 
           for(int i = 0; i < chunkHeader; i++) {
             unsigned char * dst = image.bytes() + currentByte;
-            fread(dst, bytesPerPixel, 1, file);
+            if(fread(dst, bytesPerPixel, 1, file) != 1) {
+              Radiant::error("ImageCodecTGA::read # failed to read pixel data");
+              return false;
+            }
 
             currentByte += bytesPerPixel;
             currentPixel++;
@@ -174,7 +187,10 @@ namespace Luminous
         } else {
           chunkHeader -= 127;
 
-          fread(pixel, 1, bytesPerPixel, file);
+          if(fread(pixel, 1, bytesPerPixel, file) != bytesPerPixel) {
+            Radiant::error("ImageCodecTGA::read # failed to read pixel data");
+            return false;
+          }
 
           for(int i = 0; i < chunkHeader; i++) {
             unsigned char * dst = image.bytes() + currentByte;

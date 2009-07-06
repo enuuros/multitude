@@ -1,6 +1,7 @@
 include(../multitude.pri)
 
 HEADERS += BGThread.hpp
+HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
 HEADERS += CPUMipmapStore.hpp
@@ -16,34 +17,28 @@ HEADERS += GLResources.hpp
 HEADERS += GLSLProgramObject.hpp
 HEADERS += GLSLShaderObject.hpp
 HEADERS += GPUMipmaps.hpp
+HEADERS += ImageCodec.hpp
+HEADERS += ImageCodecJPEG.hpp
+HEADERS += ImageCodecPNG.hpp
+HEADERS += ImageCodecTGA.hpp
 HEADERS += Image.hpp
 HEADERS += ImagePyramid.hpp
 HEADERS += Luminous.hpp
 HEADERS += MatrixStep.hpp
-#HEADERS += MipmapTask.hpp
 HEADERS += MultiHead.hpp
 HEADERS += Path.hpp
 HEADERS += PixelFormat.hpp
+HEADERS += RenderContext.hpp
 HEADERS += Task.hpp
 HEADERS += TCBSpline.hpp
 HEADERS += Texture.hpp
-#HEADERS += TiledMipMapImage.hpp
+HEADERS += Transformer.hpp
 HEADERS += Utils.hpp
 HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
 
-HEADERS += ImageCodec.hpp
-HEADERS += ImageCodecTGA.hpp
-HEADERS += CodecRegistry.hpp
-HEADERS += ImageCodecPNG.hpp
-HEADERS += ImageCodecJPEG.hpp
-
-SOURCES += ImageCodecJPEG.cpp
-SOURCES += ImageCodecPNG.cpp
-SOURCES += CodecRegistry.cpp
-SOURCES += ImageCodecTGA.cpp
-
 SOURCES += BGThread.cpp
+SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
 SOURCES += CPUMipmapStore.cpp
@@ -57,16 +52,19 @@ SOURCES += GLResources.cpp
 SOURCES += GLSLProgramObject.cpp
 SOURCES += GLSLShaderObject.cpp
 SOURCES += GPUMipmaps.cpp
+SOURCES += ImageCodecJPEG.cpp
+SOURCES += ImageCodecPNG.cpp
+SOURCES += ImageCodecTGA.cpp
 SOURCES += Image.cpp
 SOURCES += Luminous.cpp
-#SOURCES += MipmapTask.cpp
 SOURCES += MultiHead.cpp
 SOURCES += Path.cpp
 SOURCES += PixelFormat.cpp
+SOURCES += RenderContext.cpp
 SOURCES += Task.cpp
 SOURCES += TCBSpline.cpp
 SOURCES += Texture.cpp
-#SOURCES += TiledMipMapImage.cpp
+SOURCES += Transformer.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
 
