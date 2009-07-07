@@ -50,7 +50,9 @@ namespace Radiant
       Color(const Nimble::Vector4f & v);
       ~Color();
 
+      /// Make RGBA color from floats. Valid range is [0, 1]
       void setRGBA(float r, float g, float b, float a);
+      /// Make RGBA color from unsiged bytes. Each value will be divided by 255.
       void setRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
   };

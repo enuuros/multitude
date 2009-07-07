@@ -46,7 +46,7 @@ TCPServerSocket::~TCPServerSocket()
 
 int TCPServerSocket::open(const char * host, int port, int maxconnections)
 {
-  Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
+//  Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
 
   bool r = m_d->listen(QHostAddress(host), port);
   m_d->setMaxPendingConnections(maxconnections);
