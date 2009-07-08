@@ -13,9 +13,9 @@
  * 
  */
 
-#include <Radiant/Trace.hpp>
-
-#include <Radiant/Mutex.hpp>
+#include "Trace.hpp"
+#include "Mutex.hpp"
+#include "TimeStamp.hpp"
 
 #include <cassert>
 #include <cstdio>
@@ -51,15 +51,16 @@ namespace Radiant {
     return g_enableVerboseOutput;
   }
 
-  static void __output(Severity s, const char * msg)
+  static void g_output(Severity s, const char * msg)
   {
     FILE * out = (s > WARNING) ? stdout : stderr;
+    Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
 
     g_mutex.lock();
     if(g_appname.empty())
-      fprintf(out, "%s%s\n", prefixes[s], msg);
+      fprintf(out, "[%s] %s%s\n", now.asString().c_str(), prefixes[s], msg);
     else
-      fprintf(out, "%s: %s%s\n", g_appname.c_str(), prefixes[s], msg);
+      fprintf(out, "[%s] %s: %s%s\n", now.asString().c_str(), g_appname.c_str(), prefixes[s], msg);
     fflush(out);
     g_mutex.unlock();
   }
@@ -76,7 +77,7 @@ namespace Radiant {
       vsnprintf(buf, 4096, msg, args);
       va_end(args);
 
-      __output(s, buf);
+      g_output(s, buf);
 
       if(s >= FATAL) {
 	exit(0);
@@ -99,7 +100,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    __output(DEBUG, buf);
+    g_output(DEBUG, buf);
   }
 
   void info(const char * msg, ...)
@@ -111,7 +112,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    __output(INFO, buf);
+    g_output(INFO, buf);
   }
 
   void error(const char * msg, ...)
@@ -123,7 +124,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
 
-    __output(FAILURE, buf);
+    g_output(FAILURE, buf);
   }
 
   void fatal(const char * msg, ...)
@@ -135,7 +136,7 @@ namespace Radiant {
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
     
-    __output(FATAL, buf);
+    g_output(FATAL, buf);
 
     exit(EXIT_FAILURE);
   }

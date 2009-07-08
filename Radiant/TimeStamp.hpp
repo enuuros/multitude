@@ -123,19 +123,7 @@ namespace Radiant {
 
     static type getTime();
 
-    std::string asString() const {
-      time_t t = (m_val >> 24);
-      
-#ifdef WIN32
-      const int   bufSize = 32;
-      char  buf[bufSize] = "";
-      ctime_s(buf, bufSize, & t);
-      return std::string(buf);
-#else
-      return std::string(ctime(&t));
-#endif
-
-    }
+    std::string asString() const;
 
   private:
     type m_val;

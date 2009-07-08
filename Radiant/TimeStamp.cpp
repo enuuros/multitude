@@ -120,4 +120,25 @@ namespace Radiant {
 	  tmp |= (int64_t) (tv.tv_usec * (FRACTIONS_PER_SECOND * 0.000001));
 	  return tmp;
   }
+
+  std::string TimeStamp::asString() const {
+	  time_t t = (m_val >> 24);
+
+#ifdef WIN32
+	  const int   bufSize = 32;
+	  char  buf[bufSize] = "";
+	  ctime_s(buf, bufSize, & t);
+	  return std::string(buf);
+#else
+	// Convert to char* and remove \n
+	char * str = ctime(&t);
+	str[strlen(str) - 1] = '\0';
+
+	return std::string(str);
+#endif
+
+  }
+
+
+
 }
