@@ -81,7 +81,8 @@ namespace Radiant {
       return;
 
     m_continue = false;
-    waitEnd();
+    if(isRunning())
+	    waitEnd();
   }
 
 }
