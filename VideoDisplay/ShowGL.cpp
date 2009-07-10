@@ -411,6 +411,11 @@ namespace VideoDisplay {
     return false; // play(pos);
   }
 
+  void ShowGL::enableLooping(bool enable)
+  {
+    m_video->enableLooping(enable);
+  }
+
   void ShowGL::update()
   {
     int videoFrame;

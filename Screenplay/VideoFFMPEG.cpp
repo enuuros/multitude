@@ -106,8 +106,21 @@ namespace Screenplay {
 
       int ret = av_read_packet(m_ic, m_pkt);
 
-      if(ret < 0)
-        return 0;
+      if(ret < 0) {
+	
+	info("ret < 0 %x", m_flags);
+	
+	if(! (m_flags & DO_LOOP))
+	  return 0;
+	else {
+	  info("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
+	  m_offsetTS = m_lastTS;
+	  av_seek_frame(m_ic, -1, (int64_t) 0, 0);
+	  ret = av_read_packet(m_ic, m_pkt);
+	  if(ret < 0) 
+	    return 0;
+	}
+      }
 
       // trace("TS NOW %ld", (long) m_ic->timestamp);
 
@@ -169,17 +182,20 @@ namespace Screenplay {
                 (int) m_frame->pts, (int) m_pkt->pts, (int) m_pkt->dts,
                 m_lastTS.secondsD()); 
 
+	  m_lastTS += m_offsetTS;
 
 	  if(m_capturedVideo == 0)
 	    m_firstTS = m_lastTS;
         }
 
         if(m_sinceSeek == 0) {
+	  /*
           Radiant::TimeStamp sought = Radiant::TimeStamp::createSecondsD(m_lastSeek);
           if(Radiant::TimeStamp(sought - m_lastTS).secondsD() > 1.1f)
             m_offsetTS = sought;
           else
             m_offsetTS = 0;
+	  */
         }
 
         // m_lastTS += m_offsetTS;
@@ -231,6 +247,8 @@ namespace Screenplay {
 	    m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
 	  else
 	    m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
+
+	  m_audioTS += m_offsetTS;
 	}
 
         debug("Decoding audio # %d %lf", aframes, m_audioTS.secondsD());
@@ -626,6 +644,9 @@ namespace Screenplay {
 
   double VideoInputFFMPEG::durationSeconds()
   {
+    if(m_flags & Radiant::DO_LOOP)
+      return 1.0e+9f;
+
     if(m_ic && m_vindex >= 0) {
       AVStream * s = m_ic->streams[m_vindex];
       return s->duration * av_q2d(s->time_base);

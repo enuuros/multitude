@@ -257,6 +257,11 @@ namespace VideoDisplay {
     return m_duration.secondsD();
   }
 
+  void VideoInFFMPEG::enableLooping(bool enable)
+  {
+    m_video.enableLooping(enable);
+  }
+
   void VideoInFFMPEG::endOfFile()
   {
     m_finalFrames = m_decodedFrames;

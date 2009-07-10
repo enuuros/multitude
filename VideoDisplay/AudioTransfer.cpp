@@ -234,6 +234,8 @@ namespace VideoDisplay {
 
   void AudioTransfer::forgetVideo()
   {
+    debug("AudioTransfer::forgetVideo");
+
     m_video = 0;
     m_ending = true;
   }

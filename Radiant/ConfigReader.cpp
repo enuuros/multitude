@@ -133,7 +133,7 @@ namespace Radiant {
   int Variant::getFloats(float *p, int n)
   {
     char *str = (char *) m_var.c_str();
-    int i=0;
+    int i = 0;
 
     while(str < m_var.c_str() + m_var.size() && i < n) {
       char * endStr = str;

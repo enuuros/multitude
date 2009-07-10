@@ -90,6 +90,10 @@ namespace Radiant
 	not found in the strings, then -1 is returned. */
     RADIANT_API int which(const char ** strings, const char * str);
 
+    /** Finds the str in strings and return the index. If the str is
+	not found in the strings, then -1 is returned. */
+    RADIANT_API int which(const StringList & strings, const std::string & str);
+
     template<class T>
     inline std::string stringify(T x) {
         std::ostringstream os;

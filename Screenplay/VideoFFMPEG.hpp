@@ -87,6 +87,14 @@ namespace Screenplay {
   
     int audioSampleRate() const { return m_audioSampleRate; }
 
+    void enableLooping(bool enable)
+    {
+      if(enable)
+	m_flags |= Radiant::DO_LOOP;
+      else
+	m_flags &= ~Radiant::DO_LOOP;
+    }
+
     /// Turn on/off the printing of debug messages
     static void setDebug(int debug);
 

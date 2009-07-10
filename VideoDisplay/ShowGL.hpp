@@ -143,6 +143,8 @@ namespace VideoDisplay {
 
     VIDEODISPLAY_API bool unpause();
 
+    VIDEODISPLAY_API void enableLooping(bool enable);
+
     State state() const { return m_state; }
 
     /// Update the video image from reader-thread

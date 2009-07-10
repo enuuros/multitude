@@ -184,8 +184,14 @@ namespace Radiant
       return filepath.substr(cut);
     }
 
+    string suffixLowerCase(const string & filepath)
+    {
+      int cut = filepath.rfind(".") + 1;
+      return StringUtils::lowerCase(filepath.substr(cut));
+    }
+
     bool suffixMatch(const std::string & filename,
-			    const std::string & suf)
+		     const std::string & suf)
     {
       string s = suffix(filename);
       return StringUtils::lowerCase(s) == StringUtils::lowerCase(suf);

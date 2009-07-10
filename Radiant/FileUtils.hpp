@@ -65,6 +65,8 @@ namespace Radiant
     RADIANT_API std::string withoutSuffix(const std::string & filepath);
     /// Extract suffix.
     RADIANT_API std::string suffix(const std::string & filepath);
+    /// Extract suffix, and return it in lower-case
+    RADIANT_API std::string suffixLowerCase(const std::string & filepath);
 
     /// Check if a suffix matches
     RADIANT_API bool suffixMatch(const std::string & filename,

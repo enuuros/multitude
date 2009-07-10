@@ -386,6 +386,21 @@ namespace Radiant
       return -1;
     }
 
+    int which(const StringList & strings, const std::string & str)
+    {
+      int index = 0;
+
+      for(StringList::const_iterator it = strings.begin();
+	  it != strings.end(); it++) {
+	if((*it) == str)
+	  return index;
+
+	index++;
+      }
+
+      return -1;
+    }
+
     const char * yesNo(bool yes)
     {
       return yes ? "yes" : "no";

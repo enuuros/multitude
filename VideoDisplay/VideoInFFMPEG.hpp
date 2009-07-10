@@ -40,6 +40,8 @@ namespace VideoDisplay {
     /// Returns the total length of the movie, in seconds
     virtual double durationSeconds();
     
+    VIDEODISPLAY_API virtual void enableLooping(bool enable);
+
     /// Seek to some time in the movie
     // virtual bool seekTo(double seconds);
   
