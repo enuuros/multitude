@@ -27,6 +27,7 @@
 #include <Radiant/RefPtr.hpp>
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/VideoImage.hpp>
+#include <Radiant/VideoInput.hpp>
 
 #include <Resonant/DSPNetwork.hpp>
 
@@ -125,8 +126,12 @@ namespace VideoDisplay {
     VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
     /// Initialize the file, but does not play it.
-    VIDEODISPLAY_API bool init(const char * filename, Resonant::DSPNetwork  * dsp, float previewpos = 0.05f,
-                               int targetChannel = -1);
+    VIDEODISPLAY_API bool init(const char * filename,
+			       Resonant::DSPNetwork  * dsp,
+			       float previewpos = 0.05f,
+                               int targetChannel = -1,
+			       int flags = 
+			       Radiant::WITH_VIDEO | Radiant::WITH_AUDIO);
     /// Opens the file for playing.
     /* VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
                                Radiant::TimeStamp pos = 0);
@@ -143,7 +148,7 @@ namespace VideoDisplay {
 
     VIDEODISPLAY_API bool unpause();
 
-    VIDEODISPLAY_API void enableLooping(bool enable);
+    // VIDEODISPLAY_API void enableLooping(bool enable);
 
     State state() const { return m_state; }
 

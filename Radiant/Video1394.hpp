@@ -125,8 +125,8 @@ namespace Radiant {
 		      const char * camera = 0,
 		      const char * euid = 0,
 		      ImageFormat fmt = IMAGE_UNKNOWN, 
-		      int width = DONT_CARE, 
-		      int height = DONT_CARE, 
+		      int width = -1, 
+		      int height = -1, 
 		      FrameRate framerate = FPS_IGNORE);
 
     /// Initializes the FireWire camera to format 7 mode

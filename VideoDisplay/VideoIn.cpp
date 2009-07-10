@@ -19,6 +19,7 @@
 
 #include <Radiant/Sleep.hpp>
 #include <Radiant/Trace.hpp>
+#include <Radiant/VideoInput.hpp>
 
 #include <assert.h>
 #include <string.h>
@@ -57,6 +58,7 @@ namespace VideoDisplay {
       m_consumedAuFrames(0),
       m_playing(false),
 
+      m_flags(Radiant::WITH_VIDEO | Radiant::WITH_AUDIO),
       m_channels(0),
       m_sample_rate(44100),
       m_auformat(ASF_INT16),
@@ -122,13 +124,15 @@ namespace VideoDisplay {
     return im;
   }
 
-  bool VideoIn::init(const char * filename, Radiant::TimeStamp pos)
+  bool VideoIn::init(const char * filename, Radiant::TimeStamp pos, int flags)
   {
     assert(!isRunning());
 
     m_finalFrames   = (uint) -1;
 
     m_continue = true;
+    
+    m_flags = flags;
 
     bool ok = open(filename, pos);
 

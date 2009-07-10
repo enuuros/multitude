@@ -71,7 +71,7 @@ namespace VideoDisplay {
 
     Radiant::debug(fname);
 
-    if(!m_video.open(filename, WITH_VIDEO | WITH_AUDIO))
+    if(!m_video.open(filename, m_flags))
       return false;
 
     m_video.getAudioParameters( & m_channels, & m_sample_rate, & m_auformat);
@@ -137,7 +137,7 @@ namespace VideoDisplay {
   {
     debug("VideoInFFMPEG::videoGetSnapshot # %lf", pos.secondsD());
 
-    if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
+    if(!m_video.open(m_name.c_str(), m_flags)) {
       endOfFile();
       return;
     }
@@ -163,7 +163,7 @@ namespace VideoDisplay {
   {
     debug("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
     
-    if(!m_video.open(m_name.c_str(), WITH_VIDEO | WITH_AUDIO)) {
+    if(!m_video.open(m_name.c_str(), m_flags)) {
       endOfFile();
       debug("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
 	   m_name.c_str());
@@ -245,22 +245,19 @@ namespace VideoDisplay {
     m_video.close();
   }
 
-    /* Now comes a tricky part. The audio lacks timestamp and
-       therefore we do not know how to sync audio and video if the
-       stream has jumped to some random position. To overcome this we
-       guess that new audio chunks always match frame they come with
-       (to the extent possible). */
-    
-
   double VideoInFFMPEG::durationSeconds()
   {
     return m_duration.secondsD();
   }
 
+  /*
   void VideoInFFMPEG::enableLooping(bool enable)
   {
+    info("VideoInFFMPEG::enableLooping # %d", (int) enable);
     m_video.enableLooping(enable);
+    m_duration = TimeStamp::createSecondsD(m_video.durationSeconds());
   }
+  */
 
   void VideoInFFMPEG::endOfFile()
   {

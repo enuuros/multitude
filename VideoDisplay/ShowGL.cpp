@@ -277,7 +277,8 @@ namespace VideoDisplay {
 
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
 		    float /*previewpos*/,
-                    int targetChannel)
+                    int targetChannel,
+		    int flags)
   {
     // debug("ShowGL::init # %f", previewpos);
 
@@ -288,7 +289,7 @@ namespace VideoDisplay {
 
     VideoInFFMPEG * ffmpg = new VideoInFFMPEG();
 
-    bool ok = ffmpg->init(filename, 0);
+    bool ok = ffmpg->init(filename, 0, flags);
 
     if(!ok) {
       Radiant::error("ShowGL::open # Could not open %s", filename);
@@ -411,11 +412,12 @@ namespace VideoDisplay {
     return false; // play(pos);
   }
 
+  /*
   void ShowGL::enableLooping(bool enable)
   {
     m_video->enableLooping(enable);
   }
-
+  */
   void ShowGL::update()
   {
     int videoFrame;

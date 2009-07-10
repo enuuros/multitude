@@ -118,11 +118,13 @@ namespace VideoDisplay {
     
     VIDEODISPLAY_API Frame * getFrame(int i, bool updateCounter);
 
-    VIDEODISPLAY_API virtual bool init(const char * filename, Radiant::TimeStamp pos);
+    VIDEODISPLAY_API virtual bool init(const char * filename,
+				       Radiant::TimeStamp pos,
+				       int flags);
     VIDEODISPLAY_API virtual bool play(Radiant::TimeStamp pos = -1);
     VIDEODISPLAY_API virtual void stop();
     VIDEODISPLAY_API virtual bool seek(Radiant::TimeStamp pos);
-    VIDEODISPLAY_API virtual void enableLooping(bool enable) = 0;
+    // VIDEODISPLAY_API virtual void enableLooping(bool enable) = 0;
 
     VIDEODISPLAY_API virtual void getAudioParameters(int * channels, 
 				    int * sample_rate,
@@ -194,6 +196,7 @@ namespace VideoDisplay {
     volatile bool m_breakBack;
     volatile bool m_playing;
 
+    int m_flags;
     int m_channels;
     int m_sample_rate;
     Radiant::AudioSampleFormat m_auformat;

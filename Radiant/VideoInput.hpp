@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef RADIANT_VIDEO_INPUT_H
-#define RADIANT_VIDEO_INPUT_H
+#ifndef RADIANT_VIDEO_INPUT_HPP
+#define RADIANT_VIDEO_INPUT_HPP
 
 #include <Radiant/Export.hpp>
 #include <Radiant/IODefs.hpp>
@@ -38,7 +38,6 @@ namespace Radiant {
   };
 
   enum {
-    DONT_CARE = -1,
     WITH_VIDEO = 0x1,
     WITH_AUDIO = 0x2,
     DO_LOOP = 0x4

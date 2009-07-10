@@ -40,8 +40,6 @@ namespace VideoDisplay {
     /// Returns the total length of the movie, in seconds
     virtual double durationSeconds();
     
-    VIDEODISPLAY_API virtual void enableLooping(bool enable);
-
     /// Seek to some time in the movie
     // virtual bool seekTo(double seconds);
   
@@ -54,7 +52,8 @@ namespace VideoDisplay {
     virtual void videoGetNextFrame();
     virtual void videoStop();
 
-    void doSeek(const Radiant::VideoImage * im, const void * audio, int audioframes);
+    void doSeek(const Radiant::VideoImage * im, const void * audio,
+		int audioframes);
     // void needResync();
     // void doSync(int aframes, Radiant::TimeStamp vt);
     void endOfFile();

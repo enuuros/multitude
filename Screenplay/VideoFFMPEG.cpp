@@ -530,6 +530,9 @@ namespace Screenplay {
     if(flags & WITH_AUDIO)
       m_flags = m_flags | WITH_AUDIO;
 
+    if(flags & DO_LOOP)
+      m_flags |= DO_LOOP;
+
     m_audioFrames = 0;
     m_capturedAudio = 0;
 
