@@ -38,6 +38,7 @@ namespace Radiant {
   };
 
   enum {
+    DONT_CARE = -1,
     WITH_VIDEO = 0x1,
     WITH_AUDIO = 0x2,
     DO_LOOP = 0x4
