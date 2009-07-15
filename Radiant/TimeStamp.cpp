@@ -126,8 +126,9 @@ namespace Radiant {
 
 #ifdef WIN32
 	  const int   bufSize = 32;
-	  char  buf[bufSize] = "";
+	  char  buf[bufSize];
 	  ctime_s(buf, bufSize, & t);
+	  buf[strlen(buf) - 1] = '\0';
 	  return std::string(buf);
 #else
 	// Convert to char* and remove \n
