@@ -26,19 +26,13 @@
 
 #ifdef WIN32
 # include <WinPort.h>
+#endif
 
-extern "C" {
-# include <avformat.h>
-# include <avcodec.h>
-# include <avutil.h>
-}
-#else
 extern "C" {
 # include <libavformat/avformat.h>
 # include <libavcodec/avcodec.h>
 # include <libavutil/avutil.h>
 }
-#endif
 
 namespace Screenplay {
 
