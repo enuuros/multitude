@@ -90,7 +90,7 @@ macx {
 }
 
 unix {
-  SOURCES += DirectoryNonBoost.cpp
+  SOURCES += DirectoryPosix.cpp
 
 	SOURCES += SerialPortPosix.cpp
   SOURCES += TCPServerSocketPosix.cpp
@@ -104,12 +104,11 @@ unix {
 }
 
 win32 {
-	DEFINES += RADIANT_EXPORT BOOST_ALL_DYN_LINK
+	DEFINES += RADIANT_EXPORT 
 	SOURCES += Video1394cmu.cpp
 	SOURCES += cmu_dc1394.cpp
 	SOURCES += PlatformUtilsWin32.cpp
 	SOURCES += SerialPortWin32.cpp
-	#SOURCES += DirectoryBoost.cpp
 	SOURCES += DirectoryQt.cpp
 	SOURCES += TCPServerSocketQt.cpp
 	SOURCES += TCPSocketQt.cpp
