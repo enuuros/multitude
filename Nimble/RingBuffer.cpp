@@ -1,21 +1,16 @@
 /* COPYRIGHT
  *
- * This file is part of Mustajuuri LGPL modules.
+ * This file is part of ConfigReader.
  *
- * Author: Tommi Ilmonen, 1999-2004.
- * e-mail: firstname.lastname(at)hut.fi
+ * Copyright: MultiTouch Oy, Helsinki University of Technology and others.
  *
- * http://www.tml.hut.fi/~tilmonen/mustajuuri/
+ * See file "ConfigReader.hpp" for authors and more details.
  *
- * This file is licensed under the Lesser General Public License
- * (LGPL) - version 2.1. Extra clauses can be found from the file
- * MUSTAJUURI_LGPL and further explanations from the file
- * MUSTAJUURI_LICENSE. The license text can be found in file
- * "LGPL.txt".
- *
- * If you want a parallel license (for commercial reasons for example),
- * you should negotiate the matter with the author(s).
- *    
+ * This file is licensed under GNU Lesser General Public
+ * License (LGPL), version 2.1. The LGPL conditions can be found in 
+ * file "LGPL.txt" that is distributed with this source package or obtained 
+ * from the GNU organization (www.gnu.org).
+ * 
  */
 
 #include "RingBuffer.hpp"
