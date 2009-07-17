@@ -1,9 +1,0 @@
-Import('env libraryPath')
-
-src = Split("""
-    NotCopyable.cpp
-    """)
-
-patterns = env.SharedLibrary('Patterns', src)
-
-env.Install(libraryPath, [patterns])
