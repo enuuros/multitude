@@ -3,7 +3,8 @@ TEMPLATE = lib
 
 PROJECT_FILE = $$join(TARGET, "", "", ".pro")
 
-DESTDIR = $$PWD/lib
+# Make sure we don't override this if it has been set already
+isEmpty(DESTDIR):DESTDIR = $$PWD/lib
 
 isEmpty(EXPORT_HEADERS):EXPORT_HEADERS = $$HEADERS
 isEmpty(EXPORT_SOURCES):EXPORT_SOURCES = $$SOURCES
@@ -34,7 +35,7 @@ INSTALLS += target includes src_code extra_inc
 # On Windows, put DLLs into /bin with the exes
 win32 {
 	# For some reason DESTDIR_TARGET doesn't work here
-	tt = $$join(TARGET, "", "$$DESTDIR/", ".dll")
+	tt = $$join(TARGET, "", "$(DESTDIR)", ".dll")
 	dlls.path = /bin
 	dlls.files += $$tt
 	dlls.CONFIG += no_check_exist
@@ -44,11 +45,11 @@ win32 {
 	!isEmpty(WINDOWS_INSTALL_SDK_LIB) {
 		# For some reason DESTDIR_TARGET doesn't work here
 		sdk_lib.path = /src/MultiTouch/lib
-		sdk_lib.files += $$join(TARGET, "", "$$DESTDIR/", ".lib")
+		sdk_lib.files += $$join(TARGET, "", "$(DESTDIR)", ".lib")
 		sdk_lib.CONFIG += no_check_exist
 	
 		sdk_dll.path = /src/MultiTouch/lib
-		sdk_dll.files += $$join(TARGET, "", "$$DESTDIR/", ".dll")
+		sdk_dll.files += $$join(TARGET, "", "$(DESTDIR)", ".dll")
 		sdk_dll.CONFIG += no_check_exist
 		
 		INSTALLS += sdk_lib sdk_dll
