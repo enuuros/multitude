@@ -17,9 +17,31 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <map>
 #include <vector>
 
 namespace VideoDisplay {
+
+  class FFVideoInfo
+  {
+  public:
+    Radiant::VideoImage m_firstFrame;
+    float m_duration;
+    
+  };
+
+  /* Here we cache the first frames off all viedos. */
+  static std::map<std::string, FFVideoInfo> __ffcache;
+
+  const FFVideoInfo * __cachedInfo(const std::string & filename)
+  {
+    std::map<std::string, FFVideoInfo>::iterator it = __ffcache.find(filename);
+
+    if(it == __ffcache.end())
+      return 0;
+    
+    return & (*it).second;
+  }
 
   using namespace Radiant;
 
@@ -71,14 +93,27 @@ namespace VideoDisplay {
 
     Radiant::debug(fname);
 
+    m_name = filename;
+
+    m_buffered = 0;
+
+
+    const FFVideoInfo * vi = __cachedInfo(filename);
+
+    if(vi) {
+      m_duration = vi->m_duration;
+      const VideoImage * img = & vi->m_firstFrame;
+
+      m_info.m_videoFrameSize.make(img->m_width, img->m_height);
+      
+      putFrame(img, FRAME_SNAPSHOT, 0, 0);
+    
+    }
+
     if(!m_video.open(filename, m_flags))
       return false;
 
     m_video.getAudioParameters( & m_channels, & m_sample_rate, & m_auformat);
-
-    m_name = filename;
-
-    m_buffered = 0;
 
     if(!m_video.hasVideoCodec()) {
       Radiant::error("%s # No video codec", fname);
@@ -128,6 +163,12 @@ namespace VideoDisplay {
     m_video.close();
 
     debug("%s # EXIT OK", fname);
+
+    FFVideoInfo & vi2 = __ffcache[filename];
+
+    vi2.m_duration = m_duration;
+    vi2.m_firstFrame.allocateMemory(*img);
+    vi2.m_firstFrame.copyData(*img);
 
     return true;
   }

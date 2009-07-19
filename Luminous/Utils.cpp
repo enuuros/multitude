@@ -187,7 +187,7 @@ namespace Luminous {
       for(i = 0; i <= n; i++) {
 	
 	float rel = i / (float)n;
-	float x = left + seam * rel;
+	float x = left + seam * rel * 1.5f;
 	
 	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
 	glVertex2f(x, 0.0f);
