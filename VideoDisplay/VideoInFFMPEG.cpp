@@ -27,14 +27,17 @@ namespace VideoDisplay {
   public:
     Radiant::VideoImage m_firstFrame;
     float m_duration;
-    
   };
 
   /* Here we cache the first frames off all viedos. */
   static std::map<std::string, FFVideoInfo> __ffcache;
 
+  static Radiant::MutexStatic __mutex;
+
   const FFVideoInfo * __cachedInfo(const std::string & filename)
   {
+    Radiant::GuardStatic g(&__mutex);
+
     std::map<std::string, FFVideoInfo>::iterator it = __ffcache.find(filename);
 
     if(it == __ffcache.end())
@@ -91,8 +94,6 @@ namespace VideoDisplay {
   {
     static const char * fname = "VideoInFFMPEG::open";
 
-    Radiant::debug(fname);
-
     m_name = filename;
 
     m_buffered = 0;
@@ -102,15 +103,22 @@ namespace VideoDisplay {
     const FFVideoInfo * vi = __cachedInfo(filename);
 
     if(vi) {
+
+      Radiant::debug("%s # %s using cached preview", fname, filename);
+
       m_duration = vi->m_duration;
       const VideoImage * img = & vi->m_firstFrame;
 
       m_info.m_videoFrameSize.make(img->m_width, img->m_height);
       
+      m_frames.resize(latency * fps());
+
       putFrame(img, FRAME_SNAPSHOT, 0, 0);
       
-      m_frames.resize(latency * fps());
+      return true;
     }
+
+    Radiant::debug("%s # %s opening new file", fname, filename);
 
     if(!m_video.open(filename, m_flags))
       return false;
@@ -161,15 +169,21 @@ namespace VideoDisplay {
 
     putFrame(img, FRAME_SNAPSHOT, m_video.frameTime(), m_video.frameTime());
 
+    {
+      // Cache the first frame for later use.
+      Radiant::GuardStatic g(&__mutex);
+      
+      FFVideoInfo & vi2 = __ffcache[filename];
+      
+      vi2.m_duration = m_duration;
+      vi2.m_firstFrame.allocateMemory(*img);
+      vi2.m_firstFrame.copyData(*img);
+    }
+
     m_video.close();
 
     debug("%s # EXIT OK", fname);
 
-    FFVideoInfo & vi2 = __ffcache[filename];
-
-    vi2.m_duration = m_duration;
-    vi2.m_firstFrame.allocateMemory(*img);
-    vi2.m_firstFrame.copyData(*img);
 
     return true;
   }

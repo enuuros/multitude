@@ -15,7 +15,7 @@
 #ifndef _cmu_dc1394_hpp_
 #define _cmu_dc1394_hpp_
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // No CMU wrappers for API docs.
 
 typedef struct
 {
