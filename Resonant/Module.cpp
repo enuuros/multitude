@@ -37,7 +37,7 @@ namespace Resonant {
     return true;
   }
 
-  void Module::control(const char *, ControlData *)
+  void Module::control(const char *, Radiant::BinaryData *)
   {}
 
   bool Module::stop()

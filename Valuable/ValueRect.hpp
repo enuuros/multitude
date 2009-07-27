@@ -25,7 +25,8 @@
 
 namespace Valuable
 {
-
+  
+  /// A valuable object holding a Nimble::Rect object
   class VALUABLE_API ValueRect : public ValueObject
   {
     public:

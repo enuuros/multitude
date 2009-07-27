@@ -28,6 +28,11 @@
 namespace Valuable
 {
 
+  /// Template class for floating-point values.
+  /** The actual value objects are created by using ValueFloatT<float>
+      etc.
+
+      @see ValueFloat. */
   template<class T>
   class VALUABLE_API ValueFloatT : public ValueNumeric<T>
   {
@@ -48,6 +53,7 @@ namespace Valuable
       bool deserializeXML(DOMElement element);
   };
 
+  /// Float value object
   typedef ValueFloatT<float> ValueFloat;
 
 #ifdef WIN32

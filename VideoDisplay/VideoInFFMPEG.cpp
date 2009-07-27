@@ -97,6 +97,7 @@ namespace VideoDisplay {
 
     m_buffered = 0;
 
+    float latency = 1.7f;
 
     const FFVideoInfo * vi = __cachedInfo(filename);
 
@@ -107,7 +108,8 @@ namespace VideoDisplay {
       m_info.m_videoFrameSize.make(img->m_width, img->m_height);
       
       putFrame(img, FRAME_SNAPSHOT, 0, 0);
-    
+      
+      m_frames.resize(latency * fps());
     }
 
     if(!m_video.open(filename, m_flags))
@@ -150,7 +152,6 @@ namespace VideoDisplay {
 
     debug("%s # %f fps", fname, fp);
 
-    float latency = 1.7f;
     m_frames.resize(latency * fp);
 
     int channels, sample_rate;

@@ -74,7 +74,7 @@ int main(int argc, char ** argv)
 
   dsp.start();
 
-  Resonant::ControlData control, control2;
+  Radiant::BinaryData control, control2;
 
   item.setModule(new Resonant::ModuleSamplePlayer(0));
   item.module()->setId("sampleplayer");

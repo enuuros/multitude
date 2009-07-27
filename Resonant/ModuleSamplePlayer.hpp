@@ -45,7 +45,7 @@ namespace Resonant {
     virtual ~ModuleSamplePlayer();
 
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char * address, ControlData *);
+    virtual void control(const char * address, Radiant::BinaryData *);
     virtual void process(float ** in, float ** out, int n);
 
     bool addSample(const char * filename, const char * name);
@@ -118,7 +118,7 @@ namespace Resonant {
 
       bool synthesize(float ** out, int n);
 
-      void init(Sample * sample, ControlData * data);
+      void init(Sample * sample, Radiant::BinaryData * data);
 
       bool isActive() { return m_state != INACTIVE; }
 

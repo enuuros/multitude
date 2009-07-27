@@ -30,7 +30,7 @@ namespace Resonant {
     virtual ~ModuleFilePlay();
 
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void process(ControlData *, float ** in, float ** out, int n);
+    virtual void process(Radiant::BinaryData *, float ** in, float ** out, int n);
     virtual bool stop();
     
   private:

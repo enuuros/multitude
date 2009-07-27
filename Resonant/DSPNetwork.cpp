@@ -160,7 +160,7 @@ namespace Resonant {
       error("DSPNetwork::markDone # Failed for \"%s\"", i.m_module->id());
   }
 
-  void DSPNetwork::send(ControlData & control)
+  void DSPNetwork::send(Radiant::BinaryData & control)
   {
     Radiant::Guard g( & m_inMutex);
     m_incoming.append(control);
@@ -374,7 +374,7 @@ namespace Resonant {
 
   void DSPNetwork::deliverControl(const char * moduleid,
       const char * commandid, 
-      ControlData & data)
+      Radiant::BinaryData & data)
   {
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Module * m = (*it).m_module;

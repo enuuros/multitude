@@ -24,7 +24,7 @@
 
 namespace Nimble {
 
-  /// 2x2 row-major matrix class
+  /// 2x2 transformation matrix
   /** The rows of this matrix are of type Nimble::Vector2T<T>. */
   template <class T>
   class Matrix2T

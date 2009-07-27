@@ -44,7 +44,7 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleFilePlay::process(ControlData *, float **, float ** out, int n)
+  void ModuleFilePlay::process(Radiant::BinaryData *, float **, float ** out, int n)
   {
     // assert(m_file);
 

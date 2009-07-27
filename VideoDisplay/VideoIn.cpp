@@ -66,7 +66,7 @@ namespace VideoDisplay {
       m_auBufferSize(0),
       m_auFrameBytes(0),
       m_continue(true),
-      m_fps(0.0),
+      m_fps(30.0),
       m_done(false),
       m_request(NO_REQUEST),
       m_listener(0)

@@ -18,26 +18,65 @@
 
 #include <Resonant/Export.hpp>
 
+namespace  Radiant {
+
+  class BinaryData;
+
+}
+
 namespace Resonant {
 
-  class ControlData;
   class Application;
 
+  /** Base class for #Resonant signal processing blocks. */
   class RESONANT_API Module
   {
   public:
 
     enum {
+      /// Maximum length of the #id string (bytes)
       MAX_ID_LENGTH = 256,
+      /// Maximum length of a processing cycle (samples)
       MAX_CYCLE = 1024
     };
 
     Module(Application *);
     virtual ~Module();
 
+    /** Prepare for signal processing. 
+
+	The default implementation returns true. Most child classes
+	will need to override this method to perform some preparation
+	work.
+
+	@arg channelsIn The number of desired input channels.  If
+	necessary, the number of input and output channels is changed
+	(for example if the module is stereo-only, but the host
+	requested mono operation).
+	
+	@arg channelsOut The number of desired output channels.
+
+
+	@return Returns true if the module prepared successfully.
+     */
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char * address, ControlData *);
+    /** Sends a control message to the module. 
+	
+	The default implementation does nothing. Child classes with
+	dynamic variable will need to override this method.
+     */
+    virtual void control(const char * address, Radiant::BinaryData *);
+    /** Processes one cycle of audio data. 
+	
+	@arg in Input audio data.
+
+	@arg out Output audio data.
+	
+	@arg n Number of samples to process. Guaranteed to be between
+	1 and #MAX_CYCLE.
+     */
     virtual void process(float ** in, float ** out, int n) = 0;
+    /** Stops the swignal processing, freeing any resources necessary. */
     virtual bool stop();
     
     void setId(const char *);

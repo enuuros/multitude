@@ -30,6 +30,11 @@
 namespace Valuable
 {
 
+  /** A template class for vevctor values. 
+
+      This class is used to implement all the normal vector value
+      objects.
+   */
   template<class VectorType, typename ElementType, int N>
   class VALUABLE_API ValueVector : public ValueObject
   {

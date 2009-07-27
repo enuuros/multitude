@@ -25,7 +25,12 @@
 
 namespace Luminous
 {
-  /** @author Tommi Ilmonen */
+  /** A tiled mipmap image. This type of images can be useful for
+      displaying map information etc.
+
+      This class is experimental, and it may change yet.
+      
+      @author Tommi Ilmonen */
   class TiledMipMapImage
   {
     class Loader : public Loadable

@@ -25,7 +25,9 @@
 
 namespace Valuable
 {
-
+  /// A template base class for numeric values.
+  /** The actual value classes are inherited from this template
+      class. */
   template<class T>
   class ValueNumeric : public ValueObject
   {

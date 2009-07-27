@@ -17,9 +17,9 @@
 #define RESONANT_DSPNETWORK_HPP
 
 #include <Resonant/AudioLoop.hpp>
-#include <Resonant/ControlData.hpp>
 #include <Resonant/Module.hpp>
 
+#include <Radiant/BinaryData.hpp>
 #include <Radiant/Mutex.hpp>
 
 #include <Radiant/RefPtr.hpp>
@@ -36,7 +36,7 @@ namespace Resonant {
 
   class ModuleOutCollect;
 
-  /** Stuff that needs implementing: 
+  /* Stuff that needs implementing: 
 
       - When a module is put into the graph (that's running) it can
       end up with getting input from a source that is invalidated by
@@ -44,11 +44,22 @@ namespace Resonant {
       trouble...
   */
 
+  /** An audio signal processing engine.
+
+      DSPNetwork implements a simple signal processing graph
+      driver. The graph has hot-plug -feature so new modules can be
+      added in run-time, and the engine will re-wire the connetions as
+      necessary.
+
+   */
   class RESONANT_API DSPNetwork : public AudioLoop
   {
   public:
 
-    /** Note the lack of destructor. You need to call "clear" manually. */
+    /** Holds audio sample buffers for inter-module transfer. 
+
+	Note the lack of destructor. You need to call "clear"
+	manually. */
     class Buf
     {
     public:
@@ -73,6 +84,7 @@ namespace Resonant {
       int     m_size;
     };
     
+    /** Holds connection information between the DSP modules.*/
     class RESONANT_API Connection
     {
     public:
@@ -106,6 +118,10 @@ namespace Resonant {
       Buf        *m_buf;
     };
 
+    /** Objects that store the information necessary to create new connections.
+
+	@see Connection
+     */
     class RESONANT_API NewConnection
     {
     public:
@@ -117,6 +133,7 @@ namespace Resonant {
       int         m_targetChannel;
     };
 
+    /** Stores a sinple audio processing #Module.*/
     class RESONANT_API Item
     {
       friend class DSPNetwork;
@@ -170,12 +187,10 @@ namespace Resonant {
 
     bool start(const char * device = 0);
 
-    //int outChannels() { return outParameters().channelCount; }
-
     void addModule(Item &);
     void markDone(Item &);
 
-    void send(ControlData & control);
+    void send(Radiant::BinaryData & control);
 
     static DSPNetwork * instance();
   
@@ -193,7 +208,7 @@ namespace Resonant {
     void checkNewItems();
     void checkDoneItems();
     void deliverControl(const char * moduleid, const char * commandid, 
-			ControlData &);
+			Radiant::BinaryData &);
 
     bool uncompile(Item &);
     bool compile(Item &);
@@ -213,9 +228,9 @@ namespace Resonant {
     
     ModuleOutCollect *m_collect;
 
-    ControlData m_controlData;
-    ControlData m_incoming;
-    ControlData m_incopy;
+    Radiant::BinaryData m_controlData;
+    Radiant::BinaryData m_incoming;
+    Radiant::BinaryData m_incopy;
     Radiant::MutexAuto m_inMutex;
 
     char        m_devName[128];

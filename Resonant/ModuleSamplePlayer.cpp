@@ -15,11 +15,11 @@
 
 #include "ModuleSamplePlayer.hpp"
 
-#include "ControlData.hpp"
 #include "DSPNetwork.hpp"
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/BinaryData.hpp>
 #include <Radiant/Directory.hpp>
 #include <Radiant/FileUtils.hpp>
 #include <Radiant/Trace.hpp>
@@ -186,7 +186,7 @@ namespace Resonant {
   }
 
   void ModuleSamplePlayer::SampleVoice::init
-  (Sample * sample, ControlData * data)
+  (Sample * sample, Radiant::BinaryData * data)
   {
     m_sample = sample;
     m_position = 0;
@@ -413,7 +413,7 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleSamplePlayer::control(const char * id, ControlData * data)
+  void ModuleSamplePlayer::control(const char * id, Radiant::BinaryData * data)
   {
     const int bufsize = 256;
     char buf[bufsize];
@@ -524,7 +524,7 @@ namespace Resonant {
       
       for(int c = 0; c < info.channels; c++) {
         
-        Resonant::ControlData control;
+        Radiant::BinaryData control;
         control.writeString(std::string(id()) + "/playsample");
 
         control.writeString(file);

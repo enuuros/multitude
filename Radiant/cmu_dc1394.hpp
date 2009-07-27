@@ -15,6 +15,8 @@
 #ifndef _cmu_dc1394_hpp_
 #define _cmu_dc1394_hpp_
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 typedef struct
 {
 	int num_cameras;
@@ -35,5 +37,7 @@ const char * cmu_dc1394_feature_get_string(CAMERA_FEATURE cmu_feature);
 CAMERA_FEATURE cmu_dc1394_convertFeatureID(dc1394feature_t feature);
 dc1394feature_t cmu_dc1394_convertFeatureID(CAMERA_FEATURE feature);
 const char * cmu_dc1394_feature_get_string(CAMERA_FEATURE feature);
+
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 #endif

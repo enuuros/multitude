@@ -22,6 +22,9 @@
 
 namespace Nimble {
 
+  /// 4x4 transformation matrix
+  /** This class is a row-major 4x4 matrix. The matrix functions
+      (rotations etc.) assume right-handed coordinate system. */
   template <class T>
   class Matrix4T
   {

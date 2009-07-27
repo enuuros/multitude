@@ -26,6 +26,12 @@
 namespace Valuable
 {
 
+  /// Template class for integer values.
+  /** The actual value objects are created by using ValueIntT<int>
+      etc.
+
+      @see ValueInt, ValueTimeStamp */
+
   template<class T>
   class VALUABLE_API ValueIntT : public ValueNumeric<T>
   {
@@ -58,7 +64,9 @@ namespace Valuable
       bool deserializeXML(DOMElement element);
   };
 
+  /// Integer value object.
   typedef ValueIntT<int> ValueInt;
+  /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
 
 #ifdef WIN32

@@ -26,6 +26,7 @@
 namespace Valuable
 {
 
+  /** A value object holding a #Radiant::Color value. */
   class VALUABLE_API ValueColor : public ValueObject
   {
   public:
@@ -43,9 +44,13 @@ namespace Valuable
     
     virtual bool set(const Nimble::Vector4f & v);
     
+    /// Returns the red comoponent of the color (0-1).
     inline float red() const   { return m_color[0]; }
+    /// Returns the green comoponent of the color (0-1).
     inline float green() const { return m_color[1]; }
+    /// Returns the blue comoponent of the color (0-1).
     inline float blue() const  { return m_color[2]; }
+    /// Returns the alpha comoponent of the color (0-1).
     inline float alpha() const { return m_color[3]; }
 
   protected:

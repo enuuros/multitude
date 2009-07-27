@@ -15,11 +15,11 @@
 
 #include "ModuleOutCollect.hpp"
 
-#include "ControlData.hpp"
 #include "DSPNetwork.hpp"
 
 #include <Nimble/Random.hpp>
 
+#include <Radiant/BinaryData.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <algorithm>
@@ -67,7 +67,7 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleOutCollect::control(const char * address, ControlData * control)
+  void ModuleOutCollect::control(const char * address, Radiant::BinaryData * control)
   {
     assert(address != 0);
 

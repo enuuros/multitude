@@ -33,6 +33,8 @@ namespace Resonant {
   class ModuleOutCollect : public Module
   {
   public:
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     class Move 
     {
     public:
@@ -40,12 +42,13 @@ namespace Resonant {
       char sourceId[Module::MAX_ID_LENGTH];
       int from, to;
     };
+#endif
 
     ModuleOutCollect(Application *, DSPNetwork *);
     virtual ~ModuleOutCollect();
 
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char *, ControlData *);
+    virtual void control(const char *, Radiant::BinaryData *);
     virtual void process(float ** in, float ** out, int n);
     
     const float * interleaved() const { return & m_interleaved[0]; }

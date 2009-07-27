@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
 
   dsp.start();
 
-  Resonant::ControlData control;
+  Radiant::BinaryData control;
 
   Resonant::DSPNetwork::Item item;
   Resonant::ModuleSamplePlayer * player = new Resonant::ModuleSamplePlayer(0);

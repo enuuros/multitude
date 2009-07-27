@@ -68,7 +68,7 @@ namespace Radiant {
       case for this class is the transfer of video frames between
       video codec and the application.
 
-      By default this class does not do any memory management, which
+      <B>Note:</B>By default this class does not do any memory management, which
       is left to the application. There are memory management funcions
       that can be used if you want.
 
@@ -82,6 +82,10 @@ namespace Radiant {
       : m_format(fmt), m_width(w), m_height(h) {}
     ~VideoImage();
 
+    /** Holds the data for one image plane.
+
+	@see #VideoImage
+     */
     class RADIANT_API Plane {
     public:
       Plane() : m_data(0), m_linesize(0), m_type(PLANE_UNKNOWN) {}
