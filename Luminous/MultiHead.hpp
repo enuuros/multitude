@@ -49,6 +49,8 @@ namespace Luminous {
   {
   public:
 
+    class Window;
+
     /// One OpenGL area
     /** Areas are roughly equivalent to OpenGL viewports. Multiple
 	areas can share the same OpenGL context, as one window can
@@ -57,7 +59,7 @@ namespace Luminous {
                  public Collectable
     {
     public:
-      LUMINOUS_API Area();
+      LUMINOUS_API Area(Window * window = 0);
       LUMINOUS_API virtual ~Area();
 
       LUMINOUS_API bool deserializeXML(Valuable::DOMElement element);
@@ -163,6 +165,7 @@ namespace Luminous {
 	
       void updateBBox();
 
+      Window * m_window;
       GLKeyStone m_keyStone;
       Valuable::ValueVector2i   m_location;
       Valuable::ValueVector2i   m_size;
@@ -180,8 +183,11 @@ namespace Luminous {
     /** A window is responsible for one OpenGL context. */
     class Window : public Valuable::HasValues
     {
+
     public:
-      LUMINOUS_API Window();
+      friend class Area;
+
+      LUMINOUS_API Window(MultiHead * screen = 0);
       LUMINOUS_API ~Window();
 
       const char * type() const { return "window"; }
@@ -243,6 +249,7 @@ namespace Luminous {
     protected:
       virtual bool readElement(Valuable::DOMElement ce);
 
+      MultiHead                *m_screen;
       Valuable::ValueVector2i   m_location;
       Valuable::ValueVector2i   m_size;
       Valuable::ValueInt        m_frameless;
@@ -299,11 +306,14 @@ namespace Luminous {
     void setEdited(bool edited) { m_edited = edited; }
     bool isEdited() const { return m_edited; }
 
+    float gamma() const { return m_gamma; }
+
   protected:
     virtual bool readElement(Valuable::DOMElement ce);
 
     std::vector<Radiant::RefPtr<Window> > m_windows;
     Valuable::ValueFloat m_widthcm;
+    Valuable::ValueFloat m_gamma;
     bool m_edited;
   };
 

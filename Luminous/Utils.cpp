@@ -183,26 +183,32 @@ namespace Luminous {
     
     // glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 
+
     if(horiz) {
+
+      float hextra = h * 0.5f;
+
       for(i = 0; i <= n; i++) {
 	
 	float rel = i / (float)n;
 	float x = left + seam * rel * 1.5f;
 	
 	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
-	glVertex2f(x, 0.0f);
-	glVertex2f(x, h);
+	glVertex2f(x, -hextra);
+	glVertex2f(x, h + hextra);
       }
     }
     else {
+      float wextra = w * 0.5f;
+      
       for(i = 0; i <= n; i++) {
 	
 	float rel = i / (float)n;
 	float y = top + seam * rel * 1.5;
 	
 	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
-	glVertex2f(0.0f, y);
-	glVertex2f(w, y);
+	glVertex2f(-wextra, y);
+	glVertex2f(w + wextra, y);
       }
     }
 

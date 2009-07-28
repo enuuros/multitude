@@ -29,8 +29,9 @@ namespace Luminous {
 
   using namespace Radiant;
 
-  MultiHead::Area::Area()
+  MultiHead::Area::Area(Window * window)
     : HasValues(0, "Area"),
+      m_window(window),
       m_keyStone(this, "keystone"),
       m_location(this, "location", Nimble::Vector2i(0, 0)),
       m_size(this, "size", Nimble::Vector2i(100, 100)),
@@ -131,6 +132,8 @@ namespace Luminous {
 
     float gamma = 1.1f;
 
+    gamma = m_window->m_screen->gamma();
+    
     if(m_seams[0] != 0.0f)
       Utils::fadeEdge(1, 1, 2 * m_seams[0] / m_size[0],
           gamma, Utils::LEFT, false);
@@ -214,14 +217,15 @@ namespace Luminous {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  MultiHead::Window::Window()
+  MultiHead::Window::Window(MultiHead * screen)
     : HasValues(0, "Window"),
-    m_location(this, "location", Nimble::Vector2i(0, 0)),
-    m_size(this, "size", Nimble::Vector2i(100, 100)),
-    m_frameless(this, "frameless", 1),
-    m_fullscreen(this, "fullscreen", 0),
-    m_resizeable(this, "resizeable", 0),
-    m_pixelSizeCm(0.1f)
+      m_screen(screen),
+      m_location(this, "location", Nimble::Vector2i(0, 0)),
+      m_size(this, "size", Nimble::Vector2i(100, 100)),
+      m_frameless(this, "frameless", 1),
+      m_fullscreen(this, "fullscreen", 0),
+      m_resizeable(this, "resizeable", 0),
+      m_pixelSizeCm(0.1f)
   {
   }
 
@@ -304,7 +308,7 @@ namespace Luminous {
     const std::string & type = ce.getAttribute("type");
 
     if(type == std::string("area")) {
-      Area * area = new Area();
+      Area * area = new Area(this);
       // Add as child & recurse
       addValue(name, area);
       area->deserializeXML(ce);
@@ -322,6 +326,7 @@ namespace Luminous {
   MultiHead::MultiHead()
   : HasValues(0, "MultiHead", false),
     m_widthcm(this, "widthcm", 100, true),
+    m_gamma(this, "gamma", 1.1f, true),
     m_edited(false)
   {}
 
@@ -564,7 +569,7 @@ namespace Luminous {
     const std::string & type = ce.getAttribute("type");
 
     if(type == std::string("window")) {
-      Window * win = new Window();
+      Window * win = new Window(this);
 
       // Add as child & recurse
       addValue(name, win);
