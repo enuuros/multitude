@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+CONFIG += debug
+
 HEADERS += BBox.hpp
 HEADERS += Charmap.hpp
 HEADERS += CPUBitmapFont.hpp
@@ -49,7 +51,7 @@ DEFINES += POETIC_FLIP_Y
 
 unix: PKGCONFIG += freetype2
 
-LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_NIMBLE
+LIBS += $$LIB_LUMINOUS $$LIB_RADIANT $$LIB_NIMBLE $$LIB_PATTERNS
 LIBS += $$LIB_OPENGL
 
 macx:LIBS += -framework,OpenGL

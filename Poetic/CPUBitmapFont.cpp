@@ -39,6 +39,8 @@ namespace Poetic
 
   Glyph * CPUBitmapFont::makeGlyph(unsigned int glyphIndex)
   {
+    Radiant::Guard g( & m_mutex);
+    
     assert(m_face != 0);
 
     FT_GlyphSlot ftGlyph = m_face->glyph(glyphIndex, FT_LOAD_NO_HINTING);

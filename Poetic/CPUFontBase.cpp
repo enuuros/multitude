@@ -98,6 +98,8 @@ namespace Poetic
 
   bool CPUFontBase::load(const char * fontFilePath)
   {
+    Radiant::Guard g( & m_mutex);
+
     delete m_face;
     m_face = new Face(fontFilePath);
 
@@ -186,6 +188,8 @@ namespace Poetic
 
   bool CPUFontBase::checkGlyph(unsigned int characterCode)
   {
+    Radiant::Guard g( & m_mutex);
+
     if(m_glyphList->glyph(characterCode) == 0)
     {
         unsigned int glyphIndex = m_glyphList->fontIndex(characterCode);

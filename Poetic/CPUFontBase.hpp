@@ -20,6 +20,8 @@
 
 #include <Luminous/Collectable.hpp>
 
+#include <Radiant/Mutex.hpp>
+
 namespace Poetic
 {
   class GPUFontBase;
@@ -64,6 +66,8 @@ namespace Poetic
       Face * m_face;
       Size m_size;
       int m_error;
+
+      Radiant::MutexAuto m_mutex;
 
     private:
       inline bool checkGlyph(unsigned int g);

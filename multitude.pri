@@ -54,7 +54,7 @@ macx {
     LIB_SCREENPLAY = -framework,Screenplay
     LIB_VALUABLE = -framework,Valuable
     LIB_VIDEODISPLAY = -framework,VideoDisplay
-	LIB_PATTERNS = -framework,Patterns
+    LIB_PATTERNS = -framework,Patterns
   }
 
 }
