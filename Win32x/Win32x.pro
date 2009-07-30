@@ -16,7 +16,7 @@ win32_libs.path = /bin
 win32_libs.files = lib/*.dll
 
 win32_dev_libs.path = /src/MultiTouch/multitude/$$TARGET/lib
-win32_dev_libs.files = lib/*.lib
+win32_dev_libs.files = lib/*.dll lib/*.lib
 
 win32_extra_headers.path = /src/MultiTouch/multitude/$$TARGET/include
 win32_extra_headers.files = include/*
