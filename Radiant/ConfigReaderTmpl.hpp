@@ -55,7 +55,17 @@ namespace Radiant {
   template <class T>
   void ChunkT<T>::set(const std::string & name, const T &v)
   {
+		if(clearFirst)
+	  m_variants.erase(name);
     m_variants.insert(std::pair<std::string, T>(name, v));
+	
+  }
+   
+  template <class T>
+  void ChunkT<T>::setClearFlag(bool clearF)
+  {
+	  clearFirst=clearF;
+
   }
 
   template <class T>

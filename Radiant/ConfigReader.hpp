@@ -119,7 +119,7 @@ namespace Radiant {
     /// Iterator for traversing all elements
     typedef typename std::multimap<std::string, T>::iterator iterator;
 
-    ChunkT() {}
+    ChunkT() {clearFirst=false;}
     ~ChunkT() {}
     
     /// Gets an element from the chunk
@@ -137,7 +137,8 @@ namespace Radiant {
     /** If there are other elements with the same id before, then
 	this element is added among those. */
     void               set(const std::string & id, const T &v);
-
+	
+	void setClearFlag(bool clearF);
     /// Adds an element to the chunk, erasing any elements with identical id
     /** After calling this method, the chunk will contain only one
 	element this this id. */
@@ -168,6 +169,7 @@ namespace Radiant {
     
   private:
 
+bool clearFirst;
     std::multimap<std::string, T> m_variants;
   };
 
