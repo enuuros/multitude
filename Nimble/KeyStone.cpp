@@ -25,10 +25,14 @@
 namespace Nimble {
 
   KeyStone::KeyStone()
-    : m_width(640),
+    : m_centerShift(0, 0),
+      m_centerShiftSpan(10),
+      m_useCenterShift(true),
+      m_width(640),
       m_height(480),
       m_dpyWidth(2048),
       m_dpyHeight(768),
+      m_dpyCenter(1024, 384),
       m_dpyX(0),
       m_dpyY(0),
       m_extra(0, 0, 0, 0),
@@ -109,6 +113,9 @@ namespace Nimble {
 
     m_dpyX = x;
     m_dpyY = y;
+
+    m_dpyCenter.make(m_dpyX + m_dpyWidth * 0.5f,
+		     m_dpyY + m_dpyHeight * 0.5f);
     
     calculateMatrix();
     updateLimits();
@@ -153,7 +160,19 @@ namespace Nimble {
   {
     // "p.z" is really "p.w", we need to do the "perspective" correction here.
     Vector3 p = m_matrixOut * m_lensCorrection.correct(v);
-    return Vector2(p.x / p.z, p.y / p.z);
+    Vector2 res(p.x / p.z, p.y / p.z);
+    if(m_useCenterShift) {
+      float dist = (res - m_dpyCenter).length();
+      if(dist < m_centerShiftSpan) {
+	float weight = 0.5f + 0.5f * cosf(Math::PI * dist / m_centerShiftSpan);
+	Vector2 move = powf(weight, 1.0f) * m_centerShift;
+	res += move;
+
+	// printf("shifting by %f %f (%f)\n", move.x, move.y, weight);
+      }
+    }
+
+    return res;
   }
 
   Nimble::Vector2 KeyStone::project01(const Nimble::Vector2 & v) const
@@ -261,21 +280,26 @@ namespace Nimble {
   }
 
   void KeyStone::calibrateOutput(const Nimble::Vector2 * targets,
-				 const Nimble::Vector2 * real)
+				 const Nimble::Vector2 * real,
+				 const Nimble::Vector2 * center)
   {
     int i;
 
+
+    // Do the real matrix calculation
+    
     Nimble::Vector2 tnorm[4]; // Target points in [0-1] space
     Nimble::Vector2 rnorm[4]; // Real points in [0-1] space
+    Nimble::Vector2 rcnorm(0, 0); // Real center point in [0-1] space
 
     Matrix3 tmp;
     tmp.identity();
 
-    tmp[0][0] = (float)m_dpyWidth;
-    tmp[1][1] = (float)m_dpyHeight;
+    tmp[0][0] = (float) m_dpyWidth;
+    tmp[1][1] = (float) m_dpyHeight;
 
-    tmp[0][2] = (float)m_dpyX;
-    tmp[1][2] = (float)m_dpyY;
+    tmp[0][2] = (float) m_dpyX;
+    tmp[1][2] = (float) m_dpyY;
     
     Nimble::Matrix3 backToNorm = (tmp * m_matrixExtension).inverse();
     
@@ -289,6 +313,18 @@ namespace Nimble {
       */
     }
     
+    // Reverse engineer the center location:
+    
+    if(center) {
+      float dist = (*center - m_dpyCenter).length();
+      
+      float weight = 0.5f + 0.5f * cosf(Math::PI * dist / m_centerShiftSpan);
+      rcnorm = project(backToNorm, *center - weight * m_centerShift);
+
+      printf("rcnorm = %f %f dpyc = %f %f\n",
+	     rcnorm.x, rcnorm.y, m_dpyCenter.x, m_dpyCenter.y);
+    }
+
     Nimble::Matrix3 realToNormalized = projectionMatrix(rnorm).inverse();
     Nimble::Matrix3 normalizedToTarget = projectionMatrix(tnorm);
 
@@ -297,6 +333,21 @@ namespace Nimble {
 
     calculateMatrix();
 
+    if(center) {
+
+      // rcnorm.x *= m_width;
+      // rcnorm.y *= m_height;
+      
+      rcnorm = project(m_matrix.inverse(), rcnorm);
+
+      Vector2 projcenter = project(m_matrixOut, rcnorm);
+      m_centerShift = m_dpyCenter - projcenter;
+      m_centerShiftSpan = (m_dpyCenter - targets[0]).length();
+      printf("KeyStone::calibrateOutput # pc = [%.2f %.2f] offset = [%.2f %.2f] span = %f\n",
+	     projcenter.x, projcenter.y, 
+	     m_centerShift.x, m_centerShift.y, m_centerShiftSpan);
+      fflush(0);
+    }
   }
 
   void KeyStone::setOutputExtension(const Nimble::Matrix3 & m)

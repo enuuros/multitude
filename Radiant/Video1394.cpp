@@ -278,7 +278,7 @@ namespace Radiant {
             DC1394_FEATURE_WHITE_BALANCE, 
             DC1394_FEATURE_MODE_AUTO);
       else
-        Radiant::error("%s # no auto mode for white balance", fname);
+        Radiant::debug("%s # no auto mode for white balance", fname);
     }
     else {
 
@@ -291,7 +291,7 @@ namespace Radiant {
             DC1394_FEATURE_WHITE_BALANCE, 
             DC1394_FEATURE_MODE_MANUAL);
       else {
-        Radiant::error("%s # no manual mode for white balance", fname);
+        Radiant::debug("%s # no manual mode for white balance", fname);
         return;
       }
 
@@ -348,7 +348,7 @@ namespace Radiant {
       if(b)
         dc1394_feature_set_mode(m_camera, feature, DC1394_FEATURE_MODE_AUTO);
       else
-        Radiant::error("%s # no auto mode for %s", fname, name);
+        Radiant::debug("%s # no auto mode for %s", fname, name);
     }
     else {
       has_manual_mode(m_camera, feature, & b);
@@ -356,7 +356,7 @@ namespace Radiant {
       if(b)
         dc1394_feature_set_mode(m_camera, feature, DC1394_FEATURE_MODE_MANUAL);
       else {
-        Radiant::error("%s # no manual mode for %s", fname, name);
+        Radiant::debug("%s # no manual mode for %s", fname, name);
         return;
       }
 
@@ -525,8 +525,10 @@ namespace Radiant {
 
     const char * fname = "Video1394::initialize";
 
-    if(!findCamera(euid))
+    if(!findCamera(euid)) {
+      error("%s # Could not find FireWire camera %s", fname, euid);
       return false;
+    }
 
     /* else
        dc1394_print_feature_set(& m_features);

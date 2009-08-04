@@ -191,11 +191,16 @@ namespace Nimble {
     /// Adjusts the lens correction
     void setLensParam(int i, float v);
     /** Applies correction, based on four screen-space coordinate pairs.
-      @param targets The desired target coordinates.
-      @param real The observed coordinates.
+	
+	@param targets The desired target coordinates.
+
+	@param real The observed coordinates.
+
+	@param center the center point observed coordinates
       */
     void calibrateOutput(const Nimble::Vector2 * targets,
-			 const Nimble::Vector2 * real);
+			 const Nimble::Vector2 * real,
+			 const Nimble::Vector2 * center);
     /// Returns the extension (fine-tuning) matrix
     const Nimble::Matrix3 & outputExtension() const { return m_matrixExtension;}
     /// Sets the extension (fine-tuning) matrix
@@ -206,6 +211,12 @@ namespace Nimble {
     void setExtraBorders(const Nimble::Vector4f & borders)
     { m_extra = borders; updateLimits(); }
 
+    Nimble::Vector3 centerShift()
+    { return Vector3(m_centerShift.x, m_centerShift.y, m_centerShiftSpan); }
+    void setCenterShift(Nimble::Vector3 params)
+    { m_centerShift = params.xy(); m_centerShiftSpan = params[2]; }
+
+
     void updateLimits();
 
     /** Returns the version number of the object. Whenever the
@@ -213,6 +224,8 @@ namespace Nimble {
 	incremented. This information can be used by other objects to
 	check is they need to update some of their data structures.*/
     int version() { return m_version; }
+
+    void setUseCenterShift(bool use) { m_useCenterShift = use; }
 
     /// Calculates the projection matrix.
     /** See Paul Heckbert's master's thesis, pages 19-21. Often you
@@ -240,6 +253,12 @@ namespace Nimble {
     /// Fix small discrepancies between ideal output and real output
     Nimble::Matrix3 m_matrixExtension;
 
+    /// Center point shifting:
+
+    Nimble::Vector2 m_centerShift;
+    float           m_centerShiftSpan;
+    bool            m_useCenterShift;
+
     // Camera width/height
     int            m_width;
     int            m_height;
@@ -247,6 +266,8 @@ namespace Nimble {
     // Display area width/height
     int            m_dpyWidth;
     int            m_dpyHeight;
+
+    Vector2        m_dpyCenter;
 
     // Display area offset
     int            m_dpyX;
