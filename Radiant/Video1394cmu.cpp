@@ -208,6 +208,14 @@ namespace Radiant {
 
   // ---------------------------------------------------------------------------
   // 
+  void Video1394::setPan(float value)
+  {
+    cmu_setFeature1394(FEATURE_PAN, value);
+  }
+  void Video1394::setTilt(float value)
+  {
+    cmu_setFeature1394(FEATURE_TILT, value);
+  }
   void Video1394::setGamma(float value)
   {
     cmu_setFeature1394(FEATURE_GAMMA, value);

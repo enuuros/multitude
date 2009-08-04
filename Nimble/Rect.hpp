@@ -315,7 +315,7 @@ namespace Nimble {
     m_low.x = xmin;
     m_low.y = ymin;
     m_high.x = xmax;
-    m_high.y = ymax;       
+    m_high.y = ymax;
   }
 
   template<class T>

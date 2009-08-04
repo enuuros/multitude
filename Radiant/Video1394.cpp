@@ -210,6 +210,16 @@ namespace Radiant {
     return has_mode(camera, feature, DC1394_FEATURE_MODE_MANUAL, val);
   }
 
+  void Video1394::setPan(float value)
+  {
+    setFeature1394(DC1394_FEATURE_PAN, value);
+  }
+
+  void Video1394::setTilt(float value)
+  {
+    setFeature1394(DC1394_FEATURE_TILT, value);
+  }
+
   void Video1394::setGamma(float value)
   {
     setFeature1394(DC1394_FEATURE_GAMMA, value);

@@ -90,6 +90,8 @@ namespace Radiant {
     static bool hasManualMode(const dc1394feature_info_t & feature)
     { return hasMode(feature, DC1394_FEATURE_MODE_MANUAL); }
 
+    virtual void setPan(float value);
+    virtual void setTilt(float value);
     virtual void setGamma(float value);
     virtual void setShutter(float value);
     virtual void setGain(float value);

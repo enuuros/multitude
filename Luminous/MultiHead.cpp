@@ -127,12 +127,17 @@ namespace Luminous {
       Utils::glTexRect(-m_seams[0] / m_size[0], 1 + m_seams[2] / m_size[1],
 		       1 + m_seams[1] / m_size[0], -m_seams[3] / m_size[1]);
     }
-    else
+    else {
+      glLoadIdentity();
+      m_keyStone.applyGlState();
       gluOrtho2D(0, 1, 1, 0);
+    }
 
     float gamma = 1.1f;
 
-    gamma = m_window->m_screen->gamma();
+    if(m_window)
+      if(m_window->m_screen)
+	gamma = m_window->m_screen->gamma();
     
     if(m_seams[0] != 0.0f)
       Utils::fadeEdge(1, 1, 2 * m_seams[0] / m_size[0],
@@ -574,7 +579,6 @@ namespace Luminous {
       // Add as child & recurse
       addValue(name, win);
       win->deserializeXML(ce);
-
 
       m_windows.push_back(win);
     } else {
