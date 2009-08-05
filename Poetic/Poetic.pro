@@ -1,6 +1,6 @@
 include(../multitude.pri)
 
-CONFIG += debug
+# CONFIG += debug
 
 HEADERS += BBox.hpp
 HEADERS += Charmap.hpp
