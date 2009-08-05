@@ -105,6 +105,8 @@ namespace Luminous {
     { return (float)m_nativeSize.x / (float)m_nativeSize.y; }
 
     inline bool hasAlpha() const { return m_hasAlpha; }
+
+    int pixelAlpha(Nimble::Vector2 relLoc);
   private:
 
     class CPUItem;

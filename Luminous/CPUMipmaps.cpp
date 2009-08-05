@@ -535,6 +535,21 @@ namespace Luminous {
     return false;
   }
     
+  int CPUMipmaps::pixelAlpha(Nimble::Vector2 relLoc)
+  {
+    // Not really implemented.
+    for(int i = 10; i >= 1; i++) {
+      Image * im = getImage(i);
+
+      if(!im) continue;
+
+      
+    }
+
+    return 255;
+  }
+ 
+
   void CPUMipmaps::createLevelScalers(int level)
   {
     // trace("CPUMipmaps::createLevelScalers # %d", level);
