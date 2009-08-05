@@ -132,8 +132,15 @@ namespace Valuable
     NodeList nodes = getChildNodes();
 
     addSpace(f, recursion);
-    fprintf(f, "NODE <%s> (%d children)\n",
-	    getTagName().c_str(), (int) nodes.size());
+    fprintf(f, "NODE <%s> (%d children, %d deep)",
+	    getTagName().c_str(), (int) nodes.size(), recursion);
+
+    std::string str = getTextContent();
+    if(str.size() > 0 && str.size() < 100) {
+      fprintf(f, " TEXT = \"%s\"", str.c_str());
+    }
+
+    fprintf(f, "\n");
 
     int i = 1;
 
