@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += AmbientSounds
+SUBDIRS += FireCapture
 SUBDIRS += ImageExample
 SUBDIRS += PlatformExample
 !win32:SUBDIRS += SamplePlayer
