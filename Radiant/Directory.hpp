@@ -31,138 +31,138 @@ struct dirent;
 namespace Radiant
 {
 
-	/** Class for reading filenames in a directory.
+  /** Class for reading filenames in a directory.
 	
-	This class exists because there exists no portable way to read
-	directories (which is sad).
+      This class exists because there exists no portable way to read
+      directories (which is sad).
 
-	@author Esa Nuuros
-	*/
-	class RADIANT_API Directory
-	{
-	public:
-		enum FilterFlags
-		{
-			Dirs  = 0x001,
-			Files = 0x002,
-			NoDotAndDotDot = 0x1000,
-			Hidden = 0x100,
-			AllEntries = Dirs | Files      
-		};
+      @author Esa Nuuros
+  */
+  class RADIANT_API Directory
+  {
+  public:
+    enum FilterFlags
+    {
+      Dirs  = 0x001,
+      Files = 0x002,
+      NoDotAndDotDot = 0x1000,
+      Hidden = 0x100,
+      AllEntries = Dirs | Files      
+    };
 
-		enum SortFlag
-		{
-			Name = 0x00,
-			Unsorted = 0x03
-		};
+    enum SortFlag
+    {
+      Name = 0x00,
+      Unsorted = 0x03
+    };
 
-		/// Construct a directory listing
-		/** Creating a Directory object immediately scans the contents
-		of the directory. Entries matching the given filters are
-		included.
+    /// Construct a directory listing
+    /** Creating a Directory object immediately scans the contents
+	of the directory. Entries matching the given filters are
+	included.
 
-		@param pathname directory path
-		@param filters one or more filter flags OR'ed together
-		@param sortFlag flag indicating how the results should be sorted
-		*/
-		Directory(const char * pathname,
-			int filters = AllEntries, SortFlag sortFlag = Unsorted);
-		Directory(const std::string & pathname,
-			int filters = AllEntries, SortFlag sortFlag = Unsorted);
-		/// Construct a directory listing
-		/** Creating a Directory object immediately scans the contents
-		of the directory. Entries matching the given filters are
-		included.
+	@param pathname directory path
+	@param filters one or more filter flags OR'ed together
+	@param sortFlag flag indicating how the results should be sorted
+    */
+    Directory(const char * pathname,
+	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+    Directory(const std::string & pathname,
+	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+    /// Construct a directory listing
+    /** Creating a Directory object immediately scans the contents
+	of the directory. Entries matching the given filters are
+	included.
 
-		@param pathname directory path
+	@param pathname directory path
 
-		@param suffixlist list of accpeted suffices, for example
-		"jpg,png,tiff"
+	@param suffixlist list of accpeted suffices, for example
+	"jpg,png,tiff"
 
-		@param filters one or more filter flags OR'ed together
-		@param sortFlag flag indicating how the results should be sorted
-		*/
-		Directory(const char * pathname, const char * suffixlist,
-			int filters = AllEntries, SortFlag sortFlag = Unsorted);
+	@param filters one or more filter flags OR'ed together
+	@param sortFlag flag indicating how the results should be sorted
+    */
+    Directory(const char * pathname, const char * suffixlist,
+	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
 
-		/** Creates a Directory object by immediately scanning
-		    the contents of the directory. Entries matching
-		    the given filters are included.  If the file does
-		    not exist an exception is thrown.  If the
-		    signature is not ok an exception is thrown too.
+    /** Creates a Directory object by immediately scanning
+	the contents of the directory. Entries matching
+	the given filters are included.  If the file does
+	not exist an exception is thrown.  If the
+	signature is not ok an exception is thrown too.
 
-		    @param signature "jcb" string. Anything else will
-		    trigger an exception. There is a already
-		    constructor with the same signature that does not
-		    throw exceptions hence the need for this author's
-		    signature.
+	@param signature "jcb" string. Anything else will
+	trigger an exception. There is a already
+	constructor with the same signature that does not
+	throw exceptions hence the need for this author's
+	signature.
 
-		    @param pathname directory path
+	@param pathname directory path
 
-		    @param suffixlist list of accpeted suffices, for
-		    example "jpg,png,tiff"
+	@param suffixlist list of accpeted suffices, for
+	example "jpg,png,tiff"
 
-		    @param filters one or more filter flags OR'ed
-		    together
+	@param filters one or more filter flags OR'ed
+	together
 
-		    @param sortFlag flag indicating how the results
-		    should be sorted
+	@param sortFlag flag indicating how the results
+	should be sorted
 
-		*/
-		Directory( const std::string &signature, const char * pathname, 
-			   const char * suffixlist, int filters = AllEntries, 
-			   SortFlag sortFlag = Unsorted ) throw(std::runtime_error);
+    */
+    Directory( const std::string &signature, const char * pathname, 
+	       const char * suffixlist, int filters = AllEntries, 
+	       SortFlag sortFlag = Unsorted ) throw(std::runtime_error);
 
  
-		/// Deallocates the list
-		virtual ~Directory();
+    /// Deallocates the list
+    virtual ~Directory();
 
-		/// Returns the number of entries in the directory.
-		int count() const;
+    /// Returns the number of entries in the directory.
+    int count() const;
 
-		/** Return given entry name in the directory
-		@param n integer index of file   
-		@return filename
-		*/
-		std::string fileName(int n) const;
+    /** Return given entry name in the directory
+	@param n integer index of file   
+	@return filename
+    */
+    std::string fileName(int n) const;
 
-		/** Return the full path name of the nth file.
+    /** Return the full path name of the nth file.
 
-		This method is equal to calling "dir.path() + dir.filename(n)".
-		*/
-		std::string fileNameWithPath(int n) const;
+	This method is equal to calling "dir.path() + dir.filename(n)".
+    */
+    std::string fileNameWithPath(int n) const;
 
-		/// Returns the directory path
-		const std::string & path() const { return m_path; } 
+    /// Returns the directory path
+    const std::string & path() const { return m_path; } 
 
-		/// Creates a new directory.
-		static bool mkdir(const char * dirname);
-		static bool mkdir(const std::string & dirname);
-		static bool mkdirRecursive(const std::string & dirname);
+    /// Creates a new directory.
+    static bool mkdir(const char * dirname);
+    static bool mkdir(const std::string & dirname);
+    static bool mkdirRecursive(const std::string & dirname);
     static bool exists(const std::string & dir);
 
-	private:
+  private:
 
-		Directory(const Directory &) {}
-		Directory & operator = (const Directory &) { return * this;}
+    Directory(const Directory &) {}
+    Directory & operator = (const Directory &) { return * this;}
 
-		// Calling a constructor from another is evil but we
-		// can put all dupplicated code in the same private
-		// method
-		void init(const std::string & pathname, const char * suffixlist,
-			  const int filters, const SortFlag sortFlag) ;
+    // Calling a constructor from another is evil but we
+    // can put all dupplicated code in the same private
+    // method
+    void init(const std::string & pathname, const char * suffixlist,
+	      const int filters, const SortFlag sortFlag) ;
 
-		// This function takes care of the low-level platform
-		// specific stuff.  All it does is fill up m_entries
-		// with the directory contents matching the flags.
-		void populate();
+    // This function takes care of the low-level platform
+    // specific stuff.  All it does is fill up m_entries
+    // with the directory contents matching the flags.
+    void populate();
 		
-		std::string m_path;
-		std::vector<std::string> m_entries;      
-		std::vector<std::string> m_suffixes;
-		int m_filterFlags;
-		SortFlag m_sortFlags;
-	};
+    std::string m_path;
+    std::vector<std::string> m_entries;      
+    std::vector<std::string> m_suffixes;
+    int m_filterFlags;
+    SortFlag m_sortFlags;
+  };
 
 }
 

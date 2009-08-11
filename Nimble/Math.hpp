@@ -100,6 +100,10 @@ namespace Nimble {
     template <class T>
     inline T Abs(T x) { return x > 0 ? x : -x; }
 
+    /// Calculates the fraction of the floating point number
+    template <class T>
+    inline T Fraction(T x) { return x - (int) x; }
+
     /// Seeks the maximum value in an vector
     /** VMax = vector maximum. 
      */
