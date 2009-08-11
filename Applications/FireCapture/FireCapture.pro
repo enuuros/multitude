@@ -3,7 +3,7 @@ include(../Applications.pri)
 SOURCES += Main.cpp
 
 LIBS += $$LIB_RADIANT $$LIB_NIMBLE
-LIBS += $$LIB_PATTERNS
+LIBS += $$LIB_PATTERNS $$LIB_LUMINOUS
 
 CONFIG -= qt
 

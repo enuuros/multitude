@@ -13,11 +13,14 @@
  * 
  */
 
+#include <Radiant/Directory.hpp>
 #include <Radiant/Sleep.hpp>
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Thread.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/Video1394.hpp>
+
+#include <Luminous/Image.hpp>
 
 #include <stdlib.h>
 #include <string.h>
@@ -34,7 +37,9 @@ public:
     : m_continue(true),
       m_cameraId(cameraId),
       m_dir(dir)
-  {}
+  {
+    Radiant::Directory::mkdir(dir);
+  }
 
   void stop()
   {
@@ -62,9 +67,13 @@ protected:
 
     m_video.start();
 
+    char buf[64];
     int count = 0;
 
     Radiant::TimeStamp start(Radiant::TimeStamp::getTime());
+
+    Luminous::Image saver;
+
 
     while(m_continue) {
 
@@ -73,11 +82,13 @@ protected:
       if(!im) {
         Radiant::error("Frame capture failed for camera %llx",
                        (long long) m_cameraId);
-        
         break;
       }
 
       count++;
+
+      saver.fromData(im->m_planes[0].m_data, im->m_width, im->m_height,
+                     Luminous::PixelFormat::luminanceUByte());
 
       if(count % 100 == 0) {
         Radiant::info("Capture %d frames from camera %llx",
@@ -86,6 +97,12 @@ protected:
 
       m_video.doneImage();
 
+      if(count % 10 == 0) {
+      
+        sprintf(buf, "frame-%.5d.tga", count);
+        
+        saver.write((m_dir + buf).c_str());
+      }
     }
     
     float secs = start.since().secondsD();
@@ -117,25 +134,16 @@ void helper(const char * app)
   printf("USAGE:\n %s [options]\n\n", app);
   printf
     ("OPTIONS:\n"
-     "--format7       - Uses Format 7 modes\n"
-     " --fps  +float  - Sets arbitrary capture rate for the cameras, with SW trigger\n"
-     " --help         - This help\n"
-     " --listformat7modes    - List available format 7 modes\n"
+
      " --rate +int    - Selects one of the standard frame rates (15, 30, 60...)\n"
-     " --scanbus      - Scans and reports all available cameras\n"
      " --triggermode   +int - Selects the trigger mode, range: 0-%d\n"
      " --triggerpolarity   +up/down - Selects the trigger polarity, either "
           "\"up\" or \"down\"\n"
      " --triggersource +int - Selects the trigger source, range: 0-%d\n"
      "\nEXAMPLES:\n"
-     " %s             - Run all cameras at 15 fps\n"
-     " %s --scanbus   - List cameras, with IDs\n"
-     " %s --fps 47    - Run all cameras at 47 fps (with SW triggering)\n"
-     " %s --rate 30   - Run all cameras at 30 fps (internal triggering)\n"
      " %s --rate 60 --triggersource 0  - Run all cameras at max 60 fps with hardware trigger\n"
-     " %s --rate 60 --triggersource 0 --triggermode 0 - Run all cameras at max 60 fps with trigger source 0 and trigger mode 0\n"
      , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
-     app, app, app, app, app, app);
+     app);
   fflush(0);
 }
 
@@ -149,6 +157,8 @@ int main(int argc, char ** argv)
   int i, res = 0;
   bool format7 = false;
   bool listmodes = false;
+
+  std::string baseDir("capture/");
 
   for(i = 1; i < argc; i++) {
     const char * arg = argv[i];
@@ -213,6 +223,9 @@ int main(int argc, char ** argv)
     return 0;
 
   std::vector<CameraThread *> threads;
+  char buf[64];
+
+  Radiant::Directory::mkdir(baseDir);
 
   for(i = 0; i < (int) cameras.size(); i++) {
 
@@ -222,7 +235,8 @@ int main(int argc, char ** argv)
            cam.m_vendor.c_str(), cam.m_model.c_str());
     fflush(0);
 
-    CameraThread * thread = new CameraThread(cam.m_euid64, "foo");
+    sprintf(buf, "/%llx/", (long long) cam.m_euid64);
+    CameraThread * thread = new CameraThread(cam.m_euid64, baseDir + buf);
 
     threads.push_back(thread);
 
