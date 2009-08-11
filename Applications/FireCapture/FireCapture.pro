@@ -1,4 +1,4 @@
-include(../Examples.pri)
+include(../Applications.pri)
 
 SOURCES += Main.cpp
 
@@ -11,4 +11,4 @@ win32 {
 	LIBS += -lWin32x
 }
 
-include(../Examples_end.pri)
+include(../Applications_end.pri)

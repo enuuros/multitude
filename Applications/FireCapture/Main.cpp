@@ -22,6 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+int triggerSource = -1;
+int triggerMode = -1;
+Radiant::FrameRate rate = Radiant::FPS_15;
+
 class CameraThread : public Radiant::Thread
 {
 public:
@@ -46,7 +50,15 @@ protected:
     
     m_video.setCameraEuid64(m_cameraId);
 
-    m_video.open();
+    m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, rate);
+
+    if(triggerMode >= 0) {
+      m_video.setTriggerMode((dc1394trigger_mode_t) triggerMode);
+    }
+
+    if(triggerSource >= 0) {
+      m_video.enableTrigger((dc1394trigger_source_t) triggerSource);
+    }
 
     m_video.start();
 
@@ -134,9 +146,6 @@ int main(int argc, char ** argv)
   
   float fps = -1.0f;
 
-  int triggerSource = -1;
-  int triggerMode = -1;
-  Radiant::FrameRate rate = Radiant::FPS_15;
   int i, res = 0;
   bool format7 = false;
   bool listmodes = false;
@@ -180,7 +189,6 @@ int main(int argc, char ** argv)
     }
     else if(strcmp(arg, "--verbose") == 0) {
       puts("Verbose mode");
-      ; // FireView::CamView::setVerbose(true);
       Radiant::enableVerboseOutput(true);
     }
     else {
@@ -191,7 +199,7 @@ int main(int argc, char ** argv)
   }
 
   if(triggerMode >= 0 && triggerSource < 0) {
-    printf("%s If you set trigger mode, you also need to set trigger mode\n",
+    printf("%s If you set trigger mode, you also need to set trigger source\n",
 	   argv[0]);
     return -1;
   }
