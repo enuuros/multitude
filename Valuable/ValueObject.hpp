@@ -92,7 +92,7 @@ namespace Valuable
     private:
       /// The object that holds this object
       HasValues * m_parent;
-      std::string m_name;
+    std::string m_name;
       bool m_transit;
 
       ValueListeners m_listeners;

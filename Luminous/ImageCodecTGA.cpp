@@ -261,9 +261,9 @@ namespace Luminous
     };
 
     header.widthLo = static_cast<unsigned char> (image.width() & 0x00FF);
-    header.widthHi = static_cast<unsigned char> (image.width() & 0xFF00);
+    header.widthHi = static_cast<unsigned char> ((image.width() >> 8) & 0xFF);
     header.heightLo = static_cast<unsigned char> (image.height() & 0x00FF);
-    header.heightHi = static_cast<unsigned char> (image.height() & 0xFF00);
+    header.heightHi = static_cast<unsigned char> ((image.height() >> 8) & 0xFF);
     header.bpp = static_cast<unsigned char> (image.pixelFormat().numChannels() << 3);
 
     // Write header

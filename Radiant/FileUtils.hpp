@@ -33,7 +33,7 @@ namespace Radiant
     /// Load a text file.
     /** The contents of the file are returned as a zero-terminated
 	string. The caller is responsible for freeing the memory,
-	using a call to <b>delete</b>.*/
+	using a call to <b>delete []</b>.*/
     RADIANT_API char * loadTextFile(const char* filename);
 
     RADIANT_API std::wstring readTextFile(const std::string & file);

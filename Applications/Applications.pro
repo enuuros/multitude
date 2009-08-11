@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
+SUBDIRS += FireCapture
 SUBDIRS += FireView
 # SUBDIRS += ListPortAudioDevices
 SUBDIRS += MoviePlayer
