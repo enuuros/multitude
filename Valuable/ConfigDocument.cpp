@@ -1,4 +1,4 @@
-#include "ConfigDocument.h"
+#include "ConfigDocument.hpp"
 
 ConfigDocument::ConfigDocument(void)
 {
