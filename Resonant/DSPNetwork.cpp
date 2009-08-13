@@ -146,7 +146,6 @@ namespace Resonant {
     m_newItems.push_back(i);
   }
 
-
   void DSPNetwork::markDone(Item & i)
   {
     Radiant::Guard g( & m_newMutex);

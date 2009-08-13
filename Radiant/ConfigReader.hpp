@@ -50,6 +50,7 @@ namespace Radiant {
     Variant(unsigned, const char * doc = 0);
     Variant(double, const char * doc = 0);
     Variant(const float *, int, const char * doc = 0);
+    Variant(const int *, int, const char * doc = 0);
   
     ~Variant();
 
@@ -63,6 +64,7 @@ namespace Radiant {
     const std::string & getString(const std::string & def) const;
     const std::string & getString() const;
 
+    int                 getInts(int *, int);
     int                 getFloats(float *, int);
     int                 getDoubles(double *, int);
 

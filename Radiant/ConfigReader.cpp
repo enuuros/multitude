@@ -80,6 +80,17 @@ namespace Radiant {
     if(doc) m_doc = doc;
   }
 
+  Variant::Variant(const int * ptr, int n, const char * doc)
+  {
+    char buf[128];
+    
+    for(int i = 0; i < n; i++) {
+      sprintf(buf, "%d ", ptr[i]);
+      m_var += buf;
+    }
+    if(doc) m_doc = doc;
+  }
+
   Variant::~Variant()
   {}
 
@@ -125,6 +136,33 @@ namespace Radiant {
   const std::string & Variant::getString() const
   {
     return m_var;
+  }
+
+  /** Reads a number of floats from the string. Returns the number of
+      floats successfully read. */
+
+  int Variant::getInts(int *p, int n)
+  {
+    char *str = (char *) m_var.c_str();
+    int i = 0;
+
+    while(str < m_var.c_str() + m_var.size() && i < n) {
+      char * endStr = str;
+
+      long tmp = strtol(str, &endStr, 10);
+      
+      if(endStr <= str)
+	return i;
+      
+      str = endStr;
+
+      // printf("Val %d = %lf ", i, tmp);
+      
+      *p++ = int(tmp);
+      i++;
+    }
+    
+    return i;
   }
 
   /** Reads a number of floats from the string. Returns the number of
@@ -312,8 +350,11 @@ namespace Radiant {
 
     std::vector<char> buf;
     buf.resize(size);
-    fread(&buf[0], 1, size, in);
+    int n = fread(&buf[0], 1, size, in);
     fclose(in);
+
+    if(!n)
+      return false;
 
     enum {
       SCAN_CHUNK_NAME,
