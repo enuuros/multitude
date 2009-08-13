@@ -350,7 +350,8 @@ namespace VideoDisplay {
 
     if(m_state != PLAY)
       return false;
-
+    
+    /*
     if(m_frame && (m_frame != & m_preview) && m_video) {
 
       Radiant::Guard g(m_video->mutex());
@@ -358,8 +359,9 @@ namespace VideoDisplay {
       m_preview.m_image.allocateMemory(m_frame->m_image);
       m_preview.m_image.copyData(m_frame->m_image);
       m_preview.m_time = m_frame->m_time;
-      m_frame = & m_preview;
+      m_frame = & m_preview;x
     }
+    */
 
     int i = 0;
 
