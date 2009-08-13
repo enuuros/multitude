@@ -27,6 +27,8 @@
 
 #include <stdlib.h>
 
+#include <typeinfo>
+
 namespace Luminous
 {
   
@@ -51,13 +53,14 @@ namespace Luminous
 
   GLResources::~GLResources()
   {
-    while(m_resources.size())
+    /*while(m_resources.size())
       eraseResource((*m_resources.begin()).first);
-
+    
     if(m_consumingBytes != 0)
       Radiant::error("GLResources::~GLResources # The GPU memory is left at %ld -> "
                      "there is a bug in your application.",
                      m_consumingBytes);
+    */
   }
 
   GLResource * GLResources::getResource(const Collectable * key)
@@ -101,16 +104,22 @@ namespace Luminous
     m_consumingBytes  -= bytes;
     m_deallocationSum += bytes;
     */
+
+    Radiant::info("GLResources::eraseResource # Resource %s for %p erased",
+                  typeid(*resource).name(), key);
+
     delete resource;
     m_resources.erase(it);
-
-//    Radiant::trace("GLResources::eraseResource # Resource erased.");
 
     return true;
   }
 
   void GLResources::eraseResources()
   {
+    /* Radiant::info("GLResources::eraseResources # checking %d deleted keys",
+                  Luminous::GarbageCollector::size());
+    */
+
     for(GarbageCollector::iterator it = GarbageCollector::begin();
         it != GarbageCollector::end(); it++) {
       const Collectable * key = GarbageCollector::getObject(it);
@@ -127,6 +136,8 @@ namespace Luminous
 
       if(r->m_deleteOnFrame && r->m_deleteOnFrame < m_frame) {
 	
+        Radiant::info("GLResources::eraseResource # Resource %s for %p erased",
+                      typeid(*(*it).second).name(), (*it).first);
 	// Radiant::trace("GLResources::eraseResources # Removing old");
 
         delete (*it).second;

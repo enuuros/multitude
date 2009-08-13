@@ -15,6 +15,7 @@
 
 #include "VideoWindow.hpp"
 
+#include <Luminous/GarbageCollector.hpp>
 #include <Luminous/MatrixStep.hpp>
 #include <Luminous/Utils.hpp>
 
@@ -217,6 +218,10 @@ void VideoWindow::initializeGL()
 void VideoWindow::paintGL()
 {
   // puts("VideoWindow::paintGL");
+
+  m_glResources.eraseResources();
+  Luminous::GarbageCollector::clear();
+  
   
   Poetic::GPUFont * gpufont = 0;
   

@@ -76,6 +76,8 @@ namespace Resonant {
     
     ok = control->readString(tmp.sourceId, Module::MAX_ID_LENGTH);
 
+    // info("ModuleOutCollect::control # Now %d sources in the map", (int) m_map.size());
+
     if(strcmp(address, "removemappings") == 0) {
       // Remove all the mappings that match the given input.
 

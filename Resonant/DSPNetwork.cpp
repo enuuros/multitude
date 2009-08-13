@@ -258,6 +258,13 @@ namespace Resonant {
 
   void DSPNetwork::checkNewItems()
   {
+    if(m_newItems.size()) {
+      debug("DSPNetwork::checkNewItems # Now %d items, adding %d, buffer memory %ld byes",
+           (int) m_items.size(), (int) m_newItems.size(),
+           countBufferBytes());
+
+    }
+
     while(m_newItems.size()) {
 
       debug("DSPNetwork::checkNewItems # Next ");
@@ -340,6 +347,7 @@ namespace Resonant {
         }
       }
     }
+
   }
 
   void DSPNetwork::checkDoneItems()
@@ -619,4 +627,17 @@ namespace Resonant {
       return item->m_outs[channel];
     return 0;
   }
+
+  long DSPNetwork::countBufferBytes()
+  {
+    long bytes = 0;
+
+    for(unsigned i = 0; i < m_buffers.size(); i++) {
+      bytes += m_buffers[i].m_size * sizeof(float);
+      bytes += sizeof(Buf);
+    }
+
+    return bytes;
+  }
+
 }

@@ -267,6 +267,7 @@ namespace VideoDisplay {
 
   ShowGL::~ShowGL()
   {
+    info("ShowGL::~ShowGL");
     stop();
     delete m_video;
   }

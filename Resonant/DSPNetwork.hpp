@@ -219,7 +219,8 @@ namespace Resonant {
     Item * findItem(const char * id);
     Module * findModule(const char * id);
     float * findOutput(const char * id, int channel);
-    
+    long countBufferBytes();
+
     container m_items;
 
     container m_newItems;

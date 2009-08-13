@@ -85,6 +85,8 @@ namespace Luminous
       changed. */
     static Collectable * getObject(iterator & it) { return (*it); }
 
+    static int size() { return m_items.size(); }
+
   private:
 
     GarbageCollector();
