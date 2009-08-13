@@ -68,8 +68,14 @@ namespace FireView {
     static void setFormat7area(int x1, int y1, int x2, int y2)
     { m_format7rect.low().make(x1, y1); m_format7rect.high().make(x2, y2);  }
 
+    static void setFormat7mode(int mode)
+    { m_format7mode = mode; }
+
     static Nimble::Recti format7Area()
     { return m_format7rect; }
+
+    static int format7Mode()
+    { return m_format7mode; }
 
   public slots:
 
@@ -194,6 +200,7 @@ namespace FireView {
     static int  m_triggerPolarity;
 
     static Nimble::Recti m_format7rect;
+    static int           m_format7mode;
   };
 
 }

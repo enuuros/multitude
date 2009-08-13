@@ -16,6 +16,9 @@
 #include "CamView.hpp"
 #include "MainWindow.hpp"
 
+#include <Nimble/Vector4.hpp>
+
+#include <Radiant/ConfigReader.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/Video1394.hpp>
 
@@ -71,8 +74,20 @@ int main(int argc, char ** argv)
   for(i = 1; i < argc; i++) {
     const char * arg = argv[i];
 
-    if(strcmp(arg, "--format7") == 0) {
+    if(strcmp(arg, "--format7") == 0 && (i+1) < argc) {
       format7 = true;
+
+      FireView::CamView::setFormat7mode(atoi(argv[++i]));
+    }
+    else if(strcmp(arg, "--format7area") == 0 && (i+1) < argc) {
+      format7 = true;
+      Radiant::Variant tmp(argv[++i]);
+
+      Nimble::Vector4f vals(0, 0, 1920, 1080);
+
+      tmp.getFloats(vals.data(), 4);
+
+      FireView::CamView::setFormat7area(vals[0], vals[1], vals[2], vals[3]);
     }
     else if(strcmp(arg, "--fps") == 0 && (i+1) < argc) {
       fps = atof(argv[++i]);

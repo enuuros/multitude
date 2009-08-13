@@ -239,7 +239,8 @@ namespace FireView {
 #ifndef WIN32
       Nimble::Recti r = CamView::format7Area();
       ok = m_video.openFormat7(0, Nimble::Recti(r.low().x, r.low().y,
-						r.high().x, r.high().y), m_customFps, 1);
+						r.high().x, r.high().y), m_customFps,
+                               CamView::format7Mode());
 #else
       error("Format 7 not yet supported under Windows.");
       ok = false;
@@ -395,6 +396,8 @@ namespace FireView {
 
   bool CamView::m_verbose = false;
   int  CamView::m_triggerPolarity = -1;
+  int CamView::m_format7mode = 1;
+
   Nimble::Recti CamView::m_format7rect(0, 0, 2000, 1500);
 
   static int __interval = 50;
