@@ -166,6 +166,7 @@ namespace Radiant {
   public:
     /// Locks the mutex
     GuardStatic(MutexStatic * mutex) : m_mutex(mutex) { m_mutex->lock(); }
+    GuardStatic(MutexStatic & mutex) : m_mutex(&mutex) { m_mutex->lock(); }
     
     /// Unlocks the mutex
     ~GuardStatic() { m_mutex->unlock(); }
@@ -186,6 +187,7 @@ namespace Radiant {
   public:
     /// Locks the mutex
     ReleaseGuard(Mutex * mutex) : m_mutex(mutex) { }
+    ReleaseGuard(Mutex & mutex) : m_mutex( & mutex) { }
     
     /// Unlocks the mutex
     ~ReleaseGuard() { m_mutex->unlock(); }
