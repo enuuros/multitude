@@ -258,6 +258,7 @@ namespace VideoDisplay {
       m_audio(0),
       m_targetChannel(-1),
       m_videoFrame(-1),
+      m_count(0),
       m_state(PAUSE),
       m_updates(0)
   {
@@ -349,7 +350,7 @@ namespace VideoDisplay {
     if(m_state != PLAY)
       return false;
 
-    if(m_frame && m_frame != & m_preview) {
+    if(m_frame && (m_frame != & m_preview)) {
       m_preview.m_image.allocateMemory(m_frame->m_image);
       m_preview.m_image.copyData(m_frame->m_image);
       m_preview.m_time = m_frame->m_time;
