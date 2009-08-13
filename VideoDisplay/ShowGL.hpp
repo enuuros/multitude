@@ -192,6 +192,8 @@ namespace VideoDisplay {
     /** Returns true if this video has been loaded with subtitles. */
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
+    const std::string & filename() const { return m_filename; }
+
   private:
 
     void clearHistogram();

@@ -350,7 +350,10 @@ namespace VideoDisplay {
     if(m_state != PLAY)
       return false;
 
-    if(m_frame && (m_frame != & m_preview)) {
+    if(m_frame && (m_frame != & m_preview) && m_video) {
+
+      Radiant::Guard g(m_video->mutex());
+
       m_preview.m_image.allocateMemory(m_frame->m_image);
       m_preview.m_image.copyData(m_frame->m_image);
       m_preview.m_time = m_frame->m_time;
@@ -365,9 +368,11 @@ namespace VideoDisplay {
     }
 
     m_dsp->markDone(m_dspItem);
-
+    
+    m_audio->forgetVideo();
     m_audio = 0;
 
+    m_video->setAudioListener(0);
     m_video->stop();
 
     m_state = PAUSE;
@@ -441,6 +446,8 @@ namespace VideoDisplay {
     if(videoFrame < 0)
       return;
 
+    Radiant::Guard g(m_video->mutex());
+
     VideoIn::Frame * f = m_video->getFrame(videoFrame, true);
 
     if(!f) {
@@ -453,6 +460,7 @@ namespace VideoDisplay {
     m_histogram[m_updates % HISTOGRAM_POINTS] = videoFrame - m_videoFrame;
 
     m_updates++;
+
     m_frame = f;
 
     if(m_videoFrame != videoFrame) {

@@ -155,6 +155,8 @@ namespace VideoDisplay {
 
     void setAudioListener(AudioTransfer * listener);
 
+    Radiant::Mutex & mutex() { return m_mutex; }
+
   protected:
 
     VIDEODISPLAY_API virtual void childLoop () ;
@@ -228,6 +230,8 @@ namespace VideoDisplay {
     Radiant::TimeStamp m_frameTime;
 
     AudioTransfer     *m_listener;
+
+    Radiant::MutexAuto m_mutex;
   private:
     /// Disabled
     VideoIn(const VideoIn & ) : Radiant::Thread() {}

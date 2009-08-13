@@ -74,6 +74,8 @@ namespace VideoDisplay {
 
   VideoIn::~VideoIn()
   {
+    Guard g(mutex());
+
     if(m_listener)
       m_listener->forgetVideo();
 
@@ -197,6 +199,7 @@ namespace VideoDisplay {
 
   int VideoIn::selectFrame(int, Radiant::TimeStamp time) const
   {
+
     int latest = latestFrame();
 
     int best = latest; // Nimble::Math::Min(latest, startfrom);
@@ -247,6 +250,9 @@ namespace VideoDisplay {
 
   void VideoIn::setAudioListener(AudioTransfer * listener)
   {
+    if(listener)
+      assert(m_listener == 0);
+
     debug("VideoIn::setAudioListener # from %p to %p", m_listener, listener);
     m_listener = listener;
   }
@@ -311,6 +317,8 @@ namespace VideoDisplay {
 
     if(!m_continue)
       return 0;
+
+    Radiant::Guard g(mutex());
 
     RefPtr<Frame> & rf = m_frames[m_decodedFrames % m_frames.size()];
     

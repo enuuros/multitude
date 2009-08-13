@@ -90,6 +90,7 @@ void VideoWindow::randomOperation()
     STOP,
     TOGGLE_PLAYBACK,
     SEEK,
+    RECREATE,
     OPERATIONS_COUNT
   };
 
@@ -120,6 +121,21 @@ void VideoWindow::randomOperation()
     float loc = m_rand.rand01();
     Radiant::info("Seek to %.4f", loc);
     show.seekToRelative(loc);
+  }
+  else if(operation == RECREATE) {
+
+    std::string filename = show.filename();
+    (*it) = 0; // delete old
+    
+    Radiant::RefPtr<Item> item = new Item();
+
+    if(!item.ptr()->m_show.init(filename.c_str(), & m_dsp, 0, 0)) {
+      Radiant::error("Could not recreate video player for \"%s\"", filename.c_str());
+    }
+    else 
+      Radiant::info("Recreated video player for \"%s\"", filename.c_str());
+    
+    (*it) = item;
   }
 
   // Call this function again, after a random interval:

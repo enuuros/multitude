@@ -140,8 +140,28 @@ namespace Radiant {
   };
 #endif
 
-  /** A guard class. This class is used to automatically lock and unlock
-      a mutex within some function.
+  /** A guard class. This class is used to automatically lock and
+      unlock a mutex within some function. This is useful when trying
+      to avoid situations where there are several "return"-statements
+      in a function, and one easily forget to unlock the mutex that
+      one is using.
+
+      <pre>
+      
+      int MyClass::doSomething()
+      {
+        // Mutex is locked here:
+        Guarg g(mutex());
+
+        // Mutex is freed reliably on each return path
+        if(foo())
+          return 0;
+        if(fee())
+          return 1;
+        return 2;
+      }
+      
+      </pre>
 
       @see ReleaseGuard
   */
@@ -151,6 +171,7 @@ namespace Radiant {
   public:
     /// Locks the mutex
     Guard(Mutex * mutex) : m_mutex(mutex) { m_mutex->lock(); }
+    Guard(Mutex & mutex) : m_mutex(&mutex) { m_mutex->lock(); }
     
     /// Unlocks the mutex
     ~Guard() { m_mutex->unlock(); }

@@ -257,6 +257,7 @@ namespace VideoDisplay {
     const void * audio = m_video.captureAudio( & aframes);
 
     if(aframes && f) {
+      Radiant::Guard g(mutex());
       f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
     }
 

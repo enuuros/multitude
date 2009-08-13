@@ -48,8 +48,10 @@ namespace VideoDisplay {
       m_audioLatency = ms * 0.001;
     }
 
-    if(video)
-      video->setAudioListener(this);
+    Radiant::Guard g2(m_mutex);
+
+    if(m_video)
+      m_video->setAudioListener(this);
   }
 
   AudioTransfer::~AudioTransfer()
@@ -61,12 +63,17 @@ namespace VideoDisplay {
   {
     Radiant::debug("AudioTransfer::prepare");
     
+    Radiant::Guard g2(m_mutex);
+
     if(!m_video) {
       Radiant::error("AudioTransfer::prepare # No video source");
       m_stopped = true;
       return false;
     }
 
+
+    Radiant::Guard g(m_video->mutex());
+    
     m_channels = 0;
     m_sampleFmt = Radiant::ASF_INT16;
     int sr = 44100;
@@ -104,10 +111,14 @@ namespace VideoDisplay {
 
   void AudioTransfer::process(float **, float ** out, int n)
   {
+    Radiant::Guard g2(m_mutex);
+
     if(!m_video) {
       zero(out, m_channels, n, 0);
       return;
     }
+
+    Radiant::Guard g(m_video->mutex());
 
     if(!m_video->isFrameAvailable(m_videoFrame)) {
       zero(out, m_channels, n, 0);
@@ -235,6 +246,8 @@ namespace VideoDisplay {
   void AudioTransfer::forgetVideo()
   {
     debug("AudioTransfer::forgetVideo");
+
+    Radiant::Guard g2(m_mutex);
 
     m_video = 0;
     m_ending = true;

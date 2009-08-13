@@ -102,12 +102,12 @@ namespace Screenplay {
 
       if(ret < 0) {
 	
-	info("ret < 0 %x", m_flags);
+	debug("VideoInputFFMPEG::captureImage ret < 0 %x", m_flags);
 	
 	if(! (m_flags & DO_LOOP))
 	  return 0;
 	else {
-	  info("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
+	  debug("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
 	  m_offsetTS = m_lastTS;
 	  av_seek_frame(m_ic, -1, (int64_t) 0, 0);
 	  ret = av_read_packet(m_ic, m_pkt);

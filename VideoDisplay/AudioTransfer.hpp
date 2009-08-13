@@ -91,6 +91,7 @@ namespace VideoDisplay {
     bool      m_end;
     bool      m_first;
     double    m_audioLatency;
+    Radiant::MutexAuto m_mutex;
   };
 
 }
