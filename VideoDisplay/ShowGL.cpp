@@ -216,10 +216,11 @@ namespace VideoDisplay {
 	debug("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
 	     frame, ts.x, ts.y);
 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-			ts.x, ts.y,
-			GL_LUMINANCE, GL_UNSIGNED_BYTE,
-			img->m_planes[i].m_data);
+        if(img->m_planes[i].m_data)
+          glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+                          ts.x, ts.y,
+                          GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                          img->m_planes[i].m_data);
 
         Luminous::Utils::glCheck
           ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
