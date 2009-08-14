@@ -1,5 +1,6 @@
 #include "ConfigDocument.hpp"
-
+namespace Valuable
+{  
 ConfigDocument::ConfigDocument(void)
 {
 }
@@ -72,6 +73,9 @@ void ConfigDocument::readConfigFile(char *fileName)
 						else if(parseLine(s)==PARSE_FLAGS::ATTRIBUTE)
 						{
 							Attribute att=Attribute();
+							for(int i=0;i<s.length();i++)
+								if(s[i]=='\"')
+									s[i]=' ';
 							size_t pos=s.find("=");
 
 							att.key=s.substr(0,pos);
@@ -144,6 +148,90 @@ void ConfigDocument::writeConfigFile(char *fileName)
 
 
 }
+  void ConfigDocument::TrimSpaces( std::string& str)  
+ {  
+     using namespace std;
+     size_t startpos = str.find_first_not_of(" \t"); 
+     size_t endpos = str.find_last_not_of(" \t"); 
+
+     if(( string::npos == startpos ) || ( string::npos == endpos))  
+     {  
+         str = "";  
+     }  
+     else  
+         str = str.substr( startpos, endpos-startpos+1 );  
+ 
+ }
+  Element *ConfigDocument::getElement(string elementName)
+  {
+		bool found=false;
+		
+	Element *f=findElement(Elements,elementName,found);
+	if(f)
+		return f;
+	else
+		return 0;
+
+  }
+   Element *ConfigDocument::getElement(string key,string value)
+   {
+	bool found=false;
+		
+	Element *f=findElement(Elements,found,key,value);
+	if(f)
+		return f;
+	else
+		return 0;
+
+   }
+    Element *ConfigDocument::findElement(Element &e,bool &found,string key,string value)
+	{
+		for(int i=0;i<e.Nodes.size() ;i++)
+		{
+			Element *w;
+			w=findElement(e.Nodes[i],found,key,value);
+			if(found)
+				return w;
+
+		}
+
+		for(int j=0;j<e.Attributes.size();j++)
+		{
+			string ke=e.Attributes[j].key;
+		TrimSpaces(ke);
+		string val=e.Attributes[j].value;
+		TrimSpaces(val);
+		if(key==ke && value==val)
+		{
+			found=true;
+
+			return &e;
+
+		}
+		}
+	}
+  Element *ConfigDocument::findElement(Element &e,string elementName,bool &found)
+  {
+	  for(int i=0;i<e.Nodes.size() ;i++)
+	  {
+		  Element *w;
+		  w=findElement(e.Nodes[i],elementName,found);
+		  if(found)
+			  return w;
+
+	  }
+
+	  string s=e.elementName;
+		 TrimSpaces(s);
+		 if(s==elementName)
+		 {
+			 found=true;
+		
+			 return &e;
+			 
+		 }
+
+  }
 string ConfigDocument::getConfigText(Element e,vector<string> &s)
 {
 	string str;
@@ -163,7 +251,8 @@ string ConfigDocument::getConfigText(Element e,vector<string> &s)
 
 		for(int j=0;j<e.Attributes.size();j++)
 		{
-			str+=e.Attributes[j].key+"="+e.Attributes[j].value+"\n";
+			TrimSpaces(e.Attributes[j].value);
+			str+=e.Attributes[j].key+"="+"\""+e.Attributes[j].value+"\""+"\n";
 
 		}
 		for(int i=0;i<e.Nodes.size();i++)
@@ -196,3 +285,4 @@ ConfigDocument::PARSE_FLAGS ConfigDocument::parseLine(string line)
 	}
 }
 
+}
