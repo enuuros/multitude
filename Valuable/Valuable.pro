@@ -1,8 +1,11 @@
 include(../multitude.pri)
 
+HEADERS += Attribute.hpp
 HEADERS += ChangeMap.hpp
+HEADERS += ConfigDocument.hpp
 HEADERS += DOMDocument.hpp
 HEADERS += DOMElement.hpp
+HEADERS += Element.hpp
 HEADERS += Export.hpp
 HEADERS += HasValues.hpp
 HEADERS += HasValuesImpl.hpp
@@ -21,9 +24,12 @@ HEADERS += ValueStringImpl.hpp
 HEADERS += ValueVector.hpp
 HEADERS += ValueVectorImpl.hpp
 
+SOURCES += Attribute.cpp
 SOURCES += ChangeMap.cpp
+SOURCES += ConfigDocument.cpp
 SOURCES += DOMDocument.cpp
 SOURCES += DOMElement.cpp
+SOURCES += Element.cpp
 SOURCES += HasValues.cpp
 SOURCES += Valuable.cpp
 SOURCES += ValueColor.cpp

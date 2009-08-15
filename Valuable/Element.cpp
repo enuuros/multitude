@@ -1,26 +1,29 @@
-#include "Element.hpp"
+#include "ConfigElement.hpp"
+
 namespace Valuable
 {  
-Element::Element(void)
-{
-	depth=0;
-	type="";
-}
-Attribute *Element::getAttribute(string key)
-{
-	for(int i=0;i<Attributes.size();i++)
-	{
-		if(Attributes[i].key==key)
-		{
-			return &Attributes[i];
-			break;
-		}
+  ConfigElement::ConfigElement(void)
+  {
+    depth=0;
+    type="";
+  }
 
-	}
-	return 0;
+  Attribute *ConfigElement::getAttribute(string key)
+  {
+    for(int i=0;i<(int) Attributes.size();i++)
+      {
+	if(Attributes[i].key==key)
+	  {
+	    return &Attributes[i];
+	    break;
+	  }
 
-}
-Element::~Element(void)
-{
-}
+      }
+    return 0;
+
+  }
+
+  ConfigElement::~ConfigElement(void)
+  {
+  }
 }
