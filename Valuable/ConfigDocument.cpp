@@ -1,6 +1,7 @@
 #include "ConfigDocument.hpp"
 namespace Valuable
 {  
+
   ConfigDocument::ConfigDocument(void)
   {
   }
@@ -10,9 +11,9 @@ namespace Valuable
   }
   void ConfigDocument::readConfigFile(char *fileName)
   {
-    string str;
+    std::string str;
 
-    ifstream input (fileName);
+    std::ifstream input (fileName);
 
     int depth=0;
     bool flag=false,atFlag=false;
@@ -23,7 +24,7 @@ namespace Valuable
 	if(parseLine(str)==ELEMENT_START)
 	  {
 
-	    string s;
+	    std::string s;
 	    depth++;
 	    ConfigElement elm,e;
 	    size_t ps=str.find(",");
@@ -124,7 +125,7 @@ namespace Valuable
 
 			  ConfigElement el= ConfigElement();
 			  el.Nodes.push_back(elm.Nodes[0]);
-			  ConfigElements.Nodes.push_back(el);
+			  m_doc.Nodes.push_back(el);
 			  elm.Nodes.clear();
 			  elm.ConfigValues.clear();
 			  flag=false;
@@ -140,9 +141,9 @@ namespace Valuable
   }
   void ConfigDocument::writeConfigFile(char *fileName)
   {
-    ofstream output(fileName);
-    vector<string> ss;
-    string aa=getConfigText(ConfigElements,ss);
+    std::ofstream output(fileName);
+    std::vector<std::string> ss;
+    std::string aa=getConfigText(m_doc,ss);
     //	for(int i=ss.size()-1;i>=0;i--)
     //		output<<ss[i];
     output<<aa;
@@ -156,7 +157,7 @@ namespace Valuable
     size_t startpos = str.find_first_not_of(" \t"); 
     size_t endpos = str.find_last_not_of(" \t"); 
 
-    if(( string::npos == startpos ) || ( string::npos == endpos))  
+    if(( std::string::npos == startpos ) || ( std::string::npos == endpos))  
       {  
 	str = "";  
       }  
@@ -164,29 +165,29 @@ namespace Valuable
       str = str.substr( startpos, endpos-startpos+1 );  
  
   }
-  ConfigElement *ConfigDocument::getConfigElement(string elementName)
+  ConfigElement *ConfigDocument::getConfigElement(std::string elementName)
   {
     bool found=false;
 		
-    ConfigElement *f=findConfigElement(ConfigElements,elementName,found);
+    ConfigElement *f=findConfigElement(m_doc,elementName,found);
     if(f)
       return f;
     else
       return 0;
 
   }
-  ConfigElement *ConfigDocument::getConfigElement(string key,string value)
+  ConfigElement *ConfigDocument::getConfigElement(std::string key,std::string value)
   {
     bool found=false;
 		
-    ConfigElement *f=findConfigElement(ConfigElements,found,key,value);
+    ConfigElement *f=findConfigElement(m_doc,found,key,value);
     if(f)
       return f;
     else
       return 0;
 
   }
-  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,bool &found,string key,string value)
+  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,bool &found,std::string key,std::string value)
   {
     for(int i=0;i < (int)e.Nodes.size() ;i++)
       {
@@ -199,9 +200,9 @@ namespace Valuable
 
     for(int j=0;j<(int)e.ConfigValues.size();j++)
       {
-	string ke=e.ConfigValues[j].key;
+	std::string ke=e.ConfigValues[j].key;
 	TrimSpaces(ke);
-	string val=e.ConfigValues[j].value;
+	std::string val=e.ConfigValues[j].value;
 	TrimSpaces(val);
 	if(key==ke && value==val)
 	  {
@@ -215,7 +216,7 @@ namespace Valuable
     return 0;
   }
 
-  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,string elementName,bool &found)
+  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,std::string elementName,bool &found)
   {
     for(int i=0;i < (int)e.Nodes.size() ;i++)
       {
@@ -226,7 +227,7 @@ namespace Valuable
 
       }
 
-    string s=e.elementName;
+    std::string s=e.elementName;
     TrimSpaces(s);
     if(s==elementName)
       {
@@ -238,9 +239,10 @@ namespace Valuable
 
     return 0;
   }
-  string ConfigDocument::getConfigText(ConfigElement e,vector<string> &s)
+  std::string ConfigDocument::getConfigText(ConfigElement e,
+					    std::vector<std::string> &s)
   {
-    string str;
+    std::string str;
 
     //for(int i=e.Nodes.size()-1;i>=0;i--)
 
@@ -274,7 +276,7 @@ namespace Valuable
     return str;
 
   }
-  ConfigDocument::ParseFlags ConfigDocument::parseLine(string line)
+  ConfigDocument::ParseFlags ConfigDocument::parseLine(std::string line)
   {
 
     if(line[line.length()-1]=='{')

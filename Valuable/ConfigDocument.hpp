@@ -29,18 +29,16 @@ namespace Valuable
 
     void readConfigFile(char *fileName);
     void writeConfigFile(char *fileName);
-    ConfigElement *getConfigElement(string elementName);
-    ConfigElement *getConfigElement(string key,string value);
-    ConfigElement ConfigElements;
-		
+    ConfigElement *getConfigElement(std::string elementName);
+    ConfigElement *getConfigElement(std::string key,std::string value);
   private:
 
-    void loadConfigElement(string str);
+    void loadConfigElement(std::string str);
     void TrimSpaces( std::string& str);
-    void loadConfigValue(string key,string val);
-    string getConfigText(ConfigElement e,vector<string> &ss);
-    ConfigElement *findConfigElement(ConfigElement &e,string elementName,bool &found);
-    ConfigElement *findConfigElement(ConfigElement &e,bool &found,string key,string value);
+    void loadConfigValue(std::string key,std::string val);
+    std::string getConfigText(ConfigElement e,std::vector<std::string> &ss);
+    ConfigElement *findConfigElement(ConfigElement &e,std::string elementName,bool &found);
+    ConfigElement *findConfigElement(ConfigElement &e,bool &found,std::string key,std::string value);
     enum ParseFlags
     {
       ELEMENT_START,
@@ -49,7 +47,10 @@ namespace Valuable
       NOT_VALID
 
     };
-    ParseFlags parseLine(string line);
+
+    ParseFlags parseLine(std::string line);
+
+    ConfigElement m_doc;		
   };
 }
 

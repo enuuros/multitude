@@ -21,16 +21,14 @@
 
 namespace Valuable
 {  
-  using namespace std;
-
   class VALUABLE_API ConfigValue
   {
   public:
     ConfigValue(void);
-    ConfigValue(string k,string v);
+    ConfigValue(std::string k, std::string v);
     virtual ~ConfigValue(void);
     int depth;
-    string key,value;
+    std::string key,value;
   };
 }
 

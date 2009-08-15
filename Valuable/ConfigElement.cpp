@@ -1,14 +1,15 @@
 #include "ConfigElement.hpp"
 
 namespace Valuable
-{  
+{
+
   ConfigElement::ConfigElement(void)
   {
     depth=0;
     type="";
   }
 
-  ConfigValue *ConfigElement::getConfigValue(string key)
+  ConfigValue * ConfigElement::getConfigValue(std::string key)
   {
     for(int i=0;i<(int) ConfigValues.size();i++)
       {

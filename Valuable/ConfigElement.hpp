@@ -21,21 +21,22 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 namespace Valuable
 {  
-  using namespace std;
+
   class VALUABLE_API ConfigElement
   {
   public:
     ConfigElement();
     virtual ~ConfigElement();
 
-    vector<ConfigValue> ConfigValues;
-    vector<ConfigElement> Nodes;
-    ConfigValue *getConfigValue(string key);
-    string type;
+    std::vector<ConfigValue> ConfigValues;
+    std::vector<ConfigElement> Nodes;
+    ConfigValue *getConfigValue(std::string key);
+    std::string type;
     int depth;
-    string elementName;
+    std::string elementName;
   };
 }
 
