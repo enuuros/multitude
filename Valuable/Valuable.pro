@@ -1,6 +1,6 @@
 include(../multitude.pri)
 
-HEADERS += Attribute.hpp
+HEADERS += ConfigAttribute.hpp
 HEADERS += ChangeMap.hpp
 HEADERS += ConfigDocument.hpp
 HEADERS += DOMDocument.hpp
@@ -24,7 +24,7 @@ HEADERS += ValueStringImpl.hpp
 HEADERS += ValueVector.hpp
 HEADERS += ValueVectorImpl.hpp
 
-SOURCES += Attribute.cpp
+SOURCES += ConfigAttribute.cpp
 SOURCES += ChangeMap.cpp
 SOURCES += ConfigDocument.cpp
 SOURCES += DOMDocument.cpp
