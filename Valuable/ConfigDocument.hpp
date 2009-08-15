@@ -37,7 +37,7 @@ namespace Valuable
 
     void loadConfigElement(string str);
     void TrimSpaces( std::string& str);
-    void loadConfigAttribute(string key,string val);
+    void loadConfigValue(string key,string val);
     string getConfigText(ConfigElement e,vector<string> &ss);
     ConfigElement *findConfigElement(ConfigElement &e,string elementName,bool &found);
     ConfigElement *findConfigElement(ConfigElement &e,bool &found,string key,string value);

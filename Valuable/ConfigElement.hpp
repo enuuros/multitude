@@ -17,7 +17,7 @@
 #define VALUABLE_ELEMENT_HPP
 
 #include <Valuable/Export.hpp>
-#include "ConfigAttribute.hpp"
+#include "ConfigValue.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -30,9 +30,9 @@ namespace Valuable
     ConfigElement();
     virtual ~ConfigElement();
 
-    vector<ConfigAttribute> ConfigAttributes;
+    vector<ConfigValue> ConfigValues;
     vector<ConfigElement> Nodes;
-    ConfigAttribute *getConfigAttribute(string key);
+    ConfigValue *getConfigValue(string key);
     string type;
     int depth;
     string elementName;

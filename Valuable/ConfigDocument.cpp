@@ -74,7 +74,7 @@ namespace Valuable
 		    }
 		  else if(parseLine(s)==ATTRIBUTE)
 		    {
-		      ConfigAttribute att=ConfigAttribute();
+		      ConfigValue att=ConfigValue();
 		      for(int i = 0; i < (int) s.length();i++)
 			if(s[i]=='\"')
 			  s[i]=' ';
@@ -84,7 +84,7 @@ namespace Valuable
 		      att.value=s.substr(pos+1,s.length());
 
 		      att.depth=depth;
-		      elm.Nodes[k-1].ConfigAttributes.push_back(att);
+		      elm.Nodes[k-1].ConfigValues.push_back(att);
 
 
 		    }
@@ -126,7 +126,7 @@ namespace Valuable
 			  el.Nodes.push_back(elm.Nodes[0]);
 			  ConfigElements.Nodes.push_back(el);
 			  elm.Nodes.clear();
-			  elm.ConfigAttributes.clear();
+			  elm.ConfigValues.clear();
 			  flag=false;
 			  atFlag=false;
 
@@ -197,11 +197,11 @@ namespace Valuable
 
       }
 
-    for(int j=0;j<(int)e.ConfigAttributes.size();j++)
+    for(int j=0;j<(int)e.ConfigValues.size();j++)
       {
-	string ke=e.ConfigAttributes[j].key;
+	string ke=e.ConfigValues[j].key;
 	TrimSpaces(ke);
-	string val=e.ConfigAttributes[j].value;
+	string val=e.ConfigValues[j].value;
 	TrimSpaces(val);
 	if(key==ke && value==val)
 	  {
@@ -255,10 +255,10 @@ namespace Valuable
 	  str+="\n";
 	}
 
-      for(int j=0;j < (int) e.ConfigAttributes.size();j++)
+      for(int j=0;j < (int) e.ConfigValues.size();j++)
 	{
-	  TrimSpaces(e.ConfigAttributes[j].value);
-	  str+=e.ConfigAttributes[j].key+"="+"\""+e.ConfigAttributes[j].value+"\""+"\n";
+	  TrimSpaces(e.ConfigValues[j].value);
+	  str+=e.ConfigValues[j].key+"="+"\""+e.ConfigValues[j].value+"\""+"\n";
 
 	}
       for(int i = 0; i < (int) e.Nodes.size(); i++)

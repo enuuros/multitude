@@ -23,12 +23,12 @@ namespace Valuable
 {  
   using namespace std;
 
-  class VALUABLE_API ConfigAttribute
+  class VALUABLE_API ConfigValue
   {
   public:
-    ConfigAttribute(void);
-    ConfigAttribute(string k,string v);
-    virtual ~ConfigAttribute(void);
+    ConfigValue(void);
+    ConfigValue(string k,string v);
+    virtual ~ConfigValue(void);
     int depth;
     string key,value;
   };
