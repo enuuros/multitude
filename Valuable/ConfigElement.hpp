@@ -31,12 +31,17 @@ namespace Valuable
     ConfigElement();
     virtual ~ConfigElement();
 
-    std::vector<ConfigValue> ConfigValues;
-    std::vector<ConfigElement> Nodes;
     ConfigValue *getConfigValue(std::string key);
-    std::string type;
-    int depth;
-    std::string elementName;
+
+  private:
+
+    friend class ConfigDocument;
+
+    std::vector<ConfigValue>   m_values;
+    std::vector<ConfigElement> m_nodes;
+    std::string                m_type;
+    int                        m_depth;
+    std::string                m_elementName;
   };
 }
 

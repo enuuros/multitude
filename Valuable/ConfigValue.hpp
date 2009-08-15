@@ -27,8 +27,8 @@ namespace Valuable
     ConfigValue(void);
     ConfigValue(std::string k, std::string v);
     virtual ~ConfigValue(void);
-    int depth;
-    std::string key,value;
+    int m_depth;
+    std::string m_key, m_value;
   };
 }
 

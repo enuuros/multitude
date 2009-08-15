@@ -3,15 +3,14 @@ namespace Valuable
 {  
 ConfigValue::ConfigValue(void)
 {
-	depth=0;
+  m_depth=0;
 }
 ConfigValue::ConfigValue(std::string k, std::string v)
 {
 
-	depth=0;
-	key=k;
-	value=v;
-
+  m_depth=0;
+  m_key=k;
+  m_value=v;
 }
 
 ConfigValue::~ConfigValue(void)

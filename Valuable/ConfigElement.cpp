@@ -5,23 +5,21 @@ namespace Valuable
 
   ConfigElement::ConfigElement(void)
   {
-    depth=0;
-    type="";
+    m_depth = 0;
+    m_type = "";
   }
 
   ConfigValue * ConfigElement::getConfigValue(std::string key)
   {
-    for(int i=0;i<(int) ConfigValues.size();i++)
-      {
-	if(ConfigValues[i].key==key)
-	  {
-	    return &ConfigValues[i];
-	    break;
-	  }
+    for(int i = 0; i < (int) m_values.size(); i++) {
 
+      if(m_values[i].m_key == key) {
+	return & m_values[i];
+	break;
       }
-    return 0;
+    }
 
+    return 0;
   }
 
   ConfigElement::~ConfigElement(void)
