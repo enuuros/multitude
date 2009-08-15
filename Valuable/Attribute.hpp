@@ -13,8 +13,8 @@
  * 
  */
 
-#ifndef VALUABLE_ATTRIBUTE_HPP
-#define VALUABLE_ATTRIBUTE_HPP
+#ifndef VALUABLE_CONFIG_ATTRIBUTE_HPP
+#define VALUABLE_CONFIG_ATTRIBUTE_HPP
 
 #include <Valuable/Export.hpp>
 #include <string>
@@ -23,12 +23,12 @@ namespace Valuable
 {  
   using namespace std;
 
-  class VALUABLE_API Attribute
+  class VALUABLE_API ConfigAttribute
   {
   public:
-    Attribute(void);
-    Attribute(string k,string v);
-    virtual ~Attribute(void);
+    ConfigAttribute(void);
+    ConfigAttribute(string k,string v);
+    virtual ~ConfigAttribute(void);
     int depth;
     string key,value;
   };

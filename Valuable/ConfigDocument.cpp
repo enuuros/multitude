@@ -25,7 +25,7 @@ namespace Valuable
 
 	    string s;
 	    depth++;
-	    Element elm,e;
+	    ConfigElement elm,e;
 	    size_t ps=str.find(",");
 	    if(ps<10000)
 	      {
@@ -53,7 +53,7 @@ namespace Valuable
 		  if(parseLine(s)==ELEMENT_START)
 		    {
 		      depth++;
-		      Element child=Element();
+		      ConfigElement child=ConfigElement();
 		      size_t ps=s.find(",");
 		      if(ps<10000)
 			{
@@ -74,7 +74,7 @@ namespace Valuable
 		    }
 		  else if(parseLine(s)==ATTRIBUTE)
 		    {
-		      Attribute att=Attribute();
+		      ConfigAttribute att=ConfigAttribute();
 		      for(int i = 0; i < (int) s.length();i++)
 			if(s[i]=='\"')
 			  s[i]=' ';
@@ -84,7 +84,7 @@ namespace Valuable
 		      att.value=s.substr(pos+1,s.length());
 
 		      att.depth=depth;
-		      elm.Nodes[k-1].Attributes.push_back(att);
+		      elm.Nodes[k-1].ConfigAttributes.push_back(att);
 
 
 		    }
@@ -122,11 +122,11 @@ namespace Valuable
 			    }
 
 
-			  Element el= Element();
+			  ConfigElement el= ConfigElement();
 			  el.Nodes.push_back(elm.Nodes[0]);
-			  Elements.Nodes.push_back(el);
+			  ConfigElements.Nodes.push_back(el);
 			  elm.Nodes.clear();
-			  elm.Attributes.clear();
+			  elm.ConfigAttributes.clear();
 			  flag=false;
 			  atFlag=false;
 
@@ -142,7 +142,7 @@ namespace Valuable
   {
     ofstream output(fileName);
     vector<string> ss;
-    string aa=getConfigText(Elements,ss);
+    string aa=getConfigText(ConfigElements,ss);
     //	for(int i=ss.size()-1;i>=0;i--)
     //		output<<ss[i];
     output<<aa;
@@ -164,44 +164,44 @@ namespace Valuable
       str = str.substr( startpos, endpos-startpos+1 );  
  
   }
-  Element *ConfigDocument::getElement(string elementName)
+  ConfigElement *ConfigDocument::getConfigElement(string elementName)
   {
     bool found=false;
 		
-    Element *f=findElement(Elements,elementName,found);
+    ConfigElement *f=findConfigElement(ConfigElements,elementName,found);
     if(f)
       return f;
     else
       return 0;
 
   }
-  Element *ConfigDocument::getElement(string key,string value)
+  ConfigElement *ConfigDocument::getConfigElement(string key,string value)
   {
     bool found=false;
 		
-    Element *f=findElement(Elements,found,key,value);
+    ConfigElement *f=findConfigElement(ConfigElements,found,key,value);
     if(f)
       return f;
     else
       return 0;
 
   }
-  Element *ConfigDocument::findElement(Element &e,bool &found,string key,string value)
+  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,bool &found,string key,string value)
   {
     for(int i=0;i < (int)e.Nodes.size() ;i++)
       {
-	Element *w;
-	w=findElement(e.Nodes[i],found,key,value);
+	ConfigElement *w;
+	w=findConfigElement(e.Nodes[i],found,key,value);
 	if(found)
 	  return w;
 
       }
 
-    for(int j=0;j<(int)e.Attributes.size();j++)
+    for(int j=0;j<(int)e.ConfigAttributes.size();j++)
       {
-	string ke=e.Attributes[j].key;
+	string ke=e.ConfigAttributes[j].key;
 	TrimSpaces(ke);
-	string val=e.Attributes[j].value;
+	string val=e.ConfigAttributes[j].value;
 	TrimSpaces(val);
 	if(key==ke && value==val)
 	  {
@@ -215,12 +215,12 @@ namespace Valuable
     return 0;
   }
 
-  Element *ConfigDocument::findElement(Element &e,string elementName,bool &found)
+  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,string elementName,bool &found)
   {
     for(int i=0;i < (int)e.Nodes.size() ;i++)
       {
-	Element *w;
-	w=findElement(e.Nodes[i],elementName,found);
+	ConfigElement *w;
+	w=findConfigElement(e.Nodes[i],elementName,found);
 	if(found)
 	  return w;
 
@@ -238,7 +238,7 @@ namespace Valuable
 
     return 0;
   }
-  string ConfigDocument::getConfigText(Element e,vector<string> &s)
+  string ConfigDocument::getConfigText(ConfigElement e,vector<string> &s)
   {
     string str;
 
@@ -255,10 +255,10 @@ namespace Valuable
 	  str+="\n";
 	}
 
-      for(int j=0;j < (int) e.Attributes.size();j++)
+      for(int j=0;j < (int) e.ConfigAttributes.size();j++)
 	{
-	  TrimSpaces(e.Attributes[j].value);
-	  str+=e.Attributes[j].key+"="+"\""+e.Attributes[j].value+"\""+"\n";
+	  TrimSpaces(e.ConfigAttributes[j].value);
+	  str+=e.ConfigAttributes[j].key+"="+"\""+e.ConfigAttributes[j].value+"\""+"\n";
 
 	}
       for(int i = 0; i < (int) e.Nodes.size(); i++)

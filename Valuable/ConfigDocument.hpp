@@ -17,7 +17,7 @@
 #define VALUABLE_CONFIG_DOCUMENT_HPP
 
 #include <Valuable/Export.hpp>
-#include "Element.hpp"
+#include "ConfigElement.hpp"
 #include <fstream>
 namespace Valuable
 {  
@@ -29,18 +29,18 @@ namespace Valuable
 
     void readConfigFile(char *fileName);
     void writeConfigFile(char *fileName);
-    Element *getElement(string elementName);
-    Element *getElement(string key,string value);
-    Element Elements;
+    ConfigElement *getConfigElement(string elementName);
+    ConfigElement *getConfigElement(string key,string value);
+    ConfigElement ConfigElements;
 		
   private:
 
-    void loadElement(string str);
+    void loadConfigElement(string str);
     void TrimSpaces( std::string& str);
-    void loadAttribute(string key,string val);
-    string getConfigText(Element e,vector<string> &ss);
-    Element *findElement(Element &e,string elementName,bool &found);
-    Element *findElement(Element &e,bool &found,string key,string value);
+    void loadConfigAttribute(string key,string val);
+    string getConfigText(ConfigElement e,vector<string> &ss);
+    ConfigElement *findConfigElement(ConfigElement &e,string elementName,bool &found);
+    ConfigElement *findConfigElement(ConfigElement &e,bool &found,string key,string value);
     enum ParseFlags
     {
       ELEMENT_START,

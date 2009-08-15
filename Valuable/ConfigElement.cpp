@@ -8,13 +8,13 @@ namespace Valuable
     type="";
   }
 
-  Attribute *ConfigElement::getAttribute(string key)
+  ConfigAttribute *ConfigElement::getConfigAttribute(string key)
   {
-    for(int i=0;i<(int) Attributes.size();i++)
+    for(int i=0;i<(int) ConfigAttributes.size();i++)
       {
-	if(Attributes[i].key==key)
+	if(ConfigAttributes[i].key==key)
 	  {
-	    return &Attributes[i];
+	    return &ConfigAttributes[i];
 	    break;
 	  }
 

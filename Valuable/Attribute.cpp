@@ -1,11 +1,11 @@
-#include "Attribute.hpp"
+#include "ConfigAttribute.hpp"
 namespace Valuable
 {  
-Attribute::Attribute(void)
+ConfigAttribute::ConfigAttribute(void)
 {
 	depth=0;
 }
-Attribute::Attribute(std::string k, std::string v)
+ConfigAttribute::ConfigAttribute(std::string k, std::string v)
 {
 
 	depth=0;
@@ -14,7 +14,7 @@ Attribute::Attribute(std::string k, std::string v)
 
 }
 
-Attribute::~Attribute(void)
+ConfigAttribute::~ConfigAttribute(void)
 {
 }
 }
