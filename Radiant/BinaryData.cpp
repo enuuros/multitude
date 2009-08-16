@@ -498,5 +498,4 @@ namespace Radiant {
 		   func, m_current, m_total);
   }
 
-
 }
