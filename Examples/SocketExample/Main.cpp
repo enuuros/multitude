@@ -68,13 +68,31 @@ void runServer(const char * host, int port, bool withBlocking)
     }
 
     TCPSocket * socket = server.accept();
+
+    if(!socket) {
+      Radiant::error("Count not create socket.");
+      return;
+    }
+
     printf("Got a new socket %p\n", socket);
     fflush(0);
 
     int32_t len = 0;
     buf[0] = '\0';
-    socket->read( & len, 4);
-    socket->read(buf, len);
+    int n = socket->read( & len, 4);
+
+    if(n != 4) {
+      Radiant::error("Could not read 4 header bytes from the socket, got %d", n);
+      delete socket;
+      return;
+    }
+      
+    n = socket->read(buf, len);
+
+    if(n != len) {
+      Radiant::error("Could not read %d data bytes from the socket, got %d",
+		     len, n);
+    }
 
     printf("Received \"%s\"\n", buf);
     fflush(0);
@@ -144,7 +162,7 @@ int main(int argc, char ** argv)
   int port = 3456;
   bool islistener = false;
   bool isclient = true;
-  bool withBlocking = false;
+  bool withBlocking = true;
 
   appname = argv[0];
 

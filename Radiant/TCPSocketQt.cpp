@@ -14,9 +14,13 @@
  */
 
 #include "TCPSocket.hpp"
+
+#include "Sleep.hpp"
 #include "Trace.hpp"
 
 #include <QTcpSocket>
+
+#include <errno.h>
 
 namespace Radiant
 {
@@ -50,11 +54,26 @@ namespace Radiant
 
     m_d->connectToHost(host, port);
 
+    bool ok = m_d->waitForConnected(5000);
+
+    if(!ok) {
+      QString errstr = m_d->errorString() ;
+      error("TCPSocket::open # %s", errstr.toStdString().c_str());
+      return EINVAL;
+    }
+
     return 0;
   }
 
   bool TCPSocket::close()
   {
+    int count = 0;
+
+    while(m_d->bytesToWrite() && count < 500) {
+      Radiant::Sleep::sleepMs(5);
+      count++;
+    }
+
     m_d->close();
 
     return true;
@@ -77,12 +96,29 @@ namespace Radiant
 
   int TCPSocket::read(void * buffer, int bytes)
   {
-    return m_d->read((char *)buffer, bytes);
+    int got = 0;
+    char * ptr = (char *) buffer;
+
+    while(got < bytes && m_d->state() == QAbstractSocket::ConnectedState) {
+
+      bool something = m_d->waitForReadyRead(10000);
+      int n = m_d->read(ptr, bytes - got);
+      got += n;
+    }
+    
+    info("TCPSocket::read # state = %d", (int)  m_d->state());
+
+    return got;
   }
 
   int TCPSocket::write(const void * buffer, int bytes)
   {
-    return m_d->write((const char *)buffer, bytes);
+    int n = m_d->write((const char *)buffer, bytes);
+
+    if(n == bytes)
+      m_d->flush();
+
+    return n;
   }
 
   bool TCPSocket::isHungUp() const

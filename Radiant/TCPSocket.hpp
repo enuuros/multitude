@@ -69,6 +69,8 @@ namespace Radiant {
     void debug();
     
   private:
+    friend class TCPServerSocket;
+    
     TCPSocket(const TCPSocket & ) : BinaryStream() {}
     TCPSocket & operator = (const TCPSocket & )  { return * this; }
 

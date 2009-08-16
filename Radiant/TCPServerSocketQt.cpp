@@ -21,6 +21,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <errno.h>
+
 namespace Radiant
 {
 
@@ -66,8 +68,11 @@ int TCPServerSocket::open(const char * host, int port, int maxconnections)
   bool r = m_d->listen(QHostAddress(host), port);
   m_d->setMaxPendingConnections(maxconnections);
 
-  if(r) return 0;
-  else return r;
+  if(!r)
+    error("TCPServerSocket::open # %s:%d (%s)", host, port, 
+	  m_d->errorString().toStdString().c_str());
+
+  return r ? 0 : EINVAL;
 }
 
   bool TCPServerSocket::close() 
@@ -84,7 +89,10 @@ int TCPServerSocket::open(const char * host, int port, int maxconnections)
  
   bool TCPServerSocket::isPendingConnection(unsigned int waitMicroSeconds)
   {
-    return m_d->waitForNewConnection(waitMicroSeconds);
+    info("TCPServerSocket::isPendingConnection # %d",
+	 m_d->socketDescriptor());
+
+    return m_d->waitForNewConnection(waitMicroSeconds / 1000);
   }
 
   TCPSocket * TCPServerSocket::accept()
@@ -92,7 +100,20 @@ int TCPServerSocket::open(const char * host, int port, int maxconnections)
     int fd = m_d->pendingConnection();
     if(fd == -1) return 0;
 
-    return new TCPSocket(fd);
+    TCPSocket * tcp = new TCPSocket(fd);
+
+    QTcpSocket * qtcp = (QTcpSocket*) tcp->m_d;
+
+    if(!qtcp->waitForConnected()) {
+      error("TCPServerSocket::accept # Could not connect %s",
+	    qtcp->errorString().toStdString().c_str());
+      delete tcp;
+      return 0;
+    }
+
+    
+
+    return tcp;
   }
   
 }
