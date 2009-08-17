@@ -186,6 +186,8 @@ void runListener(const char * host, int port, const char *)
 
 int main(int argc, char ** argv)
 {
+  Radiant::TimeStamp startTime(Radiant::TimeStamp::getTime());
+
   const char * host = "localhost";
   const char * message = "Here we have a message";
   int port = 3456;
@@ -234,6 +236,8 @@ int main(int argc, char ** argv)
 #ifdef WIN32
   WinPort::exitSockets();
 #endif
+
+  printf("%s took %.2lf seconds\n", appname, startTime.since().secondsD());
 
   return 0;
 }
