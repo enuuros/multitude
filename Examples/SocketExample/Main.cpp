@@ -49,7 +49,7 @@ void runServer(const char * host, int port, bool withBlocking)
   char buf[1024];
 
   TCPServerSocket server;
-  int err = server.open(host, port, 5);
+  int i, err = server.open(host, port, 5);
 // err = server.open(0, port, 5)
   if(err) {
     const int  msgSize = 128;
@@ -59,7 +59,7 @@ void runServer(const char * host, int port, bool withBlocking)
     return;
   }
   
-  for(int i = 0; i < 10; i++) {
+  for(i = 0; i < 10; i++) {
     puts("Waiting for a connection");
 
     while(withBlocking && !server.isPendingConnection(1000000)) {
@@ -99,6 +99,8 @@ void runServer(const char * host, int port, bool withBlocking)
 
     delete socket;
   }
+  
+  info("%s %d clients handled, returning", appname, i);
 }
 
 void runClient(const char * host, int port, const char * message)
