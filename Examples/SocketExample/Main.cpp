@@ -36,6 +36,9 @@ const char * strerror_s(const char *, int, int err)
 
 using namespace Radiant;
 
+bool withreplies = false;
+int iterations = 1;
+
 const char * appname = 0;
 
 float __duration = 10000000.0f;
@@ -70,36 +73,44 @@ void runServer(const char * host, int port, bool withBlocking)
     TCPSocket * socket = server.accept();
 
     if(!socket) {
-      Radiant::error("Count not create socket.");
+      Radiant::error("Count not create a socket.");
       return;
     }
 
     printf("Got a new socket %p\n", socket);
     fflush(0);
 
-    int32_t len = 0;
-    buf[0] = '\0';
-    int n = socket->read( & len, 4);
-
-    if(n != 4) {
-      Radiant::error("Could not read 4 header bytes from the socket, got %d", n);
-      delete socket;
-      return;
-    }
+    for(int j = 0; j < iterations; j++) {
+      int32_t len = 0;
+      buf[0] = '\0';
+      int n = socket->read( & len, 4);
       
-    n = socket->read(buf, len);
+      if(n != 4) {
+	Radiant::error("Could not read 4 header bytes from the socket, got %d", n);
+	delete socket;
+	return;
+      }
+      
+      n = socket->read(buf, len);
+      
+      if(n != len) {
+	Radiant::error("Could not read %d data bytes from the socket, got %d",
+		       len, n);
+      }
+      
+      printf("Received \"%s\"\n", buf);
 
-    if(n != len) {
-      Radiant::error("Could not read %d data bytes from the socket, got %d",
-		     len, n);
+      if(withreplies) {
+	socket->write( & len, 4);
+	socket->write( & buf, len);
+      }
     }
-
-    printf("Received \"%s\"\n", buf);
-    fflush(0);
 
     delete socket;
   }
   
+  fflush(0);
+
   info("%s %d clients handled, returning", appname, i);
 }
 
@@ -109,6 +120,7 @@ void runClient(const char * host, int port, const char * message)
 
   TCPSocket socket;
   int err = socket.open(host, port);
+
   if(err) {
     const int  msgSize = 128;
     char  msgBuf[msgSize] = "";
@@ -116,12 +128,27 @@ void runClient(const char * host, int port, const char * message)
 	   appname, host, port, strerror_s(msgBuf, msgSize, err));
     return;
   }
-
-  puts("Sending message");
   
-  int32_t len = strlen(message) + 1;
-  socket.write(&len, 4);
-  socket.write(message, len);
+  char buf[1024];
+
+  for(int i = 0; i < iterations; i++) {
+
+    puts("Sending message");
+
+    sprintf(buf, "%s %d", message, i + 1);
+    
+    int32_t len = strlen(buf) + 1;
+    socket.write( & len, 4);
+    socket.write(buf, len);
+
+    if(withreplies) {
+      len = 0;
+      socket.read( & len, 4);
+      bzero(buf, sizeof(buf));
+      socket.read(buf, len);
+      printf("Received reply \"%s\"\n", buf);
+    }
+  }
 
   puts("Closing");
 
@@ -179,12 +206,16 @@ int main(int argc, char ** argv)
       host = argv[++i];
     else if(strcmp(argv[i], "--port") == 0 && (i + 1) < argc)
       port = atoi(argv[++i]);
+    else if(strcmp(argv[i], "--iterations") == 0 && (i + 1) < argc)
+      iterations = atoi(argv[++i]);
     else if(strcmp(argv[i], "--message") == 0 && (i + 1) < argc)
       message = argv[++i];
     else if(strcmp(argv[i], "--time") == 0 && (i + 1) < argc)
       __duration = atof(argv[++i]);
     else if(strcmp(argv[i], "--withblocking") == 0)
       withBlocking = true;
+    else if(strcmp(argv[i], "--withreplies") == 0)
+      withreplies = true;
     else
       printf("%s # Unknown argument \"%s\"\n", appname, argv[i]);
   }
