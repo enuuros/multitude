@@ -77,9 +77,7 @@ void runServer(const char * host, int port, bool withBlocking)
       return;
     }
 
-#ifndef WIN32
     socket->setNoDelay(true);
-#endif
 
     printf("Got a new socket %p\n", socket);
     fflush(0);

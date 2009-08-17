@@ -15,6 +15,8 @@
 
 #include <Luminous/BGThread.hpp>
 
+#include <Nimble/Math.hpp>
+
 #include <Radiant/Trace.hpp>
 
 #include <typeinfo>
@@ -244,7 +246,7 @@ namespace Luminous
         return task;
       } else {
         Radiant::TimeStamp next = task->scheduled() - now;
-        wait = std::min(wait, next);
+        wait = Nimble::Math::Min(wait, next);
       }
     }
 

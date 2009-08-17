@@ -13,6 +13,11 @@
  * 
  */
 
+// Yes, this has to be on the top.
+#include <winsock.h>
+
+#define IGNORE_MULTITUDE_TIMEVAL 1
+
 #include "TCPSocket.hpp"
 
 #include "Sleep.hpp"
@@ -21,6 +26,9 @@
 #include <QTcpSocket>
 
 #include <errno.h>
+
+
+
 
 namespace Radiant
 {
@@ -48,6 +56,22 @@ namespace Radiant
     delete m_d;
   }
 
+  bool TCPSocket::setNoDelay(bool noDelay)
+  {
+    int yes = noDelay;
+
+    if (setsockopt(m_d->socketDescriptor (),
+		   6, 1, (char *) & yes, 
+		   sizeof(int))) {
+      // 6 = TCP
+      // 1 = NODELAY
+      error("Could not set option TCP_NODELAY");
+      return false;
+    }
+
+    return true;
+  }
+
   int TCPSocket::open(const char * host, int port)
   {
     close();
@@ -62,6 +86,7 @@ namespace Radiant
       return EINVAL;
     }
 
+    
     return 0;
   }
 
@@ -98,16 +123,20 @@ namespace Radiant
   {
     int got = 0;
     char * ptr = (char *) buffer;
+    int loops = 0;
 
-    while(got < bytes && m_d->state() == QAbstractSocket::ConnectedState) {
+    while((got < bytes) && (m_d->state() == QAbstractSocket::ConnectedState)) {
 
-      bool something = m_d->waitForReadyRead(10000);
-      int n = m_d->read(ptr, bytes - got);
+      bool something = m_d->waitForReadyRead(1);
+
+      int n = m_d->read(ptr + got, bytes - got);
       got += n;
+      loops++;
     }
-    
-    info("TCPSocket::read # state = %d", (int)  m_d->state());
-
+    /*
+    info("TCPSocket::read # %d/%d state = %d %d",
+	 got, bytes, (int)  m_d->state(), loops);
+    */
     return got;
   }
 
@@ -115,8 +144,8 @@ namespace Radiant
   {
     int n = m_d->write((const char *)buffer, bytes);
 
-    if(n == bytes)
-      m_d->flush();
+    // if(n == bytes)
+    m_d->flush();
 
     return n;
   }
