@@ -17,6 +17,7 @@
 #define VALUABLE_CONFIG_ATTRIBUTE_HPP
 
 #include <Valuable/Export.hpp>
+
 #include <string>
 
 namespace Valuable

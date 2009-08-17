@@ -15,6 +15,8 @@
 
 #include "TCPSocket.hpp"
 
+#include "Trace.hpp"
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
@@ -121,7 +123,21 @@ namespace Radiant
     if(m_d->m_fd < 0)
       return -1;
 
-	 return ::read(m_d->m_fd, buffer, bytes);
+    int got = 0;
+    char * ptr = (char *) buffer;
+
+    while(got < bytes && isPendingInput(500000)) {
+      int n = ::read(m_d->m_fd, ptr + got, bytes - got);
+
+      if(n < 0) {
+	error("TCPSocket::read # n < 0");
+	break;
+      }
+
+      got += n;
+    }
+    
+    return got;
   }
 
   int TCPSocket::write(const void * buffer, int bytes)

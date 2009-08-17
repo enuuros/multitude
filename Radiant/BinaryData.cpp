@@ -414,12 +414,16 @@ namespace Radiant {
         Radiant::error("BinaryData::read # Attempting extraordinary read (%d bytes)", s);
 	return false;
       }
-      m_buf = (char *) realloc(m_buf, s);
-      m_size = s;
+      ensure(s + 8);
+      // m_size = s;
     }
     
-    if(stream->read( & m_buf[0], s) != (int) s)
+    int n = stream->read( & m_buf[0], s);
+    if(n != (int) s) {
+      error("BinaryData::read # buffer read failed (got %d != %d)",
+	    n, s);
       return false;
+    }
 
     m_current = 0;
     m_total = s;

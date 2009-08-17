@@ -17,7 +17,8 @@
 #define VALUABLE_ELEMENT_HPP
 
 #include <Valuable/Export.hpp>
-#include "ConfigValue.hpp"
+#include <Valuable/ConfigValue.hpp>
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -32,6 +33,8 @@ namespace Valuable
     virtual ~ConfigElement();
 
     ConfigValue *getConfigValue(std::string key);
+
+    void clear();
 
   private:
 

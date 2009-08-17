@@ -19,10 +19,11 @@ namespace Valuable
 
     std::ifstream input (fileName);
 
-    int depth=0;
-    bool flag=false,atFlag=false;
+    int depth = 0;
+    bool flag = false, atFlag = false;
 
-    int k=0;
+    int k = 0;
+
     while(std::getline(input,str)) {
 
       if(str == "")
@@ -103,7 +104,8 @@ namespace Valuable
 		  else {
 
 		    for(int j=i-2;j>=0;j--) {
-		      if(elm.m_nodes[j].m_depth<elm.m_nodes[i].m_depth && (elm.m_nodes[i].m_depth-elm.m_nodes[j].m_depth)==1 ) {
+		      if(elm.m_nodes[j].m_depth<elm.m_nodes[i].m_depth && 
+			 (elm.m_nodes[i].m_depth-elm.m_nodes[j].m_depth)==1 ) {
 			elm.m_nodes[j].m_nodes.push_back(elm.m_nodes[i]);
 			break;
 		      }
@@ -123,7 +125,6 @@ namespace Valuable
 		elm.m_values.clear();
 		flag=false;
 		atFlag=false;
-
 	      }
 	    }
 	}
@@ -167,7 +168,8 @@ namespace Valuable
       return 0;
 
   }
-  ConfigElement *ConfigDocument::getConfigElement(std::string key,std::string value)
+  ConfigElement *ConfigDocument::getConfigElement(std::string key,
+						  std::string value)
   {
     bool found=false;
 		
@@ -178,55 +180,66 @@ namespace Valuable
       return 0;
 
   }
-  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,bool &found,std::string key,std::string value)
+
+  void ConfigDocument::from(DOMElement e)
   {
-    for(int i=0;i < (int)e.m_nodes.size() ;i++)
-      {
-	ConfigElement *w;
-	w=findConfigElement(e.m_nodes[i],found,key,value);
-	if(found)
-	  return w;
+    m_doc.clear();
 
+    DOMElement::NodeList enodes = e.getChildNodes(); 
+
+    for(DOMElement::NodeList::iterator it = enodes.begin();
+	it != enodes.end(); it++) {
+      DOMElement e2 = (*it);
+    }
+  }
+
+  ConfigElement *ConfigDocument::findConfigElement
+  (ConfigElement &e,bool &found,std::string key,std::string value)
+  {
+    for(int i=0;i < (int)e.m_nodes.size() ;i++) {
+      ConfigElement *w;
+      w=findConfigElement(e.m_nodes[i],found,key,value);
+      if(found)
+	return w;
+    }
+
+    for(int j=0;j<(int)e.m_values.size();j++) {
+      std::string ke=e.m_values[j].m_key;
+      TrimSpaces(ke);
+      std::string val=e.m_values[j].m_value;
+      TrimSpaces(val);
+      
+      if(key==ke && value==val) {
+	found=true;
+	
+	return &e;
+	
       }
-
-    for(int j=0;j<(int)e.m_values.size();j++)
-      {
-	std::string ke=e.m_values[j].m_key;
-	TrimSpaces(ke);
-	std::string val=e.m_values[j].m_value;
-	TrimSpaces(val);
-	if(key==ke && value==val)
-	  {
-	    found=true;
-
-	    return &e;
-
-	  }
-      }
-
+    }
+    
     return 0;
   }
 
-  ConfigElement *ConfigDocument::findConfigElement(ConfigElement &e,std::string elementName,bool &found)
+  ConfigElement *ConfigDocument::findConfigElement
+  (ConfigElement &e,std::string elementName,bool &found)
   {
-    for(int i=0;i < (int)e.m_nodes.size() ;i++)
-      {
-	ConfigElement *w;
-	w=findConfigElement(e.m_nodes[i],elementName,found);
-	if(found)
-	  return w;
-
-      }
+    for(int i=0;i < (int)e.m_nodes.size() ;i++) {
+      ConfigElement *w;
+      w=findConfigElement(e.m_nodes[i],elementName,found);
+      if(found)
+	return w;
+      
+    }
 
     std::string s=e.m_elementName;
     TrimSpaces(s);
-    if(s==elementName)
-      {
-	found=true;
-		
-	return &e;
-			 
-      }
+
+    if(s==elementName) {
+      found=true;
+      
+      return &e;
+      
+    }
 
     return 0;
   }
@@ -239,34 +252,31 @@ namespace Valuable
 
     //	if(e.m_elementName!="")
     {
-      if(e.m_elementName!="")
-	{
-	  if(e.m_type=="")
-	    str+=e.m_elementName+" {";
-	  else
-	    str+=e.m_elementName+","+e.m_type+" {";
-	  str+="\n";
-	}
+      if(e.m_elementName!="") {
+	if(e.m_type=="")
+	  str+=e.m_elementName+" {";
+	else
+	  str+=e.m_elementName+","+e.m_type+" {";
+	str+="\n";
+      }
 
-      for(int j=0;j < (int) e.m_values.size();j++)
-	{
-	  TrimSpaces(e.m_values[j].m_value);
-	  str+=e.m_values[j].m_key+"="+"\""+e.m_values[j].m_value+"\""+"\n";
+      for(int j=0;j < (int) e.m_values.size();j++) {
+	TrimSpaces(e.m_values[j].m_value);
+	str+=e.m_values[j].m_key+"="+"\""+e.m_values[j].m_value+"\""+"\n";
 
-	}
+      }
       for(int i = 0; i < (int) e.m_nodes.size(); i++)
 	str+=getConfigText(e.m_nodes[i],s);
 
-      if(e.m_elementName!="")
-	{
-	  str+="}";
-	  str+="\n";
-	}
+      if(e.m_elementName!="") {
+	str+="}";
+	str+="\n";
+      }
       //s.push_back(str);
     }
     return str;
-
   }
+
   ConfigDocument::ParseFlags ConfigDocument::parseLine(std::string line)
   {
 
@@ -274,14 +284,13 @@ namespace Valuable
       return ELEMENT_START;
     else if(line[line.length()-1]=='}')
       return ELEMENT_END;
-    else
-      {
-	size_t pos=line.find("=");
-	if(pos>=10000)
-	  return NOT_VALID;
-	else
-	  return ATTRIBUTE;
-      }
+    else {
+      size_t pos=line.find("=");
+      if(pos>=10000)
+	return NOT_VALID;
+      else
+	return ATTRIBUTE;
+    }
   }
 
 }

@@ -9,6 +9,10 @@ namespace Valuable
     m_type = "";
   }
 
+  ConfigElement::~ConfigElement(void)
+  {
+  }
+
   ConfigValue * ConfigElement::getConfigValue(std::string key)
   {
     for(int i = 0; i < (int) m_values.size(); i++) {
@@ -22,7 +26,9 @@ namespace Valuable
     return 0;
   }
 
-  ConfigElement::~ConfigElement(void)
+  void ConfigElement::clear()
   {
+    *this = ConfigElement();
   }
+
 }

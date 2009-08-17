@@ -17,7 +17,8 @@
 #define VALUABLE_CONFIG_DOCUMENT_HPP
 
 #include <Valuable/Export.hpp>
-#include "ConfigElement.hpp"
+#include <Valuable/DOMElement.hpp>
+#include <Valuable/ConfigElement.hpp>
 
 // 
 
@@ -33,6 +34,9 @@ namespace Valuable
     void writeConfigFile(char *fileName);
     ConfigElement *getConfigElement(std::string elementName);
     ConfigElement *getConfigElement(std::string key,std::string value);
+
+    void from(Valuable::DOMElement e);
+
   private:
 
     void loadConfigElement(std::string str);
