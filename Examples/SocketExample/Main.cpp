@@ -77,6 +77,10 @@ void runServer(const char * host, int port, bool withBlocking)
       return;
     }
 
+#ifndef WIN32
+    socket->setNoDelay(true);
+#endif
+
     printf("Got a new socket %p\n", socket);
     fflush(0);
 
@@ -128,7 +132,12 @@ void runClient(const char * host, int port, const char * message)
 	   appname, host, port, strerror_s(msgBuf, msgSize, err));
     return;
   }
-  
+
+#ifndef WIN32
+  socket.setNoDelay(true);
+#endif
+
+
   char buf[1024];
 
   for(int i = 0; i < iterations; i++) {
