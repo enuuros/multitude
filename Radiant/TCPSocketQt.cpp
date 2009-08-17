@@ -86,6 +86,7 @@ namespace Radiant
       return EINVAL;
     }
 
+    setNoDelay(true);
     
     return 0;
   }
