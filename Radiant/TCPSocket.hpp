@@ -36,6 +36,10 @@ namespace Radiant {
     TCPSocket(int fd);
     ~TCPSocket();
 
+#ifndef WIN32
+    bool setNoDelay(bool noDelay);
+#endif
+
     /// Opens a TCP socket to desired host:port
     /** @return On successful execution, returns zero, otherwise an
         error code (as in errno.h). */

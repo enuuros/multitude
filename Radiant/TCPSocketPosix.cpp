@@ -57,6 +57,18 @@ namespace Radiant
     delete m_d;
   }
 
+  bool TCPSocket::setNoDelay(bool noDelay)
+  {    
+    int yes = noDelay;
+
+    if (setsockopt(m_d->m_fd, IPPROTO_TCP, TCP_NODELAY, (char *) & yes, 
+		   sizeof(int))) {
+      return false;
+    }
+    
+    return true;
+  }
+
   int TCPSocket::open(const char * host, int port)
   {
     close();
