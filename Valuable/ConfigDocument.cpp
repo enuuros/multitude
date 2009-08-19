@@ -1,4 +1,7 @@
+
 #include "ConfigDocument.hpp"
+
+#include <Radiant/Trace.hpp>
 
 #include <fstream>
 
@@ -13,7 +16,7 @@ namespace Valuable
   {
   }
 
-  void ConfigDocument::readConfigFile(char *fileName)
+  void ConfigDocument::readConfigFile(const char *fileName)
   {
     std::string str;
 
@@ -46,12 +49,14 @@ namespace Valuable
 
 	  e.m_elementName=str.substr(0,str.find("{")-1);
 	}
-	//e.m_elementName=str.substr(0,str.length()-2);
+	
+	trimSpaces(e.m_elementName);
+	
+	Radiant::info("E1 : %s", e.m_elementName.c_str());
+	
 	e.m_depth=depth;
 	elm.m_nodes.push_back(e);
 	k++;
-
-
 
 	while(std::getline(input,s)) {
 	  if(s!="")
@@ -69,6 +74,11 @@ namespace Valuable
 
 		child.m_elementName=s.substr(0,s.find("{")-1);
 	      }
+
+	      trimSpaces(child.m_elementName);
+
+	      Radiant::info("E2: %s", child.m_elementName.c_str());
+
 	      child.m_depth=depth;
 	      elm.m_nodes.push_back(child);
 	      k++;
@@ -82,16 +92,15 @@ namespace Valuable
 	      size_t pos=s.find("=");
 
 	      att.m_key=s.substr(0,pos);
+	      trimSpaces(att.m_key);
 	      att.m_value=s.substr(pos+1,s.length());
 
 	      att.m_depth=depth;
 	      elm.m_nodes[k-1].m_values.push_back(att);
 
-
 	    }
 	    else if(parseLine(s)==ELEMENT_END) {
 	      depth--;
-		      
 
 	      if(depth==0) {
 		k=0;
@@ -99,7 +108,7 @@ namespace Valuable
 		for(int i=elm.m_nodes.size()-1;i>0;i--) {
 		  if(elm.m_nodes[i].m_depth>elm.m_nodes[i-1].m_depth) {
 		    elm.m_nodes[i-1].m_nodes.push_back(elm.m_nodes[i]);
-
+		    Radiant::info("E3 : %s", elm.m_nodes[i].m_elementName.c_str());
 		  }
 		  else {
 
@@ -107,19 +116,17 @@ namespace Valuable
 		      if(elm.m_nodes[j].m_depth<elm.m_nodes[i].m_depth && 
 			 (elm.m_nodes[i].m_depth-elm.m_nodes[j].m_depth)==1 ) {
 			elm.m_nodes[j].m_nodes.push_back(elm.m_nodes[i]);
+			Radiant::info("E4 : %s", elm.m_nodes[i].m_elementName.c_str());
 			break;
 		      }
-
-
 		    }
 		  }
-
-
 		}
-
 
 		ConfigElement el= ConfigElement();
 		el.m_nodes.push_back(elm.m_nodes[0]);
+		
+		Radiant::info("E5 : %s", elm.m_nodes[0].m_elementName.c_str());
 		m_doc.m_nodes.push_back(el);
 		elm.m_nodes.clear();
 		elm.m_values.clear();
@@ -131,20 +138,33 @@ namespace Valuable
       }
     }
     input.close();
+
+    if(m_doc.childCount() == 1 && m_doc.elementName().empty()) {
+      const ConfigElement & c1 = m_doc.child(0);
+      if(c1.childCount() == 1 && c1.elementName().empty()) {
+	m_doc = ConfigElement(c1);
+      }
+    }
   }
-  void ConfigDocument::writeConfigFile(char *fileName)
+
+  void ConfigDocument::writeConfigFile(const char *fileName)
   {
     std::ofstream output(fileName);
-    std::vector<std::string> ss;
-    std::string aa=getConfigText(m_doc,ss);
+    writeConfig(output);
+    output.close();
+  }
+  
+  void ConfigDocument::writeConfig(std::ostream & output)
+  {
+    std::string aa = getConfigText(m_doc);
+
     //	for(int i=ss.size()-1;i>=0;i--)
     //		output<<ss[i];
-    output<<aa;
-    output.close();
 
-
+    output << aa;  
   }
-  void ConfigDocument::TrimSpaces( std::string& str)  
+
+  void ConfigDocument::trimSpaces( std::string& str)  
   {  
     using namespace std;
     size_t startpos = str.find_first_not_of(" \t"); 
@@ -181,18 +201,6 @@ namespace Valuable
 
   }
 
-  void ConfigDocument::from(DOMElement e)
-  {
-    m_doc.clear();
-
-    DOMElement::NodeList enodes = e.getChildNodes(); 
-
-    for(DOMElement::NodeList::iterator it = enodes.begin();
-	it != enodes.end(); it++) {
-      DOMElement e2 = (*it);
-    }
-  }
-
   ConfigElement *ConfigDocument::findConfigElement
   (ConfigElement &e,bool &found,std::string key,std::string value)
   {
@@ -205,9 +213,9 @@ namespace Valuable
 
     for(int j=0;j<(int)e.m_values.size();j++) {
       std::string ke=e.m_values[j].m_key;
-      TrimSpaces(ke);
+      trimSpaces(ke);
       std::string val=e.m_values[j].m_value;
-      TrimSpaces(val);
+      trimSpaces(val);
       
       if(key==ke && value==val) {
 	found=true;
@@ -232,7 +240,7 @@ namespace Valuable
     }
 
     std::string s=e.m_elementName;
-    TrimSpaces(s);
+    trimSpaces(s);
 
     if(s==elementName) {
       found=true;
@@ -243,36 +251,50 @@ namespace Valuable
 
     return 0;
   }
-  std::string ConfigDocument::getConfigText(ConfigElement e,
-					    std::vector<std::string> &s)
+
+  static std::string __indent(int recursion)
+  {
+    std::string res;
+
+    for(int i = 0; i < recursion; i++)
+      res += "  ";
+
+    return res;
+  }
+
+  std::string ConfigDocument::getConfigText(ConfigElement e, int recursion)
   {
     std::string str;
+    std::string ind(__indent(recursion));
+    std::string ind2(ind + "  ");
 
-    //for(int i=e.m_nodes.size()-1;i>=0;i--)
+    printf("Element name \"%s\" (%d)\n", e.m_elementName.c_str(),
+	   recursion);
 
-    //	if(e.m_elementName!="")
     {
-      if(e.m_elementName!="") {
+      if(e.m_elementName != "") {
+
+	str += ind;
+
 	if(e.m_type=="")
-	  str+=e.m_elementName+" {";
+	  str+=e.m_elementName+" {\n";
 	else
-	  str+=e.m_elementName+","+e.m_type+" {";
-	str+="\n";
+	  str+=e.m_elementName+","+e.m_type+" {\n";
+      }
+      else {
       }
 
       for(int j=0;j < (int) e.m_values.size();j++) {
-	TrimSpaces(e.m_values[j].m_value);
-	str+=e.m_values[j].m_key+"="+"\""+e.m_values[j].m_value+"\""+"\n";
+	trimSpaces(e.m_values[j].m_value);
+	str += ind2 + e.m_values[j].m_key+"="+"\""+e.m_values[j].m_value+"\""+"\n";
 
       }
       for(int i = 0; i < (int) e.m_nodes.size(); i++)
-	str+=getConfigText(e.m_nodes[i],s);
+	str += getConfigText(e.m_nodes[i], recursion + 1);
 
-      if(e.m_elementName!="") {
-	str+="}";
-	str+="\n";
+      if(e.m_elementName != "") {
+	str += ind + "}\n";
       }
-      //s.push_back(str);
     }
     return str;
   }
@@ -293,4 +315,53 @@ namespace Valuable
     }
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  
+  void convert(DOMDocument & doc, DOMElement & to, const ConfigElement & from)
+  {
+    for(unsigned i = 0; i < from.childCount(); i++) {
+      DOMElement child(doc.createElement(from.elementName()));
+      convert(doc, child, from.child(i));
+      to.appendChild(child);
+    }
+
+    for(unsigned i = 0; i < from.valueCount(); i++) {
+      const ConfigValue & v = from.value(i);
+      DOMElement child(doc.createElement(v.key()));
+
+      child.setTextContent(v.value());
+
+      to.appendChild(child);
+    }
+  }
+
+  void convert(ConfigElement & to, DOMElement from)
+  {
+    to.clear();
+
+    to.setType(from.getAttribute("type"));
+    to.setElementName(from.getTagName());
+
+    DOMElement::NodeList nodes = from.getChildNodes();
+    
+    for(DOMElement::NodeList::iterator it = nodes.begin();
+	it != nodes.end(); it++) {
+
+      DOMElement de = (*it);
+      
+      DOMElement::NodeList nodes2 = de.getChildNodes();
+
+      if(nodes2.size()) {
+	ConfigElement tmp;
+	convert(tmp, de);	
+	to.addElement(tmp);
+      }
+      else {
+	ConfigValue tmp(de.getTagName(), de.getTextContent());
+	to.addValue(tmp);
+      }
+    }
+    
+  }
 }

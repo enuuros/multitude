@@ -89,6 +89,11 @@ namespace Valuable
     return DOMElement(ELEM(elem));
   }
 
+  DOMElement DOMDocument::createElement(const std::string & name)
+  {
+    return createElement(name.c_str());
+  }
+
   bool writeDom(DOMDocument::Wrapped * doc, xercesc::XMLFormatTarget & target)
   {
      // Get implementation of the Load-Store (LS) interface

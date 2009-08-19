@@ -27,7 +27,11 @@ namespace Valuable
   public:
     ConfigValue(void);
     ConfigValue(std::string k, std::string v);
-    virtual ~ConfigValue(void);
+    ~ConfigValue(void);
+    
+    const std::string & key() const { return m_key; }
+    const std::string & value() const { return m_value; }
+
     int m_depth;
     std::string m_key, m_value;
   };

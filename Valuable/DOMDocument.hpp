@@ -37,6 +37,7 @@ namespace Valuable
       static DOMDocument * createDocument();
 
       DOMElement createElement(const char * name);
+      DOMElement createElement(const std::string & name);
 
       void appendChild(DOMElement element);
 

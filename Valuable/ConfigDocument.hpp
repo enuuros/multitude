@@ -16,11 +16,10 @@
 #ifndef VALUABLE_CONFIG_DOCUMENT_HPP
 #define VALUABLE_CONFIG_DOCUMENT_HPP
 
-#include <Valuable/Export.hpp>
-#include <Valuable/DOMElement.hpp>
 #include <Valuable/ConfigElement.hpp>
-
-// 
+#include <Valuable/DOMDocument.hpp>
+#include <Valuable/DOMElement.hpp>
+#include <Valuable/Export.hpp>
 
 namespace Valuable
 {  
@@ -30,34 +29,40 @@ namespace Valuable
     ConfigDocument(void);
     virtual ~ConfigDocument(void);
 
-    void readConfigFile(char *fileName);
-    void writeConfigFile(char *fileName);
+    void readConfigFile(const char *fileName);
+    void writeConfigFile(const char *fileName);
+    void writeConfig(std::ostream &);
+
+    ConfigElement &root() { return m_doc; }
     ConfigElement *getConfigElement(std::string elementName);
     ConfigElement *getConfigElement(std::string key,std::string value);
 
-    void from(Valuable::DOMElement e);
+    static std::string getConfigText(ConfigElement e, int recursion = 0);
 
   private:
 
     void loadConfigElement(std::string str);
-    void TrimSpaces( std::string& str);
+    static void trimSpaces( std::string & str);
     void loadConfigValue(std::string key,std::string val);
-    std::string getConfigText(ConfigElement e,std::vector<std::string> &ss);
     ConfigElement *findConfigElement(ConfigElement &e,std::string elementName,bool &found);
     ConfigElement *findConfigElement(ConfigElement &e,bool &found,std::string key,std::string value);
+
     enum ParseFlags
     {
       ELEMENT_START,
       ELEMENT_END,
       ATTRIBUTE,
       NOT_VALID
-
     };
 
     ParseFlags parseLine(std::string line);
 
     ConfigElement m_doc;		
   };
+
+  void convert(DOMDocument  & doc, DOMElement & to, const ConfigElement & from);
+  void convert(ConfigElement & to, DOMElement from);
+
 }
 
 #endif

@@ -54,6 +54,12 @@ namespace Valuable
 
   void DOMElement::setAttribute(const char * name, const char * value)
   {
+    if(!value || !name)
+      return;
+
+    if(!strlen(value))
+      return;
+
     XMLCh * xName = xercesc::XMLString::transcode(name);
     XMLCh * xValue = xercesc::XMLString::transcode(value);
 
@@ -110,7 +116,7 @@ namespace Valuable
   DOMElement DOMElement::getChildNode(const char * tagname)
   {
     NodeList nodes = getChildNodes();
-
+    
     for(NodeList::iterator it = nodes.begin(); it != nodes.end(); it++) {
       DOMElement e = *it;
       if(e.getTagName() == tagname)

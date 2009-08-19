@@ -36,6 +36,29 @@ namespace Valuable
 
     void clear();
 
+    void setType(const std::string & type)
+    { m_type = type; }
+
+    const std::string & elementName() const { return m_elementName; }
+    void setElementName(const std::string & name)
+    { m_elementName = name; }
+
+    void addElement(const ConfigElement & e)
+    { m_nodes.push_back(e); }
+
+    void addValue(const ConfigValue & v)
+    { m_values.push_back(v); }
+
+    unsigned valueCount() const { return m_values.size(); }
+
+    const ConfigValue & value(unsigned n) const
+    { return m_values[n]; }
+
+    unsigned childCount() const { return m_nodes.size(); }
+
+    const ConfigElement & child(unsigned n) const
+    { return m_nodes[n]; }
+
   private:
 
     friend class ConfigDocument;
