@@ -20,6 +20,7 @@
 
 #include <Valuable/Export.hpp>
 
+#include <string>
 #include <vector>
 
 namespace Valuable
@@ -29,34 +30,34 @@ namespace Valuable
   /// Wrapper for xercesc::DOMDocument
   class VALUABLE_API DOMDocument
   {
-    public:
-      struct Wrapped;
+  public:
+    struct Wrapped;
 
-      ~DOMDocument();
+    ~DOMDocument();
 
-      static DOMDocument * createDocument();
+    static DOMDocument * createDocument();
 
-      DOMElement createElement(const char * name);
-      DOMElement createElement(const std::string & name);
+    DOMElement createElement(const char * name);
+    DOMElement createElement(const std::string & name);
 
-      void appendChild(DOMElement element);
+    void appendChild(DOMElement element);
 
-      bool writeToFile(const char * filename);
-      bool writeToMem(std::vector<char> & buf);
+    bool writeToFile(const char * filename);
+    bool writeToMem(std::vector<char> & buf);
 
-      /// Parse a document from a file.
-      /// @param filename name of the file to read from
-      /// @param validate if set to true, the XML must validate (it must have a
-      /// schema)
-      /// @return true if there were no errors
-      bool readFromFile(const char * filename, bool validate = false);
+    /// Parse a document from a file.
+    /// @param filename name of the file to read from
+    /// @param validate if set to true, the XML must validate (it must have a
+    /// schema)
+    /// @return true if there were no errors
+    bool readFromFile(const char * filename, bool validate = false);
 
-      DOMElement getDocumentElement();
+    DOMElement getDocumentElement();
 
-    private:
-      DOMDocument(Wrapped * doc);
+  private:
+    DOMDocument(Wrapped * doc);
 
-      Wrapped * m_wrapped;
+    Wrapped * m_wrapped;
   };
 
 }

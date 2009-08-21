@@ -18,6 +18,10 @@
 #include <Radiant/BinaryData.hpp>
 #include <Radiant/Trace.hpp>
 
+#include <assert.h>
+#include <string.h>
+#include <strings.h>
+
 namespace Resonant {
 
   using namespace Radiant;
@@ -59,8 +63,9 @@ namespace Resonant {
 	setSourceLocation(index, loc);
       }
     }
-    else
+    else {
       ;
+    }
   }
 
   void ModuleSplitter::process(float ** in, float ** out, int n)

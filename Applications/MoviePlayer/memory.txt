@@ -1,6 +1,6 @@
 
 Running 31 videos at (mostly) 1000x900 resolution, in stress mode, SVN
-release 692.
+release 692. Intel Core i7, 6GB RAM. Ubuntu 9.04.
 
   PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND   
 13345 tommi     20   0 3745m 2.9g  37m S  231 50.7   1:10.02 MoviePlayer
@@ -32,3 +32,16 @@ Space-presses to start/stop the videos.
 
 13345 tommi     20   0 5126m 4.3g  53m R  302 75.6 975:42.84 MoviePlayer
 13345 tommi     20   0 4998m 4.2g  53m R  261 73.9 989:10.13 MoviePlayer
+
+
+#############################################################################
+#############################################################################
+
+Another run on the basic setup (SVN r699)
+                                                                   
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND   
+23086 tommi     20   0 3893m 3.2g  37m R  284 55.4  40:56.41 MoviePlayer
+23086 tommi     20   0 4012m 3.3g  39m S  290 57.0  57:45.37 MoviePlayer
+23086 tommi     20   0 4999m 4.3g  39m R  297 74.1 151:03.85 MoviePlayer
+23086 tommi     20   0 5063m 4.3g  39m R  283 74.2 159:46.65 MoviePlayer
+23086 tommi     20   0 5067m 4.3g  43m R  281 74.2 269:48.39 MoviePlayer     
