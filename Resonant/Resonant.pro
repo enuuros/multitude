@@ -10,6 +10,7 @@ HEADERS += ModuleFilePlay.hpp
 HEADERS += ModuleGain.hpp 
 HEADERS += ModuleOutCollect.hpp 
 HEADERS += ModuleSamplePlayer.hpp 
+HEADERS += ModuleSplitter.hpp 
 
 SOURCES += Application.cpp
 SOURCES += AudioFileHandler.cpp
@@ -20,6 +21,7 @@ SOURCES += ModuleFilePlay.cpp
 SOURCES += ModuleGain.cpp
 SOURCES += ModuleOutCollect.cpp
 SOURCES += ModuleSamplePlayer.cpp
+SOURCES += ModuleSplitter.cpp
 
 LIBS += $$LIB_RADIANT $$LIB_NIMBLE $$LIB_PATTERNS
 

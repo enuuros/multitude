@@ -129,6 +129,9 @@ namespace Nimble {
     /// Extract the scaling factor from a homogenous 2D transformation matrix
     inline T extractScale() const;
 
+    inline Vector2T<T> project(const Vector2T<T> & v) const;
+    inline Vector2T<T> project(const T & x, const T & y) const;
+
   private:
     inline static void swap(T &a, T& b);
 
@@ -622,6 +625,21 @@ Matrix3T<T> Matrix3T<T>::makeRotation(T radians, const Vector3T<T> & axis)
   aa[8] = t * vn.z * vn.z + c;
 
   return Matrix3T<T>(aa);
+}
+
+
+template<class T>
+inline Vector2T<T> Matrix3T<T>::project(const Vector2T<T> & v) const
+{
+  Vector3T<T> p = *this * v;
+  return Vector2T<T>(p.x / p.z, p.y / p.z);
+}
+
+template<class T>
+inline Vector2T<T> Matrix3T<T>::project(const T & x, const T & y) const
+{
+  Vector3T<T> p = *this * Vector2T<T>(x, y);
+  return Vector2T<T>(p.x / p.z, p.y / p.z);
 }
 
 } // namespace

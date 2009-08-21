@@ -68,6 +68,9 @@ namespace Nimble {
     /// Gets the current value
     const T & value() const { return m_current; }
 
+    /// Gets the target value
+    const T & target() const { return m_target; }
+
     /// The number of steps left to reach the target value
     unsigned left() const { return m_left; }
 

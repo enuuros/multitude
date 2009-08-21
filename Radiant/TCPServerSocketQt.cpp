@@ -26,61 +26,61 @@
 namespace Radiant
 {
 
-class TCPServerSocket::D : public QTcpServer
-{
-public:
-  D() : QTcpServer() {}
+  class TCPServerSocket::D : public QTcpServer
+  {
+  public:
+    D() : QTcpServer() {}
 
-  int pendingConnection() {
-    if(m_fds.empty()) return -1;
+    int pendingConnection() {
+      if(m_fds.empty()) return -1;
 
-    int fd = m_fds.front();
-    m_fds.pop_front();
+      int fd = m_fds.front();
+      m_fds.pop_front();
 
-    return fd;
-  }
+      return fd;
+    }
 
-protected:
-  virtual void incomingConnection(int socketDescriptor) {
-    m_fds.push_back(socketDescriptor);
-  }
+  protected:
+    virtual void incomingConnection(int socketDescriptor) {
+      m_fds.push_back(socketDescriptor);
+    }
   
-  std::list<int> m_fds;
-};
+    std::list<int> m_fds;
+  };
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
 
-TCPServerSocket::TCPServerSocket()
-{
-  m_d = new D();
-}
+  TCPServerSocket::TCPServerSocket()
+  {
+    m_d = new D();
+  }
 
-TCPServerSocket::~TCPServerSocket()
-{
-  delete m_d;
-}
+  TCPServerSocket::~TCPServerSocket()
+  {
+    delete m_d;
+  }
 
-int TCPServerSocket::open(const char * host, int port, int maxconnections)
-{
-//  Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
+  int TCPServerSocket::open(const char * host, int port, int maxconnections)
+  {
+    //  Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
 
-  bool r = m_d->listen(QHostAddress(host), port);
-  m_d->setMaxPendingConnections(maxconnections);
+    bool r = m_d->listen(QHostAddress(host), port);
+    m_d->setMaxPendingConnections(maxconnections);
 
-  if(!r)
-    error("TCPServerSocket::open # %s:%d (%s)", host, port, 
-	  m_d->errorString().toStdString().c_str());
+    if(!r)
+      error("TCPServerSocket::open # %s:%d (%s)", host, port, 
+	    m_d->errorString().toStdString().c_str());
 
-  return r ? 0 : EINVAL;
-}
+    return r ? 0 : EINVAL;
+  }
 
   bool TCPServerSocket::close() 
-{
+  {
     m_d->close();
 
     return true;
-}
+  }
 
   bool TCPServerSocket::isOpen() const
   {
@@ -89,9 +89,6 @@ int TCPServerSocket::open(const char * host, int port, int maxconnections)
  
   bool TCPServerSocket::isPendingConnection(unsigned int waitMicroSeconds)
   {
-    info("TCPServerSocket::isPendingConnection # %d",
-	 m_d->socketDescriptor());
-
     return m_d->waitForNewConnection(waitMicroSeconds / 1000);
   }
 
@@ -110,8 +107,6 @@ int TCPServerSocket::open(const char * host, int port, int maxconnections)
       delete tcp;
       return 0;
     }
-
-    
 
     return tcp;
   }

@@ -25,15 +25,11 @@ namespace Luminous
   Transformer::~Transformer()
   {}
 
-  void Transformer::resetTransform()
+  Nimble::Vector2 Transformer::project(Nimble::Vector2 v)
   {
-    while(!m_stack.empty())
-      m_stack.pop();
+    Nimble::Vector3 p = transform() * v;
 
-    Nimble::Matrix3 m;
-    m.identity();
-
-    m_stack.push(m);
+    return Nimble::Vector2(p.x / p.z, p.y / p.z);
   }
 
   void Transformer::pushTransformLeftMul(const Nimble::Matrix3 & m)
@@ -44,6 +40,17 @@ namespace Luminous
   void Transformer::pushTransformRightMul(const Nimble::Matrix3 & m)
   {
     m_stack.push(m_stack.top() * m);
+  }
+
+  void Transformer::resetTransform()
+  {
+    while(!m_stack.empty())
+      m_stack.pop();
+
+    Nimble::Matrix3 m;
+    m.identity();
+
+    m_stack.push(m);
   }
 
 }
