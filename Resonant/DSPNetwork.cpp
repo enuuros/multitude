@@ -53,6 +53,19 @@ namespace Resonant {
       m_inputs.erase(it);
   }
 
+  void DSPNetwork::Item::eraseInputs(const std::string & moduleId)
+  {
+    for(unsigned i = 0; i < m_inputs.size(); ) {
+
+      if(moduleId == m_inputs[i].m_moduleId) {
+        m_inputs.erase(m_inputs.begin() + i);
+        m_ins.erase(m_ins.begin() + i);
+      }
+      else
+        i++;
+    }
+  }
+
   int DSPNetwork::Item::findInInput(float * ptr) const
   { 
     for(uint i = 0; i < m_ins.size(); i++)
@@ -265,6 +278,8 @@ namespace Resonant {
            countBufferBytes());
     }
 
+    char buf[128];
+
     while(m_newItems.size()) {
 
       debug("DSPNetwork::checkNewItems # Next ");
@@ -299,7 +314,7 @@ namespace Resonant {
         int outchans = m_collect->channels(); // hardware output channels
 
         if(m_panner) {
-          info("Adding new input to the panner");
+          info("Adding %d inputs to the panner", mchans);
 
           Item * oi = findItem(m_panner->id());
           for(int i = 0; i < mchans; i++) {
@@ -309,6 +324,9 @@ namespace Resonant {
             conn.m_channel = i % mchans;
             oi->m_inputs.push_back(conn);
             
+            m_controlData.rewind();
+            sprintf(buf, "%s-%d", id, i);
+            m_controlData.writeString(buf);
             m_controlData.rewind();
           
             m_panner->control("addsource", & m_controlData);
@@ -388,9 +406,27 @@ namespace Resonant {
     if(!m_doneCount)
       return;
 
+    char buf[128];
+
     for(iterator it = m_items.begin(); it != m_items.end(); ) {
+
       Item & item = (*it);
+
       if(item.m_done) {
+        
+        for(unsigned i = 0; i < item.m_outs.size() && m_panner; i++) {
+          
+          m_controlData.rewind();
+          sprintf(buf, "%s-%d", item.m_module->id(), i);
+          m_controlData.writeString(buf);
+          m_controlData.rewind();
+
+          m_panner->control("removesource", & m_controlData);
+          
+          Item * oi = findItem(m_panner->id());
+          oi->eraseInputs(item.m_module->id());
+        }
+
         uncompile(item);
 
         item.m_module->stop();
@@ -400,6 +436,8 @@ namespace Resonant {
         tmp++;
         m_items.erase(it);
         it = tmp;
+
+
       }
       else
         it++;

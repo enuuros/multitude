@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
+SUBDIRS += AudioPanning
 SUBDIRS += AmbientSounds
 SUBDIRS += ConfigConversion
 SUBDIRS += ImageExample

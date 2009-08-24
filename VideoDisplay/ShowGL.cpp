@@ -608,6 +608,25 @@ namespace VideoDisplay {
     seekTo(TimeStamp(duration() * relative));
   }
 
+  void ShowGL::panAudioTo(Nimble::Vector2 location)
+  {
+    if(!m_audio)
+      return;
+
+    char buf[128];
+
+    Radiant::BinaryData control;
+
+    control.writeString("panner/setsourcelocation");
+
+    sprintf(buf, "%s-%d", m_audio->id(), (int) 0);
+
+    control.writeString(buf);
+    control.writeVector2Float32(location); // index    
+
+    m_dsp->send(control);
+  }
+
   void ShowGL::clearHistogram()
   {
     bzero(m_histogram, sizeof(m_histogram));

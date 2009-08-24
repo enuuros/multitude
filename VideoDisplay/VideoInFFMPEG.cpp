@@ -25,7 +25,10 @@ namespace VideoDisplay {
   class FFVideoInfo
   {
   public:
+    FFVideoInfo() : m_channels(0), m_duration(0.0f) {}
+
     Radiant::VideoImage m_firstFrame;
+    int   m_channels;
     float m_duration;
   };
 
@@ -115,6 +118,8 @@ namespace VideoDisplay {
 
       putFrame(img, FRAME_SNAPSHOT, 0, 0);
       
+      m_channels = vi->m_channels;
+
       return true;
     }
 
@@ -173,11 +178,15 @@ namespace VideoDisplay {
       // Cache the first frame for later use.
       Radiant::GuardStatic g(&__mutex);
       
+      m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
+
       FFVideoInfo & vi2 = __ffcache[filename];
       
       vi2.m_duration = m_duration;
       vi2.m_firstFrame.allocateMemory(*img);
       vi2.m_firstFrame.copyData(*img);
+      vi2.m_channels = m_channels;
+
     }
 
     m_video.close();

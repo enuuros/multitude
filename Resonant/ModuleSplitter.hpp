@@ -47,7 +47,8 @@ namespace Resonant {
 
   protected:
 
-    void setSourceLocation(unsigned index, Nimble::Vector2 location);
+    void setSourceLocation(const std::string &, Nimble::Vector2 location);
+    void removeSource(const std::string &);
 
     class LoudSpeaker
     {
@@ -80,11 +81,11 @@ namespace Resonant {
     class Source
     {
     public:
-      Source() : m_location(0, 0), m_updates(0), m_index(0) {}
+      Source() : m_location(0, 0), m_updates(0) {}
       
       Nimble::Vector2 m_location;
-      bool m_updates;
-      unsigned  m_index;
+      bool  m_updates;
+      std::string  m_id;
 
       Pipe m_pipes[PIPES_PER_SOURCE];
     };
@@ -96,7 +97,6 @@ namespace Resonant {
     LoudSpeakers m_speakers;
 
     int m_outChannels;
-    unsigned m_counter;
 
     float m_maxRadius;
   };

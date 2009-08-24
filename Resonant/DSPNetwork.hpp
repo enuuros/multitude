@@ -162,6 +162,7 @@ namespace Resonant {
       }
 
       void eraseInput(const Connection & c);
+      void eraseInputs(const std::string & moduleId);
       int findInInput(float * ptr) const;
       int findInOutput(float * ptr) const;
       void removeInputsFrom(const char * id);

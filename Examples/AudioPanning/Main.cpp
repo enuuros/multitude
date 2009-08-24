@@ -144,7 +144,7 @@ int main(int argc, char ** argv)
 
     control.rewind();
     control.writeString("panner/setsourcelocation");
-    control.writeInt32(0); // index
+    control.writeString("sampleplayer-0"); // index
     control.writeVector2Float32(Nimble::Vector2f(locx, 540)); // index    
     dsp.send(control);
   }

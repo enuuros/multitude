@@ -184,6 +184,8 @@ namespace VideoDisplay {
     VIDEODISPLAY_API void seekToRelative(double relative);
     void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
 
+    VIDEODISPLAY_API void panAudioTo(Nimble::Vector2 location);
+
     /** Information on how the frames have been displayed. The
 	histogram information is useful mostly for debug purposes. */
     int histogramPoint(int index) const { return m_histogram[index]; } 
