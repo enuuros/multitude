@@ -18,7 +18,7 @@
 
 #include <Resonant/DSPNetwork.hpp>
 #include <Resonant/ModuleSamplePlayer.hpp>
-#include <Resonant/ModuleSplitter.hpp>
+#include <Resonant/ModulePanner.hpp>
 
 #include <sndfile.h>
 
@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
   {
     Resonant::DSPNetwork::Item pitem;
     
-    item.setModule(new Resonant::ModuleSplitter(0));
+    item.setModule(new Resonant::ModulePanner(0));
     item.module()->setId("panner");
     
     control.rewind();

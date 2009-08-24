@@ -15,7 +15,7 @@
 
 #include "DSPNetwork.hpp"
 
-#include "ModuleSplitter.hpp"
+#include "ModulePanner.hpp"
 #include "ModuleOutCollect.hpp"
 
 #include <Radiant/FixedStr.hpp>
@@ -336,7 +336,7 @@ namespace Resonant {
           continue;
         }
         
-        ModuleSplitter * panner = dynamic_cast<ModuleSplitter *>(itptr->m_module);
+        ModulePanner * panner = dynamic_cast<ModulePanner *>(itptr->m_module);
 
         if(panner) {
           m_panner = panner;

@@ -13,7 +13,7 @@
  * 
  */
 
-#include "ModuleSplitter.hpp"
+#include "ModulePanner.hpp"
 
 #include <Radiant/BinaryData.hpp>
 #include <Radiant/Trace.hpp>
@@ -26,16 +26,16 @@ namespace Resonant {
 
   using namespace Radiant;
 
-  ModuleSplitter::ModuleSplitter(Application * a)
+  ModulePanner::ModulePanner(Application * a)
     : Module(a),
       m_outChannels(8),
       m_maxRadius(1000)
   {}
 
-  ModuleSplitter::~ModuleSplitter()
+  ModulePanner::~ModulePanner()
   {}
 
-  bool ModuleSplitter::prepare(int & channelsIn, int & channelsOut)
+  bool ModulePanner::prepare(int & channelsIn, int & channelsOut)
   {
     (void) channelsIn;
 
@@ -44,9 +44,9 @@ namespace Resonant {
     return true;
   }
   
-  void ModuleSplitter::control(const char * id, Radiant::BinaryData * data)
+  void ModulePanner::control(const char * id, Radiant::BinaryData * data)
   {
-    info("ModuleSplitter::control # %s", id);
+    info("ModulePanner::control # %s", id);
     
     bool ok = true;
 
@@ -77,16 +77,16 @@ namespace Resonant {
 	setSourceLocation(id, loc);
       }
       else {
-        error("ModuleSplitter::control # %s # Could not read source location",
+        error("ModulePanner::control # %s # Could not read source location",
               id.c_str());
       }
     }
     else {
-      error("ModuleSplitter::control # Unknown command %s", id);
+      error("ModulePanner::control # Unknown command %s", id);
     }
   }
 
-  void ModuleSplitter::process(float ** in, float ** out, int n)
+  void ModulePanner::process(float ** in, float ** out, int n)
   {
     int bufferbytes = n * sizeof(float);
 
@@ -125,13 +125,13 @@ namespace Resonant {
 	  }
 	}
         
-        debug("ModuleSplitter::process # source %d, pipe %d, gain = %f in = %p %f out = %f",
+        debug("ModulePanner::process # source %d, pipe %d, gain = %f in = %p %f out = %f",
               i, j, p.m_ramp.value(), in[i], *in[i], out[p.m_to][0]);
       }
     }
   }
 
-  void ModuleSplitter::makeFullHDStereo()
+  void ModulePanner::makeFullHDStereo()
   {
     m_speakers.clear();
 
@@ -146,7 +146,7 @@ namespace Resonant {
     m_maxRadius = 1200;
   }
 
-  void ModuleSplitter::setSpeaker(unsigned i, Nimble::Vector2 location)
+  void ModulePanner::setSpeaker(unsigned i, Nimble::Vector2 location)
   {
     assert(i < 100000);
 
@@ -156,15 +156,15 @@ namespace Resonant {
     m_speakers[i].m_location = location;
   }
 
-  void ModuleSplitter::setSpeaker(unsigned i, float x, float y)
+  void ModulePanner::setSpeaker(unsigned i, float x, float y)
   {
     setSpeaker(i, Nimble::Vector2(x, y));
   }
 
-  void ModuleSplitter::setSourceLocation(const std::string & id,
+  void ModulePanner::setSourceLocation(const std::string & id,
 					 Nimble::Vector2 location)
   {
-    debug("ModuleSplitter::setSourceLocation # %d [%f %f]", index,
+    debug("ModulePanner::setSourceLocation # %d [%f %f]", index,
          location.x, location.y);
 
     Source * s = 0;
@@ -177,7 +177,7 @@ namespace Resonant {
     }
 
     if(!s) {
-      error("ModuleSplitter::setSourceLocation # id \"%s\" is not known",
+      error("ModulePanner::setSourceLocation # id \"%s\" is not known",
             id.c_str());
       return;
     }
@@ -215,7 +215,7 @@ namespace Resonant {
 	  Pipe & p = s->m_pipes[j];
 	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
 	    p.m_ramp.setTarget(0.0f, interpSamples);
-            info("ModuleSplitter::setSourceLocation # Silencing %u", i);
+            info("ModulePanner::setSourceLocation # Silencing %u", i);
             
 	  }
 	}
@@ -231,7 +231,7 @@ namespace Resonant {
                p.m_ramp.value(), p.m_ramp.target());
 
 	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
-            info("ModuleSplitter::setSourceLocation # Adjusting %u", j);
+            info("ModulePanner::setSourceLocation # Adjusting %u", j);
 	    p.m_ramp.setTarget(gain, interpSamples);
 	    found = true;
 	  }
@@ -243,7 +243,7 @@ namespace Resonant {
 	  for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
 	    Pipe & p = s->m_pipes[j];
 	    if(p.done()) {
-              info("ModuleSplitter::setSourceLocation # "
+              info("ModulePanner::setSourceLocation # "
                    "Starting %u towards %u", j, i);
 	      p.m_to = i;
 	      p.m_ramp.setTarget(gain, interpSamples);
@@ -259,7 +259,7 @@ namespace Resonant {
     }
   }
 
-  void ModuleSplitter::removeSource(const std::string & id)
+  void ModulePanner::removeSource(const std::string & id)
   {
     
     for(Sources::iterator it = m_sources.begin();
@@ -267,13 +267,13 @@ namespace Resonant {
       Source & s = * (*it);
       if(s.m_id == id) {
         m_sources.erase(it);
-        info("ModuleSplitter::removeSource # Removed source %s, now %u",
+        info("ModulePanner::removeSource # Removed source %s, now %u",
              id.c_str(), m_sources.size());
         return;
       }
     }
     
-    error("ModuleSplitter::removeSource # No such source: \"%s\"", id.c_str());
+    error("ModulePanner::removeSource # No such source: \"%s\"", id.c_str());
   }
 
 }

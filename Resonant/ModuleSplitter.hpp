@@ -28,11 +28,11 @@
 namespace Resonant {
 
   /** Split audio signals to multiple outputs. */
-  class ModuleSplitter : public Module
+  class ModulePanner : public Module
   {
   public:
-    RESONANT_API ModuleSplitter(Application *);
-    RESONANT_API virtual ~ModuleSplitter();
+    RESONANT_API ModulePanner(Application *);
+    RESONANT_API virtual ~ModulePanner();
 
     RESONANT_API virtual bool prepare(int & channelsIn, int & channelsOut);
     RESONANT_API virtual void control(const char *, Radiant::BinaryData *);
