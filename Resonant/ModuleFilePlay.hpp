@@ -26,12 +26,12 @@ namespace Resonant {
   class ModuleFilePlay : public Module
   {
   public:
-    ModuleFilePlay(Application *);
-    virtual ~ModuleFilePlay();
+    RESONANT_API ModuleFilePlay(Application *);
+    RESONANT_API virtual ~ModuleFilePlay();
 
-    virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void process(Radiant::BinaryData *, float ** in, float ** out, int n);
-    virtual bool stop();
+    RESONANT_API virtual bool prepare(int & channelsIn, int & channelsOut);
+    RESONANT_API virtual void process(Radiant::BinaryData *, float ** in, float ** out, int n);
+    RESONANT_API virtual bool stop();
     
   private:
 

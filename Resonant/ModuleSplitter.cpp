@@ -28,7 +28,8 @@ namespace Resonant {
 
   ModuleSplitter::ModuleSplitter(Application * a)
     : Module(a),
-      m_outChannels(8)
+      m_outChannels(8),
+      m_maxRadius(1000)
   {}
 
   ModuleSplitter::~ModuleSplitter()
@@ -38,7 +39,7 @@ namespace Resonant {
   {
     (void) channelsIn;
 
-    channelsOut = m_outChannels;
+    channelsOut = m_speakers.size();
 
     return true;
   }
@@ -90,7 +91,7 @@ namespace Resonant {
     int bufferbytes = n * sizeof(float);
 
     // Zero the output channels
-    for(int i = 0; i < m_outChannels; i++) {
+    for(unsigned i = 0; i < m_speakers.size(); i++) {
       bzero(out[i], bufferbytes);
     }
 
@@ -126,10 +127,8 @@ namespace Resonant {
         
         debug("ModuleSplitter::process # source %d, pipe %d, gain = %f in = %p %f out = %f",
               i, j, p.m_ramp.value(), in[i], *in[i], out[p.m_to][0]);
-        
       }
     }
-    
   }
 
   void ModuleSplitter::makeFullHDStereo()
@@ -140,11 +139,26 @@ namespace Resonant {
    
     ls.m_location.make(0, 540);
     m_speakers.push_back(ls);
-
+    
     ls.m_location.make(1920, 540);
     m_speakers.push_back(ls);
 
     m_maxRadius = 1200;
+  }
+
+  void ModuleSplitter::setSpeaker(unsigned i, Nimble::Vector2 location)
+  {
+    assert(i < 100000);
+
+    if(m_speakers.size() <= i)
+      m_speakers.resize(i + 1);
+
+    m_speakers[i].m_location = location;
+  }
+
+  void ModuleSplitter::setSpeaker(unsigned i, float x, float y)
+  {
+    setSpeaker(i, Nimble::Vector2(x, y));
   }
 
   void ModuleSplitter::setSourceLocation(const std::string & id,

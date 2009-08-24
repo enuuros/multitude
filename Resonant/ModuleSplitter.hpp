@@ -31,19 +31,24 @@ namespace Resonant {
   class ModuleSplitter : public Module
   {
   public:
-    ModuleSplitter(Application *);
-    virtual ~ModuleSplitter();
+    RESONANT_API ModuleSplitter(Application *);
+    RESONANT_API virtual ~ModuleSplitter();
 
-    virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char *, Radiant::BinaryData *);
-    virtual void process(float ** in, float ** out, int n);
+    RESONANT_API virtual bool prepare(int & channelsIn, int & channelsOut);
+    RESONANT_API virtual void control(const char *, Radiant::BinaryData *);
+    RESONANT_API virtual void process(float ** in, float ** out, int n);
 
     /** Creates a loudspeaker/headphone setup for full-HD displays.
 
         One source on the left at [0, 540], one source at right, at
         [1920, 540]. */
 
-    void makeFullHDStereo();
+    RESONANT_API void makeFullHDStereo();
+
+    RESONANT_API void setSpeaker(unsigned i, Nimble::Vector2 location);
+    RESONANT_API void setSpeaker(unsigned i, float x, float y);
+
+    void setCaptureRadius(float r) { m_maxRadius = r; }
 
   protected:
 
