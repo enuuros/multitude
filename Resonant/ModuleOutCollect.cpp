@@ -144,6 +144,10 @@ namespace Resonant {
         continue; // Should output a warning ;-)
 
       float * dest = & m_interleaved[to];
+      
+      /* if(i < 2)
+        info("ModuleOutCollect::process # %p %d %f", src, i, src[0]);
+      */
 
       while(src < sentinel) {
 	*dest += * src;

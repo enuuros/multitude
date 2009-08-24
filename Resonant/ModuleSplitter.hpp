@@ -38,6 +38,13 @@ namespace Resonant {
     virtual void control(const char *, Radiant::BinaryData *);
     virtual void process(float ** in, float ** out, int n);
 
+    /** Creates a loudspeaker/headphone setup for full-HD displays.
+
+        One source on the left at [0, 540], one source at right, at
+        [1920, 540]. */
+
+    void makeFullHDStereo();
+
   protected:
 
     void setSourceLocation(unsigned index, Nimble::Vector2 location);
@@ -61,7 +68,7 @@ namespace Resonant {
 	m_ramp.reset(0.0);
       }
             
-      bool done() { return (m_ramp.left() == 0) && (m_ramp.value() < 1.0e-5f); }
+      bool done() {return (m_ramp.left() == 0) && (m_ramp.value() < 1.0e-4f);}
       
       Nimble::Rampf m_ramp;
       
@@ -73,12 +80,13 @@ namespace Resonant {
     class Source
     {
     public:
-      Source() : m_location(0, 0) {}
+      Source() : m_location(0, 0), m_updates(0), m_index(0) {}
       
       Nimble::Vector2 m_location;
+      bool m_updates;
+      unsigned  m_index;
 
       Pipe m_pipes[PIPES_PER_SOURCE];
-      
     };
 
     typedef std::vector<Radiant::RefObj<Source> > Sources;
@@ -88,6 +96,7 @@ namespace Resonant {
     LoudSpeakers m_speakers;
 
     int m_outChannels;
+    unsigned m_counter;
 
     float m_maxRadius;
   };

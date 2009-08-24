@@ -483,6 +483,11 @@ namespace Resonant {
       else
 	i++;
     }
+
+    /* for(i = 0; i < m_channels; i++)
+       info("ModuleSamplePlayer::process # %d %p %f", i, out[i], *out[i]);
+    */
+    
   }
 
   bool ModuleSamplePlayer::addSample(const char * filename, const char * name)

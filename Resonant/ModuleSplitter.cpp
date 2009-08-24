@@ -28,7 +28,8 @@ namespace Resonant {
 
   ModuleSplitter::ModuleSplitter(Application * a)
     : Module(a),
-      m_outChannels(8)
+      m_outChannels(8),
+      m_counter(0)
   {}
 
   ModuleSplitter::~ModuleSplitter()
@@ -49,22 +50,37 @@ namespace Resonant {
     
     bool ok = true;
 
-    if(strcmp(id, "addsource") == 0) {
-      
+    if(strcmp(id, "channels") == 0) {
+      int n = data->readInt32( & ok);
+      if(ok)
+        m_outChannels = n;
     }
-    else if(strcmp(id, "removeource") == 0) {
+    else if(strcmp(id, "fullhdstereo") == 0) {
+      makeFullHDStereo();
+    }
+    else if(strcmp(id, "addsource") == 0) {
+      Source s;
+      s.m_index = m_counter;
+      m_sources.push_back(s);
+      m_counter++;
+    }
+    else if(strcmp(id, "removesource") == 0) {
       
     }
     else if(strcmp(id, "setsourcelocation") == 0) {
       unsigned index = data->readInt32( & ok);
       Nimble::Vector2 loc = data->readVector2Float32( & ok);
 
-      if(ok && index < m_sources.size()) {
+      if(ok) {
 	setSourceLocation(index, loc);
+      }
+      else {
+        error("ModuleSplitter::control # %s # Could not read source location",
+              id);
       }
     }
     else {
-      ;
+      error("ModuleSplitter::control # Unknown command %s", id);
     }
   }
 
@@ -85,6 +101,9 @@ namespace Resonant {
 
 	Pipe & p = s.m_pipes[j];
 
+        if(p.done())
+          continue;
+
 	const float * src = in[i];
       	float * dest = out[p.m_to];
 	float * sentinel = dest + n;
@@ -102,29 +121,70 @@ namespace Resonant {
 	    *dest += (*src * v);
 	  }
 	}
+        
+        debug("ModuleSplitter::process # source %d, pipe %d, gain = %f in = %p %f out = %f",
+              i, j, p.m_ramp.value(), in[i], *in[i], out[p.m_to][0]);
+        
       }
     }
     
   }
 
+  void ModuleSplitter::makeFullHDStereo()
+  {
+    m_speakers.clear();
+
+    LoudSpeaker ls;
+   
+    ls.m_location.make(0, 540);
+    m_speakers.push_back(ls);
+
+    ls.m_location.make(1920, 540);
+    m_speakers.push_back(ls);
+
+    m_maxRadius = 1200;
+  }
+
   void ModuleSplitter::setSourceLocation(unsigned index,
 					 Nimble::Vector2 location)
   {
-    assert(index < m_sources.size());
+    debug("ModuleSplitter::setSourceLocation # %d [%f %f]", index,
+         location.x, location.y);
 
-    Source & s = * m_sources[index];
+    Source * s = 0;
 
-    s.m_location = location;
+    for(unsigned i = 0; i < m_sources.size(); i++) {
+      Source & s2 = * m_sources[i];
+      if(s2.m_index == index) {
+        s = & s2;
+      }
+    }
+
+    if(!s) {
+      error("ModuleSplitter::setSourceLocation");
+      return;
+    }
+
+    s->m_location = location;
 
     int interpSamples = 4000;
     
+
+    // bool inUse[PIPES_PER_SOURCE];
+    // bzero(inUse, sizeof(inUse));
+
     // Make all pipes go towards zero:
     for(unsigned i = 0; i < PIPES_PER_SOURCE; i++) {
-      Pipe & p = s.m_pipes[i];
-      if(!p.done() && p.m_ramp.target() != 0.0f) {
+      Pipe & p = s->m_pipes[i];
+      debug("PIPE %d done = %d (%u %f %f)",
+           i, (int) p.done(), p.m_ramp.left(), p.m_ramp.value(),
+           p.m_ramp.target());
+      /* if(!p.done() && p.m_ramp.target() != 0.0f) {
 	p.m_ramp.setTarget(0, interpSamples);
       }
+      */
     }
+
 
     for(unsigned i = 0; i < m_speakers.size(); i++) {
       LoudSpeaker & ls = m_speakers[i];
@@ -135,11 +195,14 @@ namespace Resonant {
       float gain = Nimble::Math::Min(inv * 2.0f, 1.0f);
 
       if(gain <= 0.0000001f) {
+
 	// Silence that output:
 	for(unsigned j = 0; j < PIPES_PER_SOURCE; j++) {
-	  Pipe & p = s.m_pipes[j];
+	  Pipe & p = s->m_pipes[j];
 	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
 	    p.m_ramp.setTarget(0.0f, interpSamples);
+            info("ModuleSplitter::setSourceLocation # Silencing %u", i);
+            
 	  }
 	}
       }
@@ -148,8 +211,13 @@ namespace Resonant {
 
 	// Find existing pipe:
 	for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
-	  Pipe & p = s.m_pipes[j];
+	  Pipe & p = s->m_pipes[j];
+
+          info("Checking %u: %u %f -> %f", j, p.m_to,
+               p.m_ramp.value(), p.m_ramp.target());
+
 	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
+            info("ModuleSplitter::setSourceLocation # Adjusting %u", j);
 	    p.m_ramp.setTarget(gain, interpSamples);
 	    found = true;
 	  }
@@ -159,8 +227,10 @@ namespace Resonant {
 	  
 	  // Pick up a new pipe:
 	  for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
-	    Pipe & p = s.m_pipes[j];
+	    Pipe & p = s->m_pipes[j];
 	    if(p.done()) {
+              info("ModuleSplitter::setSourceLocation # "
+                   "Starting %u towards %u", j, i);
 	      p.m_to = i;
 	      p.m_ramp.setTarget(gain, interpSamples);
 	      found = true;

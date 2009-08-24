@@ -15,6 +15,7 @@
 
 #include "DSPNetwork.hpp"
 
+#include "ModuleSplitter.hpp"
 #include "ModuleOutCollect.hpp"
 
 #include <Radiant/FixedStr.hpp>
@@ -99,7 +100,8 @@ namespace Resonant {
 
   DSPNetwork::DSPNetwork()
     : // m_continue(false),
-      m_doneCount(0)
+    m_panner(0),
+    m_doneCount(0)
   {
     m_devName[0] = 0;
     m_collect = new ModuleOutCollect(0, this);
@@ -261,7 +263,6 @@ namespace Resonant {
       debug("DSPNetwork::checkNewItems # Now %d items, adding %d, buffer memory %ld byes",
            (int) m_items.size(), (int) m_newItems.size(),
            countBufferBytes());
-
     }
 
     while(m_newItems.size()) {
@@ -291,10 +292,38 @@ namespace Resonant {
         if(itptr->m_module == m_collect)
           continue;
 
+        const char * id = itptr->m_module->id();
+
         int mchans = itptr->m_outs.size();
         int tchan  = itptr->m_targetChannel;
         int outchans = m_collect->channels(); // hardware output channels
-        const char * id = itptr->m_module->id();
+
+        if(m_panner) {
+          info("Adding new input to the panner");
+
+          Item * oi = findItem(m_panner->id());
+          for(int i = 0; i < mchans; i++) {
+
+            Connection conn;
+            conn.setModuleId(id);
+            conn.m_channel = i % mchans;
+            oi->m_inputs.push_back(conn);
+            
+            m_controlData.rewind();
+          
+            m_panner->control("addsource", & m_controlData);
+          }
+          compile( * oi);
+
+          continue;
+        }
+        
+        ModuleSplitter * panner = dynamic_cast<ModuleSplitter *>(itptr->m_module);
+
+        if(panner) {
+          m_panner = panner;
+        }
+
 
         Item * oi = findItem(m_collect->id());
 
@@ -485,15 +514,19 @@ namespace Resonant {
 	    ins, (int) item.m_inputs.size());
     }
 
-
     item.m_ins.resize(ins);
 
     if(!item.m_ins.empty())
       bzero( & item.m_ins[0], item.m_ins.size() * sizeof(float *));
 
-    item.m_outs.resize(outs);
-    if(!item.m_outs.empty())
-      bzero( & item.m_outs[0], item.m_outs.size() * sizeof(float *));
+    if(item.m_outs.size() > (unsigned) outs) {
+      item.m_outs.resize(outs);
+    }
+    else {
+      while(item.m_outs.size() < (unsigned) outs) {
+        item.m_outs.push_back(0);
+      }
+    }
 
     for(i = 0; i < ins; i++) {
       Connection & conn = item.m_inputs[i];

@@ -35,6 +35,7 @@ namespace Resonant {
   using Radiant::RefPtr;
 
   class ModuleOutCollect;
+  class ModuleSplitter;
 
   /* Stuff that needs implementing: 
 
@@ -228,6 +229,7 @@ namespace Resonant {
     std::vector<Buf> m_buffers;
     
     ModuleOutCollect *m_collect;
+    ModuleSplitter   *m_panner;
 
     Radiant::BinaryData m_controlData;
     Radiant::BinaryData m_incoming;

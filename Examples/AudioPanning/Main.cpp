@@ -18,6 +18,7 @@
 
 #include <Resonant/DSPNetwork.hpp>
 #include <Resonant/ModuleSamplePlayer.hpp>
+#include <Resonant/ModuleSplitter.hpp>
 
 #include <sndfile.h>
 
@@ -39,7 +40,7 @@ int main(int argc, char ** argv)
   Resonant::DSPNetwork::Item item;
 
   for(int i = 1; i < argc; i++) {
-    else if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
+    if(strcmp(argv[i], "--sample") == 0 && (i + 1) < argc)
       file = argv[++i];
     else if(strcmp(argv[i], "--repeat") == 0 && (i + 1) < argc)
       repeats = atoi(argv[++i]);
@@ -70,11 +71,31 @@ int main(int argc, char ** argv)
 
   dsp.start();
 
-  Radiant::BinaryData control, control2;
+  Radiant::BinaryData control;
+
+  {
+    Resonant::DSPNetwork::Item pitem;
+    
+    item.setModule(new Resonant::ModuleSplitter(0));
+    item.module()->setId("panner");
+    
+    control.rewind();
+    control.writeInt32(2);
+    control.rewind();
+    
+    item.module()->control("channels", & control);
+
+    control.rewind();
+    item.module()->control("fullhdstereo", & control);
+    
+    dsp.addModule(item);
+
+  }
 
   item.setModule(new Resonant::ModuleSamplePlayer(0));
   item.module()->setId("sampleplayer");
   
+  control.rewind();
   control.writeInt32(2);
   control.rewind();
 
@@ -102,38 +123,32 @@ int main(int argc, char ** argv)
   control.writeString("loop");
   control.writeInt32(loop);
 
-  if(info.channels >= 2) {
-
-    control2 = control;
-
-    control2.writeString("samplechannel");
-    control2.writeInt32(1);
-
-    control2.writeString("targetchannel");
-    control2.writeInt32(1);
-
-
-    control2.writeString("end");
-  }
-
   control.writeString("end");
+
+  dsp.send(control);
 
   Radiant::Sleep::sleepMs(500);
 
-  float fileduration = info.frames / (44100 * pitch);
+  int locx = 0;
 
-  for(int i = 0; i < repeats; i++) {
-    Radiant::info("Playing sample %s (%d of %d)", file, i + 1, repeats);
+  for(int i = 1; i < 100; i++) {
+
+    Radiant::Sleep::sleepS(1);
+
+    if(locx == 0)
+      locx = 960;
+    else if(locx == 960)
+      locx = 1920;
+    else if(locx == 1920)
+      locx = 0;
+
+    control.rewind();
+    control.writeString("panner/setsourcelocation");
+    control.writeInt32(0); // index
+    control.writeVector2Float32(Nimble::Vector2f(locx, 540)); // index    
     dsp.send(control);
-
-    if(info.channels >= 2)
-      dsp.send(control2);
-
-    Radiant::Sleep::sleepS(fileduration + 1);
   }
   
-  Radiant::Sleep::sleepS(loop ? fileduration * 1000 : 1);
-
   dsp.stop();
 
   return 0;
