@@ -60,6 +60,8 @@ namespace Valuable
     DOMElement serializeXML(DOMDocument * doc);
     bool deserializeXML(DOMElement element);      
     
+    void clear() { m_value.clear(); }
+
   private:
     T m_value;
   };

@@ -25,11 +25,16 @@ namespace Luminous
   Transformer::~Transformer()
   {}
 
-  Nimble::Vector2 Transformer::project(Nimble::Vector2 v)
+  Nimble::Vector2 Transformer::project(Nimble::Vector2 v) const
   {
     Nimble::Vector3 p = transform() * v;
 
     return Nimble::Vector2(p.x / p.z, p.y / p.z);
+  }
+
+  float Transformer::scale() const
+  {
+    return transform().extractScale();
   }
 
   void Transformer::pushTransformLeftMul(const Nimble::Matrix3 & m)

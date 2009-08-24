@@ -162,7 +162,7 @@ namespace Resonant {
   }
 
   void ModulePanner::setSourceLocation(const std::string & id,
-					 Nimble::Vector2 location)
+                                       Nimble::Vector2 location)
   {
     debug("ModulePanner::setSourceLocation # %d [%f %f]", index,
          location.x, location.y);

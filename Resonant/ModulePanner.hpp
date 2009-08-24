@@ -27,7 +27,14 @@
 
 namespace Resonant {
 
-  /** Split audio signals to multiple outputs. */
+
+  /** Pans/splits audio signals to multiple outputs. 
+
+      ModulePanner is used to handle multi-loudspeaker (or head-phone)
+      situations, where the sound should move with videos or other
+      visual content.
+
+  */
   class ModulePanner : public Module
   {
   public:
