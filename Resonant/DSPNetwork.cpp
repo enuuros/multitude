@@ -82,7 +82,6 @@ namespace Resonant {
     return -1;
   }
 
-  
   void DSPNetwork::Item::removeInputsFrom(const char * id)
   {
     for(std::list<NewConnection>::iterator it = m_connections.begin();
@@ -186,18 +185,9 @@ namespace Resonant {
   }
 
   int DSPNetwork::callback(const void *in, void *out,
-      unsigned long framesPerBuffer
-//, const PaStreamCallbackTimeInfo* time,
-//      PaStreamCallbackFlags status
-)
+      unsigned long framesPerBuffer)
   {
     (void) in;
-//    (void) time;
-//    (void) status;
-
-    /* printf("st = %lf, dact = %lf\n",
-       m_streamInfo->outputLatency, time->outputBufferDacTime);*/
-    // Pa_GetStreamTime(m_stream), time->outputBufferDacTime);
 
     doCycle(framesPerBuffer);
     const float * res = m_collect->interleaved();
@@ -225,9 +215,6 @@ namespace Resonant {
 
     checkDoneItems();
 
-    // const float * res = m_collect->interleaved();
-
-    // m_device.writeInterleaved(res, cycle);
   }
 
   void DSPNetwork::checkNewControl()
@@ -479,21 +466,6 @@ namespace Resonant {
         Radiant::trace(FATAL, "DSPNetwork::checkNewItems # No collector \"%s\"",
             m_collect->id());
 
-      /*
-      for(int i = 0; i < outchans; i++) {
-        Connection conn;
-        conn.setModuleId(id);
-        conn.m_channel = i;
-        oi->eraseInput(conn);
-
-        m_controlData.rewind();
-        m_controlData.writeString(id);
-        m_controlData.writeInt32(i);
-        m_controlData.writeInt32(i % outchans);
-        m_controlData.rewind();
-        m_collect->control("removemapping", & m_controlData);
-      }
-      */
       m_controlData.rewind();
       m_controlData.writeString(id);
       m_controlData.rewind();
