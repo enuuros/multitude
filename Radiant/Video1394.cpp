@@ -977,6 +977,8 @@ namespace Radiant {
 
     debug("Copying FireWire camera information to user", (int) camlist->num);
 
+  fillquery:
+
     query->clear();
 
     for(i = 0; i < __infos.size(); i++) {
@@ -1331,7 +1333,6 @@ namespace Radiant {
 		     dc1394_error_get_string(res));
     }
 
-    
   }
 
 }
