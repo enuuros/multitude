@@ -59,7 +59,7 @@ namespace Valuable
 	k++;
 
 	while(std::getline(input,s)) {
-	  if(s!="")
+	  if(s!="") {
 	    if(parseLine(s)==ELEMENT_START) {
 	      depth++;
 	      ConfigElement child=ConfigElement();
@@ -123,7 +123,7 @@ namespace Valuable
 		  }
 		}
 
-		ConfigElement el= ConfigElement();
+		ConfigElement el = ConfigElement();
 		el.m_nodes.push_back(elm.m_nodes[0]);
 		
 		Radiant::info("E5 : %s", elm.m_nodes[0].m_elementName.c_str());
@@ -134,6 +134,7 @@ namespace Valuable
 		atFlag=false;
 	      }
 	    }
+          }
 	}
       }
     }

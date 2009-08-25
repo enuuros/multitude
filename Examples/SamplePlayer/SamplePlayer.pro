@@ -2,7 +2,7 @@ include(../Examples.pri)
 
 SOURCES += Main.cpp
 
-LIBS += $$LIB_RADIANT $$LIB_RESONANT
+LIBS += $$LIB_RADIANT $$LIB_RESONANT $$LIB_VALUABLE
 
 win32 {
 	include(../../Win32/WinApps.pri)

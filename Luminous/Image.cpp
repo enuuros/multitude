@@ -522,7 +522,8 @@ namespace Luminous
     unsigned pixels = width * height;
     unsigned nbytes = pixels * format.numChannels();
 
-    memcpy( & m_data[0], bytes, nbytes);
+    if(bytes)
+      memcpy( & m_data[0], bytes, nbytes);
   }
 
 

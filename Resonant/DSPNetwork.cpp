@@ -32,6 +32,8 @@
 
 namespace Resonant {
 
+  
+
   using namespace Radiant;
 
   DSPNetwork::Item::Item()
@@ -39,7 +41,9 @@ namespace Resonant {
       m_compiled(false),
       m_done(false),
       m_targetChannel(-1)
-  {}
+  {
+    
+  }
 
   DSPNetwork::Item::~Item()
   {}
@@ -316,7 +320,7 @@ namespace Resonant {
             m_controlData.writeString(buf);
             m_controlData.rewind();
           
-            m_panner->control("addsource", & m_controlData);
+            m_panner->processMessage("addsource", & m_controlData);
           }
           compile( * oi);
 
@@ -349,7 +353,7 @@ namespace Resonant {
             m_controlData.writeInt32(i);// Source module output channel
             m_controlData.writeInt32(i + tchan); // Target channels
             m_controlData.rewind();
-            m_collect->control("newmapping", & m_controlData);
+            m_collect->processMessage("newmapping", & m_controlData);
           }
           compile( * oi);
           debug("DSPNetwork::checkNewItems # Compiled out collector");
@@ -373,7 +377,7 @@ namespace Resonant {
             m_controlData.writeInt32(i % mchans);// Source module output channel
             m_controlData.writeInt32(i % outchans); // Target channels
             m_controlData.rewind();
-            m_collect->control("newmapping", & m_controlData);
+            m_collect->processMessage("newmapping", & m_controlData);
           }
           compile( * oi);
           debug("DSPNetwork::checkNewItems # Compiled out collector");
@@ -408,7 +412,7 @@ namespace Resonant {
           m_controlData.writeString(buf);
           m_controlData.rewind();
 
-          m_panner->control("removesource", & m_controlData);
+          m_panner->processMessage("removesource", & m_controlData);
           
           Item * oi = findItem(m_panner->id());
           oi->eraseInputs(item.m_module->id());
@@ -440,7 +444,7 @@ namespace Resonant {
     for(iterator it = m_items.begin(); it != m_items.end(); it++) {
       Module * m = (*it).m_module;
       if(strcmp(m->id(), moduleid) == 0) {
-        m->control(commandid, & data);
+        m->processMessage(commandid, & data);
         return;
       }
     } 
@@ -469,7 +473,7 @@ namespace Resonant {
       m_controlData.rewind();
       m_controlData.writeString(id);
       m_controlData.rewind();
-      m_collect->control("removemappings", & m_controlData);
+      m_collect->processMessage("removemappings", & m_controlData);
       
       oi->removeInputsFrom(id);
 

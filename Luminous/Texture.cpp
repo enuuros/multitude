@@ -123,7 +123,7 @@ namespace Luminous
   }
 */
 
-  bool Texture2D::loadImage(Luminous::Image & image, bool buildMipmaps)
+  bool Texture2D::loadImage(const Luminous::Image & image, bool buildMipmaps)
   {
     return loadBytes(image.pixelFormat().layout(),
 		     image.width(), image.height(),

@@ -45,59 +45,60 @@ namespace Valuable
   */
   class VALUABLE_API ValueObject
   {
-    public:
-      ValueObject();
-      /// The copy constructor creates a copy of the ValueObject WITHOUT the
-      /// link to parent
-      ValueObject(const ValueObject & o);
-      ValueObject(HasValues * parent, const std::string & name, bool transit = false);
-      virtual ~ValueObject();
+  public:
+    ValueObject();
+    /// The copy constructor creates a copy of the ValueObject WITHOUT the
+    /// link to parent
+    ValueObject(const ValueObject & o);
+    ValueObject(HasValues * parent, const std::string & name, bool transit = false);
+    virtual ~ValueObject();
       
-      const std::string & name() const { return m_name; }
-      void setName(const std::string & s) { m_name = s; }
+    const std::string & name() const { return m_name; }
+    void setName(const std::string & s) { m_name = s; }
   
-      std::string path() const;
+    std::string path() const;
 
-      virtual void processMessage(const char * type, Radiant::BinaryData & data);
+    virtual void processMessage(const char * type, Radiant::BinaryData & data);
 
-      virtual float       asFloat(bool * const ok = 0) const;
-      virtual int         asInt(bool * const ok = 0) const;
-      virtual std::string asString(bool * const ok = 0) const;
+    virtual float       asFloat(bool * const ok = 0) const;
+    virtual int         asInt(bool * const ok = 0) const;
+    virtual std::string asString(bool * const ok = 0) const;
 
-      virtual bool set(float v);
-      virtual bool set(int v);
-      virtual bool set(const std::string & v);
-      virtual bool set(const Nimble::Vector2f & v);
-      virtual bool set(const Nimble::Vector4f & v);
+    virtual bool set(float v);
+    virtual bool set(int v);
+    virtual bool set(const std::string & v);
+    virtual bool set(const Nimble::Vector2f & v);
+    virtual bool set(const Nimble::Vector4f & v);
  
-      /// Get the type id of the type 
-      virtual const char * type() const = 0;      
+    /// Get the type id of the type 
+    virtual const char * type() const = 0;      
 
-      virtual DOMElement serializeXML(DOMDocument * doc);
-      virtual bool deserializeXML(DOMElement element) = 0;
+    virtual DOMElement serializeXML(DOMDocument * doc);
+    virtual bool deserializeXML(DOMElement element) = 0;
 
-      HasValues * parent() { return m_parent; }
-      void removeParent();
+    HasValues * parent() { return m_parent; }
+    void removeParent();
 
-      /// Adds a listener that is invoked whenever the value is changed
-      void addListener(ValueListener * l) { m_listeners.push_back(l); }
-      /// Removes a listener from the listener list
-      void removeListener(ValueListener * l) { m_listeners.remove(l); }
+    /// Adds a listener that is invoked whenever the value is changed
+    void addListener(ValueListener * l) { m_listeners.push_back(l); }
+    /// Removes a listener from the listener list
+    void removeListener(ValueListener * l) { m_listeners.remove(l); }
     
-    protected:
-      /// Invokes the change valueChanged function of all listeners
-      virtual void emitChange();
-      /// Invokes the change valueDeleted function of all listeners
-      virtual void emitDelete();
-    private:
-      /// The object that holds this object
-      HasValues * m_parent;
+  protected:
+    /// Invokes the change valueChanged function of all listeners
+    virtual void emitChange();
+    /// Invokes the change valueDeleted function of all listeners
+    virtual void emitDelete();
+
+  private:
+    /// The object that holds this object
+    HasValues * m_parent;
     std::string m_name;
-      bool m_transit;
+    bool m_transit;
 
-      ValueListeners m_listeners;
+    ValueListeners m_listeners;
 
-      friend class HasValues;
+    friend class HasValues;
   };
 
 }

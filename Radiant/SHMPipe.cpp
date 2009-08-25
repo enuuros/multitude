@@ -522,7 +522,7 @@ namespace Radiant
   void SHMPipe::flush()
   { 
     storeHeaderValue(SHM_WRITE_LOC, m_written);
-    info("SHMPipe::flush # Flushed out written data (%u)",(unsigned) m_written);
+    // info("SHMPipe::flush # Flushed out written data (%u)",(unsigned) m_written);
   }
 
   void SHMPipe::zero()

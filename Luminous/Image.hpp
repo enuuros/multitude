@@ -56,6 +56,9 @@ namespace Luminous
     unsigned char * bytes() { return & m_data[0]; }
     const unsigned char * bytes() const { return & m_data[0]; }
 
+    unsigned char * data() { return & m_data[0]; }
+    const unsigned char * data() const { return & m_data[0]; }
+
     static bool ping(const char * filename, ImageInfo & info);
 
     bool read(const char * filename);

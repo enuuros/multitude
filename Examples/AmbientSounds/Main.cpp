@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
   control.writeInt32(2);
   control.rewind();
 
-  item.module()->control("channels", & control);
+  item.module()->processMessage("channels", & control);
 
   player->createAmbientBackground(& dsp, directory, gain);
   

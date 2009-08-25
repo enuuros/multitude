@@ -127,7 +127,7 @@ namespace Luminous
     Texture2D(GLResources * resources = 0) : TextureT<GL_TEXTURE_2D>(resources) {}
 
     bool loadImage(const char * filename, bool buildMipmaps = true);
-    bool loadImage(Luminous::Image & image, bool buildMipmaps = true);
+    bool loadImage(const Luminous::Image & image, bool buildMipmaps = true);
 
     bool loadBytes(GLenum internalFormat, int w, int h,
 		   const void* data, 

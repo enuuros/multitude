@@ -413,7 +413,7 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleSamplePlayer::control(const char * id, Radiant::BinaryData * data)
+  void ModuleSamplePlayer::processMessage(const char * id, Radiant::BinaryData * data)
   {
     const int bufsize = 256;
     char buf[bufsize];

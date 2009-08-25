@@ -67,7 +67,7 @@ namespace Resonant {
     return true;
   }
 
-  void ModuleOutCollect::control(const char * address, Radiant::BinaryData * control)
+  void ModuleOutCollect::processMessage(const char * address, Radiant::BinaryData * control)
   {
     assert(address != 0);
 

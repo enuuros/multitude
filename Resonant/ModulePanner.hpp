@@ -20,8 +20,12 @@
 #include <Nimble/Vector2.hpp>
 
 #include <Radiant/RefObj.hpp>
+#include <Radiant/RefPtr.hpp>
 
 #include <Resonant/Module.hpp>
+
+#include <Valuable/ValueFloat.hpp>
+#include <Valuable/ValueVector.hpp>
 
 #include <vector>
 
@@ -41,8 +45,11 @@ namespace Resonant {
     RESONANT_API ModulePanner(Application *);
     RESONANT_API virtual ~ModulePanner();
 
+    RESONANT_API virtual Valuable::DOMElement serializeXML(Valuable::DOMDocument * doc);
+    RESONANT_API virtual bool readElement(Valuable::DOMElement element);
+    
     RESONANT_API virtual bool prepare(int & channelsIn, int & channelsOut);
-    RESONANT_API virtual void control(const char *, Radiant::BinaryData *);
+    RESONANT_API virtual void processMessage(const char *, Radiant::BinaryData *);
     RESONANT_API virtual void process(float ** in, float ** out, int n);
 
     /** Creates a loudspeaker/headphone setup for full-HD displays.
@@ -62,14 +69,16 @@ namespace Resonant {
     void setSourceLocation(const std::string &, Nimble::Vector2 location);
     void removeSource(const std::string &);
 
-    class LoudSpeaker
+    class LoudSpeaker : public Valuable::HasValues
     {
     public:
       LoudSpeaker()
-	: m_location(0, 0)
-      {}
+	: m_location(this, "location", Nimble::Vector2(0,0))
+      {
+        setName("speaker");
+      }
 
-      Nimble::Vector2 m_location; // PixelLocation.
+      Valuable::ValueVector2f m_location; // PixelLocation.
     };
 
     class Pipe
@@ -103,14 +112,14 @@ namespace Resonant {
     };
 
     typedef std::vector<Radiant::RefObj<Source> > Sources;
-    typedef std::vector<LoudSpeaker> LoudSpeakers;
+    typedef std::vector<Radiant::RefPtr<LoudSpeaker> > LoudSpeakers;
 
     Sources      m_sources;
     LoudSpeakers m_speakers;
 
     int m_outChannels;
 
-    float m_maxRadius;
+    Valuable::ValueFloat m_maxRadius;
   };
 
 }

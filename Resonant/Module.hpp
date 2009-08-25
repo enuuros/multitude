@@ -18,6 +18,8 @@
 
 #include <Resonant/Export.hpp>
 
+#include <Valuable/HasValues.hpp>
+
 namespace  Radiant {
 
   class BinaryData;
@@ -29,7 +31,7 @@ namespace Resonant {
   class Application;
 
   /** Base class for #Resonant signal processing blocks. */
-  class RESONANT_API Module
+  class RESONANT_API Module : public Valuable::HasValues
   {
   public:
 
@@ -65,7 +67,7 @@ namespace Resonant {
 	The default implementation does nothing. Child classes with
 	dynamic variable will need to override this method.
      */
-    virtual void control(const char * address, Radiant::BinaryData *);
+    virtual void processMessage(const char * address, Radiant::BinaryData *);
     /** Processes one cycle of audio data. 
 	
 	@arg in Input audio data.

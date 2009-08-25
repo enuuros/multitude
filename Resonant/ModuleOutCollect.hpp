@@ -48,7 +48,7 @@ namespace Resonant {
     virtual ~ModuleOutCollect();
 
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char *, Radiant::BinaryData *);
+    virtual void processMessage(const char *, Radiant::BinaryData *);
     virtual void process(float ** in, float ** out, int n);
     
     const float * interleaved() const { return & m_interleaved[0]; }

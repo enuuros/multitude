@@ -45,7 +45,7 @@ namespace Resonant {
     virtual ~ModuleSamplePlayer();
 
     virtual bool prepare(int & channelsIn, int & channelsOut);
-    virtual void control(const char * address, Radiant::BinaryData *);
+    virtual void processMessage(const char * address, Radiant::BinaryData *);
     virtual void process(float ** in, float ** out, int n);
 
     bool addSample(const char * filename, const char * name);
