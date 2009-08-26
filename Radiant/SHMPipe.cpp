@@ -358,7 +358,7 @@ namespace Radiant
 
   int SHMPipe::read(void * ptr, int n)
   {
-    // int orig = n;
+    int orig = n;
 
     uint32_t avail = readAvailable();
 
@@ -382,10 +382,10 @@ namespace Radiant
 
     storeHeaderValue(SHM_READ_LOC, m_read);
 
-    /* if(n)
+    if(n)
       info("SHMPipe::read # Read %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
-    */
+
 
     return n;
   }
@@ -461,8 +461,8 @@ namespace Radiant
   {
     uint32_t wavail = writeAvailable(data.pos() + 8);
     if(wavail < (uint32_t) data.pos() + 8) {
-      error("SHMPipe::write # Not enough space in the pipe (%u %u)",
-	    (unsigned) m_written, (unsigned) wavail);
+      error("SHMPipe::write # Not enough space in the pipe (%u, %u < %u)",
+	    (unsigned) m_written, (unsigned) wavail, (unsigned) data.pos() + 8 );
       return 0;
     }
 

@@ -394,6 +394,9 @@ namespace Luminous
 
   bool Image::forgetLastPixels(int n)
   {
+    if(n <= 0)
+      return true;
+
     if(pixelFormat() == PixelFormat::rgbUByte()) {
       int linewidth = m_width * 3;
       int newlinewidth = (m_width - n) * 3;
@@ -413,6 +416,15 @@ namespace Luminous
     return false;
   }
 
+  void Image::forgetLastLines(int n)
+  {
+
+    if(m_height < n)
+      m_height = 0;
+    else
+      m_height -= n;
+  }
+
   void Image::forgetLastLine()
   {
     if(m_height) m_height--;
@@ -424,6 +436,17 @@ namespace Luminous
       (m_pixelFormat.layout() == PixelFormat::LAYOUT_LUMINANCE_ALPHA) ||
       (m_pixelFormat.layout() == PixelFormat::LAYOUT_RGBA);
   }
+
+  void Image::makeValidTexture()
+  {
+    int xlose = width()  & 0x3;
+    int ylose = height() & 0x3;
+
+    forgetLastPixels(xlose);
+    forgetLastLines(ylose);
+    
+  }
+  
 
   Image& Image::operator = (const Image& img) 
   {    

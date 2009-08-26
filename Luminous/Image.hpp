@@ -48,6 +48,7 @@ namespace Luminous
 
     int width() const { return m_width; }
     int height() const { return m_height; }
+    
 
     int lineSize() { return m_width * m_pixelFormat.numChannels(); }
 
@@ -63,7 +64,7 @@ namespace Luminous
 
     bool read(const char * filename);
     bool write(const char * filename);
-
+    
     void fromData(const unsigned char * bytes, int width, int height, 
 		  PixelFormat format);
 
@@ -82,7 +83,10 @@ namespace Luminous
     bool quarterSize(const Image & source);
 
     bool forgetLastPixels(int n);
+    void forgetLastLines(int n);
     void forgetLastLine();
+
+    void makeValidTexture();
 
     bool hasAlpha() const;
 
