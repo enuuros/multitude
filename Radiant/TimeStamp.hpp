@@ -118,6 +118,9 @@ namespace Radiant {
     /** Returns the amount of time passed since this timestamp. */ 
     TimeStamp since() const { return getTime() - *this; }
 
+    /** Returns the amount of time passed since this timestamp. */ 
+    TimeStamp sinceSecondsD() const { return since().secondsD(); }
+
     inline operator type & () { return m_val; }
     inline operator const type & () const { return m_val; }
 

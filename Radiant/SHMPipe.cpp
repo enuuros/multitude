@@ -358,7 +358,7 @@ namespace Radiant
 
   int SHMPipe::read(void * ptr, int n)
   {
-    int orig = n;
+    // int orig = n;
 
     uint32_t avail = readAvailable();
 
@@ -382,10 +382,11 @@ namespace Radiant
 
     storeHeaderValue(SHM_READ_LOC, m_read);
 
+    /*
     if(n)
       info("SHMPipe::read # Read %d vs %d (%d vs %d)",
 	   n, orig, readPos(), writePos());
-
+    */
 
     return n;
   }
