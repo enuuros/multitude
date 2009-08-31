@@ -96,7 +96,6 @@ namespace Radiant {
       { m_data = data; m_linesize = linesize; m_type = type; }
 
       void freeMemory();
-      void makeValidTexture();
 
       /// Get a line from the image
       unsigned char * line(int y) { return m_data + m_linesize * y; }
@@ -200,8 +199,6 @@ namespace Radiant {
       return s;
     }
 
-    void makeValidTexture();
-    
     /// Returns a readable name of a given image format
     static const char * formatName(ImageFormat);
   

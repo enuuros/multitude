@@ -30,9 +30,6 @@ namespace Radiant {
     m_data = 0; 
   }
 
-  void VideoImage::Plane::makeValidTexture()
-  {
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -253,66 +250,6 @@ namespace Radiant {
     };
   }
 
-  void VideoImage::makeValidTexture()
-  {
-    int droplines = 0;
-    int dropx = 0;
-
-    for(int i = 0; i < 4; i++) {
-
-      Nimble::Vector2i s = planeSize(m_format, m_width, m_height, i);
-
-      if(!s.x || !s.y)
-        continue;
-
-      if(s.x & 0x1) {
-        int scale = m_width / s.x;
-        dropx = scale;
-      }
-      
-    }
-
-    for(int i = 0; i < 4; i++) {
-      
-      Plane & p = m_planes[i];
-      Nimble::Vector2i s = planeSize(m_format, m_width, m_height, i);
-
-      if(!s.x || !s.y)
-        continue;
-
-      int scale = m_width / s.x;
-      
-      if(scale > 1) {
-
-        int skip = 1 << (scale - 1);
-
-        unsigned char * from = p.m_data;
-        unsigned char * to = from;
-        
-        int ls = s.x - skip;
-
-        for(int y = 0; y < s.y; y++) {
-          memmove(to, from, s.x);
-          to += ls;
-          from += s.x;
-        }
-      }
-
-      p.m_linesize = s.x;
-
-      if(s.y & 0x1) {
-        droplines = m_height / s.x;
-      }
-    }
-
-    info("VideoImage::makeValidTexture # %d %d", dropx, droplines);
-
-    m_width -= dropx;
-
-    m_height -= droplines;
-
-    
-  }
 
   void VideoImage::freeMemory() 
   { 

@@ -117,12 +117,11 @@ namespace Luminous {
 
       glLoadIdentity();
       m_keyStone.applyGlState();
-
       gluOrtho2D(0, 1, 1, 0);
 
       tex->bind(GL_TEXTURE0);
       glEnable(GL_TEXTURE_2D);
-
+      
       glColor3f(1, 1, 1);
       Utils::glTexRect(-m_seams[0] / m_size[0], 1 + m_seams[2] / m_size[1],
 		       1 + m_seams[1] / m_size[0], -m_seams[3] / m_size[1]);

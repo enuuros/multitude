@@ -977,7 +977,9 @@ namespace Radiant {
 
     debug("Copying FireWire camera information to user", (int) camlist->num);
 
-  fillquery:
+#ifndef __linux__
+  fillquery: 
+#endif
 
     query->clear();
 

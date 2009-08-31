@@ -341,8 +341,6 @@ namespace VideoDisplay {
 
     bool ok = f.m_image.copyData(*im);
 
-    // f.m_image.makeValidTexture();
-
     if(!ok)
       error("VideoIn::putFrame # Radiant::Image::copyData failed");
 
@@ -357,9 +355,7 @@ namespace VideoDisplay {
 
     // info("VideoIn::putFrame # %d", m_decodedFrames);
 
-
     return & f;
-    // qDebug("VideoIn::putFrame # EXIT");
   }
 
   void VideoIn::ignorePreviousFrames()
