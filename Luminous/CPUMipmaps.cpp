@@ -717,8 +717,14 @@ namespace Luminous {
   void CPUMipmaps::cacheFileName(std::string & name, int level)
   {
     char buf[32];
-    sprintf(buf, "/.imagecache/%.2d_", level);
+
     name = Radiant::FileUtils::path(m_filename);
+
+    if(name.empty())
+      sprintf(buf, ".imagecache/%.2d_", level);
+    else
+      sprintf(buf, "/.imagecache/%.2d_", level);
+
     name += buf;
     name += Radiant::FileUtils::filename(m_filename);
     

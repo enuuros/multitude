@@ -212,9 +212,9 @@ namespace VideoDisplay {
           ("ShowGL::YUVProgram::doTextures # glTexImage2D");
       }
       else {
-
-	debug("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
-	     frame, ts.x, ts.y);
+        
+        info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+              frame, ts.x, ts.y);
 
         if(img->m_planes[i].m_data)
           glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
