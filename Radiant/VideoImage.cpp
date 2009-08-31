@@ -30,9 +30,48 @@ namespace Radiant {
     m_data = 0; 
   }
 
+  void VideoImage::Plane::makeValidTexture()
+  {
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
   VideoImage::~VideoImage()
   {
   }
+
+  Nimble::Vector2i VideoImage::planeSize(ImageFormat fmt, int w, int h, int plane)
+  {
+    
+    Nimble::Vector2i area(w, h);
+
+    if(plane == 3) {
+      area.clear();
+    }
+    else if(plane) {
+      if(fmt == Radiant::IMAGE_YUV_411P) {
+        area.x /= 4;
+      }
+      else if(fmt == Radiant::IMAGE_YUV_420P) {
+        area /= 2;
+      }
+      else if(fmt == Radiant::IMAGE_YUV_422P) {
+        area.x /= 2;
+      }
+      else
+        area.clear();
+    }
+    else if(fmt == IMAGE_RGB) {
+      area.x *= 3;
+    }
+    else if(fmt == IMAGE_RGBA) {
+      area.x *= 4;
+    }
+
+    return area;
+  }
+  
 
   bool VideoImage::allocateMemory(ImageFormat fmt, int w, int h)
   {
@@ -45,8 +84,8 @@ namespace Radiant {
     unsigned pixels = w * h;
 
     if(fmt == IMAGE_RGB ||
-        fmt == IMAGE_RGBA ||  
-        fmt == IMAGE_GRAYSCALE) {
+       fmt == IMAGE_RGBA ||  
+       fmt == IMAGE_GRAYSCALE) {
 
       m_format = fmt;
 
@@ -212,6 +251,67 @@ namespace Radiant {
         Radiant::error("VideoImage::zero # unsupported format");
         break;
     };
+  }
+
+  void VideoImage::makeValidTexture()
+  {
+    int droplines = 0;
+    int dropx = 0;
+
+    for(int i = 0; i < 4; i++) {
+
+      Nimble::Vector2i s = planeSize(m_format, m_width, m_height, i);
+
+      if(!s.x || !s.y)
+        continue;
+
+      if(s.x & 0x1) {
+        int scale = m_width / s.x;
+        dropx = scale;
+      }
+      
+    }
+
+    for(int i = 0; i < 4; i++) {
+      
+      Plane & p = m_planes[i];
+      Nimble::Vector2i s = planeSize(m_format, m_width, m_height, i);
+
+      if(!s.x || !s.y)
+        continue;
+
+      int scale = m_width / s.x;
+      
+      if(scale > 1) {
+
+        int skip = 1 << (scale - 1);
+
+        unsigned char * from = p.m_data;
+        unsigned char * to = from;
+        
+        int ls = s.x - skip;
+
+        for(int y = 0; y < s.y; y++) {
+          memmove(to, from, s.x);
+          to += ls;
+          from += s.x;
+        }
+      }
+
+      p.m_linesize = s.x;
+
+      if(s.y & 0x1) {
+        droplines = m_height / s.x;
+      }
+    }
+
+    info("VideoImage::makeValidTexture # %d %d", dropx, droplines);
+
+    m_width -= dropx;
+
+    m_height -= droplines;
+
+    
   }
 
   void VideoImage::freeMemory() 

@@ -18,6 +18,8 @@
 
 #include <Radiant/Export.hpp>
 
+#include <Nimble/Vector2.hpp>
+
 namespace Radiant {
 
   /// Enumeration of different video image formats
@@ -94,7 +96,8 @@ namespace Radiant {
       { m_data = data; m_linesize = linesize; m_type = type; }
 
       void freeMemory();
-    
+      void makeValidTexture();
+
       /// Get a line from the image
       unsigned char * line(int y) { return m_data + m_linesize * y; }
       /// Get the line size (line interval)
@@ -161,6 +164,8 @@ namespace Radiant {
       m_planes[3].m_type = PLANE_UNKNOWN;
     }
 
+    static Nimble::Vector2i planeSize(ImageFormat fmt, int w, int h, int plane);
+
     /// Allocates memory and sets the image format.
     bool allocateMemory(ImageFormat fmt, int w, int h);
     /// Allocates memory and sets the image format, based on another image
@@ -195,6 +200,8 @@ namespace Radiant {
       return s;
     }
 
+    void makeValidTexture();
+    
     /// Returns a readable name of a given image format
     static const char * formatName(ImageFormat);
   

@@ -341,6 +341,8 @@ namespace VideoDisplay {
 
     bool ok = f.m_image.copyData(*im);
 
+    // f.m_image.makeValidTexture();
+
     if(!ok)
       error("VideoIn::putFrame # Radiant::Image::copyData failed");
 

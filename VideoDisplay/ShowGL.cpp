@@ -149,6 +149,8 @@ namespace VideoDisplay {
     : GLResource(resources)
   {
     m_frame = -1;
+    
+    bzero(m_texSizes, sizeof(m_texSizes));
   }
 
   ShowGL::MyTextures::~MyTextures()
@@ -185,11 +187,20 @@ namespace VideoDisplay {
       glEnable(GL_TEXTURE_2D);
       Luminous::Texture2D * tex = & m_texIds[i];
       tex->bind();
-
-      Vector2i area = planeSize(img, i);
-      Vector2i & ts = m_texSizes[i];
-      ts = area;
       
+      Vector2i area, real = planeSize(img, i);
+      Vector2i & ts = m_texSizes[i];
+      
+      area = real;
+
+      if(area.x & 0x3) {
+        area.x -= area.x & 0x3;
+      }
+      if(area.y & 0x3)
+        area.y -= area.y & 0x3;
+
+      ts = area;
+
       if(m_frame < 0 || area != tex->size()) {
 
 	debug("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
@@ -200,7 +211,7 @@ namespace VideoDisplay {
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
 		     area.x, area.y, 0, 
-		     GL_LUMINANCE, GL_UNSIGNED_BYTE, img->m_planes[i].m_data);
+		     GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -210,21 +221,30 @@ namespace VideoDisplay {
 
         Luminous::Utils::glCheck
           ("ShowGL::YUVProgram::doTextures # glTexImage2D");
+
       }
-      else {
+       
+      info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+           frame, ts.x, ts.y);
+
+      if(real.x & 0x3) {
         
-        info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
-              frame, ts.x, ts.y);
-
-        if(img->m_planes[i].m_data)
-          glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-                          ts.x, ts.y,
+        for(int y = 0; y < area.y; y++) {
+          glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, 
+                          ts.x, 1,
                           GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                          img->m_planes[i].m_data);
-
-        Luminous::Utils::glCheck
-          ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
+                          img->m_planes[i].m_data + y * real.x);
+          
+        }
       }
+      else
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+                        ts.x, ts.y,
+                        GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                        img->m_planes[i].m_data);
+      
+      Luminous::Utils::glCheck
+        ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
     }
     m_frame = frame;
   }
