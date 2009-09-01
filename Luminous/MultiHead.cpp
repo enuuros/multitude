@@ -131,11 +131,7 @@ namespace Luminous {
       glEnable(GL_TEXTURE_2D);
       
       glColor3f(1, 1, 1);
-      /*Utils::glTexRect(-m_seams[0] / totalw, 1 + m_seams[2] / totalh,
-		       1 + m_seams[1] / totalw, -m_seams[3] / totalh);
-      */
       Utils::glTexRect(0, 1, 1, 0);
-
     }
     else {
       glLoadIdentity();
@@ -161,9 +157,6 @@ namespace Luminous {
     if(m_seams[3] != 0.0f)
       Utils::fadeEdge(1, 1, 2 * m_seams[3] / totalh,
           gamma, Utils::BOTTOM, false);
-
-    // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
-    // puts("MultiHead::Area::cleanEdges # top & bottom unimplemented");
 
     if(m_method != METHOD_TEXTURE_READBACK) 
       m_keyStone.cleanExterior();
