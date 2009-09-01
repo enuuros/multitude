@@ -135,7 +135,7 @@ namespace Luminous {
 		       1 + m_seams[1] / totalw, -m_seams[3] / totalh);
       */
       Utils::glTexRect(0, 1, 1, 0);
-      // info("YRECT = %f %f (%f %f)", 1 + m_seams[2] / totalh, -m_seams[3] / totalh, relh, totalh);
+
     }
     else {
       glLoadIdentity();
@@ -195,8 +195,8 @@ namespace Luminous {
     isInside = ok;
     
     loc.y = 1.0f - loc.y;
-    loc.scale(m_graphicsSize.asVector());
-    loc += m_graphicsLocation.asVector();
+    loc.scale(graphicsBounds().size());
+    loc += graphicsBounds().low();
     
     return loc;
   }

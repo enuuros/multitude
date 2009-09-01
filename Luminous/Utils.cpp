@@ -208,7 +208,6 @@ namespace Luminous {
 	glVertex2f(-wextra, y);
 	glVertex2f(w + wextra, y);
 
-        Radiant::info("YFILL = %f / %f", y, h);
       }
     }
 
