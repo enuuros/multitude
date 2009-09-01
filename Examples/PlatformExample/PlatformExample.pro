@@ -4,5 +4,5 @@ win32: CONFIG += console
 
 SOURCES += Main.cpp
 
-LIBS += $$LIB_RADIANT 
+LIBS += $$LIB_RADIANT  $$LIB_PATTERNS
 
