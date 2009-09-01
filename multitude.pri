@@ -60,6 +60,7 @@ macx {
 }
 
 win32 {
+	WINPORT_INCLUDE = $$PWD\Win32x\include
 	INCLUDEPATH += $$PWD\Win32x\include
 	LIBPATH += $$PWD\Win32x\lib
 	LIB_OPENGL = -lopengl32

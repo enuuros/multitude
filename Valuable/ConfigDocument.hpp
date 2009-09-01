@@ -60,8 +60,8 @@ namespace Valuable
     ConfigElement m_doc;		
   };
 
-  void convert(DOMDocument  & doc, DOMElement & to, const ConfigElement & from);
-  void convert(ConfigElement & to, DOMElement from);
+  void VALUABLE_API convert(DOMDocument  & doc, DOMElement & to, const ConfigElement & from);
+  void VALUABLE_API convert(ConfigElement & to, DOMElement from);
 
 }
 

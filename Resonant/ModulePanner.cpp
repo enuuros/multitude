@@ -202,7 +202,7 @@ namespace Resonant {
   void ModulePanner::setSourceLocation(const std::string & id,
                                        Nimble::Vector2 location)
   {
-    debug("ModulePanner::setSourceLocation # %d [%f %f]", index,
+    debug("ModulePanner::setSourceLocation # %s [%f %f]", id.c_str(),
          location.x, location.y);
 
     Source * s = 0;
@@ -295,7 +295,7 @@ namespace Resonant {
 	}
 
 	if(!found) {
-	  error("Could not allocate pipe for a moving source %u", index);
+	  error("Could not allocate pipe for a moving source");
 	}
       }
     }
