@@ -173,7 +173,6 @@ namespace Luminous {
 	glTranslatef(0, -h, 0);
       }
     }
-    
 
     int i, n = 16;
     float left = w - seam;
@@ -189,8 +188,8 @@ namespace Luminous {
 
       for(i = 0; i <= n; i++) {
 	
-	float rel = i / (float)n;
-	float x = left + seam * rel * 1.5f;
+	float rel = i / (float) n;
+	float x = left + seam * rel * 1 + 0.00001;
 	
 	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
 	glVertex2f(x, -hextra);
@@ -202,12 +201,14 @@ namespace Luminous {
       
       for(i = 0; i <= n; i++) {
 	
-	float rel = i / (float)n;
-	float y = top + seam * rel * 1.5;
+	float rel = i / (float) n;
+	float y = top + seam * rel * 1.0 + 0.00001f;
 	
 	glColor4f(0.0f, 0.0f, 0.0f, powf(rel, gamma));
 	glVertex2f(-wextra, y);
 	glVertex2f(w + wextra, y);
+
+        Radiant::info("YFILL = %f / %f", y, h);
       }
     }
 

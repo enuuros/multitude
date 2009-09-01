@@ -83,6 +83,7 @@ namespace Luminous {
 
   void MultiHead::Area::cleanEdges() const
   {
+
     glViewport(m_location[0], m_location[1], m_size[0], m_size[1]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -90,6 +91,12 @@ namespace Luminous {
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // From applyGlState
     glLoadIdentity();
+
+    float totalh = m_size[1] + m_seams[2] + m_seams[3];
+    float totalw = m_size[0] + m_seams[0] + m_seams[1];
+
+    float relh = totalh / m_size[1];
+    float relx = totalw / m_size[0];
 
     if(m_method == METHOD_TEXTURE_READBACK) {
 
@@ -112,6 +119,7 @@ namespace Luminous {
 
       glDisable(GL_TEXTURE_2D);
       glColor3f(0, 0, 0);
+      glLoadIdentity();
       gluOrtho2D(0, 1, 1, 0);
       Utils::glTexRect(0, 1, 1, 0);
 
@@ -123,8 +131,11 @@ namespace Luminous {
       glEnable(GL_TEXTURE_2D);
       
       glColor3f(1, 1, 1);
-      Utils::glTexRect(-m_seams[0] / m_size[0], 1 + m_seams[2] / m_size[1],
-		       1 + m_seams[1] / m_size[0], -m_seams[3] / m_size[1]);
+      /*Utils::glTexRect(-m_seams[0] / totalw, 1 + m_seams[2] / totalh,
+		       1 + m_seams[1] / totalw, -m_seams[3] / totalh);
+      */
+      Utils::glTexRect(0, 1, 1, 0);
+      // info("YRECT = %f %f (%f %f)", 1 + m_seams[2] / totalh, -m_seams[3] / totalh, relh, totalh);
     }
     else {
       glLoadIdentity();
@@ -137,18 +148,18 @@ namespace Luminous {
     if(m_window)
       if(m_window->m_screen)
 	gamma = m_window->m_screen->gamma();
-    
+
     if(m_seams[0] != 0.0f)
-      Utils::fadeEdge(1, 1, 2 * m_seams[0] / m_size[0],
+      Utils::fadeEdge(1, 1, 2 * m_seams[0] / totalw,
           gamma, Utils::LEFT, false);
     if(m_seams[1] != 0.0f)
-      Utils::fadeEdge(1, 1, 2 * m_seams[1] / m_size[0],
+      Utils::fadeEdge(1, 1, 2 * m_seams[1] / totalw,
           gamma, Utils::RIGHT, false);
     if(m_seams[2] != 0.0f)
-      Utils::fadeEdge(1, 1, 2 * m_seams[2] / m_size[1],
+      Utils::fadeEdge(1, 1, 2 * m_seams[2] / totalh,
           gamma, Utils::TOP, false);
     if(m_seams[3] != 0.0f)
-      Utils::fadeEdge(1, 1, 2 * m_seams[3] / m_size[1],
+      Utils::fadeEdge(1, 1, 2 * m_seams[3] / totalh,
           gamma, Utils::BOTTOM, false);
 
     // if(m_seams[2] != 0.0f || m_seams[3] != 0.0f)
