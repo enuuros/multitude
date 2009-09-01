@@ -105,8 +105,7 @@ namespace Luminous
     m_deallocationSum += bytes;
     */
 
-    Radiant::info("GLResources::eraseResource # Resource %s for %p erased",
-                  typeid(*resource).name(), key);
+    //Radiant::info("GLResources::eraseResource # Resource %s for %p erased", typeid(*resource).name(), key);
 
     delete resource;
     m_resources.erase(it);
@@ -136,9 +135,8 @@ namespace Luminous
 
       if(r->m_deleteOnFrame && r->m_deleteOnFrame < m_frame) {
 	
-        Radiant::info("GLResources::eraseResource # Resource %s for %p erased",
-                      typeid(*(*it).second).name(), (*it).first);
-	// Radiant::trace("GLResources::eraseResources # Removing old");
+        //Radiant::info("GLResources::eraseResource # Resource %s for %p erased", typeid(*(*it).second).name(), (*it).first);
+        // Radiant::trace("GLResources::eraseResources # Removing old");
 
         delete (*it).second;
         iterator tmp = it;

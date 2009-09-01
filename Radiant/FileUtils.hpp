@@ -29,6 +29,7 @@ namespace Radiant
     
     /// Get the size of a file.
     RADIANT_API unsigned long getFileLen(std::ifstream& file);
+    RADIANT_API unsigned long getFileLen(const std::string & filename);
 
     /// Load a text file.
     /** The contents of the file are returned as a zero-terminated

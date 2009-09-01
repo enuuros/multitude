@@ -54,6 +54,13 @@ namespace Radiant
       return len;
     }
 
+    unsigned long getFileLen(const std::string & filename)
+    {
+      std::ifstream file(filename.c_str());
+
+      return getFileLen(file);
+    }
+
     bool fileReadable(const char* filename)
     {
       return PlatformUtils::fileReadable(filename);
