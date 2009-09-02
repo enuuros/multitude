@@ -62,6 +62,8 @@ namespace Valuable
     
     void clear() { m_value.clear(); }
 
+    unsigned size() const { return m_value.size(); }
+
   private:
     T m_value;
   };
