@@ -74,7 +74,7 @@ namespace Luminous
   }
 
   void RenderContext::drawLineRect(const Nimble::Rectf & r, float thickness, const float * rgba)
-  {    
+  {
     thickness *= 0.5f;
 
     Vector2 v1(thickness, thickness);
