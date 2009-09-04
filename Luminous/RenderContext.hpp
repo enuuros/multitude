@@ -28,35 +28,40 @@ namespace Luminous
   /// RenderContext contains the current rendering state. 
   class LUMINOUS_API RenderContext : public Transformer
   {
-    public:
-      RenderContext(Luminous::GLResources * resources);
-      virtual ~RenderContext();
+  public:
+    RenderContext(Luminous::GLResources * resources);
+    virtual ~RenderContext();
 
-      Luminous::GLResources * resources() { return m_resources; }
+    Luminous::GLResources * resources() { return m_resources; }
 
-      virtual void prepare();
-      virtual void finish();
+    virtual void prepare();
+    virtual void finish();
 
-      void setRecursionLimit(size_t limit) { m_recursionLimit = limit; }
-      size_t recursionLimit() const { return m_recursionLimit; }
+    void setRecursionLimit(size_t limit) { m_recursionLimit = limit; }
+    size_t recursionLimit() const { return m_recursionLimit; }
 
-      void setRecursionDepth(size_t rd) { m_recursionDepth = rd; }
-      size_t recursionDepth() const { return m_recursionDepth; }  
+    void setRecursionDepth(size_t rd) { m_recursionDepth = rd; }
+    size_t recursionDepth() const { return m_recursionDepth; }  
 
-      void pushClipRect(const Nimble::Rect & area);
-      void popClipRect();
+    void pushClipRect(const Nimble::Rect & area);
+    void popClipRect();
 
-      bool isVisible(const Nimble::Rect & area);
-      const Nimble::Rect & visibleArea() const;
+    bool isVisible(const Nimble::Rect & area);
+    const Nimble::Rect & visibleArea() const;
 
-    protected:
+    // Render functions:
+    
+    /** Draw a line rectangle, with given thickness and color. */
+    void drawLineRect(const Nimble::Rectf & rect, float thickness, const float * rgba);
 
-      Luminous::GLResources * m_resources;
+  protected:
 
-      size_t m_recursionLimit;
-      size_t m_recursionDepth;
+    Luminous::GLResources * m_resources;
 
-      std::stack<Nimble::Rect> m_clipStack;
+    size_t m_recursionLimit;
+    size_t m_recursionDepth;
+
+    std::stack<Nimble::Rect> m_clipStack;
   };
 
 }

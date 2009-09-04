@@ -51,6 +51,8 @@ namespace Radiant {
   const int FLOAT_MARKER  = makeMarker(',', 'f', '\0', '\0');
   const int VECTOR2F_MARKER  = makeMarker(',', 'f', '2', '\0');
   const int VECTOR2I_MARKER  = makeMarker(',', 'i', '2', '\0');
+  const int VECTOR4F_MARKER  = makeMarker(',', 'f', '4', '\0');
+  const int VECTOR4I_MARKER  = makeMarker(',', 'i', '4', '\0');
   const int INT32_MARKER  = makeMarker(',', 'i', '\0', '\0');
   const int INT64_MARKER  = makeMarker(',', 'l', '\0', '\0');
   const int TS_MARKER     = makeMarker(',', 't', '\0', '\0');
@@ -159,8 +161,18 @@ namespace Radiant {
   {
     ensure(12);
     getRef<int32_t>() = VECTOR2I_MARKER;
-    getRef<float>() = v[0];
-    getRef<float>() = v[1];
+    getRef<int>() = v[0];
+    getRef<int>() = v[1];
+  }
+
+  void BinaryData::writeVector4Int32(const Nimble::Vector4i & v)
+  {
+    ensure(12);
+    getRef<int32_t>() = VECTOR4I_MARKER;
+    getRef<int>() = v[0];
+    getRef<int>() = v[1];
+    getRef<int>() = v[2];
+    getRef<int>() = v[3];
   }
 
   void BinaryData::append(const BinaryData & that)
@@ -366,7 +378,7 @@ namespace Radiant {
     
   }
 
-  Nimble::Vector2f BinaryData::readVector2Int32(bool * ok)
+  Nimble::Vector2i BinaryData::readVector2Int32(bool * ok)
   {
     if(!available(12)) {
       if(ok) * ok = false;
@@ -387,6 +399,31 @@ namespace Radiant {
 	*ok = false;
 
       return Nimble::Vector2f(0, 0);
+    }
+    
+  }
+
+  Nimble::Vector4i BinaryData::readVector4Int32(bool * ok)
+  {
+    if(!available(12)) {
+      if(ok) * ok = false;
+      return Nimble::Vector4i(0, 0, 0, 1);
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == VECTOR4I_MARKER) {
+      return getRef<Nimble::Vector4i>();
+    }
+    else if(marker == VECTOR4F_MARKER) {
+      return getRef<Nimble::Vector4f>();
+    }
+    else {
+      skipParameter(marker);
+      if(ok)
+	*ok = false;
+
+      return Nimble::Vector4i(0, 0, 0, 1);
     }
     
   }

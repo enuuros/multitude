@@ -53,6 +53,8 @@ namespace Valuable
     /// Returns the alpha comoponent of the color (0-1).
     inline float alpha() const { return m_color[3]; }
 
+    const float * data() const { return m_color.data(); }
+
   protected:
     Radiant::Color m_color;
   };

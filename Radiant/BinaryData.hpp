@@ -17,6 +17,7 @@
 #define RADIANT_BINARY_DATA_HPP
 
 #include <Nimble/Vector2.hpp>
+#include <Nimble/Vector4.hpp>
 
 #include <Radiant/Export.hpp>
 
@@ -103,6 +104,9 @@ namespace Radiant {
     /// Writes a 2D 32-bit integer vector to the data buffer
     void writeVector2Int32(Nimble::Vector2i);
 
+    /// Writes a 4D 32-bit integer vector to the data buffer
+    void writeVector4Int32(const Nimble::Vector4i &);
+
     void append(const BinaryData & that);
 
     /// Reads a 32-bit floating point number from the data buffer
@@ -125,7 +129,10 @@ namespace Radiant {
     /// Reads a 2D 32-bit floating point vector from the buffer
     Nimble::Vector2f readVector2Float32(bool * ok = 0);
     /// Reads a 2D 32-bit integer vector from the buffer
-    Nimble::Vector2f readVector2Int32(bool * ok = 0);
+    Nimble::Vector2i readVector2Int32(bool * ok = 0);
+
+    /// Reads a 2D 32-bit integer vector from the buffer
+    Nimble::Vector4i readVector4Int32(bool * ok = 0);
 
     /// Tells the current position of the read/write pointer
     inline int pos() const { return m_current; } 

@@ -15,10 +15,15 @@
 
 #include "RenderContext.hpp"
 
+#include "Utils.hpp"
+
 #define DEFAULT_RECURSION_LIMIT 4
 
 namespace Luminous
 {
+
+  using namespace Nimble;
+
   RenderContext::RenderContext(Luminous::GLResources * resources)
   : Transformer(),
     m_resources(resources),
@@ -68,5 +73,17 @@ namespace Luminous
     return m_clipStack.top();
   }
 
+  void RenderContext::drawLineRect(const Nimble::Rectf & r, float thickness, const float * rgba)
+  {    
+    thickness *= 0.5f;
+
+    Vector2 v1(thickness, thickness);
+
+    Nimble::Rectf inside(r.low() + v1, r.high() - v1);
+    Nimble::Rectf outside(r.low() - v1, r.high() + v1);
+
+    Utils::glRectWithHoleAA(outside, inside, transform(), rgba);
+  }
+  
 }
 

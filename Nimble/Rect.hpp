@@ -149,6 +149,9 @@ namespace Nimble {
 
     inline void transform(const Matrix3T<T>& m);
     inline void shrinkRelative(float xs, float ys);
+    inline void increaseSize(T add)
+    { m_low.x -= add; m_low.y -= add; m_high.x += add; m_high.y += add; }
+
     /** Returns one quarter of the rectangle. 
 	
 	@arg row The row of the quarter (0-1)
