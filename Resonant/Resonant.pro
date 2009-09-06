@@ -27,6 +27,7 @@ SOURCES += ModulePanner.cpp
 
 LIBS += $$LIB_RADIANT $$LIB_NIMBLE $$LIB_PATTERNS $$LIB_VALUABLE
 
+
 unix: PKGCONFIG += portaudio-2.0 sndfile
 
 include(../library.pri)

@@ -224,8 +224,8 @@ namespace VideoDisplay {
 
       }
        
-      info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
-           frame, ts.x, ts.y);
+      // info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+      // frame, ts.x, ts.y);
 
       if(real.x & 0x3) {
         
