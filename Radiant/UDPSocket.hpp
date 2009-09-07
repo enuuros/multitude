@@ -36,7 +36,7 @@ namespace Radiant
 
       bool isOpen() const;
 
-      int read(void * buffer, int bytes);
+      int read(void * buffer, int bytes, bool waitfordata = true);
       int write(const void * buffer, int bytes);
 
     private:

@@ -120,7 +120,7 @@ namespace Radiant
     return m_d->peerPort();
   }
 
-  int TCPSocket::read(void * buffer, int bytes)
+  int TCPSocket::read(void * buffer, int bytes, bool waitfordata)
   {
     int got = 0;
     char * ptr = (char *) buffer;
@@ -133,6 +133,10 @@ namespace Radiant
       int n = m_d->read(ptr + got, bytes - got);
       got += n;
       loops++;
+
+      if(!waitfordata) {
+	return got;
+      }
     }
     /*
     info("TCPSocket::read # %d/%d state = %d %d",

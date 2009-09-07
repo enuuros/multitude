@@ -118,7 +118,7 @@ namespace Radiant
     return (m_d->m_fd > 0);
   }
  
-  int TCPSocket::read(void * buffer, int bytes)
+  int TCPSocket::read(void * buffer, int bytes, bool waitfordata)
   {
     if(m_d->m_fd < 0)
       return -1;
@@ -135,6 +135,10 @@ namespace Radiant
       }
 
       got += n;
+
+      if(!waitfordata) {
+	return got;
+      }
     }
     
     return got;
@@ -154,11 +158,13 @@ namespace Radiant
       return false;
 
     struct pollfd pfd;
+    bzero( & pfd, sizeof(pfd));
     pfd.fd = m_d->m_fd;
     pfd.events = ~0;
     poll(&pfd, 1, 0);
  
-   return (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0;
+   return (pfd.revents & (POLLHUP)) != 0;
+   // return (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0;
   }
 
   bool TCPSocket::isPendingInput(unsigned int waitMicroSeconds)
@@ -167,6 +173,8 @@ namespace Radiant
       return false;
 
     struct pollfd pfd;
+    bzero( & pfd, sizeof(pfd));
+
     pfd.fd = m_d->m_fd;
     pfd.events = POLLIN;
     poll(&pfd, 1, waitMicroSeconds / 1000);

@@ -15,6 +15,7 @@
 
 #include "UDPSocket.hpp"
 #include "TCPSocket.hpp"
+#include "Trace.hpp"
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -104,10 +105,13 @@ namespace Radiant
     return (m_d->m_fd > 0);
   }
 
-  int UDPSocket::read(void * buffer, int bytes)
+  int UDPSocket::read(void * buffer, int bytes, bool waitfordata)
   {
     if(m_d->m_fd < 0) 
       return -1;
+
+    if(waitfordata) 
+      error("UDPSocket::read # waitfordata not yet supported for UDP sockets.");
 
     return ::read(m_d->m_fd, buffer, bytes);
   }

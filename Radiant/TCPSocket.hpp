@@ -55,7 +55,7 @@ namespace Radiant {
     /// @param buffer pointer to a buffer to store the read data to
     /// @param bytes how many bytes the buffer has room for
     /// @return the number of bytes actually read
-    int read(void * buffer, int bytes);
+    int read(void * buffer, int bytes, bool waitfordata = true);
     /// Write bytes to the socket
     int write(const void * buffer, int bytes);
     

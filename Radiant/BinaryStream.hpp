@@ -32,7 +32,7 @@ namespace Radiant {
     virtual ~BinaryStream() {}
 
     /// Read bytes from the stream
-    virtual int read(void * buffer, int bytes) = 0;
+    virtual int read(void * buffer, int bytes, bool waitfordata = true) = 0;
     /// Write bytes to the stream
     virtual int write(const void * buffer, int bytes) = 0;
     

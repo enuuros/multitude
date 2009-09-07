@@ -175,10 +175,10 @@ void runListener(const char * host, int port, const char *)
   }
 
   while(__began.since().secondsD() < __duration) {
-    char buf[64];
+    char buf[2048];
     bzero(buf, sizeof(buf));
 
-    int n = socket.read(buf, sizeof(buf) - 1);
+    int n = socket.read(buf, sizeof(buf) - 1, false);
     
     buf[n] = 0;
 
