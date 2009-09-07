@@ -124,6 +124,7 @@ namespace Radiant {
     timeout.tv_sec = 0;
     timeout.tv_usec = waitMicroSeconds;
     fd_set readfds;
+    bzero( & readfs, sizeof(readfs));
     FD_ZERO(&readfds);
 #pragma warning (disable:4127 4389)  
     FD_SET(m_fd, &readfds);

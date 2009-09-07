@@ -130,6 +130,8 @@ namespace Radiant
     sockaddr newAddress;
     socklen_t addressLength(sizeof(newAddress));
 
+    bzero( & newAddress, sizeof(newAddress));
+
     int fd = ::accept(m_d->m_fd, (sockaddr *) & newAddress, & addressLength);
 
     if(fd < 0)
