@@ -30,7 +30,7 @@ namespace Poetic
 
       virtual Nimble::Vector2 render(Nimble::Vector2 pen, const Nimble::Matrix3 & m);
 
-    protected:
+    private:
       Nimble::Vector2i m_size;
       unsigned char * m_bitmap;
       Nimble::Vector2 m_pos;

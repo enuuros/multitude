@@ -53,7 +53,13 @@ namespace Luminous
     
     /** Draw a line rectangle, with given thickness and color. */
     void drawLineRect(const Nimble::Rectf & rect, float thickness, const float * rgba);
+    /** Draws a solid rectangle, with given thickness and color. */
+    void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
+    /* Draws a solid rectangle, with given thickness and color. */
+    /*void drawText(Poetic::CPUFont * font,
+		  Nimble::Vector2 loc, const float * rgba);
+    */
   protected:
 
     Luminous::GLResources * m_resources;

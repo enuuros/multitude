@@ -28,7 +28,7 @@ namespace Valuable
   {
   }
 
-  ConfigValue * ConfigElement::getConfigValue(std::string key)
+  ConfigValue * ConfigElement::getConfigValue(const std::string & key)
   {
     for(int i = 0; i < (int) m_values.size(); i++) {
 
@@ -39,6 +39,14 @@ namespace Valuable
     }
 
     return 0;
+  }
+
+  ConfigValue ConfigElement::getConfigValueSafe(const std::string & key)
+  {
+    ConfigValue * v = getConfigValue(key);
+    if(v)
+      return * v;
+    return ConfigValue();
   }
 
   void ConfigElement::clear()

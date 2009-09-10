@@ -84,6 +84,13 @@ namespace Luminous
 
     Utils::glRectWithHoleAA(outside, inside, transform(), rgba);
   }
+
+
+  void RenderContext::drawRect(const Nimble::Rectf & rect, const float * rgba)
+  {
+    Utils::glTexRectAA(rect.size(), 
+		       transform() * Matrix3::translate2D(rect.low()), rgba);
+  }
   
 }
 

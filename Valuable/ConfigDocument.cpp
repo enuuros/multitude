@@ -67,7 +67,7 @@ namespace Valuable
 	
 	trimSpaces(e.m_elementName);
 	
-	Radiant::info("E1 : %s", e.m_elementName.c_str());
+	// Radiant::info("E1 : %s", e.m_elementName.c_str());
 	
 	e.m_depth=depth;
 	elm.m_nodes.push_back(e);
@@ -92,7 +92,7 @@ namespace Valuable
 
 	      trimSpaces(child.m_elementName);
 
-	      Radiant::info("E2: %s", child.m_elementName.c_str());
+	      // Radiant::info("E2: %s", child.m_elementName.c_str());
 
 	      child.m_depth=depth;
 	      elm.m_nodes.push_back(child);
@@ -109,6 +109,7 @@ namespace Valuable
 	      att.m_key=s.substr(0,pos);
 	      trimSpaces(att.m_key);
 	      att.m_value=s.substr(pos+1,s.length());
+	      trimSpaces(att.m_value);
 
 	      att.m_depth=depth;
 	      elm.m_nodes[k-1].m_values.push_back(att);
@@ -123,7 +124,7 @@ namespace Valuable
 		for(int i=elm.m_nodes.size()-1;i>0;i--) {
 		  if(elm.m_nodes[i].m_depth>elm.m_nodes[i-1].m_depth) {
 		    elm.m_nodes[i-1].m_nodes.push_back(elm.m_nodes[i]);
-		    Radiant::info("E3 : %s", elm.m_nodes[i].m_elementName.c_str());
+		    // Radiant::info("E3 : %s", elm.m_nodes[i].m_elementName.c_str());
 		  }
 		  else {
 
@@ -131,7 +132,7 @@ namespace Valuable
 		      if(elm.m_nodes[j].m_depth<elm.m_nodes[i].m_depth && 
 			 (elm.m_nodes[i].m_depth-elm.m_nodes[j].m_depth)==1 ) {
 			elm.m_nodes[j].m_nodes.push_back(elm.m_nodes[i]);
-			Radiant::info("E4 : %s", elm.m_nodes[i].m_elementName.c_str());
+			// Radiant::info("E4 : %s", elm.m_nodes[i].m_elementName.c_str());
 			break;
 		      }
 		    }
@@ -141,7 +142,7 @@ namespace Valuable
 		ConfigElement el = ConfigElement();
 		el.m_nodes.push_back(elm.m_nodes[0]);
 		
-		Radiant::info("E5 : %s", elm.m_nodes[0].m_elementName.c_str());
+		// Radiant::info("E5 : %s", elm.m_nodes[0].m_elementName.c_str());
 		m_doc.m_nodes.push_back(el);
 		elm.m_nodes.clear();
 		elm.m_values.clear();
@@ -155,10 +156,10 @@ namespace Valuable
     }
     input.close();
 
-    if(m_doc.childCount() == 1 && m_doc.elementName().empty()) {
-      const ConfigElement & c1 = m_doc.child(0);
+    for(unsigned i = 0; i < m_doc.childCount(); i++) {
+      ConfigElement & c1 = m_doc.child(i);
       if(c1.childCount() == 1 && c1.elementName().empty()) {
-	m_doc = ConfigElement(c1);
+	c1 = ConfigElement(c1.child(0));
       }
     }
   }

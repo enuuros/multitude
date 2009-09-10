@@ -147,7 +147,8 @@ namespace Poetic
     cpuFont()->bbox(str, bb);
     Nimble::Vector2 span = bb.span();
     Nimble::Vector2 center = bb.center();
-    center += span * 0.5f;
+    // center += span * 0.5f;
+    center *= 0.5f;
     
     render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
   }

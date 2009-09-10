@@ -32,7 +32,8 @@ namespace Valuable
     ConfigElement();
     virtual ~ConfigElement();
 
-    ConfigValue *getConfigValue(std::string key);
+    ConfigValue *getConfigValue(const std::string & key);
+    ConfigValue getConfigValueSafe(const std::string & key);
 
     void clear();
 
@@ -57,6 +58,9 @@ namespace Valuable
     unsigned childCount() const { return m_nodes.size(); }
 
     const ConfigElement & child(unsigned n) const
+    { return m_nodes[n]; }
+
+    ConfigElement & child(unsigned n)
     { return m_nodes[n]; }
 
   private:

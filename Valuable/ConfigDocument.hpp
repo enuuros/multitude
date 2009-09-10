@@ -22,7 +22,7 @@
 #include <Valuable/Export.hpp>
 
 namespace Valuable
-{  
+{
   class VALUABLE_API ConfigDocument
   {
   public:
