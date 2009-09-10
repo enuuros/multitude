@@ -139,6 +139,9 @@ namespace Resonant {
 
     for(uint i = 0; i < m_buffers.size(); i++)
       m_buffers[i].clear();
+
+    delete m_collect;
+    m_collect = 0;
   }
 
   bool DSPNetwork::start(const char * device)
