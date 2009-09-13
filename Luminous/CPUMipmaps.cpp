@@ -202,7 +202,9 @@ namespace Luminous {
 
     if(m_file.size()) {
 
-      Directory::mkdir(FileUtils::path(m_file));
+      if(!Directory::mkdir(FileUtils::path(m_file))) {
+	error("Could not create directory %s", FileUtils::path(m_file).c_str());
+      }
 
       bool ok;
 

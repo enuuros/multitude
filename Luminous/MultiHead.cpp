@@ -485,6 +485,20 @@ namespace Luminous {
     return high - low;
   }
 
+  Rect MultiHead::graphicsBounds() const
+  {
+    if(!windowCount())
+      return Nimble::Rect(0, 0, 100, 100);
+
+    Rect r = window(0).graphicsBounds();
+
+    for(unsigned i = 1; i < windowCount(); i++) {
+      r.expand(window(i).graphicsBounds());
+    }
+
+    return r;
+  }
+
   float MultiHead::seam()
   {
     assert(areaCount() > 0);

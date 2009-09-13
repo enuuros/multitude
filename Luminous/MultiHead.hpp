@@ -287,10 +287,13 @@ namespace Luminous {
 
     /// Total size of all the windows
     LUMINOUS_API Nimble::Vector2i totalSize();
+    
+    Rect graphicsBounds() const;
+
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }
-    
+
     LUMINOUS_API float seam();
     LUMINOUS_API void setSeam(float seam);
 
