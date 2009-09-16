@@ -19,6 +19,8 @@
 #include <Luminous/Export.hpp>
 #include <Luminous/PixelFormat.hpp>
 
+#include <Nimble/Vector2.hpp>
+
 #include <cstdio>
 #include <vector>
 
@@ -48,7 +50,8 @@ namespace Luminous
 
     int width() const { return m_width; }
     int height() const { return m_height; }
-    
+    Nimble::Vector2i size() const
+    { return Nimble::Vector2i(m_width, m_height); }
 
     int lineSize() { return m_width * m_pixelFormat.numChannels(); }
 

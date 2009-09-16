@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+unix:CONFIG += debug
+
 HEADERS += BGThread.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp

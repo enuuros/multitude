@@ -296,7 +296,7 @@ namespace Luminous {
   
   void CPUMipmaps::update(float dt, float purgeTime)
   {
-    for(int i = 0; i <= m_maxLevel; i++) {
+    for(int i = DEFAULT_MAP1; i <= m_maxLevel; i++) {
       CPUItem * item = m_stack[i].ptr();
 
       if(!item)
@@ -539,15 +539,35 @@ namespace Luminous {
     
   int CPUMipmaps::pixelAlpha(Nimble::Vector2 relLoc)
   {
-    // Not really implemented.
-    for(int i = 10; i >= 1; i++) {
+    for(int i = MAX_MAPS - 1; i >= 1; i--) {
       Image * im = getImage(i);
 
       if(!im) continue;
-
       
+      Nimble::Vector2f locf(im->size());
+      locf.scale(relLoc);
+      
+      Vector2i loci(locf);
+
+      loci.x = Nimble::Math::Clamp(loci.x, 0, im->width() - 1);
+      loci.y = Nimble::Math::Clamp(loci.y, 0, im->height() - 1);
+      
+      if(im->pixelFormat() == PixelFormat::rgbaUByte()) {
+	const uint8_t * pixels = im->data();
+	return pixels[(loci.x + loci.y * im->width()) * 4 + 3];
+      }
+      else if(im->pixelFormat() == PixelFormat::alphaUByte()) {
+	const uint8_t * pixels = im->data();
+	return pixels[loci.x + loci.y * im->width() + 3];
+      }
+      else {
+	error("CPUMipmaps::pixelAlpha # Unsupported pixel format");
+	return 255;
+      }
     }
 
+    info("No mipmaps for alpha calculus");
+    
     return 255;
   }
  
