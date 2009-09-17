@@ -107,7 +107,7 @@ namespace Luminous {
     inline bool hasAlpha() const { return m_hasAlpha; }
 
     /// Not finished
-    int pixelAlpha(Nimble::Vector2 relLoc);
+    LUMINOUS_API int pixelAlpha(Nimble::Vector2 relLoc);
   private:
 
     class CPUItem;

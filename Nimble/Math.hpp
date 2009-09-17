@@ -19,6 +19,9 @@
 #include <Nimble/Export.hpp>
 
 #include <math.h>
+#ifdef WIN32
+#	include <float.h>
+#endif
 
 namespace Nimble {
 
@@ -76,13 +79,23 @@ namespace Nimble {
     inline double degToRad(const double degrees) { return (degrees * PI / 180.0); }
     inline double radToDeg(const double radians) { return (radians * 180.0 / PI); }
 
-    bool isFinite(float v) {
+    inline bool isFinite(float v) 
+	{
 #ifdef WIN32
-      return _finite(v);
+      return _finite(v) != 0;
 #else
     return finite(v);
 #endif      
     }
+	
+	inline bool isNAN(float v)
+	{
+#ifdef WIN32
+	return _isnan(v) != 0;
+#else
+		return isnan(v);
+#endif
+	}
 
     /// Return sign.
     template <class T>

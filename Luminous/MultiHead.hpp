@@ -132,7 +132,7 @@ namespace Luminous {
           how-ever that information is not exactly correct as the
           bounds also need to include the small extra areas, if one is
           using edge-blending. */
-      const Rect & graphicsBounds() const 
+      LUMINOUS_API const Rect & graphicsBounds() const 
       { return m_graphicsBounds; }
 
       /** Converts a screen-space coordinate to image-space coordinate.
@@ -213,7 +213,7 @@ namespace Luminous {
       /// Get one of the areas
       const Area & area(unsigned i) const { return * m_areas[i].ptr(); }
 
-      Nimble::Rect graphicsBounds() const;
+      LUMINOUS_API Nimble::Rect graphicsBounds() const;
 	
       LUMINOUS_API void setSeam(float seam);
 
@@ -288,7 +288,7 @@ namespace Luminous {
     /// Total size of all the windows
     LUMINOUS_API Nimble::Vector2i totalSize();
     
-    Rect graphicsBounds() const;
+    LUMINOUS_API Rect graphicsBounds() const;
 
 
     Nimble::Vector2i size()

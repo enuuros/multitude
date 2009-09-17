@@ -62,9 +62,27 @@ namespace Radiant
     return m_d->isValid();
   }
 
-  int UDPSocket::read(void * buffer, int bytes)
+  int UDPSocket::read(void * buffer, int bytes, bool waitForData)
   {
-    return m_d->read((char *)buffer, bytes); 
+    int got = 0;
+    char * ptr = (char *) buffer;
+    int loops = 0;
+
+    while((got < bytes) && (m_d->state() == QAbstractSocket::ConnectedState)) {
+
+      bool something = m_d->waitForReadyRead(1);
+
+      int n = m_d->read(ptr + got, bytes - got);
+      got += n;
+      loops++;
+
+      if(!waitForData) {
+	return got;
+      }
+    }
+    
+	return got;
+  
   }
 
   int UDPSocket::write(const void * buffer, int bytes)
