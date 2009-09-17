@@ -76,6 +76,14 @@ namespace Nimble {
     inline double degToRad(const double degrees) { return (degrees * PI / 180.0); }
     inline double radToDeg(const double radians) { return (radians * 180.0 / PI); }
 
+    bool isFinite(float v) {
+#ifdef WIN32
+      return _finite(v);
+#else
+    return finite(v);
+#endif      
+    }
+
     /// Return sign.
     template <class T>
     inline int Sign(T v) { return ((v < T(0)) ? -1 : ((v == T(0)) ? 0 : 1)); }
