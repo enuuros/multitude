@@ -52,6 +52,7 @@ HEADERS += Video1394.hpp
 HEADERS += VideoImage.hpp
 HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
+HEADERS += ClonablePtr.hpp
 
 SOURCES += BinaryData.cpp
 SOURCES += Color.cpp
