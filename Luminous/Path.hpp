@@ -74,8 +74,11 @@ namespace Luminous {
 
       void debugDump() const;
 
-    protected:
+      
       typedef std::vector<Nimble::Vector2f> container;
+      container points() { return m_points; }
+
+    protected:
 
       container m_points;
   };
