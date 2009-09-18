@@ -33,8 +33,11 @@ namespace Radiant {
       return r == that.r && g == that.g && b == that.b && a == that.a;
     }
 
+    inline bool isBlank() const { return a == 0; }
+
     T r, g, b, a;
   };
+
 
   typedef RGBAT<uint8_t> RGBAu8;
 
