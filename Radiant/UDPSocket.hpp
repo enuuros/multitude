@@ -23,27 +23,64 @@
 namespace Radiant
 {
   
-  /** UPD socket implementation. */
+  /** UPD socket implementation.
+      
+      UDP is an unreliable socket type, where data is move in datagram
+      packages.
+
+      Packages have some limited maximum size which depends on the
+      network, and can only be deduced dynamically in the
+      run-time. Usually the maximum packet sizes are in the range
+      4-8kb.
+
+      @see TCPSocket
+  */
   class RADIANT_API UDPSocket : public Radiant::BinaryStream
   {
-    public:
-      UDPSocket();
-      UDPSocket(int fd);
-      ~UDPSocket();
+  public:
+    UDPSocket();
+    UDPSocket(int fd);
+    ~UDPSocket();
+    
+    /** Opens a UDP socket in either client or server mode. 
 
-      int open(const char * host, int port, bool client = true);
-      int openServer(const char * host, int port);
-      int openClient(const char * host, int port);
-      bool close();
+        @return On success, zero is returned. On failure an error code
+        is returned.
+    */
+    int open(const char * host, int port, bool client = true);
+    /** Opens a UDP socket in server mode.
+    */
 
-      bool isOpen() const;
+    int openServer(const char * host, int port);
+    /** Opens a UDP socket in client mode.
+    */
+    int openClient(const char * host, int port);
+    /** Closes the socket. */
+    bool close();
+    
+    bool isOpen() const;
+    
+    /** Reads one datagram packet from the socket. 
 
-      int read(void * buffer, int bytes, bool waitfordata = true);
-      int write(const void * buffer, int bytes);
+        @return The number of bytes read is returned. If there was
+        nothing to read, then zero is returned.
+        
+        If there are multiple datagrams to be read, you need to use
+        this function multiple times, even if the buffer was large
+        enough to contain multiple packets.
+    */
+    int read(void * buffer, int bytes, bool waitfordata = true);
 
-    private:
-      class D;
-      D * m_d;
+    /** Writes one datagram packet to the socket. 
+
+        @return The number of bytes written is returned.
+    
+    */
+    int write(const void * buffer, int bytes);
+    
+  private:
+    class D;
+    D * m_d;
   };
 
 }

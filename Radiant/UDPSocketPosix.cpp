@@ -32,13 +32,16 @@ namespace Radiant
 
   class UDPSocket::D {
   public:
-    D() : m_fd(-1), m_port(0) {}
+    D() : m_fd(-1), m_port(0)
+    {
+      bzero( & m_server, sizeof(m_server));
+    }
     
     int m_fd;
     int m_port;
     std::string m_host;
 
-    struct sockaddr_in m_server_address;
+    struct sockaddr_in m_server;
   };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,12 +83,12 @@ namespace Radiant
     if(m_d->m_fd < 0)
       return errno;
 
-    bzero( & m_d->m_server_address, sizeof(m_d->m_server_address));
-    m_d->m_server_address.sin_family = AF_INET;
-    m_d->m_server_address.sin_port = htons((short)port);
-    m_d->m_server_address.sin_addr.s_addr = INADDR_ANY;
-    int err = bind(m_d->m_fd, (struct sockaddr *) & m_d->m_server_address,
-                   sizeof(m_d->m_server_address));
+    bzero( & m_d->m_server, sizeof(m_d->m_server));
+    m_d->m_server.sin_family = AF_INET;
+    m_d->m_server.sin_port = htons((short)port);
+    m_d->m_server.sin_addr.s_addr = INADDR_ANY;
+    int err = bind(m_d->m_fd, (struct sockaddr *) & m_d->m_server,
+                   sizeof(m_d->m_server));
 
     if (err != 0) 
       return err;
@@ -105,16 +108,16 @@ namespace Radiant
       return errno;
 
 
-    bzero( & m_d->m_server_address, sizeof(m_d->m_server_address));
-    m_d->m_server_address.sin_family = AF_INET;
-    m_d->m_server_address.sin_port = htons((short)port);
+    bzero( & m_d->m_server, sizeof(m_d->m_server));
+    m_d->m_server.sin_family = AF_INET;
+    m_d->m_server.sin_port = htons((short)port);
 
     in_addr * addr = TCPSocket::atoaddr(host);
 
     if(!addr)
       return EHOSTUNREACH;
 
-    m_d->m_server_address.sin_addr.s_addr = addr->s_addr;
+    m_d->m_server.sin_addr.s_addr = addr->s_addr;
 
     return 0;
   }
@@ -157,8 +160,8 @@ namespace Radiant
       return -1;
 
     return sendto(m_d->m_fd, buffer,
-                  bytes, 0, (const sockaddr*) & m_d->m_server_address, 
-                  sizeof(m_d->m_server_address));
+                  bytes, 0, (const sockaddr*) & m_d->m_server, 
+                  sizeof(m_d->m_server));
   }
 
 }
