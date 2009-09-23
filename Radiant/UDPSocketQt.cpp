@@ -44,10 +44,10 @@ namespace Radiant
   
   int UDPSocket::open(const char * host, int port, bool client)
   {
-	if(client)
-	  return openClient(host, port);
-	else
-	  return openServer(host, port);
+    if(client)
+      return openClient(host, port);
+    else
+      return openServer(host, port);
   }
 
   int UDPSocket::openClient(const char * host, int port)

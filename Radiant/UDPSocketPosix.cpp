@@ -31,12 +31,14 @@ namespace Radiant
 {
 
   class UDPSocket::D {
-    public:
-      D() : m_fd(-1), m_port(0) {}
+  public:
+    D() : m_fd(-1), m_port(0) {}
+    
+    int m_fd;
+    int m_port;
+    std::string m_host;
 
-      int m_fd;
-      int m_port;
-      std::string m_host;
+    struct sockaddr_in m_server_address;
   };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +60,41 @@ namespace Radiant
     delete m_d;
   }
 
-  int UDPSocket::open(const char * host, int port)
+  int UDPSocket::open(const char * host, int port, bool client)
   {
+    if(client)
+      return openClient(host, port);
+    else
+      return openServer(host, port);    
+  }
+
+  int UDPSocket::openServer(const char * host, int port)
+  {
+    close();
+   
+    m_d->m_host = host;
+    m_d->m_port = port;
+
+    m_d->m_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    if(m_d->m_fd < 0)
+      return errno;
+
+    bzero( & m_d->m_server_address, sizeof(m_d->m_server_address));
+    m_d->m_server_address.sin_family = AF_INET;
+    m_d->m_server_address.sin_port = htons((short)port);
+    m_d->m_server_address.sin_addr.s_addr = INADDR_ANY;
+    int err = bind(m_d->m_fd, (struct sockaddr *) & m_d->m_server_address,
+                   sizeof(m_d->m_server_address));
+
+    if (err != 0) 
+      return err;
+    
+    return 0;
+  }
+
+  int UDPSocket::openClient(const char * host, int port)
+  {  
     close();
    
     m_d->m_host = host;
@@ -69,21 +104,17 @@ namespace Radiant
     if(m_d->m_fd < 0)
       return errno;
 
-    struct sockaddr_in server_address;
 
-    bzero(&server_address, sizeof(server_address));
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons((short)port);
+    bzero( & m_d->m_server_address, sizeof(m_d->m_server_address));
+    m_d->m_server_address.sin_family = AF_INET;
+    m_d->m_server_address.sin_port = htons((short)port);
 
     in_addr * addr = TCPSocket::atoaddr(host);
 
     if(!addr)
       return EHOSTUNREACH;
 
-    server_address.sin_addr.s_addr = addr->s_addr;
-
-    if(connect(m_d->m_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
-      return errno;
+    m_d->m_server_address.sin_addr.s_addr = addr->s_addr;
 
     return 0;
   }
@@ -113,7 +144,11 @@ namespace Radiant
     if(waitfordata) 
       error("UDPSocket::read # waitfordata not yet supported for UDP sockets.");
 
-    return ::read(m_d->m_fd, buffer, bytes);
+    struct sockaddr_in from;
+    socklen_t l = sizeof(from);
+    return recvfrom(m_d->m_fd, buffer, bytes, 0,
+                    (struct sockaddr *) & from,
+                    & l);
   }
 
   int UDPSocket::write(const void * buffer, int bytes)
@@ -121,7 +156,9 @@ namespace Radiant
     if(m_d->m_fd < 0)
       return -1;
 
-    return ::write(m_d->m_fd, buffer, bytes);
+    return sendto(m_d->m_fd, buffer,
+                  bytes, 0, (const sockaddr*) & m_d->m_server_address, 
+                  sizeof(m_d->m_server_address));
   }
 
 }
