@@ -31,7 +31,9 @@ namespace Radiant
       UDPSocket(int fd);
       ~UDPSocket();
 
-      int open(const char * host, int port);
+      int open(const char * host, int port, bool client = true);
+      int openServer(const char * host, int port);
+      int openClient(const char * host, int port);
       bool close();
 
       bool isOpen() const;

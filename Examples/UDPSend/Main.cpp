@@ -13,6 +13,7 @@
  * 
  */
 
+#include <Radiant/Sleep.hpp>
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/UDPSocket.hpp>
@@ -50,7 +51,7 @@ void sendTest(const char * host, int port, const char * message)
   printf("Setting up a UDP socket to %s:%d\n", host, port);
 
   UDPSocket socket;
-  int err = socket.open(host, port);
+  int err = socket.openClient(host, port);
 
   if(err) {
     const int  msgSize = 128;
@@ -65,6 +66,8 @@ void sendTest(const char * host, int port, const char * message)
   printf("UDP socket ready %d\n", socket.isOpen());
 
   for(int i = 0; i < iterations; i++) {
+
+    // Radiant::Sleep::sleepMs(500);
 
     sprintf(buf, "%s %d", message, i + 1);
     int len = strlen(buf) + 1;
@@ -92,7 +95,7 @@ void listenTest(const char * host, int port)
 
   UDPSocket socket;
   int err;
-  if((err = socket.open(host, port)) != 0) {
+  if((err = socket.openServer(host, port)) != 0) {
     printf("%s cannot open UDP socket to %s:%d -> %s\n", 
 	   appname, host, port, strerror(err));
     return;
@@ -102,6 +105,7 @@ void listenTest(const char * host, int port)
     char buf[2048];
     bzero(buf, sizeof(buf));
 
+    
     int n = socket.read(buf, sizeof(buf) - 1, false);
     
     buf[n] = 0;
@@ -110,9 +114,13 @@ void listenTest(const char * host, int port)
       puts(buf);
       fflush(0);
     }
-    else if(n < 0) {
-      Radiant::error("Error reading from UDP socket");
-      break;
+    else {
+      Radiant::Sleep::sleepMs(10);
+
+      if(n < 0) {
+	Radiant::error("Error reading from UDP socket");
+	// break;
+      }
     }
   }
 
