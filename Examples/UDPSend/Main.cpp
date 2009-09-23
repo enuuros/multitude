@@ -17,6 +17,7 @@
 #include <Radiant/Trace.hpp>
 #include <Radiant/UDPSocket.hpp>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -71,7 +72,12 @@ void sendTest(const char * host, int port, const char * message)
     printf("Sending message: %s\n", buf);
     fflush(0);
 
-    socket.write(buf, len);
+    int n = socket.write(buf, len);
+
+    if(n != len) {
+      Radiant::error("Error writing to UDP socket (%d %s)", n, strerror(errno));
+      break;      
+    }
 
   }
 
@@ -79,15 +85,15 @@ void sendTest(const char * host, int port, const char * message)
 
   socket.close();
 }
-/*
-void runListener(const char * host, int port, const char *)
+
+void listenTest(const char * host, int port)
 {
   printf("Setting up a listener socket to %s:%d\n", host, port);
 
-  TCPSocket socket;
+  UDPSocket socket;
   int err;
   if((err = socket.open(host, port)) != 0) {
-    printf("%s cannot open client socket to %s:%d -> %s\n", 
+    printf("%s cannot open UDP socket to %s:%d -> %s\n", 
 	   appname, host, port, strerror(err));
     return;
   }
@@ -100,15 +106,21 @@ void runListener(const char * host, int port, const char *)
     
     buf[n] = 0;
 
-    printf(buf);
-    fflush(0);
+    if(n > 0) {
+      puts(buf);
+      fflush(0);
+    }
+    else if(n < 0) {
+      Radiant::error("Error reading from UDP socket");
+      break;
+    }
   }
 
   Radiant::info("%s Closing socket", appname);
 
   socket.close();
 }
-*/
+
 int main(int argc, char ** argv)
 {
   Radiant::TimeStamp startTime(Radiant::TimeStamp::getTime());
@@ -150,8 +162,11 @@ int main(int argc, char ** argv)
 #ifdef WIN32
   WinPort::initSockets();
 #endif
-
-  sendTest(host, port, message);
+  
+  if(islistener)
+    listenTest(host, port);
+  else
+    sendTest(host, port, message);
 
 #ifdef WIN32
   WinPort::exitSockets();

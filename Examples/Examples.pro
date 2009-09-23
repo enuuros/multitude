@@ -8,6 +8,7 @@ SUBDIRS += PlatformExample
 !win32:SUBDIRS += SamplePlayer
 unix:SUBDIRS += SharedMemory
 SUBDIRS += SocketExample
+SUBDIRS += UDPSend
 SUBDIRS += VertexBuffers
 SUBDIRS += ValueTest
 SUBDIRS += ValidatingXML
