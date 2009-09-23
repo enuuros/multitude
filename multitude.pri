@@ -6,6 +6,7 @@ CONFIG += thread
 CONFIG += release
 
 INCLUDEPATH += $$PWD
+DEPENDPATH += $$PWD
 
 MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
