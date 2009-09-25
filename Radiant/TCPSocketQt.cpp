@@ -158,12 +158,11 @@ namespace Radiant
   bool TCPSocket::isHungUp() const
   {
     return (m_d->state() != QAbstractSocket::ConnectedState);
-//    return m_d->q->isValid();
   }
 
   bool TCPSocket::isPendingInput(unsigned int waitMicroSeconds)
   {
-    return m_d->waitForReadyRead(waitMicroSeconds);
+    return m_d->waitForReadyRead(waitMicroSeconds / 1000);
   }
 
   void TCPSocket::debug()

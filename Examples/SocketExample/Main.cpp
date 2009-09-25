@@ -131,10 +131,7 @@ void runClient(const char * host, int port, const char * message)
     return;
   }
 
-#ifndef WIN32
   socket.setNoDelay(true);
-#endif
-
 
   char buf[1024];
 
