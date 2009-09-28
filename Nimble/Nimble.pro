@@ -22,13 +22,14 @@ HEADERS += Vector4.hpp
 HEADERS += Plane.hpp
 
 SOURCES += Grid.cpp
-SOURCES += Plane.cpp
+SOURCES += Histogram.cpp
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
+SOURCES += Plane.cpp
 SOURCES += Random.cpp
 SOURCES += Rect.cpp
 SOURCES += RingBuffer.cpp
-SOURCES += Histogram.cpp
+SOURCES += Vector2.cpp
 
 win32:DEFINES += NIMBLE_EXPORT
 
