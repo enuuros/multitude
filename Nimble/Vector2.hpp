@@ -236,8 +236,8 @@ namespace Nimble {
   /// @param interPoint, optional pointer to vector to receive the intersection point.
   /// @return true if line segments intersect.
 
-  bool linesIntersect(const Vector2f line1Start, const Vector2f line1End,
-                      const Vector2f line2Start, const Vector2f line2End,
+  bool linesIntersect(Vector2f line1Start, Vector2f line1End,
+                      Vector2f line2Start, Vector2f line2End,
                       Vector2f * interPoint = 0);
 
 } // namespace

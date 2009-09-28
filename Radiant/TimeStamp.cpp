@@ -18,7 +18,9 @@
 
 #include "StringUtils.hpp"
 
-#include <string.h>
+#include <sys/time.h>
+#include <time.h>
+
 
 namespace Radiant {
 

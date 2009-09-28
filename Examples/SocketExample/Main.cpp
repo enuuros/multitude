@@ -73,7 +73,7 @@ void runServer(const char * host, int port, bool withBlocking)
     TCPSocket * socket = server.accept();
 
     if(!socket) {
-      Radiant::error("Count not create a socket.");
+      Radiant::error("Could not create accept a socket connection.");
       return;
     }
 
