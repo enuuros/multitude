@@ -484,7 +484,7 @@ namespace Luminous {
 
     return high - low;
   }
-
+  
   Rect MultiHead::graphicsBounds() const
   {
     if(!windowCount())

@@ -293,7 +293,6 @@ namespace Luminous {
 
     Nimble::Vector2i size()
     { return Nimble::Vector2i(width(), height()); }
-
     LUMINOUS_API float seam();
     LUMINOUS_API void setSeam(float seam);
 
