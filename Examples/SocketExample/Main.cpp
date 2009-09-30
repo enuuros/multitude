@@ -177,9 +177,9 @@ void runListener(const char * host, int port, const char *)
 
     int n = socket.read(buf, sizeof(buf) - 1, false);
     
-    buf[n] = 0;
+    // buf[n] = 0;
 
-    printf(buf);
+    printf("%s", buf);
     fflush(0);
   }
 

@@ -126,7 +126,7 @@ namespace Radiant
     int got = 0;
     char * ptr = (char *) buffer;
 
-    while(got < bytes && isPendingInput(500000)) {
+    while(got < bytes && (!waitfordata || isPendingInput(500000))) {
       int n = ::read(m_d->m_fd, ptr + got, bytes - got);
 
       if(n < 0) {

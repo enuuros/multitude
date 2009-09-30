@@ -37,7 +37,7 @@ namespace Radiant {
     "[DEBUG] ",
     "",
     "[WARNING] ",
-    "[FAILURE] ",
+    "[ERROR] ",
     "[FATAL] "
   };
 

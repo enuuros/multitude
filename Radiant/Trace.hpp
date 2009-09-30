@@ -23,6 +23,24 @@
 
 namespace Radiant {
   
+  /*! \page debugoutput Debug/trace output
+
+  Radiant includes a series of functions to write debug output on the
+  terminal.
+
+  The functions #info, #debug, #error and #fatal print output to the
+  sceen in standardized format. The debug function only writes data to
+  the screen if verbose reporting is enabled with #enableVerboseOutput. These functions are
+  basically wrappers around printf. 
+
+  The terminal output is protected by mutex lock so that multiple
+  threads can write to the same terminal without producing corrupted
+  output. This was also the reason why the output is done with
+  functions, rather than than std::cout etc. With the std streams one
+  cannot organize a mutex lock around the text output, which easily
+  results in corrupted (and rather useless) output.
+
+  */
   /// Error severity levels
   enum Severity
   {
@@ -34,6 +52,7 @@ namespace Radiant {
     /** Info messages are printed out always. */
     INFO,
     WARNING,
+    /// An error occurred
     FAILURE,
     /// Fatal error, causes application shutdown
     FATAL    
