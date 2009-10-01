@@ -102,6 +102,8 @@ namespace Luminous {
 
       GLRESOURCE_ENSURE2(Texture2D, tex, this);
 
+      Utils::glUsualBlend();
+
       if(tex->size() != m_size.asVector()) {
         info("Area GL init");
 	// Initialize the texture to the right size:
