@@ -47,7 +47,7 @@ namespace Radiant {
     Video1394();
     virtual ~Video1394();
 
-    /** A container of basic camera information. #CameraInfo objects
+    /** A container of basic camera information. CameraInfo objects
 	are used to store information about a particular camera. */
     class CameraInfo {
     public:

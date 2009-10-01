@@ -137,6 +137,13 @@ namespace Nimble {
       return Nimble::Vector2f(rand11(), rand11()).normalize();
     }
 
+    // Random 2d vector on a unit circle
+    inline Nimble::Vector2f randVecOnCircle() 
+    {
+      float a = rand0X(Math::TWO_PI);
+      return Nimble::Vector2f(cosf(a), sinf(a));
+    }
+
     static RandomUniform & instance() { return m_instance; }
 
   private:

@@ -134,7 +134,7 @@ namespace Resonant {
       int         m_targetChannel;
     };
 
-    /** Stores a sinple audio processing #Module.*/
+    /** Stores a sinple audio processing #Resonant::Module.*/
     class RESONANT_API Item
     {
       friend class DSPNetwork;

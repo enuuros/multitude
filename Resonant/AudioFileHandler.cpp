@@ -400,13 +400,16 @@ namespace Resonant {
   /** Prepare to write to a file.  */
 
   AudioFileHandler::Handle * AudioFileHandler::writeFile
-  (const char * filename, 
+  (
+   /// The name of the file to write to
+   const char * filename, 
    /// Number of channels
    int channels, 
    /// Sample rate (Hz)
    int samplerate, 
    /// file format in sndfile format
    int sfFormat, 
+   /// The sample format that the application is using.
    Radiant::AudioSampleFormat userFormat)
   {
     assert(this);

@@ -16,8 +16,6 @@
 #ifndef NIMBLE_RINGBUFFER_HPP
 #define NIMBLE_RINGBUFFER_HPP
 
-// #include <di_types.h>
-
 namespace Nimble {
 
   /** 
