@@ -75,7 +75,7 @@ namespace Nimble {
   RingBuffer<TElem>::operator = (const RingBuffer &xrBuffer)
   {
     if(resize(xrBuffer.m_size))
-      for(ulong i = 0; i < m_size; i++)
+      for(unsigned i = 0; i < m_size; i++)
 	m_line[i] = xrBuffer.m_line[i];
     // memcpy(m_line, xrBuffer.m_line, m_size * sizeof(TElem));
     return *this;
@@ -88,7 +88,7 @@ namespace Nimble {
   TElem RingBuffer2<TElem>::getMax(unsigned nTime) const
   {
     TElem xRes = this->getNewestConst();
-    for(ulong nI=1; nI < nTime; nI++) {
+    for(unsigned nI=1; nI < nTime; nI++) {
       const TElem *xpTmp = &this->getNewestConst(nI);
       if(*xpTmp > xRes)
 	xRes = *xpTmp;
@@ -100,7 +100,7 @@ namespace Nimble {
   TElem RingBuffer2<TElem>::getMin(unsigned nTime) const
   {
     TElem xRes = this->getNewestConst();
-    for(ulong nI=1; nI < nTime; nI++) {
+    for(unsigned nI=1; nI < nTime; nI++) {
       const TElem *xpTmp = &this->getNewestConst(nI);
       if(*xpTmp < xRes)
 	xRes = *xpTmp;
