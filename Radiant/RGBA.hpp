@@ -22,6 +22,12 @@
 
 namespace Radiant {
 
+  /// A minimal RGBA template class.
+  /** For more complete color class, use #Radiant::Color. 
+      
+      This class was deviced mostly for usage with the grid classes to
+      hold RGBA image data.
+   */
   template <class T>
   class RADIANT_API RGBAT
   {
@@ -37,7 +43,6 @@ namespace Radiant {
 
     T r, g, b, a;
   };
-
 
   typedef RGBAT<uint8_t> RGBAu8;
 

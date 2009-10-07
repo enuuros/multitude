@@ -12,7 +12,9 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #include "Color.hpp"
+#include "Trace.hpp"
 
 #include <wctype.h>
 
@@ -51,6 +53,10 @@ namespace Radiant
 	// printf("Got color %d, %f", i, val / 255.0f);
       }
     }
+    else {
+      error("Color::Color(const char * color) # "
+	    "Argument string should start with ´#´");
+    }
   }
 
   Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -68,6 +74,11 @@ namespace Radiant
     setRGBA(r, g, b, a);
   }
 
+  Color::Color(double r, double g, double b, double a)
+  {
+    setRGBA(r, g, b, a);
+  }
+
   Color::Color(const Nimble::Vector4f & v) 
   {
     setRGBA(v.x, v.y, v.z, v.w);
@@ -77,6 +88,11 @@ namespace Radiant
   {}
 
   void Color::setRGBA(float r, float g, float b, float a)
+  {
+    make(r, g, b, a);
+  }
+
+  void Color::setRGBA(double r, double g, double b, double a)
   {
     make(r, g, b, a);
   }

@@ -146,6 +146,18 @@ namespace Radiant
 
     if(waitfordata) 
       error("UDPSocket::read # waitfordata not yet supported for UDP sockets.");
+    else {
+      
+      struct pollfd pfd;
+      bzero( & pfd, sizeof(pfd));
+
+      pfd.fd = m_d->m_fd;
+      pfd.events = POLLIN;
+      poll(&pfd, 1, 0);
+      
+      if(!pfd.revents & POLLIN)
+	return 0;
+    }
 
     struct sockaddr_in from;
     socklen_t l = sizeof(from);

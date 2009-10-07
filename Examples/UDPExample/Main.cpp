@@ -45,7 +45,6 @@ const char * appname = 0;
 float __duration = 10000000.0f;
 Radiant::TimeStamp __began;
 
-
 void sendTest(const char * host, int port, const char * message)
 {
   printf("Setting up a UDP socket to %s:%d\n", host, port);
