@@ -66,9 +66,9 @@ namespace Radiant
 	@param sortFlag flag indicating how the results should be sorted
     */
     Directory(const char * pathname,
-	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+	      int filters = AllEntries, SortFlag sortFlag = Name);
     Directory(const std::string & pathname,
-	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+	      int filters = AllEntries, SortFlag sortFlag = Name);
     /// Construct a directory listing
     /** Creating a Directory object immediately scans the contents
 	of the directory. Entries matching the given filters are
@@ -83,7 +83,7 @@ namespace Radiant
 	@param sortFlag flag indicating how the results should be sorted
     */
     Directory(const char * pathname, const char * suffixlist,
-	      int filters = AllEntries, SortFlag sortFlag = Unsorted);
+	      int filters = AllEntries, SortFlag sortFlag = Name);
 
     /** Creates a Directory object by immediately scanning
 	the contents of the directory. Entries matching

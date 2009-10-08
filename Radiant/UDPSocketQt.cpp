@@ -97,32 +97,31 @@ namespace Radiant
     char * ptr = (char *) buffer;
     int loops = 0;
 
-	if(!__stateOk(m_d->state())) {
-		error("UDPSocket::read # Socket not connected # %d",
-			  (int) m_d->state());
-		return -1;
-	}
+    if(!__stateOk(m_d->state())) {
+      error("UDPSocket::read # Socket not connected # %d",
+	    (int) m_d->state());
+      return -1;
+    }
 
-	if(waitForData) {
+    if(waitForData) {
       while((got < bytes) && !__stateOk(m_d->state())) {
 
         // bool something = m_d->waitForReadyRead(1);
-
+	
         int n = m_d->read(ptr + got, bytes - got);
         got += n;
         loops++;
-
+	
         if(!waitForData) {
-	      return got;
+	  return got;
         }
       }
-	}
-	else if(m_d->hasPendingDatagrams()) {
-		got = m_d->readDatagram(ptr, bytes);
     }
-
-	return got;
-  
+    else if(m_d->hasPendingDatagrams()) {
+      got = m_d->readDatagram(ptr, bytes);
+    }
+    
+    return got;
   }
 
   int UDPSocket::write(const void * buffer, int bytes)

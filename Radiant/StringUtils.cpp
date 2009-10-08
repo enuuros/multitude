@@ -290,7 +290,7 @@ namespace Radiant
           *ptr++ = c & 0x03F;	  
         }
         else {
-			Radiant::error("stdWstringToUtf8 # Bad Unicode character %x", c);
+	  Radiant::error("stdWstringToUtf8 # Bad Unicode character %x", c);
         }
       }
     }

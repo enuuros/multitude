@@ -1,5 +1,7 @@
 include(../multitude.pri)
 
+unix:CONFIG += debug
+
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp

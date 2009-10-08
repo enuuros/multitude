@@ -13,6 +13,7 @@
  * 
  */
 
+#include <Radiant/FileUtils.hpp>
 #include <Radiant/Sleep.hpp>
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
@@ -156,6 +157,11 @@ int main(int argc, char ** argv)
       iterations = atoi(argv[++i]);
     else if(strcmp(argv[i], "--message") == 0 && (i + 1) < argc)
       message = argv[++i];
+    else if(strcmp(argv[i], "--messagefile") == 0 && (i + 1) < argc) {
+      char * tmp = Radiant::FileUtils::loadTextFile(argv[++i]);
+      if(tmp)
+	message = tmp;
+    }
     else if(strcmp(argv[i], "--time") == 0 && (i + 1) < argc)
       __duration = atof(argv[++i]);
     else if(strcmp(argv[i], "--withblocking") == 0)

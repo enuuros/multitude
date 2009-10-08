@@ -34,7 +34,8 @@ void helper(const char * app)
   printf("USAGE:\n %s [options]\n\n", app);
   printf
     ("OPTIONS:\n"
-     "--format7       - Uses Format 7 modes\n"
+     " --format7 +int - Uses Format 7 mode in the argument\n"
+     " --format7area +rect - Select Format 7 capture area, for example \"0 0 200 100\"\n"
      " --fps  +float  - Sets arbitrary capture rate for the cameras, with SW trigger\n"
      " --help         - This help\n"
      " --listformat7modes    - List available format 7 modes\n"
@@ -51,8 +52,11 @@ void helper(const char * app)
      " %s --rate 30   - Run all cameras at 30 fps (internal triggering)\n"
      " %s --rate 60 --triggersource 0  - Run all cameras at max 60 fps with hardware trigger\n"
      " %s --rate 60 --triggersource 0 --triggermode 0 - Run all cameras at max 60 fps with trigger source 0 and trigger mode 0\n"
+
+
+     " %s --fps 120 --format7 1 --triggersource 0 --triggermode 0  --format7area \"60 0 356 206\" - Test high-speed triggered format 7 operation\n"
      , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
-     app, app, app, app, app, app);
+     app, app, app, app, app, app, app);
   fflush(0);
 }
 

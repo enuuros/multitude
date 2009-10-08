@@ -167,12 +167,22 @@ namespace Radiant {
 
   void BinaryData::writeVector4Int32(const Nimble::Vector4i & v)
   {
-    ensure(12);
+    ensure(20);
     getRef<int32_t>() = VECTOR4I_MARKER;
     getRef<int>() = v[0];
     getRef<int>() = v[1];
     getRef<int>() = v[2];
     getRef<int>() = v[3];
+  }
+
+  void BinaryData::writeVector4Float32(const Nimble::Vector4f & v)
+  {
+    ensure(20);
+    getRef<int32_t>() = VECTOR4F_MARKER;
+    getRef<float>() = v[0];
+    getRef<float>() = v[1];
+    getRef<float>() = v[2];
+    getRef<float>() = v[3];
   }
 
   void BinaryData::append(const BinaryData & that)
@@ -427,6 +437,33 @@ namespace Radiant {
     }
     
   }
+
+
+  Nimble::Vector4f BinaryData::readVector4Float32(bool * ok)
+  {
+    if(!available(12)) {
+      if(ok) * ok = false;
+      return Nimble::Vector4f(0, 0, 0, 1);
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == VECTOR4I_MARKER) {
+      return getRef<Nimble::Vector4i>();
+    }
+    else if(marker == VECTOR4F_MARKER) {
+      return getRef<Nimble::Vector4f>();
+    }
+    else {
+      skipParameter(marker);
+      if(ok)
+	*ok = false;
+
+      return Nimble::Vector4f(0, 0, 0, 1);
+    }
+    
+  }
+
 
   bool BinaryData::write(Radiant::BinaryStream * stream)
   {

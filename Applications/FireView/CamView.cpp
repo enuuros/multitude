@@ -137,7 +137,7 @@ namespace FireView {
 	m_video.sendSoftwareTrigger();
       }
 
-      int timeout = m_frameCount ? 5000000 : 15000000;
+      int timeout = m_frameCount ? 10000000 : 15000000;
 
       const Radiant::VideoImage * img = m_video.captureImage(timeout);
 
