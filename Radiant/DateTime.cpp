@@ -19,6 +19,9 @@
 
 #include <string.h>
 
+#include <sys/time.h>
+#include <time.h>
+
 namespace Radiant {
 
   DateTime::DateTime()

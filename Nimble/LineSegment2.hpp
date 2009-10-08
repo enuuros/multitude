@@ -37,7 +37,7 @@ namespace Nimble {
 
     inline bool operator == (const LineSegment2T & that) const
     { 
-      return (m_points[0] = that.m_points[0]) &&
+      return (m_points[0] == that.m_points[0]) &&
         (m_points[1] == that.m_points[1]);
     }
 
