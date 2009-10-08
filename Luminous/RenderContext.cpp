@@ -92,5 +92,20 @@ namespace Luminous
 		       transform() * Matrix3::translate2D(rect.low()), rgba);
   }
   
+  
+  void RenderContext::drawCircle(Nimble::Vector2f center, float radius, 
+                                 const float * rgba, int segments)
+  {
+    if(segments < 0) {
+      float realRad = radius * transform().extractScale();
+      segments = Math::Clamp((int) realRad * 2, 6, 60);
+    }
+    
+    Nimble::Matrix3 m(transform() * Nimble::Matrix3::translate2D(center));
+
+    Utils::glSolidSoftCircle(m, radius, 1.0f, segments, rgba);
+  }
+
+
 }
 

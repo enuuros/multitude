@@ -56,6 +56,10 @@ namespace Luminous
     /** Draws a solid rectangle, with given thickness and color. */
     void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
+    /** Draws a solid circle and color. */
+    void drawCircle(Nimble::Vector2f center, float radius, 
+                    const float * rgba, int segments = -1);
+
     /* Draws a solid rectangle, with given thickness and color. */
     /*void drawText(Poetic::CPUFont * font,
 		  Nimble::Vector2 loc, const float * rgba);
