@@ -36,7 +36,7 @@ namespace Nimble {
       The random number sequence is identical on all platforms, given
       the same seed value.
   */
-  class RandomUniform
+  class NIMBLE_API RandomUniform
   {
   public:
     RandomUniform(uint32_t val = 0) : m_val(val) {}
@@ -153,7 +153,7 @@ namespace Nimble {
   };
 
   /// RandomGaussian generates pseudo-random numbers from a normal (gaussian) distribution.
-  class RandomGaussian
+  class NIMBLE_API RandomGaussian
   {
     public:
       /// Construct a generator with given parameters for the distribution of

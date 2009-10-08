@@ -81,6 +81,14 @@ namespace Nimble {
   typedef LineSegment2T<float>  LineSegment2f;
   typedef LineSegment2T<double> LineSegment2d;
 
+#ifdef WIN32
+#ifdef NIMBLE_EXPORT
+  // In WIN32 template classes must be instantiated to be exported
+  template class LineSegment2T<float>;
+  template class LineSegment2T<double>;
+#endif
+#endif
+
 }
 
 #endif
