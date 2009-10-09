@@ -54,7 +54,10 @@ namespace Radiant {
 	Radiant::Sleep::sleepMs(100);
 
       if(!m_check && m_continue) {
-	error("WatchDog::mainLoop # HOST IS DEAD, ABORTING\n");
+	error("WATCHDOG: THE APPLICATION HAS BEEN UNRESPONSIVE FOR %.0f\n"
+	      "SECONDS. IT HAS PROBABLY LOCKED, SHUTTING DOWN NOW.\n"
+	      "TO DISABLE THIS FEATURE, DISABLE THE WATCHDOG WITH:\n\n"
+	      "export NO_WATCHDOG=1;\n", (float) m_intervalSeconds);
 
 	// Stop the app:
 	abort();
@@ -82,7 +85,7 @@ namespace Radiant {
 
     m_continue = false;
     if(isRunning())
-	    waitEnd();
+      waitEnd();
   }
 
 }
