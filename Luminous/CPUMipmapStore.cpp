@@ -34,7 +34,10 @@ namespace Luminous {
   {
   public:
     MipmapItem() : m_linkCount(0), m_mipmaps(0) {}
-    ~MipmapItem() { delete m_mipmaps; }
+    /* Do NOT delete m_mipmaps here, we might at the shutdown sequence
+       of the application, and deleting the mipmap here may make it
+       reference some resources that are not available any more. */
+    ~MipmapItem() { /* delete m_mipmaps; */ }
 
     void incrCount() { m_linkCount++; }
     void decrCount() 
