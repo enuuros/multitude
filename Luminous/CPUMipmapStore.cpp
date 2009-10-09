@@ -34,6 +34,7 @@ namespace Luminous {
   {
   public:
     MipmapItem() : m_linkCount(0), m_mipmaps(0) {}
+    ~MipmapItem() { delete m_mipmaps; }
 
     void incrCount() { m_linkCount++; }
     void decrCount() 
@@ -100,6 +101,7 @@ namespace Luminous {
 	if(!mmi.m_linkCount) {
 	  __mipmaps.erase(it);
 	}
+        return;
       }
     }
   }
