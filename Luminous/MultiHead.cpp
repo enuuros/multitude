@@ -131,6 +131,7 @@ namespace Luminous {
 
       tex->bind(GL_TEXTURE0);
       glEnable(GL_TEXTURE_2D);
+      glDisable(GL_BLEND);
       
       glColor3f(1, 1, 1);
       Utils::glTexRect(0, 1, 1, 0);

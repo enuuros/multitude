@@ -170,16 +170,9 @@ namespace Poetic
     if(m_reset) 
       resetGLResources();
 
-    glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     GPUTextureGlyph::resetActiveTexture();
 
     GPUFontBase::internalRender(str, n, m);
-
-    glPopAttrib();
   }
 
   void GPUTextureFont::internalRender(const wchar_t * str, int n,
@@ -188,16 +181,9 @@ namespace Poetic
     if(m_reset)
       resetGLResources();
 
-    glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     GPUTextureGlyph::resetActiveTexture();
 
     GPUFontBase::internalRender(str, n, m);
-
-    glPopAttrib();
   }
 
   void GPUTextureFont::faceSizeChanged()

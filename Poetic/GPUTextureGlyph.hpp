@@ -12,6 +12,7 @@
  * from the GNU organization (www.gnu.org).
  * 
  */
+
 #ifndef POETIC_GPU_TEXTURE_GLYPH_HPP
 #define POETIC_GPU_TEXTURE_GLYPH_HPP
 

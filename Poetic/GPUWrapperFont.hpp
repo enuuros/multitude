@@ -27,16 +27,17 @@ namespace Poetic
   /// A wrapper class for convenience
   class GPUWrapperFont : public GPUFont
   {
-    public:
-      GPUWrapperFont(GPUManagedFont * gf, CPUWrapperFont * cf);
-      ~GPUWrapperFont();
+  public:
+    GPUWrapperFont(GPUManagedFont * gf, CPUWrapperFont * cf);
+    ~GPUWrapperFont();
 
-      CPUFont * cpuFont();
+    CPUFont * cpuFont();
 
-    protected:
-      void internalRender(const char * str, int n, const Nimble::Matrix3 & transform);
-      void internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform);
+  protected:
+    void internalRender(const char * str, int n, const Nimble::Matrix3 & transform);
+    void internalRender(const wchar_t * str, int n, const Nimble::Matrix3 & transform);
 
+  private:
     GPUManagedFont * m_gmf;
     CPUWrapperFont * m_cf;
   };
