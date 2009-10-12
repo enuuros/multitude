@@ -177,8 +177,14 @@ namespace Radiant
 
       for(WStringList::const_iterator it = src.begin();
 	  it != src.end(); it++) {
+	for(unsigned i = 0; i < (*it).size(); i++) 
+	  printf("Merging %d\n", (int) (*it)[i]);
+	
 	dest += (*it);
       }
+
+      for(unsigned i = 0; i < dest.size(); i++) 
+	printf("Merged %d\n", (int) dest[i]);
     }
 
     const char * strchrnul(const char * str, int c)

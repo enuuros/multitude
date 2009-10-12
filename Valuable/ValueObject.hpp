@@ -35,8 +35,9 @@ namespace Valuable
 
 
   /// Base class for values 
-  /** Typical child classes include some POD elements (floats, ints,
-      vector2) etc, that can be accesses through the API.
+  /** Typical child classes include some POD (plain old data) elements
+      (floats, ints, vector2) etc, that can be accesses through the
+      API.
 
       It is also possible to add listeners to values, so that if a
       value is changed, then a call-back to soem other object is
@@ -50,9 +51,24 @@ namespace Valuable
     /// The copy constructor creates a copy of the ValueObject WITHOUT the
     /// link to parent
     ValueObject(const ValueObject & o);
+    /// The most usual constructor
+    /** This constructor is typically used when attaching the value
+	object to its parent. 
+	
+	@arg parent The parent object. This object is automatically
+	added to the parent.
+
+	@arg name The name (or id) of this value. Names are typically
+	semi human readable. The names should not contain white-spaces
+	as they may be used in XML files etc.
+
+	@arg transit Should value changes be transmitted forward. This
+	is related to future uses, and can be largely ignored at the
+	moment.
+    */
     ValueObject(HasValues * parent, const std::string & name, bool transit = false);
     virtual ~ValueObject();
-      
+
     const std::string & name() const { return m_name; }
     void setName(const std::string & s) { m_name = s; }
   

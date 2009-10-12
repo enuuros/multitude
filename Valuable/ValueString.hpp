@@ -52,6 +52,8 @@ namespace Valuable
     int asInt(bool * const ok = 0) const;
     std::string asString(bool * const ok = 0) const;
     std::wstring asWString(bool * const ok = 0) const;
+
+    const T & str() const { return m_value; }
     
     virtual bool set(const std::string & v);
     

@@ -28,11 +28,17 @@ namespace Poetic
       CPUFont & bitmapFont, WStringList & lines, const bool afterSpace)
     {
       // Ensure line list empty
+      /*
+      info("breakToLines Comes line with size %d", (int) ws.size());
+      for(unsigned i = 0; i < ws.size(); i++) {
+	printf("%d ", (int) ws[i]);
+      }
 
+      printf("\n");
+      */
       lines.clear();
 
-      if(ws.empty() || width <= 0.0f)
-      {
+      if(ws.empty() || width <= 0.0f) {
         return;
       }
 
@@ -44,6 +50,23 @@ namespace Poetic
 
       split(ws, delim, wSub);
 
+      // Now add the newlines we just removed:
+
+      /*for(WStringList::iterator itSub = wSub.begin(); itSub != wSub.end(); ) {
+	
+	std::wstring & str = *itSub;
+	
+	itSub++;
+
+	if(itSub == wSub.end()) {
+	  if(ws[ws.size() - 1] == W_NEWLINE)
+	    str += W_NEWLINE;
+	}
+	else {
+	  str += W_NEWLINE;
+	}
+      }
+      */
       // Break the resulting sub-wstrings to fit width
 
       delim = std::wstring(L" ");
@@ -52,7 +75,7 @@ namespace Poetic
       {
         // Split the sub-string into words
 
-        WStringList   words;
+        WStringList words;
         split(* itSub, delim, words, afterSpace);
 
         // Make the lines
@@ -110,10 +133,22 @@ namespace Poetic
 
       // If last character is newline append empty line
 
-      if(ws[ws.length() - 1] == W_NEWLINE)
-      {
+      if(ws[ws.length() - 1] == W_NEWLINE) {
         lines.push_back(std::wstring(L""));
       }
+      /*
+      for(WStringList::iterator itSub = lines.begin(); itSub != lines.end(); itSub++) {
+
+	info("breakToLines LINELEN = %d", (int) (*itSub).length());
+
+	for(unsigned i = 0; i < (*itSub).length(); i++) {
+	  printf("%d ", (int) (*itSub)[i]);
+	}
+
+	printf("\n");
+
+      }
+      */
     }
 
     void split(const std::wstring & ws, const std::wstring & delim,
