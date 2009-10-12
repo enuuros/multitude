@@ -232,21 +232,32 @@ namespace Radiant
         if((c0 & 0x80) == 0)
           dest[characters] = c0;
         else if((c0 & 0xE0) == 0xC0) {
-	  assert(left >= 1);
+	  if(left < 1) {
+	    error("utf8ToStdWstring # Lacking 1 byte from a UTF8 string");
+	    return;
+	  }
           unsigned c1 = *ptr++;
           dest[characters] = (c1 & 0x3F) + ((c0 & 0x1F) << 6);
 	  /*trace("utf8ToStdWstring # Got 2 = 0x%x (%x %x)",
             (int) dest[characters], c0, c1); */
         }
         else if((c0 & 0xF0) == 0xE0) {
-	  assert(left >= 2);
+	  if(left < 2) {
+	    error("utf8ToStdWstring # Lacking 2 bytes from a UTF8 string");
+	    return;
+	  }
+
           unsigned c1 = *ptr++;
           unsigned c2 = *ptr++;
           dest[characters] = (c2 & 0x3F) + ((((unsigned) c1) & 0x3F) << 6) + 
             ((((unsigned) c0) & 0x0F) << 12);
         }
         else if((c0 & 0xF8) == 0xF0) {
-	  assert(left >= 3);
+	  if(left < 3) {
+	    error("utf8ToStdWstring # Lacking 3 bytes from a UTF8 string");
+	    return;
+	  }
+
           unsigned c1 = *ptr++;
           unsigned c2 = *ptr++;
           unsigned c3 = *ptr++;
@@ -254,7 +265,7 @@ namespace Radiant
             ((c1 & 0x3F) << 12) + ((c0 & 0x07) << 18);
         }
 	else {
-		Radiant::error("utf8ToStdWstring # Bad character 0x%x", (int) c0);
+	  Radiant::error("utf8ToStdWstring # Bad character 0x%x", (int) c0);
           return;
 	}
 
@@ -312,15 +323,27 @@ namespace Radiant
         if((c0 & 0x80) == 0)
           ;
         else if((c0 & 0xE0) == 0xC0) {
-	  assert(left >= 1);
+	  if(left < 1) {
+	    error("utf8DecodedLength # Lacking 1 byte from a UTF8 string");
+	    return characters;
+	  }
+
           ptr++;
         }
         else if((c0 & 0xF0) == 0xE0) {
-	  assert(left >= 2);
+	  if(left < 2) {
+	    error("utf8DecodedLength # Lacking 2 bytes from a UTF8 string");
+	    return characters;
+	  }
+
           ptr += 2;
         }
         else if((c0 & 0xF8) == 0xF0) {
-	  assert(left >= 3);
+	  if(left < 3) {
+	    error("utf8DecodedLength # Lacking 3 bytes from a UTF8 string");
+	    return characters;
+	  }
+
           ptr += 3;
         }
       }
