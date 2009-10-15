@@ -22,23 +22,19 @@
 
 #include <Radiant/Trace.hpp>
 
-#include <algorithm>
-
 namespace Valuable
 {
   using namespace Radiant;
 
   ValueObject::ValueObject()
   : m_parent(0),
-    m_transit(false),
-    m_eventsEnabled(true)
+    m_transit(false)
   {}
 
   ValueObject::ValueObject(HasValues * parent, const std::string & name, bool transit)
     : m_parent(0),
       m_name(name),
-      m_transit(transit),
-      m_eventsEnabled(true)
+      m_transit(transit)
   {
     if(parent)
       parent->addValue(name, this);
@@ -49,23 +45,11 @@ namespace Valuable
   {
     m_name = o.m_name;
     m_transit = o.m_transit;
-    m_eventsEnabled = o.m_eventsEnabled;
   }
 
   ValueObject::~ValueObject()
   {
     emitDelete();
-
-    for(Sources::iterator it = m_eventSources.begin(); it != m_eventSources.end(); it++) {
-      (*it)->eventRemoveListener(this);
-    }
-
-    for(Listeners::iterator it = m_elisteners.begin();
-        it != m_elisteners.end(); it++) {
-      (*it).m_listener->eventRemoveSource(this);
-    }
-
-
   }
 
   std::string ValueObject::path() const
@@ -118,75 +102,6 @@ namespace Valuable
     elem.setTextContent(asString());
 
     return elem;   
-  }
-
-  void ValueObject::eventAddListener(const char * from,
-                                     const char * to,
-                                     Valuable::ValueObject * obj)
-  {
-    ValuePass vp;
-    vp.m_listener = obj;
-    vp.m_from = from;
-    vp.m_to = to;
-
-    if(std::find(m_elisteners.begin(), m_elisteners.end(), vp) != 
-       m_elisteners.end())
-      debug("Widget::eventAddListener # Already got item %s -> %s (%p)",
-	    from, to, obj);
-    else {
-      m_elisteners.push_back(vp);
-      obj->eventAddSource(this);
-    }
-  }
-  
-  void ValueObject::eventRemoveListener(Valuable::ValueObject * obj)
-  {
-    for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end();){
-      if((*it).m_listener == obj) {
-	it = m_elisteners.erase(it);
-      }
-      else
-	it++;
-    }
-  }
-
-  void ValueObject::eventAddSource(Valuable::ValueObject * source)
-  {
-    m_eventSources.insert(source);
-  }
-
-  void ValueObject::eventRemoveSource(Valuable::ValueObject * source)
-  {
-    Sources::iterator it = m_eventSources.find(source);
-
-    if(it != m_eventSources.end())
-      m_eventSources.erase(it);
-  }
-
-
-  void ValueObject::eventSend(const std::string & id, Radiant::BinaryData & bd)
-  {
-    eventSend(id.c_str(), bd);
-  }
-
-  void ValueObject::eventSend(const char * id, Radiant::BinaryData & bd)
-  {
-    if(!id || !m_eventsEnabled)
-      return;
-
-    bd.rewind();
-
-    for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end(); it++) {
-      ValuePass & vp = *it;
-      if(vp.m_from == id)
-        vp.m_listener->processMessage(vp.m_to.c_str(), bd);
-    }
-  }
-
-  void ValueObject::eventSend(const char * id)
-  {
-    Radiant::BinaryData tmp;
-    eventSend(id, tmp);
   }
 
   void ValueObject::emitChange()

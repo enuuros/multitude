@@ -178,6 +178,19 @@ namespace Nimble {
     inline int Floor(float x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999f); }
     inline int Floor(double x) { return x >= 0.0f ? (int)x : (int) (x - 0.9999); }
 
+    /// Convert degrees to radians
+    template <class T>
+    inline T degToRad(T deg)
+    {
+      return deg * ((T) PI / (T) 180);
+    }
+    
+    /// Convert radians to degrees
+    template <class T>
+    inline T radToDeg(T rad)
+    {
+      return rad * ((T) 180 / (T) PI);
+    }
 
     /// Clamp a value between minimum and maximum values
     /** @param x The input value to limit. 

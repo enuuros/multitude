@@ -86,9 +86,52 @@ namespace Valuable
 
     iterator valuesBegin() { return m_children.begin(); }
     iterator valuesEnd() { return m_children.end(); }
+    
+    /** Experimental event passing framework. */
+    void eventAddListener(const char * from,
+                          const char * to,
+                          Valuable::HasValues * obj);
+    /** Experimental event passing framework. */
+    void eventRemoveListener(Valuable::HasValues * obj);
+
+    void eventAddSource(Valuable::HasValues * source);
+    void eventRemoveSource(Valuable::HasValues * source);
+
+    unsigned eventSourceCount() const { return m_eventSources.size(); }
+    unsigned eventListenerCount() const { return m_elisteners.size(); }
+
+    /** Experimental event passing framework. */
+    void eventPassingEnable(bool enable) { m_eventsEnabled = enable; }
+
+  protected:
+
+    void eventSend(const std::string & id, Radiant::BinaryData &);
+    void eventSend(const char *, Radiant::BinaryData &);
+    void eventSend(const char *);
 
   private: 
     container m_children;
+  private:
+    class ValuePass {
+    public:
+      ValuePass() : m_listener(0) {}
+
+      inline bool operator == (const ValuePass & that) const
+      { return (m_listener == that.m_listener) && (m_from == that.m_from) &&
+	  (m_to == that.m_to); } 
+
+      Valuable::HasValues * m_listener;
+      std::string m_from;
+      std::string m_to;
+    };
+
+    typedef std::list<ValuePass> Listeners;
+    Listeners m_elisteners; // Event listeners
+
+    typedef std::set<Valuable::HasValues *> Sources;
+    Sources m_eventSources;
+    bool m_eventsEnabled;
+
   };
 
 }

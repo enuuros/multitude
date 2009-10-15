@@ -22,22 +22,35 @@
 #include <Radiant/Trace.hpp>
 #include <Radiant/RefPtr.hpp>
 
+#include <algorithm>
+
+
 namespace Valuable
 {
+  using namespace Radiant;
+
   HasValues::HasValues()
-  : ValueObject()
+  : ValueObject(),
+    m_eventsEnabled(true)
   {}
 
   HasValues::HasValues(HasValues * parent, const std::string & name, bool transit)
-  : ValueObject(parent, name, transit)
+  : ValueObject(parent, name, transit),
+    m_eventsEnabled(true)
   {
   }
 
   HasValues::~HasValues()
   {
-//    for(container::iterator it = m_children.begin(); it != m_children.end(); it++) {
-//      delete it->second;
-//    }
+    for(Sources::iterator it = m_eventSources.begin(); it != m_eventSources.end(); it++) {
+      (*it)->eventRemoveListener(this);
+    }
+
+    for(Listeners::iterator it = m_elisteners.begin();
+        it != m_elisteners.end(); it++) {
+      (*it).m_listener->eventRemoveSource(this);
+    }
+
   }
 
   ValueObject * HasValues::getValue(const std::string & name)
@@ -268,6 +281,76 @@ namespace Valuable
 
     Radiant::trace(Radiant::DEBUG, "}");
   }
+
+  void HasValues::eventAddListener(const char * from,
+                                     const char * to,
+                                     Valuable::HasValues * obj)
+  {
+    ValuePass vp;
+    vp.m_listener = obj;
+    vp.m_from = from;
+    vp.m_to = to;
+
+    if(std::find(m_elisteners.begin(), m_elisteners.end(), vp) != 
+       m_elisteners.end())
+      debug("Widget::eventAddListener # Already got item %s -> %s (%p)",
+	    from, to, obj);
+    else {
+      m_elisteners.push_back(vp);
+      obj->eventAddSource(this);
+    }
+  }
+  
+  void HasValues::eventRemoveListener(Valuable::HasValues * obj)
+  {
+    for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end();){
+      if((*it).m_listener == obj) {
+	it = m_elisteners.erase(it);
+      }
+      else
+	it++;
+    }
+  }
+
+  void HasValues::eventAddSource(Valuable::HasValues * source)
+  {
+    m_eventSources.insert(source);
+  }
+
+  void HasValues::eventRemoveSource(Valuable::HasValues * source)
+  {
+    Sources::iterator it = m_eventSources.find(source);
+
+    if(it != m_eventSources.end())
+      m_eventSources.erase(it);
+  }
+
+
+  void HasValues::eventSend(const std::string & id, Radiant::BinaryData & bd)
+  {
+    eventSend(id.c_str(), bd);
+  }
+
+  void HasValues::eventSend(const char * id, Radiant::BinaryData & bd)
+  {
+    if(!id || !m_eventsEnabled)
+      return;
+
+    bd.rewind();
+
+    for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end(); it++) {
+      ValuePass & vp = *it;
+      if(vp.m_from == id)
+        vp.m_listener->processMessage(vp.m_to.c_str(), bd);
+    }
+  }
+
+  void HasValues::eventSend(const char * id)
+  {
+    Radiant::BinaryData tmp;
+    eventSend(id, tmp);
+  }
+
 
   bool HasValues::readElement(DOMElement )
   {
