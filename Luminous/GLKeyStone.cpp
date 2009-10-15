@@ -176,7 +176,13 @@ namespace Luminous {
     */
     glTranslatef(-1.0, -1.0, 0.0);
     glScalef(2.0, 2.0, 2.0);
-    glMultTransposeMatrixf(m_matrix.data());
+    if(GLEW_ARB_transpose_matrix)
+      glMultTransposeMatrixf(m_matrix.data());
+    else {
+      Matrix4 tmp(m_matrix);
+      tmp.transpose();
+      glMultMatrixf(tmp.data());
+    }
     glScalef(0.5, 0.5, 0.5);
     glTranslatef(1.0, 1.0, 0.0);
   }

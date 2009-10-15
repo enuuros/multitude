@@ -39,33 +39,37 @@ namespace Luminous
       return false;
     }
 
-	// Check the OpenGL version
-	bool warn = true;
+    // Check the OpenGL version
+    bool warn = true;
     versionMsg << "Luminous initialized: ";
-		
-	if(GLEW_VERSION_2_1) {
-		warn = false;
-		versionMsg << "OpenGL 2.1 supported";
-	} else if(GLEW_VERSION_2_0) {
-		warn = false;
-		versionMsg << "OpenGL 2.0 supported";
-	} else if(GLEW_VERSION_1_5) versionMsg << std::string("OpenGL 1.5 supported");
+    
+    if(GLEW_VERSION_2_1) {
+      warn = false;
+      versionMsg << "OpenGL 2.1 supported";
+    }
+    else if(GLEW_VERSION_2_0) {
+      warn = false;
+      versionMsg << "OpenGL 2.0 supported";
+    }
+    else if(GLEW_VERSION_1_5) versionMsg << std::string("OpenGL 1.5 supported");
     else if(GLEW_VERSION_1_4) versionMsg << std::string("OpenGL 1.4 supported");
     else if(GLEW_VERSION_1_3) versionMsg << std::string("OpenGL 1.3 supported");
     else if(GLEW_VERSION_1_2) versionMsg << std::string("OpenGL 1.2 supported");
     else if(GLEW_VERSION_1_1) versionMsg << std::string("OpenGL 1.1 supported");
-
+    
     char * glsl = (char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     std::string glslMsg = (glsl ? glsl : "GLSL not supported");
 
-    Radiant::trace(Radiant::INFO, "%s (%s)", versionMsg.str().c_str(), glslMsg.c_str());
+    Radiant::info("%s (%s)", versionMsg.str().c_str(), glslMsg.c_str());
+
+    initDefaultImageCodecs();
+
     if(warn) { 
       Radiant::error("OpenGL 2.0 is not supported by this computer, "
 		     "some applications may fail.");
       return false;
     }
 
-    initDefaultImageCodecs();
 
     return true;
   }
