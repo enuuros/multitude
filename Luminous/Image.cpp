@@ -21,14 +21,15 @@
 
 #include <Radiant/Trace.hpp>
 
-#include <stdlib.h>
-#include <string>
-#include <string.h>
-#include <iostream>
 #include <algorithm>
 #include <cctype>
 #include <cassert>
 #include <cmath>
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <string.h>
+#include <typeinfo>
 
 #ifdef WIN32
 #include <strings.h>	// strcasecmp()

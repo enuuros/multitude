@@ -84,9 +84,12 @@ namespace Luminous
     done = true;
 
     // Register built-in image codecs
-    Image::codecs()->registerCodec(new ImageCodecTGA());
-    Image::codecs()->registerCodec(new ImageCodecPNG());
     Image::codecs()->registerCodec(new ImageCodecJPEG());
+    Image::codecs()->registerCodec(new ImageCodecPNG());
+    
+    /* TGA has to be last, because its ping may return true even if
+       the file has other type. */
+    Image::codecs()->registerCodec(new ImageCodecTGA());
 
   }
 

@@ -26,6 +26,8 @@ extern "C" {
 namespace Luminous
 {
 
+  using namespace Radiant;
+
   // Our own error handler to avoid calling exit() if libjpeg encounters a fatal
   // error.
   struct LuminousErrorMgr {
