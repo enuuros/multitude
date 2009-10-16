@@ -106,6 +106,78 @@ namespace Luminous
     Utils::glSolidSoftCircle(m, radius, 1.0f, segments, rgba);
   }
 
+  void RenderContext::drawPolyLine(const Nimble::Vector2f * vertices, int n,
+				   float width, const float * rgba)
+  {
+    if(n < 2)
+      return;
+
+    float r = rgba[0];
+    float g = rgba[1];
+    float b = rgba[2];
+    float a = rgba[3];
+
+    width *= 0.5f;
+    float fullw = width + 1;
+    
+    Matrix3 m(transform());
+
+    Vector2f dir0 = m.project(vertices[1]) - m.project(vertices[0]);
+    Vector2f cprev = m.project(vertices[0] - dir0);
+
+    Vector2 p01 = dir0.perpendicular();
+    p01.normalize();
+
+    for(int i = 0; i < n - 1; i++) {
+
+      Vector2f cnow = m.project(vertices[i]);
+      
+      Vector2f cnext = m.project(vertices[i + 1]);
+
+      Vector2f dir1 = cnext - cnow;
+      Vector2f dir2 = cnow - cprev;
+
+      dir1.normalize();
+      dir2.normalize();
+
+      Vector2 q = dir1.perpendicular();
+
+      float q01 = dot(p01, q);
+      if(q01 > 0.000001f)
+	p01 /= q01;
+
+      Vector2 p12 = (dir2 + dir1).perpendicular();
+      p12.normalize();
+
+      float q12 = dot(p12, q);
+      if(q12 > 0.000001f)
+	p12 /= q12;
+
+      glBegin(GL_QUAD_STRIP);
+      
+      glColor4f(r, g, b, 0.0f);
+      glVertex2fv((cnow + p12 * fullw).data());
+      glVertex2fv((cnext + p01 * fullw).data());
+
+      glColor4f(r, g, b, a);
+      glVertex2fv((cnow + p12 * width).data());
+      glVertex2fv((cnext + p01 * width).data());
+
+      glVertex2fv((cnow - p12 * width).data());
+      glVertex2fv((cnext - p01 * width).data());
+
+      glColor4f(r, g, b, 0.0f);
+      glVertex2fv((cnow - p12 * fullw).data());
+      glVertex2fv((cnext - p01 * fullw).data());
+
+      glEnd();
+
+      p01 = p12;
+
+      cprev = cnow;
+    }
+
+  }
 
 }
 

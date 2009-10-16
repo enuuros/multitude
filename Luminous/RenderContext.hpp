@@ -56,14 +56,23 @@ namespace Luminous
     /** Draws a solid rectangle, with given thickness and color. */
     void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
-    /** Draws a solid circle and color. */
+    /** Draws a solid circle. */
     void drawCircle(Nimble::Vector2f center, float radius, 
                     const float * rgba, int segments = -1);
 
-    /* Draws a solid rectangle, with given thickness and color. */
-    /*void drawText(Poetic::CPUFont * font,
-		  Nimble::Vector2 loc, const float * rgba);
-    */
+    /** Draws a line that contains multiple segments. 
+
+	@arg vertices Pointer to the line vertices
+
+	@arg n Number of vertices
+	
+	@arg width Width of the line
+
+	@arg rgba The line color in RGBA format
+     */
+    void drawPolyLine(const Nimble::Vector2f * vertices, int n,
+		      float width, const float * rgba);
+    
   protected:
 
     Luminous::GLResources * m_resources;
