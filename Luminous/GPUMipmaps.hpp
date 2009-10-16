@@ -22,9 +22,7 @@
 
 #include <Nimble/Matrix3.hpp>
 
-#include <Radiant/RefPtr.hpp>
-
-#include "CPUMipmaps.hpp"
+#include <Luminous/CPUMipmaps.hpp>
 
 namespace Luminous {
 
