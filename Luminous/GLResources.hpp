@@ -104,7 +104,9 @@ namespace Luminous
     static void getThreadMultiHead(const MultiHead::Window ** w,
 				   const MultiHead::Area **);
  
- protected:
+ private:
+    
+    void eraseOnce();
 
     container m_resources;
 

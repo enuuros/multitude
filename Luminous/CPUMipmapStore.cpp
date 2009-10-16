@@ -19,7 +19,7 @@
 
 namespace Luminous {
   
-  using Radiant::debug;
+  using namespace Radiant;
 
   static Radiant::MutexStatic __mutex;
 
@@ -102,6 +102,7 @@ namespace Luminous {
       if(mmi.m_mipmaps == mipmaps) {
 	mmi.decrCount();
 	if(!mmi.m_linkCount) {
+          // info("Erased mipmaps %p", mipmaps);
 	  __mipmaps.erase(it);
 	}
         return;

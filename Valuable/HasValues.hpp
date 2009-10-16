@@ -90,7 +90,8 @@ namespace Valuable
     /** Experimental event passing framework. */
     void eventAddListener(const char * from,
                           const char * to,
-                          Valuable::HasValues * obj);
+                          Valuable::HasValues * obj,
+                          const Radiant::BinaryData * defaultData = 0);
     /** Experimental event passing framework. */
     void eventRemoveListener(Valuable::HasValues * obj);
 
@@ -121,6 +122,7 @@ namespace Valuable
 	  (m_to == that.m_to); } 
 
       Valuable::HasValues * m_listener;
+      Radiant::BinaryData   m_defaultData;
       std::string m_from;
       std::string m_to;
     };

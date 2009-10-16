@@ -283,13 +283,17 @@ namespace Valuable
   }
 
   void HasValues::eventAddListener(const char * from,
-                                     const char * to,
-                                     Valuable::HasValues * obj)
+                                   const char * to,
+                                   Valuable::HasValues * obj,
+                                   const Radiant::BinaryData * defaultData)
   {
     ValuePass vp;
     vp.m_listener = obj;
     vp.m_from = from;
     vp.m_to = to;
+
+    if(defaultData)
+      vp.m_defaultData = *defaultData;
 
     if(std::find(m_elisteners.begin(), m_elisteners.end(), vp) != 
        m_elisteners.end())
@@ -300,6 +304,10 @@ namespace Valuable
       obj->eventAddSource(this);
     }
   }
+    void eventAddListener(const char * from,
+                          const char * to,
+                          Valuable::HasValues * obj,
+                          const Radiant::BinaryData & defaultData );
   
   void HasValues::eventRemoveListener(Valuable::HasValues * obj)
   {
@@ -336,12 +344,17 @@ namespace Valuable
     if(!id || !m_eventsEnabled)
       return;
 
-    bd.rewind();
-
     for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end(); it++) {
       ValuePass & vp = *it;
-      if(vp.m_from == id)
-        vp.m_listener->processMessage(vp.m_to.c_str(), bd);
+      if(vp.m_from == id) {
+
+        BinaryData & bdsend = bd.total() ? bd : vp.m_defaultData;
+
+        bdsend.rewind();
+
+        vp.m_listener->processMessage(vp.m_to.c_str(), bdsend);
+        
+      }
     }
   }
 

@@ -104,8 +104,8 @@ namespace Luminous
     m_consumingBytes  -= bytes;
     m_deallocationSum += bytes;
     */
-
-    //Radiant::info("GLResources::eraseResource # Resource %s for %p erased", typeid(*resource).name(), key);
+    
+    // Radiant::info("GLResources::eraseResource # Resource %s for %p erased", typeid(*resource).name(), key);
 
     delete resource;
     m_resources.erase(it);
@@ -118,15 +118,11 @@ namespace Luminous
     /* Radiant::info("GLResources::eraseResources # checking %d deleted keys",
                   Luminous::GarbageCollector::size());
     */
-
-    for(GarbageCollector::iterator it = GarbageCollector::begin();
-        it != GarbageCollector::end(); it++) {
-      const Collectable * key = GarbageCollector::getObject(it);
-      eraseResource(key);
-    }
+    eraseOnce();
 
     m_frame++;
     
+
     for(iterator it = m_resources.begin();
 	(m_consumingBytes >= m_comfortableGPURAM) && 
 	  (it != m_resources.end()); ) {
@@ -252,5 +248,15 @@ namespace Luminous
     if(a)
       *a = (*it).second.m_area;
   }
+  
+  void GLResources::eraseOnce()
+  {
+    for(GarbageCollector::iterator it = GarbageCollector::begin();
+        it != GarbageCollector::end(); it++) {
+      const Collectable * key = GarbageCollector::getObject(it);
+      eraseResource(key);
+    }
+  }
+
 
 }
