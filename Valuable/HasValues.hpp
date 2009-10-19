@@ -87,7 +87,21 @@ namespace Valuable
     iterator valuesBegin() { return m_children.begin(); }
     iterator valuesEnd() { return m_children.end(); }
     
-    /** Experimental event passing framework. */
+    /** Add an event listener to this object.
+
+        This function is part of the experimental event passing
+        framework.
+        
+        @arg from The event id to match when in the eventSend.
+        
+        @arg to The event id to to use when delivering the event
+
+        @arg obj The listening object
+        
+        @arg defaultData The default binary data to be used when
+        delivering the message.
+        
+    */
     void eventAddListener(const char * from,
                           const char * to,
                           Valuable::HasValues * obj,

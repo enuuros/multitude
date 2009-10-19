@@ -328,7 +328,7 @@ namespace Luminous {
 
     // float xe = 1.0f / size.x 
 
-    float e = 0.01f;
+    float e = 0.0f;
 
     /*
     const Vector2 v[4] = {
