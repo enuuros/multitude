@@ -117,19 +117,20 @@ namespace Luminous
     float b = rgba[2];
     float a = rgba[3];
 
-    width *= 0.5f;
+    // float s = scale();
+    // s = 1.0f;
+
+    width *= scale() * 0.5f;
     float fullw = width + 1;
     
     Matrix3 m(transform());
-
-    float s = scale();
 
     Vector2f cprev = m.project(vertices[0]);
 
     Vector2f dir0 = m.project(vertices[1]) - cprev;
 
     Vector2 p01 = dir0.perpendicular();
-    p01.normalize(s);
+    p01.normalize();
 
     for(int i = 1; i < n; i++) {
 
@@ -140,7 +141,7 @@ namespace Luminous
       
       Vector2f cnext;
       
-      if(i < n - 1) 
+      if(i < (n - 1))
         cnext = m.project(vertices[i + 1]);
       else
         cnext = 2.0f * cnow - cprev;
@@ -154,11 +155,11 @@ namespace Luminous
       Vector2 q = dir1.perpendicular();
 
       Vector2 p12 = (dir2 + dir1).perpendicular();
-      p12.normalize(s);
+      p12.normalize();
 
       float q12 = dot(p12, q);
       if(q12 > 0.1f)
-	p12 /= q12;
+        p12 /= q12;
 
       glBegin(GL_QUAD_STRIP);
       
