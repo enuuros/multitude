@@ -75,7 +75,7 @@ namespace Radiant {
 
     TimeStamp asTimeStamp() const;
 
-    void print(char * buf, bool withmillisecs = false);
+    void print(char * buf, bool isotime = false);
 
   private:
     int m_year;

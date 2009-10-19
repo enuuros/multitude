@@ -137,9 +137,13 @@ namespace Radiant {
     return TimeStamp(tval * TimeStamp::ticksPerSecond());
   }
 
-  void DateTime::print(char * buf, bool /*withmillisecs*/)
+  void DateTime::print(char * buf, bool isotime)
   {
-    sprintf(buf, "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d",
-	    monthDay() + 1, month() + 1, year(), hour(), minute(), second());
+    if(isotime)
+      sprintf(buf, "%.2d-%.2d-%.2dT%.2d-%.2d-%.2d",
+              year(), month() + 1, monthDay() + 1, hour(), minute(), second());
+    else
+      sprintf(buf, "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d",
+              monthDay() + 1, month() + 1, year(), hour(), minute(), second());
   }
 }

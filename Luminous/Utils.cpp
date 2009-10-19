@@ -312,7 +312,6 @@ namespace Luminous {
 
   void Utils::glTexRectAA(const Nimble::Rect & r, const float * rgba)
   {
-    
     glTexRectAA(r.size(), Matrix3::translate2D(r.low()), rgba);
   }
 
@@ -324,20 +323,7 @@ namespace Luminous {
     float b = rgba[2];
     float a = rgba[3];
 
-    // float scale = m.extractScale();
-
-    // float xe = 1.0f / size.x 
-
     float e = 0.0f;
-
-    /*
-    const Vector2 v[4] = {
-      (m * Vector2(0,      0)).xy(),
-      (m * Vector2(size.x, 0)).xy(),
-      (m * Vector2(size.x, size.y)).xy(),
-      (m * Vector2(0,      size.y)).xy()
-    };
-    */
 
     const Vector4 v[4] = {
       project(m, Vector2(0, 0)),
@@ -369,8 +355,6 @@ namespace Luminous {
     glVertex4fv(v[3].data());
 
     glEnd();
-
-    // return;
 
     glBegin(GL_TRIANGLE_STRIP);
 

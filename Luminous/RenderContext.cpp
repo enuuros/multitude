@@ -123,14 +123,14 @@ namespace Luminous
     Matrix3 m(transform());
 
     Vector2f dir0 = m.project(vertices[1]) - m.project(vertices[0]);
-    Vector2f cprev = m.project(vertices[0] - dir0);
+    Vector2f cprev = m.project(vertices[0]) - dir0;
 
     Vector2 p01 = dir0.perpendicular();
     p01.normalize();
 
-    for(int i = 0; i < n - 1; i++) {
+    for(int i = 1; i < n - 1; i++) {
 
-      Vector2f cnow = m.project(vertices[i]);
+      Vector2f cnow  = m.project(vertices[i]);
       
       Vector2f cnext = m.project(vertices[i + 1]);
 
@@ -142,9 +142,11 @@ namespace Luminous
 
       Vector2 q = dir1.perpendicular();
 
-      float q01 = dot(p01, q);
+      /*
+        float q01 = dot(p01, q);
       if(q01 > 0.000001f)
 	p01 /= q01;
+      */
 
       Vector2 p12 = (dir2 + dir1).perpendicular();
       p12.normalize();
@@ -156,19 +158,19 @@ namespace Luminous
       glBegin(GL_QUAD_STRIP);
       
       glColor4f(r, g, b, 0.0f);
+      glVertex2fv((cprev + p01 * fullw).data());
       glVertex2fv((cnow + p12 * fullw).data());
-      glVertex2fv((cnext + p01 * fullw).data());
 
       glColor4f(r, g, b, a);
+      glVertex2fv((cprev + p01 * width).data());
       glVertex2fv((cnow + p12 * width).data());
-      glVertex2fv((cnext + p01 * width).data());
 
+      glVertex2fv((cprev - p01 * width).data());
       glVertex2fv((cnow - p12 * width).data());
-      glVertex2fv((cnext - p01 * width).data());
 
       glColor4f(r, g, b, 0.0f);
+      glVertex2fv((cprev - p01 * fullw).data());
       glVertex2fv((cnow - p12 * fullw).data());
-      glVertex2fv((cnext - p01 * fullw).data());
 
       glEnd();
 
