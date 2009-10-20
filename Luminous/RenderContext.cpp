@@ -73,7 +73,8 @@ namespace Luminous
     return m_clipStack.top();
   }
 
-  void RenderContext::drawLineRect(const Nimble::Rectf & r, float thickness, const float * rgba)
+  void RenderContext::drawLineRect(const Nimble::Rectf & r,
+                                   float thickness, const float * rgba)
   {
     thickness *= 0.5f;
 
@@ -117,9 +118,6 @@ namespace Luminous
     float b = rgba[2];
     float a = rgba[3];
 
-    // float s = scale();
-    // s = 1.0f;
-
     width *= scale() * 0.5f;
     float fullw = width + 1;
     
@@ -136,7 +134,7 @@ namespace Luminous
 
       Vector2f cnow  = m.project(vertices[i]);
 
-      if((cnow - cprev).length() < 1.0f)
+      if((cnow - cprev).length() < 3.0f && i != (n-1))
         continue;
       
       Vector2f cnext;
