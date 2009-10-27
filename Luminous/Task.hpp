@@ -87,6 +87,9 @@ namespace Luminous
       /// Finished the task. Called by BGThread after the task has been
       /// processed
       virtual void finished();
+
+      void setState(State s) { m_state = s; }
+
       State m_state;
       Priority m_priority;
       //bool m_canDelete;

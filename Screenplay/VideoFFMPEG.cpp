@@ -298,6 +298,11 @@ namespace Screenplay {
       if(m_debug && m_capturedVideo < 10)
         debug("%s # PIX_FMT_YUV420P", fname);
     }
+    else if(avcfmt == PIX_FMT_YUVJ420P) {  
+      m_image.setFormatYUV420P(); 
+      if(m_debug && m_capturedVideo < 10)
+        debug("%s # PIX_FMT_YUV420P", fname);
+    }
     else if(avcfmt == PIX_FMT_YUVJ422P) {  
       m_image.setFormatYUV422P(); 
       if(m_debug && m_capturedVideo < 10)

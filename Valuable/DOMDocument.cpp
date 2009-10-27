@@ -21,6 +21,7 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/dom/DOMLocator.hpp>
+
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <xercesc/util/RuntimeException.hpp>
