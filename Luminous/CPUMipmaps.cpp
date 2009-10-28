@@ -197,13 +197,10 @@ namespace Luminous {
     
     // trace("CPUMipmaps::Scaler::doTask # created level %d", m_level);
 
-    // Temporary hack to avoid file-format-related bugs.
-    // m_file = "";
-
     if(m_file.size()) {
 
       if(!Directory::mkdir(FileUtils::path(m_file))) {
-	error("Could not create directory %s", FileUtils::path(m_file).c_str());
+	debug("Could not create directory %s", FileUtils::path(m_file).c_str());
       }
 
       bool ok;

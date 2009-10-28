@@ -947,7 +947,8 @@ namespace Radiant {
           "\n"
           "To gain permissions, try the following commands:\n\n"
           "> sudo addgroup %s video\n"
-          "> sudo addgroup %s disk\n\n"
+          "> sudo addgroup %s disk\n\nor:\n\n"
+          "> sudo chmod -R 777 /dev/*1394*\n\n"
           "You may need to log in again for the changes to be effective.\n\n"
           "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/linux\n"
           "*************************************************************\n\n",
