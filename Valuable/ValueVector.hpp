@@ -42,6 +42,8 @@ namespace Valuable
       ValueVector() : ValueObject() {}
       ValueVector(HasValues * parent, const std::string & name, const VectorType & v, bool transit = false) : ValueObject(parent, name, transit), m_value(v) {}
 
+      virtual ~ValueVector();
+
       ValueVector<VectorType, ElementType, N> & operator =
       (const VectorType & v) { m_value = v; emitChange(); return *this; }
 
@@ -57,7 +59,8 @@ namespace Valuable
 
       ElementType operator [] (int i) const { return m_value[i]; }      
 
-      virtual bool deserializeXML(DOMElement element);
+    virtual void processMessage(const char * id, Radiant::BinaryData & data);
+    virtual bool deserializeXML(DOMElement element);
 
     const char * type() const;
 
@@ -68,7 +71,9 @@ namespace Valuable
 
       std::string asString(bool * const ok = 0) const;
 
-    protected:
+      inline const ElementType & get(int i) const { return m_value[i]; }
+      inline const ElementType * data() const { return m_value.data(); }
+    private:
       VectorType m_value;
   };
 

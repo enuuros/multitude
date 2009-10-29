@@ -19,7 +19,7 @@
 #include <Radiant/Color.hpp>
 
 #include <Valuable/Export.hpp>
-#include <Valuable/ValueObject.hpp>
+#include <Valuable/ValueVector.hpp>
 
 #define VALUEMIT_STD_OP this->emitChange(); return *this;
 
@@ -27,36 +27,28 @@ namespace Valuable
 {
 
   /** A value object holding a #Radiant::Color value. */
-  class VALUABLE_API ValueColor : public ValueObject
+  class VALUABLE_API ValueColor : public ValueVector<Nimble::Vector4f,float,4>
   {
   public:
     ValueColor(HasValues * parent, const std::string & name, const Radiant::Color & c, bool transit = false);
     
-    ValueColor & operator = (const Radiant::Color & c) { m_color = c; VALUEMIT_STD_OP }
+    virtual ~ValueColor();
+
+    ValueColor & operator = (const Radiant::Color & c)
+      { (* (ValueVector<Nimble::Vector4f,float,4> *) this) = c; return *this; }
     
     const char * type() const { return "color"; }
     
-    std::string asString(bool * const ok = 0) const;
-    
-    bool deserializeXML(DOMElement element);
-    
-    Radiant::Color asColor() const { return m_color; }
-    
-    virtual bool set(const Nimble::Vector4f & v);
+    Radiant::Color asColor() const { return asVector(); }
     
     /// Returns the red comoponent of the color (0-1).
-    inline float red() const   { return m_color[0]; }
+    inline float red() const   { return get(0); }
     /// Returns the green comoponent of the color (0-1).
-    inline float green() const { return m_color[1]; }
+    inline float green() const { return get(1); }
     /// Returns the blue comoponent of the color (0-1).
-    inline float blue() const  { return m_color[2]; }
+    inline float blue() const  { return get(2); }
     /// Returns the alpha comoponent of the color (0-1).
-    inline float alpha() const { return m_color[3]; }
-
-    const float * data() const { return m_color.data(); }
-
-  protected:
-    Radiant::Color m_color;
+    inline float alpha() const { return get(3); }
   };
 
 }

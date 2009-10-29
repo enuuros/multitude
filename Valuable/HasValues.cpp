@@ -333,6 +333,32 @@ namespace Valuable
       m_eventSources.erase(it);
   }
 
+  void HasValues::processMessage(const char * id, Radiant::BinaryData & data)
+  {
+    if(!id)
+      return;
+
+    const char * delim = strchr(id, '/');
+    
+    std::string key(id);
+    int skip;
+
+    if(delim) {
+      skip = delim - id;
+      key.erase(key.begin() + skip, key.end());
+    }
+    else
+      skip = key.size();
+
+    ValueObject * vo = getValue(id);
+
+    if(vo) {
+      info("HasValues::processMessage # Sending message \"%s\" to %s",
+	   id + skip, typeid(*vo).name());
+      vo->processMessage(id + skip, data);
+    }
+  }
+
 
   void HasValues::eventSend(const std::string & id, Radiant::BinaryData & bd)
   {
@@ -348,7 +374,7 @@ namespace Valuable
       ValuePass & vp = *it;
       if(vp.m_from == id) {
 
-        BinaryData & bdsend = bd.total() ? bd : vp.m_defaultData;
+        BinaryData & bdsend = vp.m_defaultData.total() ? vp.m_defaultData : bd;
 
         bdsend.rewind();
 

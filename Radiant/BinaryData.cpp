@@ -49,8 +49,11 @@ namespace Radiant {
   }
 
   const int FLOAT_MARKER  = makeMarker(',', 'f', '\0', '\0');
+  const int DOUBLE_MARKER  = makeMarker(',', 'd', '\0', '\0');
   const int VECTOR2F_MARKER  = makeMarker(',', 'f', '2', '\0');
   const int VECTOR2I_MARKER  = makeMarker(',', 'i', '2', '\0');
+  const int VECTOR3F_MARKER  = makeMarker(',', 'f', '3', '\0');
+  const int VECTOR3I_MARKER  = makeMarker(',', 'i', '3', '\0');
   const int VECTOR4F_MARKER  = makeMarker(',', 'f', '4', '\0');
   const int VECTOR4I_MARKER  = makeMarker(',', 'i', '4', '\0');
   const int INT32_MARKER  = makeMarker(',', 'i', '\0', '\0');
@@ -89,6 +92,13 @@ namespace Radiant {
     ensure(8);
     getRef<int32_t>() = FLOAT_MARKER;
     getRef<float>()   = v;
+  }
+
+  void BinaryData::writeFloat64(double v)
+  {
+    ensure(12);
+    getRef<int32_t>() = DOUBLE_MARKER;
+    getRef<double>()  = v;
   }
 
   void BinaryData::writeInt32(int32_t v)
@@ -165,6 +175,15 @@ namespace Radiant {
     getRef<int>() = v[1];
   }
 
+  void BinaryData::writeVector3Int32(Nimble::Vector3i v)
+  {
+    ensure(16);
+    getRef<int32_t>() = VECTOR3I_MARKER;
+    getRef<int>() = v[0];
+    getRef<int>() = v[1];
+    getRef<int>() = v[2];
+  }
+
   void BinaryData::writeVector4Int32(const Nimble::Vector4i & v)
   {
     ensure(20);
@@ -202,6 +221,8 @@ namespace Radiant {
 
     if(marker == FLOAT_MARKER)
       return getRef<float>();
+    else if(marker == DOUBLE_MARKER)
+      return getRef<double>();
     else if(marker == INT32_MARKER)
       return float(getRef<int32_t>());
     else if(ok)
@@ -210,6 +231,29 @@ namespace Radiant {
     skipParameter(marker);
     
     return 0.0f;
+  }
+
+  double BinaryData::readFloat64(bool * ok)
+  {
+    if(!available(8)) {
+      if(ok) * ok = false;
+      return 0.0f;
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == FLOAT_MARKER)
+      return getRef<float>();
+    else if(marker == DOUBLE_MARKER)
+      return getRef<double>();
+    else if(marker == INT32_MARKER)
+      return float(getRef<int32_t>());
+    else if(ok)
+      *ok = false;
+
+    skipParameter(marker);
+    
+    return 0.0;
   }
 
   int32_t BinaryData::readInt32(bool * ok)
@@ -228,6 +272,8 @@ namespace Radiant {
       return int32_t(getRef<int64_t>());
     else if(marker == FLOAT_MARKER)
       return Nimble::Math::Round(getRef<float>());
+    else if(marker == DOUBLE_MARKER)
+      return Nimble::Math::Round(getRef<double>());
     else if(ok) {
       badmarker("BinaryData::readInt32", marker);
       *ok = false;
@@ -253,6 +299,8 @@ namespace Radiant {
       return getRef<int32_t>();
     else if(marker == FLOAT_MARKER)
       return Nimble::Math::Round(getRef<float>());
+    else if(marker == DOUBLE_MARKER)
+      return Nimble::Math::Round(getRef<double>());
     else if(ok) {
       badmarker("BinaryData::readInt64", int32_t(marker));
       *ok = false;
@@ -388,6 +436,31 @@ namespace Radiant {
     
   }
 
+  Nimble::Vector3f BinaryData::readVector3Float32(bool * ok)
+  {
+    if(!available(16)) {
+      if(ok) * ok = false;
+      return Nimble::Vector3f(0, 0, 0);
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == VECTOR3F_MARKER) {
+      return getRef<Nimble::Vector3f>();
+    }
+    else if(marker == VECTOR3I_MARKER) {
+      return getRef<Nimble::Vector3i>();
+    }
+    else {
+      skipParameter(marker);
+      if(ok)
+	*ok = false;
+
+      return Nimble::Vector3f(0, 0, 0);
+    }
+    
+  }
+
   Nimble::Vector2i BinaryData::readVector2Int32(bool * ok)
   {
     if(!available(12)) {
@@ -409,6 +482,31 @@ namespace Radiant {
 	*ok = false;
 
       return Nimble::Vector2f(0, 0);
+    }
+    
+  }
+
+  Nimble::Vector3i BinaryData::readVector3Int32(bool * ok)
+  {
+    if(!available(16)) {
+      if(ok) * ok = false;
+      return Nimble::Vector3f(0, 0, 0);
+    }
+
+    int32_t marker = getRef<int32_t>();
+
+    if(marker == VECTOR3I_MARKER) {
+      return getRef<Nimble::Vector3i>();
+    }
+    else if(marker == VECTOR3F_MARKER) {
+      return getRef<Nimble::Vector3f>();
+    }
+    else {
+      skipParameter(marker);
+      if(ok)
+	*ok = false;
+
+      return Nimble::Vector3f(0, 0, 0);
     }
     
   }
@@ -540,7 +638,9 @@ namespace Radiant {
     if(marker == INT32_MARKER ||
        marker == FLOAT_MARKER)
       m_current += 4;
-    else if(marker == TS_MARKER ||
+    else if(marker == INT64_MARKER ||
+	    marker == DOUBLE_MARKER ||
+	    marker == TS_MARKER ||
 	    marker == VECTOR2F_MARKER ||
 	    marker == VECTOR2I_MARKER)
       m_current += 8;

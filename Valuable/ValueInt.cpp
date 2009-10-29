@@ -16,5 +16,42 @@
 #include "ValueInt.hpp"
 #include "ValueIntImpl.hpp"
 
-template class Valuable::ValueIntT<int>;
-template class Valuable::ValueIntT<Radiant::TimeStamp>;
+namespace Valuable
+{
+
+
+  template <>
+  void ValueIntT<int32_t>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    int32_t v = data.readInt32( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+
+  template <>
+  void ValueIntT<int64_t>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    int64_t v = data.readInt64( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+
+  template <>
+  void ValueIntT<Radiant::TimeStamp>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    Radiant::TimeStamp v = data.readTimeStamp( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+
+  template class ValueIntT<int32_t>;
+  template class ValueIntT<int64_t>;
+  template class ValueIntT<Radiant::TimeStamp>;
+
+}

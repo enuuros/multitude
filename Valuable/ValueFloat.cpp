@@ -18,6 +18,26 @@
 namespace Valuable
 {
 
+  template <>
+  void ValueFloatT<float>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    float v = data.readFloat32( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+
+  template <>
+  void ValueFloatT<double>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    double v = data.readFloat64( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+
   template class ValueFloatT<float>;
 
 }

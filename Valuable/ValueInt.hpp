@@ -61,11 +61,15 @@ namespace Valuable
 
     const char * type() const { return VO_TYPE_INT; }
 
+    virtual void processMessage(const char * id, Radiant::BinaryData & data);
+
       bool deserializeXML(DOMElement element);
   };
 
   /// Integer value object.
-  typedef ValueIntT<int> ValueInt;
+  typedef ValueIntT<int32_t> ValueInt;
+  typedef ValueIntT<int32_t> ValueInt32;
+  typedef ValueIntT<int64_t> ValueInt64;
   /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
 

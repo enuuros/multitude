@@ -75,7 +75,7 @@ namespace Valuable
   
     std::string path() const;
 
-    virtual void processMessage(const char * type, Radiant::BinaryData & data);
+    virtual void processMessage(const char * id, Radiant::BinaryData & data);
 
     virtual float       asFloat(bool * const ok = 0) const;
     virtual int         asInt(bool * const ok = 0) const;
@@ -108,7 +108,7 @@ namespace Valuable
     /// Invokes the change valueDeleted function of all listeners
     virtual void emitDelete();
 
-
+  private:
     /// The object that holds this object
     HasValues * m_parent;
     std::string m_name;

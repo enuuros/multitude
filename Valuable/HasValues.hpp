@@ -118,6 +118,7 @@ namespace Valuable
     /** Experimental event passing framework. */
     void eventPassingEnable(bool enable) { m_eventsEnabled = enable; }
 
+    virtual void processMessage(const char * type, Radiant::BinaryData & data);
   protected:
 
     void eventSend(const std::string & id, Radiant::BinaryData &);

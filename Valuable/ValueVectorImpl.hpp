@@ -22,8 +22,25 @@
 namespace Valuable
 {
 
+  template <class T, typename S, int N>
+  ValueVector<T,S,N>::~ValueVector()
+  {}
+
+  template <class T, typename S, int N>
+  void ValueVector<T,S,N>::processMessage(const char *,
+					  Radiant::BinaryData & data)
+  {
+    bool ok = true;
+
+    T v = data.read<T>(&ok);
+
+    if(ok)
+      (*this) = v;
+  }
+
   template<class VectorType, typename ElementType, int N>
   const char *  ValueVector<VectorType, ElementType, N>::type() const { return "vector"; }
+
 
   /// @todo Under WIN32 these specializations conflict with the class instantiation
   /// in ValueVector.hpp. Remove them and if possible modify the template function 

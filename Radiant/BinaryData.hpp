@@ -77,6 +77,8 @@ namespace Radiant {
 
     /// Writes a 32-bit floating point number to the data buffer
     void writeFloat32(float v);
+    /// Writes a 32-bit floating point number to the data buffer
+    void writeFloat64(double v);
     /// Writes a 32-bit integer to the data buffer
     void writeInt32(int32_t v);
     /// Writes a 64-bit integer to the data buffer
@@ -101,8 +103,13 @@ namespace Radiant {
 
     /// Writes a 2D 32-bit floating point vector to the data buffer
     void writeVector2Float32(Nimble::Vector2f);
+    /// Writes a 3D 32-bit floating point vector to the data buffer
+    void writeVector3Float32(Nimble::Vector3f);
+
     /// Writes a 2D 32-bit integer vector to the data buffer
     void writeVector2Int32(Nimble::Vector2i);
+    /// Writes a 3D 32-bit integer vector to the data buffer
+    void writeVector3Int32(Nimble::Vector3i);
 
     /// Writes a 4D 32-bit integer vector to the data buffer
     void writeVector4Int32(const Nimble::Vector4i &);
@@ -112,8 +119,12 @@ namespace Radiant {
 
     void append(const BinaryData & that);
 
+    template <class T> inline T read(bool * ok = 0);
+
     /// Reads a 32-bit floating point number from the data buffer
     float readFloat32(bool * ok = 0);
+    /// Reads a 64-bit floating point number from the data buffer
+    double readFloat64(bool * ok = 0);
     /// Reads a 32-bit integer from the data buffer
     int32_t readInt32(bool * ok = 0);
 
@@ -133,6 +144,11 @@ namespace Radiant {
     Nimble::Vector2f readVector2Float32(bool * ok = 0);
     /// Reads a 2D 32-bit integer vector from the buffer
     Nimble::Vector2i readVector2Int32(bool * ok = 0);
+
+    /// Reads a 3D 32-bit floating point vector from the buffer
+    Nimble::Vector3f readVector3Float32(bool * ok = 0);
+    /// Reads a 3D 32-bit integer vector from the buffer
+    Nimble::Vector3i readVector3Int32(bool * ok = 0);
 
     /// Reads a 4D 32-bit integer vector from the buffer
     Nimble::Vector4i readVector4Int32(bool * ok = 0);
@@ -187,6 +203,31 @@ namespace Radiant {
     bool     m_shared;
     char    *m_buf;
   };
+
+
+  template <> inline float BinaryData::read(bool * ok)
+  { return readFloat32(ok); }
+
+  template <> inline double BinaryData::read(bool * ok)
+  { return readFloat64(ok); }
+
+  template <> inline Nimble::Vector2f BinaryData::read(bool * ok)
+  { return readVector2Float32(ok); }
+
+  template <> inline Nimble::Vector3f BinaryData::read(bool * ok)
+  { return readVector3Float32(ok); }
+
+  template <> inline Nimble::Vector4f BinaryData::read(bool * ok)
+  { return readVector4Float32(ok); }
+
+  template <> inline Nimble::Vector2i BinaryData::read(bool * ok)
+  { return readVector2Int32(ok); }
+
+  template <> inline Nimble::Vector3i BinaryData::read(bool * ok)
+  { return readVector3Int32(ok); }
+
+  template <> inline Nimble::Vector4i BinaryData::read(bool * ok)
+  { return readVector4Int32(ok); }
 
 }
 
