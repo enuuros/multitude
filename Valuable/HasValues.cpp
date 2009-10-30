@@ -23,7 +23,8 @@
 #include <Radiant/RefPtr.hpp>
 
 #include <algorithm>
-
+#include <typeinfo>
+#include <cstring>
 
 namespace Valuable
 {
