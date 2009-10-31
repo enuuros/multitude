@@ -143,7 +143,7 @@ namespace Luminous {
           false.
           @return The vector in graphics coordinates.
       */
-      LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & insideArea);
+      LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, int windowheight, bool & insideArea) const;
 
       int active() const { return m_active.asInt(); }
 
@@ -235,7 +235,7 @@ namespace Luminous {
           @param convOk set to true or false depending on whether the 
           conversion could be carried out.
       */
-      LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk);
+      LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk) const;
 
       /// Should the window be frameless
       bool frameless() const { return ((m_frameless.asInt() == 0) ? false : true); }

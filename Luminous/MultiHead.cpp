@@ -166,7 +166,7 @@ namespace Luminous {
   }
 
   Nimble::Vector2f MultiHead::Area::windowToGraphics
-  (Nimble::Vector2f loc, int windowheight, bool & isInside)
+  (Nimble::Vector2f loc, int windowheight, bool & isInside) const
   {
     //      Radiant::trace("MultiHead::Area::windowToGraphics");
 
@@ -276,7 +276,7 @@ namespace Luminous {
     }
   }
 
-  Nimble::Vector2f MultiHead::Window::windowToGraphics(Nimble::Vector2f loc, bool & convOk)
+  Nimble::Vector2f MultiHead::Window::windowToGraphics(Nimble::Vector2f loc, bool & convOk) const
     {
 //      Radiant::trace("MultiHead::Window::windowToGraphics # loc(%f,%f), m_size[1] = %d", loc.x, loc.y, m_size[1]);
 

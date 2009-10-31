@@ -642,7 +642,7 @@ namespace VideoDisplay {
     sprintf(buf, "%s-%d", m_audio->id(), (int) 0);
 
     control.writeString(buf);
-    control.writeVector2Float32(location); // index    
+    control.writeVector2Float32(location); // sound source location
 
     m_dsp->send(control);
   }

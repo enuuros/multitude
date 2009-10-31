@@ -27,7 +27,6 @@
 
 /** A simple application that plays audio samples.
     
-    
 */
 
 int main(int argc, char ** argv)
@@ -141,7 +140,7 @@ int main(int argc, char ** argv)
       locx = 1920;
     else if(locx == 1920)
       locx = 0;
-
+    
     control.rewind();
     control.writeString("panner/setsourcelocation");
     control.writeString("sampleplayer-0"); // index
