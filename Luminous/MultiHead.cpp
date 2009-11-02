@@ -95,8 +95,8 @@ namespace Luminous {
     float totalh = m_size[1] + m_seams[2] + m_seams[3];
     float totalw = m_size[0] + m_seams[0] + m_seams[1];
 
-    float relh = totalh / m_size[1];
-    float relx = totalw / m_size[0];
+    // float relh = totalh / m_size[1];
+    // float relx = totalw / m_size[0];
 
     if(m_method == METHOD_TEXTURE_READBACK) {
 

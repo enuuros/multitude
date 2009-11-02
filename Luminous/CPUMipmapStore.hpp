@@ -31,14 +31,14 @@ namespace Luminous {
 	
 	@return If the file already open, then an old pointer is
 	returned. Otherwise CPUMipmapStore will create a new
-	#CPUMipmaps object, and return that (if opened successfully).
+        #Luminous::CPUMipmaps object, and return that (if opened successfully).
      */
     static CPUMipmaps * acquire(const std::string & filename);
     static CPUMipmaps * acquire(const char * filename);
 
-    /** Release a #CPUMipmaps object. If there are no references to
+    /** Release a #Luminous::CPUMipmaps object. If there are no references to
 	the object, then its memory is freed. */
-    static void release(CPUMipmaps *);
+    static void release(Luminous::CPUMipmaps *);
   };
 }
 

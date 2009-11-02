@@ -25,7 +25,7 @@ namespace Radiant {
       information.
 
       The log mechanism is is not meant for debug output or error
-      messages. For those purposes, see #Radiant::trace, and
+      messages. For those purposes, see #Radiant::info, and
       #Radiant::error.*/
   class RADIANT_API Log
   {

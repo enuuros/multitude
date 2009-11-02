@@ -23,7 +23,7 @@ struct FT_LibraryRec_;
     2.1.2. It was built to be used in both single-threaded and
     multi-threaded rendering.
 
-    The main classes of the library are #CPUFont and #GPUFont. The are
+    The main classes of the library are #Poetic::CPUFont and #Poetic::GPUFont. The are
     abstract base classes for text rendering.
     
     @author Esa Nuuros

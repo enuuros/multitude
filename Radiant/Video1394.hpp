@@ -66,8 +66,8 @@ namespace Radiant {
 
     /// Gets information about a particular camera.
 
-    /** @param euid64 The 64-bit unique camera identifier.
-	@camera The camera information object which is updated with new value.
+    /** @arg euid64 The 64-bit unique camera identifier.
+        @arg camera The camera information object which is updated with new value.
      */
     static bool queryCamera(uint64_t euid64, CameraInfo * camera);
 

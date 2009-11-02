@@ -56,7 +56,7 @@ namespace Nimble {
           m_count++; 
         }
 
-        /** It is ok to exceed the array towards any direction.. */
+        /** It is ok to exceed the array towards any direction. */
         void putSafest(int index) 
         {
           if(index >= N)

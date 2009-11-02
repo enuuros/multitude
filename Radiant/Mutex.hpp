@@ -78,7 +78,7 @@ namespace Radiant {
 
 #else
 
-#include <cstdio>
+// #include <cstdio>
 
   /** Dummy implementation of a mutex. */
 

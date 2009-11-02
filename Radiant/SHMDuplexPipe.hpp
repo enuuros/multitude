@@ -22,7 +22,7 @@ namespace Radiant
 {
   
   /** Ful-duplex shared memory data pipe. This utility class packs two
-      #SHMPipe objects into one object. */
+      #Radiant::SHMPipe objects into one object. */
   class SHMDuplexPipe
   {
   public:

@@ -202,9 +202,9 @@ namespace Nimble {
   };
 
   /// Compute slope of line.
-  /// @param lineStart, lineEnd, the line.
-  /// @param slopeType, reference to int to receive slope type.
-  /// @param delta, reference to Vector2f to receive delta.
+  /// @arg lineStart, lineEnd, the line.
+  /// @arg slopeType, reference to int to receive slope type.
+  /// @arg delta, reference to Vector2f to receive delta.
   /// @return Slope value.
   inline float lineSlope(const Vector2f lineStart, const Vector2f lineEnd,
     int & slopeType, Vector2f & delta)
@@ -231,9 +231,9 @@ namespace Nimble {
   }
 
   /// Test for intersection of line segments.
-  /// @param line1Start, line1End, first line.
-  /// @param line2Start, line2End, second line.
-  /// @param interPoint, optional pointer to vector to receive the intersection point.
+  /// @arg line1Start, line1End, first line.
+  /// @arg line2Start, line2End, second line.
+  /// @arg interPoint, optional pointer to vector to receive the intersection point.
   /// @return true if line segments intersect.
 
   NIMBLE_API bool linesIntersect(Vector2f line1Start, Vector2f line1End,

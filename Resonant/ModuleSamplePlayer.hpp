@@ -63,9 +63,12 @@ namespace Resonant {
         nice ambient background that does not sound like it is
         looping.
 
-        @param directory Where the file are loaded from
+        @arg network The DSP network to attach the ambient sound player to.
 
-        @gain The gain (volume) to give to the background material.
+        @arg directory Where the file are loaded from.
+
+        @arg gain The gain (volume) to give to the background material.
+
     */
 
     void createAmbientBackground(DSPNetwork * network,

@@ -38,7 +38,7 @@ namespace Radiant
       const std::string & paths() const { return  m_paths; }
 
       /** Add a path to the list to search though
-        @param front If front is true, then the new path is put to the
+        @arg front If front is true, then the new path is put to the
         front of the list, otherwise it is put at the end of the
         list. **/
       void addPath(const std::string & path, bool front = false);

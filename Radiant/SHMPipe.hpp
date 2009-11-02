@@ -37,7 +37,7 @@ namespace Radiant
       processes.
 
       <B>Hint:</B> Often it is easiest to format the data using one
-      #BinaryData as the data container, as #BinaryData allows easy
+      #Radiant::BinaryData as the data container, as #Radiant::BinaryData allows easy
       storage of integers, floats, strings etc, without too much
       overhead.
 
