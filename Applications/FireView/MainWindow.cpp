@@ -72,12 +72,14 @@ namespace FireView {
 
     checkCameras();
 
+        /*
     QTimer * timer = new QTimer(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(checkCameras()));
 
     timer->start(2000);
-
+*/
+    QTimer::singleShot(2000, this, SLOT(checkCameras()));
     return true;
   }
 
