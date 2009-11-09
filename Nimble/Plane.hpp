@@ -38,7 +38,7 @@ namespace Nimble
     /// Does a ray intersect the plane?
     /// @param rayO ray origin
     /// @param rayD unit-length ray direction vector
-    /// @param intersection if the ray intersects, the intersection point
+    /// @param rayT how far the intersection is from the ray origin
     /// @return true if the ray intersects the plane, false otherwise
     bool intersect(const Nimble::Vector3f & rayO, const Nimble::Vector3f & rayD, float & rayT) const;
 

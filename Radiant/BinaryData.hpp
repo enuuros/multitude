@@ -229,6 +229,24 @@ namespace Radiant {
   template <> inline Nimble::Vector4i BinaryData::read(bool * ok)
   { return readVector4Int32(ok); }
 
+  template <> inline std::string BinaryData::read(bool * ok)
+  {
+      std::string tmp;
+      bool good = readString(tmp);
+      if(ok)
+            *ok = good;
+    return tmp;
+  }
+
+  template <> inline std::wstring BinaryData::read(bool * ok)
+  {
+      std::wstring tmp;
+      bool good = readWString(tmp);
+      if(ok)
+            *ok = good;
+    return tmp;
+  }
+
 }
 
 #endif

@@ -45,6 +45,8 @@ namespace Valuable
     ValueStringT(HasValues * parent, const std::string & name,
 		 bool transit = false);
     
+    virtual void processMessage(const char * id, Radiant::BinaryData & data);
+
     ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; VALUEMIT_STD_OP }
     ValueStringT<T> & operator = (const T & i) { m_value = i; VALUEMIT_STD_OP }
     

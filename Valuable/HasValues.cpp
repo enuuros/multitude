@@ -336,6 +336,8 @@ namespace Valuable
 
   void HasValues::processMessage(const char * id, Radiant::BinaryData & data)
   {
+      info("HasValues::processMessage # %s %s", typeid(*this).name(), id);
+
     if(!id)
       return;
 
@@ -347,11 +349,14 @@ namespace Valuable
     if(delim) {
       skip = delim - id;
       key.erase(key.begin() + skip, key.end());
+      skip++;
     }
     else
       skip = key.size();
 
-    ValueObject * vo = getValue(id);
+      info("HasValues::processMessage # Child id = %s", key.c_str());
+
+    ValueObject * vo = getValue(key);
 
     if(vo) {
       info("HasValues::processMessage # Sending message \"%s\" to %s",

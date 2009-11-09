@@ -22,6 +22,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <typeinfo>
+
 namespace Valuable
 {
   using namespace Radiant;
@@ -62,6 +64,8 @@ namespace Valuable
   
   void ValueObject::processMessage(const char *, Radiant::BinaryData & )
   {
+    Radiant::error("ValueObject::processMessage # Unimplemented for %s",
+                   typeid(*this).name());
 
   }
 

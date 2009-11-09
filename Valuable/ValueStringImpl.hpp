@@ -49,6 +49,17 @@ namespace Valuable
     : ValueObject(parent, name, transit)
   {}
 
+
+  template<class T>
+  void ValueStringT<T>::processMessage(const char * id, Radiant::BinaryData & data)
+  {
+      (void) id;
+      bool ok = true;
+      m_value = data.read<T>(&ok);
+      Radiant::info("ValueStringT<T>::processMessage # Ok = %d %s",
+                    (int) ok, m_value.c_str());
+  }
+
   template<class T>
   bool ValueStringT<T>::deserializeXML(DOMElement element)
   {

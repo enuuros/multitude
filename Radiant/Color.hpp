@@ -39,8 +39,8 @@ namespace Radiant
 	  contains 8 number values, then the last to are interpreted
 	  as alpha. By default the alpha is set to 255 (fully opaque).
 	  
-          Example arguments are ##000000 (black), ##FFFFFF (white),
-          ##FF0000 (red) and ##FF000088 (transparent red).
+          Example arguments are \#000000 (black), \#FFFFFF (white),
+          \#FF0000 (red) and \#FF000088 (transparent red).
 
       */
       Color(const char * color);

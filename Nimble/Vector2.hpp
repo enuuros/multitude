@@ -236,9 +236,9 @@ namespace Nimble {
   /// @arg interPoint, optional pointer to vector to receive the intersection point.
   /// @return true if line segments intersect.
 
-  NIMBLE_API bool linesIntersect(Vector2f line1Start, Vector2f line1End,
-                      Vector2f line2Start, Vector2f line2End,
-                      Vector2f * interPoint = 0);
+  NIMBLE_API bool linesIntersect(Nimble::Vector2f line1Start, Nimble::Vector2f line1End,
+                      Nimble::Vector2f line2Start, Nimble::Vector2f line2End,
+                      Nimble::Vector2f * interPoint = 0);
 
 } // namespace
 
