@@ -55,9 +55,13 @@ namespace Valuable
   {
       (void) id;
       bool ok = true;
-      m_value = data.read<T>(&ok);
+      T tmp = data.read<T>(&ok);
+      if(ok)
+	*this = tmp;
+      /*
       Radiant::info("ValueStringT<T>::processMessage # Ok = %d %s",
                     (int) ok, m_value.c_str());
+      */
   }
 
   template<class T>

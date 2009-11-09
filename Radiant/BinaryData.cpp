@@ -225,6 +225,20 @@ namespace Radiant {
       return getRef<double>();
     else if(marker == INT32_MARKER)
       return float(getRef<int32_t>());
+    else if(marker == INT64_MARKER)
+      return float(getRef<int64_t>());
+    else if (marker == STRING_MARKER) {
+      const char * source = & m_buf[m_current];
+      char * end = (char *) source;
+      double d = strtod(m_buf + m_current, & end);
+      if(end == (char *) source) {
+	if(ok)
+	  *ok = false;
+      }
+      else {
+	return d;
+      }
+    }
     else if(ok)
       *ok = false;
 
@@ -248,6 +262,21 @@ namespace Radiant {
       return getRef<double>();
     else if(marker == INT32_MARKER)
       return float(getRef<int32_t>());
+    else if(marker == INT64_MARKER)
+      return float(getRef<int64_t>());
+    else if (marker == STRING_MARKER) {
+      const char * source = & m_buf[m_current];
+      char * end = (char *) source;
+      double d = strtod(m_buf + m_current, & end);
+      if(end == (char *) source) {
+	if(ok)
+	  *ok = false;
+      }
+      else {
+	return d;
+      }
+    }
+
     else if(ok)
       *ok = false;
 
