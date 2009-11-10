@@ -17,6 +17,8 @@
 #include <ft2build.h>
 #include FT_OUTLINE_H
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 namespace Poetic
 {
 
@@ -37,3 +39,5 @@ namespace Poetic
   }
 
 }
+
+#endif
