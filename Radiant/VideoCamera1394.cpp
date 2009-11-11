@@ -1149,7 +1149,7 @@ namespace Radiant {
   {
     int flags = DC1394_CAPTURE_FLAGS_DEFAULT;
 
-#ifdef g_linuxg_
+#ifdef __linux__
     if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC")) {
       flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
       debug("VideoCamera1394::captureSetup # Ignoring bandwidth allocation");
@@ -1194,7 +1194,7 @@ namespace Radiant {
       return false;
     }
 
-#ifndef g_linuxg_
+#ifndef __linux__
     // For OSX
     static bool first = true;
 
@@ -1210,10 +1210,10 @@ namespace Radiant {
 
       // if(err != DC1394_NO_CAMERA)
 
-#ifdef g_linuxg_
+#ifdef __linux__
       const char * username = getenv("USERNAME");
 
-      if(username)
+      if(!username)
         username = "username";
 
       error("%s # dc1394_find_cameras failed (%s)\n"
@@ -1226,8 +1226,9 @@ namespace Radiant {
             "To gain permissions, try the following commands:\n\n"
             "> sudo addgroup %s video\n"
             "> sudo addgroup %s disk\n\n"
+            "> sudo chmod -R 777 /dev/*1394*\n\n"
             "You may need to log in again for the changes to be effective.\n\n"
-            "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/linux\n"
+            "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/firewire-permissions\n"
             "*************************************************************\n\n",
             fname, dc1394_error_get_string(err), username, username);
 #else
@@ -1254,7 +1255,7 @@ namespace Radiant {
 
     debug("Copying FireWire camera information to user", (int) camlist->num);
 
-#ifndef g_linuxg_
+#ifndef __linux__
     fillquery:
 #endif
 
@@ -1284,7 +1285,7 @@ namespace Radiant {
 
       debug("Clearing camera list");
 
-#ifdef g_linuxg_
+#ifdef __linux__
       dc1394_camera_free_list(camlist);
 #endif
 

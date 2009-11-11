@@ -3,7 +3,7 @@ HEADERS += CameraDriver.hpp
 unix:CONFIG += debug
 
 HEADERS += UDPSocket.hpp
-HEADERS += VideoCameraPTGrey.hpp
+win32:HEADERS += VideoCameraPTGrey.hpp
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -57,10 +57,11 @@ HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
 HEADERS += ClonablePtr.hpp
 HEADERS += VideoCamera.hpp
+
 SOURCES += CameraDriver.cpp
 SOURCES += BinaryData.cpp
 SOURCES += VideoCamera.cpp
-SOURCES += VideoCameraPTGrey.cpp
+win32:SOURCES += VideoCameraPTGrey.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
 SOURCES += Condition.cpp
@@ -105,8 +106,7 @@ unix {
     SOURCES += VideoCamera1394.cpp
     LIBS += -lpthread \
         $$LIB_RT \
-        -ldl \
-        -lflycapture
+        -ldl
     PKGCONFIG += libdc1394-2
 }
 win32 { 
