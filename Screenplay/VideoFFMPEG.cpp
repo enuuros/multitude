@@ -82,7 +82,7 @@ namespace Screenplay {
     delete m_pkt;
   }
 
-  const Radiant::VideoImage * VideoInputFFMPEG::captureImage(int)
+  const Radiant::VideoImage * VideoInputFFMPEG::captureImage()
   {
     assert(this != 0);
 

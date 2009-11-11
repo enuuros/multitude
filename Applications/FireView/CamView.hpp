@@ -18,7 +18,6 @@
 
 #ifdef WIN32
 #include <WinPort.h>
-#include <Radiant/Video1394cmu.hpp>
 #define _WINSOCKAPI_	// timeval struct redefinition
 #endif
 
@@ -29,7 +28,7 @@
 #include <Radiant/Mutex.hpp>
 #include <Radiant/Thread.hpp>
 #include <Radiant/TimeStamp.hpp>
-#include <Radiant/Video1394.hpp>
+#include <Radiant/VideoCamera.hpp>
 
 #include <QGLWidget>
 #include <QTimer>
@@ -48,10 +47,10 @@ namespace FireView {
     virtual ~CamView();
 
     bool start(u_int64_t euid64, Radiant::FrameRate fps, float customFps = 0.0f,
-	       int triggerSource = -1, int triggerMode = -1,
+         Radiant::VideoCamera::TriggerSource triggerSource = Radiant::VideoCamera::TriggerSource(-1), Radiant::VideoCamera::TriggerMode triggerMode = Radiant::VideoCamera::TriggerMode(-1),
 	       bool format7 = false);
 
-    std::vector<dc1394feature_info_t> & features()
+    std::vector<Radiant::VideoCamera::CameraFeature> & features()
     { return m_thread.m_features; }
 
     void updateParam(int i) { m_thread.m_featureSend[i] = true;}
@@ -60,10 +59,10 @@ namespace FireView {
     static void setVerbose(bool verbose) { m_verbose = verbose; }
     static bool verbose() { return m_verbose; }
 
-    static void setTriggerPolarity(dc1394trigger_polarity_t p)
+    static void setTriggerPolarity(Radiant::VideoCamera::TriggerPolarity p)
     { m_triggerPolarity = p; }
 
-    static int triggerPolarity() { return m_triggerPolarity; }
+    static Radiant::VideoCamera::TriggerPolarity triggerPolarity() { return m_triggerPolarity; }
 
     static void setFormat7area(int x1, int y1, int x2, int y2)
     { m_format7rect.low().make(x1, y1); m_format7rect.high().make(x2, y2);  }
@@ -128,7 +127,7 @@ namespace FireView {
       virtual ~InputThread();
 
       bool start(u_int64_t euid64, Radiant::FrameRate fps, 
-		 float customFps, int triggerSource, int triggerMode,
+     float customFps, Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode,
 		 bool format7);
       void stop();
 
@@ -140,16 +139,16 @@ namespace FireView {
 
       bool openCamera();
 
-      Radiant::Video1394 m_video;
+      Radiant::VideoCamera * m_camera;
       Radiant::MutexAuto m_mutex;
       Radiant::VideoImage m_frame;
       Radiant::FrameRate m_fps;
       float           m_customFps;
-      int             m_triggerSource;
-      int             m_triggerMode;
+      Radiant::VideoCamera::TriggerSource m_triggerSource;
+      Radiant::VideoCamera::TriggerMode m_triggerMode;
       bool            m_format7;
 
-      std::vector<dc1394feature_info_t> m_features;
+      std::vector<Radiant::VideoCamera::CameraFeature> m_features;
       std::vector<bool> m_featureSend;
       std::vector<bool> m_autoSend;
       
@@ -160,6 +159,8 @@ namespace FireView {
       Radiant::TimeStamp m_lastCheckTime;
       int                m_lastCheckFrame;
       float              m_lastCheckFps;
+
+      uint64_t m_euid64;
     };
 
     class Analysis
@@ -197,7 +198,7 @@ namespace FireView {
     Analysis   m_averages[AREA_COUNT]; // Grid.
     QImage     m_foo;
     static bool m_verbose;
-    static int  m_triggerPolarity;
+    static Radiant::VideoCamera::TriggerPolarity m_triggerPolarity;
 
     static Nimble::Recti m_format7rect;
     static int           m_format7mode;

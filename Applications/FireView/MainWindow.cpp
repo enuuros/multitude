@@ -25,14 +25,15 @@
 #include <QtGui/QVBoxLayout>
 
 #include <Radiant/Trace.hpp>
-#include <Radiant/Video1394.hpp>
+#include <Radiant/VideoCamera.hpp>
+#include <Radiant/CameraDriver.hpp>
 
 #include <assert.h>
 
 namespace FireView {
 
   MainWindow::MainWindow(Radiant::FrameRate rate, 
-                         float customFps, int triggerSource, int triggerMode,
+                         float customFps, Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode,
 			 bool format7)
     : m_mdi(0),
       m_rate(rate),
@@ -85,9 +86,9 @@ namespace FireView {
 
   void MainWindow::checkCameras()
   {
-    std::vector<Radiant::Video1394::CameraInfo> infos;
-
-    Radiant::Video1394::queryCameras( & infos);
+    std::vector<Radiant::VideoCamera::CameraInfo> infos;
+    Radiant::CameraDriver * cd = Radiant::VideoCamera::drivers().getPreferredCameraDriver();
+    if(cd) cd->queryCameras(infos);
 
     for(unsigned i = 0; i < infos.size(); i++) {
       u_int64_t euid = infos[i].m_euid64;

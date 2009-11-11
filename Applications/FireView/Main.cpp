@@ -20,7 +20,8 @@
 
 #include <Radiant/ConfigReader.hpp>
 #include <Radiant/Trace.hpp>
-#include <Radiant/Video1394.hpp>
+#include <Radiant/VideoCamera.hpp>
+#include <Radiant/CameraDriver.hpp>
 
 #include <QtGui/QApplication>
 
@@ -52,11 +53,10 @@ void helper(const char * app)
      " %s --rate 30   - Run all cameras at 30 fps (internal triggering)\n"
      " %s --rate 60 --triggersource 0  - Run all cameras at max 60 fps with hardware trigger\n"
      " %s --rate 60 --triggersource 0 --triggermode 0 - Run all cameras at max 60 fps with trigger source 0 and trigger mode 0\n"
+     " %s --fps 120 --format7 1 --triggersource 0 --triggermode 0  --format7area \"60 0 356 206\" - Test high-speed triggered format 7 operation\n",
+     7, Radiant::VideoCamera::TRIGGER_SOURCE_MAX - 1,
+      app, app, app, app, app, app, app);
 
-
-     " %s --fps 120 --format7 1 --triggersource 0 --triggermode 0  --format7area \"60 0 356 206\" - Test high-speed triggered format 7 operation\n"
-     , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
-     app, app, app, app, app, app, app);
   fflush(0);
 }
 
@@ -67,8 +67,8 @@ int main(int argc, char ** argv)
   
   float fps = -1.0f;
 
-  int triggerSource = -1;
-  int triggerMode = -1;
+  Radiant::VideoCamera::TriggerSource triggerSource = Radiant::VideoCamera::TRIGGER_SOURCE_MAX;
+  Radiant::VideoCamera::TriggerMode triggerMode = Radiant::VideoCamera::TRIGGER_MODE_MAX;
   Radiant::FrameRate rate = Radiant::FPS_15;
   Task t = TASK_SHOW_CAMERAS;
   int i, res = 0;
@@ -110,17 +110,17 @@ int main(int argc, char ** argv)
       t = TASK_SCAN_BUS;
     }
     else if(strcmp(arg, "--triggermode") == 0 && (i+1) < argc) {
-      triggerMode = (atoi(argv[++i]) + DC1394_TRIGGER_MODE_0);
+      triggerMode = Radiant::VideoCamera::TriggerMode(atoi(argv[++i]));
     }
     else if(strcmp(arg, "--triggerpolarity") == 0 && (i+1) < argc) {
       i++;
       if(strcmp(argv[i], "up") == 0)
-	FireView::CamView::setTriggerPolarity(DC1394_TRIGGER_ACTIVE_HIGH);
+        FireView::CamView::setTriggerPolarity(Radiant::VideoCamera::TRIGGER_ACTIVE_HIGH);
       else if(strcmp(argv[i], "down") == 0)
-	FireView::CamView::setTriggerPolarity(DC1394_TRIGGER_ACTIVE_LOW);
+        FireView::CamView::setTriggerPolarity(Radiant::VideoCamera::TRIGGER_ACTIVE_LOW);
     }
     else if(strcmp(arg, "--triggersource") == 0 && (i+1) < argc) {
-      triggerSource = (atoi(argv[++i]) + DC1394_TRIGGER_SOURCE_0);
+      triggerSource = Radiant::VideoCamera::TriggerSource(atoi(argv[++i]));
     }
     else if(strcmp(arg, "--verbose") == 0) {
       puts("Verbose mode");
@@ -141,30 +141,23 @@ int main(int argc, char ** argv)
   }
 
   if(t == TASK_SCAN_BUS) {
-    std::vector<Radiant::Video1394::CameraInfo> cameras;
-    Radiant::Video1394::queryCameras( & cameras);
+      std::vector<Radiant::VideoCamera::CameraInfo> cameras;
+      Radiant::CameraDriver * cd = Radiant::VideoCamera::drivers().getPreferredCameraDriver();
+      if(cd) cd->queryCameras(cameras);
 
     printf("Found %d FireWire cameras\n", (int) cameras.size());
 
     for(i = 0; i < (int) cameras.size(); i++) {
-      const Radiant::Video1394::CameraInfo & cam = cameras[i];
-      printf("Camera %d: ID = %llx, VENDOR = %s, MODEL = %s\n",
+      const Radiant::VideoCamera::CameraInfo & cam = cameras[i];
+      printf("Camera %d: ID = %llx, VENDOR = %s, MODEL = %s, DRIVER = %s\n",
 	     i + 1, (long long) cam.m_euid64,
-	     cam.m_vendor.c_str(), cam.m_model.c_str());
+       cam.m_vendor.c_str(), cam.m_model.c_str(), cam.m_driver.c_str());
       fflush(0);
 
-      if(listmodes) {
-/// @todo implement in win32
-#ifndef WIN32
-	Radiant::Video1394 tmp;
-	char idbuf[32];
-	sprintf(idbuf, "%llx", (long long) cam.m_euid64);
-	tmp.printFormat7Modes(idbuf);
-#endif
-      }
+      if(listmodes)
+          Radiant::error("listmodes not implemented");
     }
-  }
-  else {
+  } else {
 
     FireView::MainWindow * mw =
       new FireView::MainWindow(rate, fps, triggerSource, triggerMode, format7);

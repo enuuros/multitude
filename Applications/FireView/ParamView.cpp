@@ -17,7 +17,7 @@
 
 #include "CamView.hpp"
 
-#include <Radiant/Video1394.hpp>
+#include <Radiant/VideoCamera.hpp>
 
 #include <QtGui/QComboBox>
 #include <QtGui/QGridLayout>
@@ -35,7 +35,7 @@ namespace FireView {
 
   void ParamView::init()
   {
-    std::vector<dc1394feature_info_t> & features = m_camview->features();
+    std::vector<Radiant::VideoCamera::CameraFeature> & features = m_camview->features();
 
     QGridLayout * layout = new QGridLayout(this);
 
@@ -45,23 +45,23 @@ namespace FireView {
 
     for(unsigned i = 0; i < features.size(); i++) {
 
-      const dc1394feature_info_t & f = features[i];
+      const Radiant::VideoCamera::CameraFeature & f = features[i];
 
-      if(!f.available || !Radiant::Video1394::hasManualMode(f) || (f.min == f.max))
+      if(!f.available || !Radiant::VideoCamera::hasManualMode(f) || (f.min == f.max))
 	continue;
       
       QSlider * slider = new QSlider(Qt::Horizontal, this);
-      QLabel  * label1 = new QLabel(Radiant::Video1394::featureName(f.id), this);
+      QLabel  * label1 = new QLabel(Radiant::VideoCamera::featureName(f.id), this);
       QLabel  * label2 = new QLabel(this);
       Mapper  * mapper = new Mapper(this, i);
 
-      if(Radiant::Video1394::hasAutoMode(f)) {
+      if(Radiant::VideoCamera::hasAutoMode(f)) {
 	Mapper  * mapper2 = new Mapper(this, i);
 	QComboBox * cb = new QComboBox(this);
 
 	cb->addItem("Auto");
 	cb->addItem("Man");
-	cb->setCurrentIndex(f.current_mode == DC1394_FEATURE_MODE_AUTO ? 0 : 1);
+        cb->setCurrentIndex(f.current_mode == Radiant::VideoCamera::MODE_AUTO ? 0 : 1);
 
 	connect(cb, SIGNAL(activated(int)), mapper2, SLOT(setInt(int)));
 	connect(mapper2, SIGNAL(emitInt(int,int)),

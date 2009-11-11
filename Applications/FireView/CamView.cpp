@@ -25,6 +25,7 @@
 
 #include <Radiant/StringUtils.hpp>
 #include <Radiant/Trace.hpp>
+#include <Radiant/CameraDriver.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
@@ -39,8 +40,9 @@ namespace FireView {
   using namespace Radiant;
 
   CamView::InputThread::InputThread()
-    : m_state(UNINITIALIZED),
-      m_continue(false),
+      : m_camera(0),
+      m_state(UNINITIALIZED),
+      m_continue(false),      
       m_frameCount(0),
       m_lastCheckFrame(0),
       m_lastCheckFps(0)
@@ -51,15 +53,15 @@ namespace FireView {
   {}
 
   bool CamView::InputThread::start(u_int64_t euid64, Radiant::FrameRate fps,
-				   float customFps,
-				   int triggerSource, int triggerMode, 
-				   bool format7)
+                                   float customFps,
+                                   Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode,
+                                   bool format7)
   {
-    m_video.setCameraEuid64(euid64);
+    m_euid64 = euid64;
     /*
     Radiant::trace("CamView::InputThread::start # %f %f # %d %d",
-		   customFps, Radiant::asFloat(fps),
-		   triggerSource, triggerMode);
+       customFps, Radiant::asFloat(fps),
+       triggerSource, triggerMode);
     */
     while(customFps > Radiant::asFloat(fps) && fps < Radiant::FPS_60) {
       // puts("Adjusting the core FPS");
@@ -97,7 +99,7 @@ namespace FireView {
     m_continue = false;
     waitEnd();
   }
-
+  /*
   static const char * modeName(dc1394feature_mode_t mode)
   {
     if(mode == DC1394_FEATURE_MODE_MANUAL)
@@ -109,12 +111,11 @@ namespace FireView {
 
     return "unknown";
   }
-
+*/
   using Radiant::StringUtils::yesNo;
 
   void CamView::InputThread::childLoop()
   {
-
     if(!openCamera())
       return;
 
@@ -133,18 +134,19 @@ namespace FireView {
       // printf("<"); fflush(0);
 
       if(m_customFps > 0.0f && !m_format7) {
-	sync.sleepSynchroUs((long) (1000000 / m_customFps));
-	m_video.sendSoftwareTrigger();
+        sync.sleepSynchroUs((long) (1000000 / m_customFps));
+        m_camera->sendSoftwareTrigger();
       }
 
-      int timeout = m_frameCount ? 10000000 : 15000000;
+      int timeout = m_frameCount ? 5000 : 15000;
+      m_camera->setCaptureTimeout(timeout);
 
-      const Radiant::VideoImage * img = m_video.captureImage(timeout);
+      const Radiant::VideoImage * img = m_camera->captureImage();
 
       if (img == 0) {
-        error("No video image after waiting %lf ms", timeout * 0.001);
+        error("No video image after waiting %lf ms", timeout);
 
-        m_video.close();
+        m_camera->close();
         if(m_frameCount > 10) {
           // Wait ten seconds and try re-opening the camera
 
@@ -172,22 +174,21 @@ namespace FireView {
 
       Radiant::Guard g( & m_mutex);
 
-#ifndef WIN32
       m_frame.allocateMemory(*img);
-#endif
+
       m_frame.copyData(*img);
       m_frameCount++;
-      m_video.doneImage();
-     
+      m_camera->doneImage();
+
       for(unsigned i = 0; i < m_features.size(); i++) {
-	if(m_featureSend[i]) {
-	  m_video.setFeature1394Raw(m_features[i].id, m_features[i].value);
-	  m_featureSend[i] = false;
-	}
-	else if(m_autoSend[i]) {
-	  m_video.setFeature1394(m_features[i].id, -1);
-	  m_autoSend[i] = false;
-	}
+        if(m_featureSend[i]) {
+          m_camera->setFeatureRaw(m_features[i].id, m_features[i].value);
+          m_featureSend[i] = false;
+        }
+        else if(m_autoSend[i]) {
+          m_camera->setFeature(m_features[i].id, -1);
+          m_autoSend[i] = false;
+        }
       }
 
       Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
@@ -210,16 +211,16 @@ namespace FireView {
     // qDebug("CamView::InputThread::childLoop # DONE");
 
     float fps = m_frameCount /
-      Radiant::TimeStamp(Radiant::TimeStamp::getTime() - starttime).secondsD();
+                Radiant::TimeStamp(Radiant::TimeStamp::getTime() - starttime).secondsD();
 
     m_frame.freeMemory();
 
 
     qDebug("CamView::InputThread::childLoop # camid = %llx # EXIT (%.2f fps, %d frames)",
-	   (long long) m_video.cameraInfo().m_euid64, fps, (int) m_frameCount);
+           (long long) m_camera->cameraInfo().m_euid64, fps, (int) m_frameCount);
 
-    m_video.stop();
-    m_video.close();
+    m_camera->stop();
+    m_camera->close();
 
     m_state = UNINITIALIZED;
 
@@ -228,24 +229,20 @@ namespace FireView {
   bool CamView::InputThread::openCamera()
   {
     bool ok;
-    
-    if(!m_format7)
-      ok = m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, m_fps);
-    else {
+
+    m_camera = Radiant::VideoCamera::drivers().createPreferredCamera();
+    if(!m_camera) return false;
+
+    if(!m_format7) {
+      ok = m_camera->open(m_euid64, 640, 480, Radiant::IMAGE_UNKNOWN, m_fps);
+    } else {
 
       if(m_customFps <= 3) {
-	m_customFps = 15;
+        m_customFps = 15;
       }
-#ifndef WIN32
-      Nimble::Recti r = CamView::format7Area();
-      ok = m_video.openFormat7(0, Nimble::Recti(r.low().x, r.low().y,
-						r.high().x, r.high().y), m_customFps,
-                               CamView::format7Mode());
-#else
-      error("Format 7 not yet supported under Windows.");
-      ok = false;
-#endif
 
+      Nimble::Recti r = CamView::format7Area();
+      ok = m_camera->openFormat7(m_euid64, r, m_customFps, CamView::format7Mode());
     }
     
     if(!ok) {
@@ -255,138 +252,97 @@ namespace FireView {
 
     if(m_verbose) {
       // Try to print some information
-      std::vector<dc1394feature_info_t> features;
-      m_video.getFeatures( & features);
-
-#ifndef WIN32
-      dc1394camera_t * cam = m_video.dc1394Camera();
-      printf("Preparing camera %llx %s %s\n",
-	     (long long) cam->guid, cam->vendor, cam->model);
-#endif
+      std::vector<VideoCamera::CameraFeature> features;
+      m_camera->getFeatures( & features);
 
       for(uint i = 0; i < features.size(); i++) {
-	dc1394feature_info_t & info = features[i];
+        VideoCamera::CameraFeature & info = features[i];
 
         if(!info.available)
           continue;
-	printf(" Feature %u = %s: \n"
-	       "  Capabilities:\n"
+        printf(" Feature %u = %s: \n"
+               "  Capabilities:\n"
                "   absolute = %s\n   readout = %s\n"
-	       "   on-off = %s\n   polarity = %s\n"
-	       "  On = %s\n",
-	       i, Radiant::Video1394::featureName(info.id),
-	       yesNo(info.absolute_capable),
-	       yesNo(info.readout_capable),
-	       yesNo(info.on_off_capable),
-	       yesNo(info.polarity_capable),
-	       yesNo(info.is_on));
-	printf("  Mode = %s in [", modeName(info.current_mode));
-        for(uint j = 0; j < info.modes.num; j++)
-          printf(" %s ", modeName(info.modes.modes[j]));
-        printf("]\n");
+               "   on-off = %s\n   polarity = %s\n"
+               "  On = %s\n",
+               i, Radiant::VideoCamera::featureName(info.id),
+               yesNo(info.absolute_capable),
+               yesNo(info.readout_capable),
+               yesNo(info.on_off_capable),
+               yesNo(info.polarity_capable),
+               yesNo(info.is_on));
+
         printf("  Value = %u in [%u %u]\n",
-	       info.value, info.min, info.max);
-	printf("  Abs value = %f in [%f %f]\n",
-	       info.abs_value, info.abs_min, info.abs_max);
-	/*printf("  Trigger mode = %d in [", (int) info.trigger_mode);
-	for(uint j = 0; j < info.trigger_modes.num; j++) {
-	  printf(" %d ", (int) info.trigger_modes.modes[j]);
-	}
-	printf("]\n");
-	printf("  Trigger source = %d in [", (int) info.trigger_source);
-	for(uint j = 0; j < info.trigger_sources.num; j++) {
-	  printf(" %d ", (int) info.trigger_sources.sources[j]);
-	}
-	printf("]\n");*/
+               info.value, info.min, info.max);
+        printf("  Abs value = %f in [%f %f]\n",
+               info.abs_value, info.abs_min, info.abs_max);
+
       }
       fflush(0);
     }
 
-    dc1394trigger_source_t trig = (dc1394trigger_source_t) 0;
+    // Set trigger mode if needed
+    if(m_triggerSource != Radiant::VideoCamera::TRIGGER_SOURCE_MAX) {
 
-    if(!m_format7) {
-      trig = (m_customFps) < 0 ?
-	(dc1394trigger_source_t) m_triggerSource : DC1394_TRIGGER_SOURCE_SOFTWARE;
-      
-      if(m_customFps > 0.0f && trig != DC1394_TRIGGER_SOURCE_SOFTWARE)
-	Radiant::error("Cannot have custom FPS combined with anything but SW trigger (%d)",
-	      (int) trig);
-    }
-    else if((int) m_triggerSource > 0) {
-      trig = (dc1394trigger_source_t) m_triggerSource;
-    }
-
-    if((int) trig > 0) {
-      if(!m_video.enableTrigger(trig)) {
-	m_state = FAILED;
-	return false;
+      if(!m_camera->enableTrigger(m_triggerSource)) {
+        Radiant::error("CamView::InputThread::openCamera # failed to enable trigger (source %d)", m_triggerSource);
+        m_state = FAILED;
+        return false;
       }
-      else
-	debug("Enabled trigger source %d (%d) %f %d",
-	      trig, m_triggerSource, m_customFps, (int) m_format7);
 
-      if(m_triggerMode >= 0) {
-	if(!m_video.setTriggerMode
-	   ((dc1394trigger_mode_t) m_triggerMode))
-	  Radiant::error("Could not set trigger mode %d", m_triggerMode);
-	else
-	  debug("Enabled trigger mode %d", m_triggerMode);
+      debug("Enabled trigger (source %d).", m_triggerSource);
+
+      if(m_triggerMode != Radiant::VideoCamera::TRIGGER_MODE_MAX) {
+        if(!m_camera->setTriggerMode(m_triggerMode)) {
+          Radiant::error("CamView::InputThread::openCamera # failed to set trigger mode %d", m_triggerMode);
+          m_state = FAILED;
+          return false;
+        }
+
+        debug("Set trigger mode %d.", m_triggerMode);
       }
-    }
-    else
-      m_video.disableTrigger();
 
-#ifndef WIN32
-    // Only unsder Linux & OSX
-    int pola = CamView::triggerPolarity();
-    if(pola > 0) {
-      info("Setting trigger polarity to %d", pola);
-      m_video.setTriggerPolarity((dc1394trigger_polarity_t) pola);
+    } else {
+      m_camera->disableTrigger();
+      debug("Disabled trigger.");
     }
-#endif
+
+    m_camera->setTriggerPolarity(CamView::triggerPolarity());
+    debug("Set trigger polarity to %d", CamView::triggerPolarity());
 
     debug("Getting features");
 
-    m_video.getFeatures( & m_features);
+    m_camera->getFeatures( & m_features);
 
     {
       m_featureSend.resize(m_features.size());
       
       for(unsigned i = 0; i < m_features.size(); i++) {
-	dc1394feature_info_t & info = m_features[i];
-	if(info.id == DC1394_FEATURE_GAMMA && 
-	   info.value > ((info.max * 3 + info.min) / 4)) {
-	  /* If gamma appears to be too high, bring it down. This is
-	     done because some cameras when powered up (Unibrain 521b
-	     for example), initialize to maximum gamma value, which
-	     makes the image look strange, sometimes even fully
-	     white/gray.
-	  */
-	  info.value = (info.max + info.min) / 2;
-	  m_featureSend[i] = true;
-	}
-	else
-	  m_featureSend[i] = false;
+        Radiant::VideoCamera::CameraFeature & info = m_features[i];
+        if(info.id == Radiant::VideoCamera::GAMMA &&
+           info.value > ((info.max * 3 + info.min) / 4)) {
+          /* If gamma appears to be too high, bring it down. This is
+       done because some cameras when powered up (Unibrain 521b
+       for example), initialize to maximum gamma value, which
+       makes the image look strange, sometimes even fully
+       white/gray.
+    */
+          info.value = (info.max + info.min) / 2;
+          m_featureSend[i] = true;
+        }
+        else
+          m_featureSend[i] = false;
       }
 
       m_autoSend = m_featureSend;
     }
 
-    // m_video.start();
-
     debug("Starting video capture");
-
-    if(!m_video.start()) {
+    if(!m_camera->start()) {
       m_state = UNINITIALIZED;
       Radiant::error("Could not start video capture");
       return false;
     }
-
-#ifdef WIN32
-    const Radiant::VideoImage * initialGrab = m_video.captureImage();
-    m_frame.allocateMemory(*initialGrab);
-    m_video.doneImage();
-#endif
 
     return true;
   }
@@ -395,7 +351,7 @@ namespace FireView {
   /////////////////////////////////////////////////////////////////////////////
 
   bool CamView::m_verbose = false;
-  int  CamView::m_triggerPolarity = -1;
+  Radiant::VideoCamera::TriggerPolarity CamView::m_triggerPolarity = Radiant::VideoCamera::TriggerPolarity(-1);
   int CamView::m_format7mode = 1;
 
   Nimble::Recti CamView::m_format7rect(0, 0, 2000, 1500);
@@ -403,7 +359,7 @@ namespace FireView {
   static int __interval = 50;
 
   CamView::CamView(QWidget * parent)
-    : QGLWidget(parent),
+      : QGLWidget(parent),
       m_tex(0),
       m_params(0),
       m_showAverages(false),
@@ -432,31 +388,32 @@ namespace FireView {
   }
   
   bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
-		      float customFps,
-		      int triggerSource, int triggerMode, bool format7)
+                      float customFps,
+                      Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode, bool format7)
   {
-    Radiant::Video1394::CameraInfo info;
+    Radiant::VideoCamera::CameraInfo info;
     
-    bool ok = Radiant::Video1394::queryCamera(euid64, & info);
+    // Find the camera info by guid
+    std::vector<VideoCamera::CameraInfo> cameras;
+    Radiant::CameraDriver * cd = Radiant::VideoCamera::drivers().getPreferredCameraDriver();
+    if(cd) cd->queryCameras(cameras);
 
-    if(!ok) {
-      Radiant::trace(Radiant::FAILURE, "CamView::start # Could not query camera");
-      return false;
-    }
+    for(size_t i = 0; i < cameras.size(); i++)
+        if(cameras[i].m_euid64 == euid64) { info = cameras[i]; break; }
 
     QString title;
 
     title.sprintf("%s: %s (%llx)", 
-		  info.m_vendor.c_str(), info.m_model.c_str(),
-		  (long long) euid64);
+                  info.m_vendor.c_str(), info.m_model.c_str(),
+                  (long long) euid64);
     
     ((QWidget *) parent())->setWindowTitle(title);
 
     m_texFrame = -1;
     m_filtering = false;
 
-    ok = m_thread.start(euid64, fps, customFps,
-			triggerSource, triggerMode, format7);
+    bool ok = m_thread.start(euid64, fps, customFps,
+                        triggerSource, triggerMode, format7);
 
     if(ok) {
       Radiant::Guard g( & m_thread.m_mutex);
@@ -481,7 +438,7 @@ namespace FireView {
     m_params->raise();
     m_params->show();
   }
-   
+
   void CamView::showAverages()
   {
     m_showAverages = !m_showAverages;
@@ -493,7 +450,7 @@ namespace FireView {
     m_halfToThird = (HalfToThird) ((m_halfToThird + 1) % AS_COUNT);
     m_doAnalysis = true;
   }
- 
+
   void CamView::locate()
   {
     QWidget * p = dynamic_cast<QWidget *> (parent());
@@ -564,32 +521,29 @@ namespace FireView {
       Radiant::Guard g( & m_thread.m_mutex);
       Radiant::VideoImage frame = m_thread.m_frame;
       
-      if((m_tex->width()  != frame.width()) ||
-	 (m_tex->height() != frame.height())) {
-		m_tex->loadBytes(GL_LUMINANCE, frame.width(), frame.height(), 
-			 frame.m_planes[0].m_data,
-			 PixelFormat(PixelFormat::LAYOUT_LUMINANCE,
-				     PixelFormat::TYPE_UBYTE),
-			 false);
+      if((m_tex->width()  != frame.width()) || (m_tex->height() != frame.height())) {
+
+          m_tex->loadBytes(GL_LUMINANCE, frame.width(), frame.height(), frame.m_planes[0].m_data, PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE), false);
+
       }
       else {
-	m_tex->bind();
-	
+        m_tex->bind();
+
         // puts("subimage");
 
-  //  if(!frame.m_planes.empty())
-	//    bzero(frame.m_planes[0].m_data, 640 * 20); // black strip
+        //  if(!frame.m_planes.empty())
+        //    bzero(frame.m_planes[0].m_data, 640 * 20); // black strip
         
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-			frame.width(), frame.height(),
-			GL_LUMINANCE, GL_UNSIGNED_BYTE,
-			frame.m_planes[0].m_data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                        frame.width(), frame.height(),
+                        GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                        frame.m_planes[0].m_data);
       }
 
       m_texFrame = m_thread.m_frameCount;
 
       if(m_doAnalysis)
-	doAnalysis();
+        doAnalysis();
     }
 
 
@@ -616,18 +570,18 @@ namespace FireView {
       glColor3f(1.0f, 1.0f, 1.0f);
       
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    
+
       float aspect = m_tex->width() / (float) m_tex->height();
       float myaspect = width() / (float) height();
       float imw, imh;
 
       if(myaspect < aspect) {
-	imw = width();
-	imh = imw / aspect;
+        imw = width();
+        imh = imw / aspect;
       }
       else {
-	imh = height();
-	imw = imh * aspect;
+        imh = height();
+        imw = imh * aspect;
       }
 
       m_imageScale = imw / m_tex->width();
@@ -670,12 +624,12 @@ namespace FireView {
       QPainter foo( & m_foo);
       QString tmp;
       // QFont fnt = font();
-    
+
       for(int i = 0; i < AREA_COUNT && m_showAverages; i++) {
-      
+
         Analysis & an = m_averages[i];	
         tmp.sprintf("%.1f", an.average);
-      
+
         if(an.average < 128)
           glColor3f(1.0f, 1.0f, 1.0f);
         else
@@ -762,9 +716,9 @@ namespace FireView {
     
     if(m_halfToThird == AS_VGA_THIRD) {
       /* We assume that the pixels in half inch sensor are 9.9f / 7.4f times
-	 the size of pixels in third-inch sensor. Half-inch sensor has
-	 9.9um pixels (for VGA) and third-inch comes with 7.4um
-	 pixels.*/
+   the size of pixels in third-inch sensor. Half-inch sensor has
+   9.9um pixels (for VGA) and third-inch comes with 7.4um
+   pixels.*/
       float scale = 9.9f / 7.4f;
       float remove = (scale - 1.0f) * 0.5f;
       float keep = 1.0f - remove;
@@ -778,11 +732,11 @@ namespace FireView {
     }
     else if(m_halfToThird == AS_WIDE_VGA_THIRD) {
       /* Assume that one is using a camera with 1/2 inch sensor (Sony
-	 IXC 414) or the like, and the we wish to show the area with
-	 wide VGA sensor.
+   IXC 414) or the like, and the we wish to show the area with
+   wide VGA sensor.
 
-	 0,0061875um pixels in the wide VGA sensor, resolution
-	 750x480.
+   0,0061875um pixels in the wide VGA sensor, resolution
+   750x480.
       */
       float scale_y = 9.9f / 6.1875f;
       float remove_y = (scale_y - 1.0f) * 0.5f;
@@ -806,6 +760,7 @@ namespace FireView {
   void CamView::doAnalysis()
   {
     Rect a = getEffectiveArea();
+
     Vector2 span = a.span();
     
     Radiant::VideoImage frame = m_thread.m_frame; // Already mutex locked, safe access
@@ -819,26 +774,26 @@ namespace FireView {
 
       for(int j = 0; j < AREA_DIVISION; j++) {
 
-	int lx = (int) (a.low().x + span.x * (j * s));
-	int hx = (int) (a.low().x + span.x * ((j + 1) * s));
-	
-	int sum = 0;
+        int lx = (int) (a.low().x + span.x * (j * s));
+        int hx = (int) (a.low().x + span.x * ((j + 1) * s));
 
-	for(int y = ly; y <= hy; y++) {
-	  const uint8_t * pixel = frame.m_planes[0].line(y) + lx;
-	  const uint8_t * sentinel = pixel + hx - lx;
+        int sum = 0;
 
-	  while(pixel <= sentinel)
-	    sum += *pixel++;
-	}
+        for(int y = ly; y <= hy; y++) {
+          const uint8_t * pixel = frame.m_planes[0].line(y) + lx;
+          const uint8_t * sentinel = pixel + hx - lx;
 
-	int xx = hx - lx + 1;
-	int yy = hy - ly + 1;
+          while(pixel <= sentinel)
+            sum += *pixel++;
+        }
 
-	Analysis & an = m_averages[i * AREA_DIVISION + j];
+        int xx = hx - lx + 1;
+        int yy = hy - ly + 1;
 
-	an.average = sum / (float) (xx * yy);
-	an.center.make((lx + hx) * 0.5, (ly + hy) * 0.5f);
+        Analysis & an = m_averages[i * AREA_DIVISION + j];
+
+        an.average = sum / (float) (xx * yy);
+        an.center.make((lx + hx) * 0.5, (ly + hy) * 0.5f);
       }
     }
 

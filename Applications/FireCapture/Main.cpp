@@ -18,12 +18,13 @@
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Thread.hpp>
 #include <Radiant/Trace.hpp>
-#include <Radiant/Video1394.hpp>
+#include <Radiant/CameraDriver.hpp>
 
 #include <Luminous/Image.hpp>
 
 #include <stdlib.h>
 #include <string.h>
+#include <cassert>
 
 int triggerSource = -1;
 int triggerMode = -1;
@@ -36,7 +37,8 @@ public:
   CameraThread(uint64_t cameraId, const std::string & dir)
     : m_continue(true),
       m_cameraId(cameraId),
-      m_dir(dir)
+      m_dir(dir),
+      m_camera(0)
   {
     Radiant::Directory::mkdir(dir);
   }
@@ -52,20 +54,24 @@ protected:
   virtual void childLoop()
   {
     Radiant::info("Camera loop started for %llx", (long long) m_cameraId);
-    
-    m_video.setCameraEuid64(m_cameraId);
+        
+    m_camera = Radiant::VideoCamera::drivers().createPreferredCamera();
 
-    m_video.open(0, 0, 0, Radiant::IMAGE_UNKNOWN, 640, 480, rate);
+    if(!m_camera->open(m_cameraId, 640, 480, Radiant::IMAGE_UNKNOWN, rate)) {
+        Radiant::error("CameraThread::childLoop # failed to open camera");
+        assert(0);
+    }
 
     if(triggerMode >= 0) {
-      m_video.setTriggerMode((dc1394trigger_mode_t) triggerMode);
+      m_camera->setTriggerMode(Radiant::VideoCamera::TriggerMode(triggerMode));
     }
 
     if(triggerSource >= 0) {
-      m_video.enableTrigger((dc1394trigger_source_t) triggerSource);
+      m_camera->enableTrigger(Radiant::VideoCamera::TriggerSource(triggerSource));
     }
 
-    m_video.start();
+    m_camera->setCaptureTimeout(5000);
+    m_camera->start();
 
     char buf[64];
     int count = 0;
@@ -74,10 +80,9 @@ protected:
 
     Luminous::Image saver;
 
-
     while(m_continue) {
 
-      const Radiant::VideoImage * im = m_video.captureImage(5000000);
+      const Radiant::VideoImage * im = m_camera->captureImage();
 
       if(!im) {
         Radiant::error("Frame capture failed for camera %llx",
@@ -95,7 +100,7 @@ protected:
                       count, (long long) m_cameraId);
       }
 
-      m_video.doneImage();
+      m_camera->doneImage();
 
       if(count % 10 == 0) {
       
@@ -110,7 +115,7 @@ protected:
     Radiant::info("Captured %d frames in %.2f seconds, %.2f FPS",
                   count, secs, (float) (count / secs));
 
-    m_video.stop(); 
+    m_camera->stop();
   }
 
 private:
@@ -119,7 +124,7 @@ private:
   uint64_t      m_cameraId;
   std::string   m_dir;
 
-  Radiant::Video1394 m_video;
+  Radiant::VideoCamera * m_camera;
 
 };
 
@@ -142,7 +147,8 @@ void helper(const char * app)
      " --triggersource +int - Selects the trigger source, range: 0-%d\n"
      "\nEXAMPLES:\n"
      " %s --rate 60 --triggersource 0  - Run all cameras at max 60 fps with hardware trigger\n"
-     , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
+//     , (int) DC1394_TRIGGER_MODE_NUM - 1, (int) DC1394_TRIGGER_SOURCE_NUM - 1,
+     , 7, 3,
      app);
   fflush(0);
 }
@@ -183,7 +189,8 @@ int main(int argc, char ** argv)
       secs = atoi(argv[++i]);
     }
     else if(strcmp(arg, "--triggermode") == 0 && (i+1) < argc) {
-      triggerMode = (atoi(argv[++i]) + DC1394_TRIGGER_MODE_0);
+//      triggerMode = (atoi(argv[++i]) + DC1394_TRIGGER_MODE_0);
+      triggerMode = (atoi(argv[++i]));
     }
     else if(strcmp(arg, "--triggerpolarity") == 0 && (i+1) < argc) {
       i++;
@@ -195,7 +202,8 @@ int main(int argc, char ** argv)
       }
     }
     else if(strcmp(arg, "--triggersource") == 0 && (i+1) < argc) {
-      triggerSource = (atoi(argv[++i]) + DC1394_TRIGGER_SOURCE_0);
+//      triggerSource = (atoi(argv[++i]) + DC1394_TRIGGER_SOURCE_0);
+        triggerSource = (atoi(argv[++i]));
     }
     else if(strcmp(arg, "--verbose") == 0) {
       puts("Verbose mode");
@@ -214,8 +222,10 @@ int main(int argc, char ** argv)
     return -1;
   }
 
-  std::vector<Radiant::Video1394::CameraInfo> cameras;
-  Radiant::Video1394::queryCameras( & cameras);
+  std::vector<Radiant::VideoCamera::CameraInfo> cameras;
+  Radiant::CameraDriver * cd = Radiant::VideoCamera::drivers().getPreferredCameraDriver();
+  if(cd)
+    cd->queryCameras(cameras);
 
   printf("Found %d FireWire cameras\n", (int) cameras.size());
 
@@ -229,7 +239,7 @@ int main(int argc, char ** argv)
 
   for(i = 0; i < (int) cameras.size(); i++) {
 
-    const Radiant::Video1394::CameraInfo & cam = cameras[i];
+    const Radiant::VideoCamera::CameraInfo & cam = cameras[i];
     printf("Camera %d: ID = %llx, VENDOR = %s, MODEL = %s\n",
            i + 1, (long long) cam.m_euid64,
            cam.m_vendor.c_str(), cam.m_model.c_str());

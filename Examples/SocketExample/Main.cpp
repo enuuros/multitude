@@ -175,7 +175,7 @@ void runListener(const char * host, int port, const char *)
     char buf[2048];
     bzero(buf, sizeof(buf));
 
-    int n = socket.read(buf, sizeof(buf) - 1, false);
+    socket.read(buf, sizeof(buf) - 1, false);
     
     // buf[n] = 0;
 

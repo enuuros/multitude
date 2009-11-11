@@ -15,7 +15,7 @@
 
 // Some original source code by Juha Laitinen still may be around.
 
-#include "Video1394.hpp"
+#include "VideoCamera1394.hpp"
 
 #include <Radiant/Trace.hpp>
 #include <Radiant/Mutex.hpp>
@@ -28,48 +28,101 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include <iostream>
 #include <set>
 
 #include <dc1394/camera.h>
 
-#ifndef WIN32
 #include <sys/utsname.h>
-#endif
 
 #define NUM_BUFFERS 10
 
+namespace {
+
+  dc1394feature_t featureTypeToNative(Radiant::VideoCamera::FeatureType id)
+  {
+    dc1394feature_t result = dc1394feature_t(int(DC1394_FEATURE_BRIGHTNESS) + int(id));
+
+    return result;
+  }
+
+  Radiant::VideoCamera::FeatureType featureTypeFromNative(dc1394feature_t id)
+  {
+    Radiant::VideoCamera::FeatureType result = Radiant::VideoCamera::FeatureType(int(id) - int(DC1394_FEATURE_BRIGHTNESS));
+
+    return result;
+  }
+
+  dc1394trigger_source_t triggerSourceToNative(Radiant::VideoCamera::TriggerSource id)
+  {
+    dc1394trigger_source_t result = dc1394trigger_source_t(int(DC1394_TRIGGER_SOURCE_0) + int(id));
+
+    return result;
+  }
+
+}
+
 namespace Radiant {
 
-  static std::vector<dc1394camera_t *> __infos;
+  static std::vector<dc1394camera_t *> g_infos;
 
-  static std::set<int> __iso_channels;
-  static std::set<int> __taken;
+  static std::set<int> g_iso_channels;
+  static std::set<int> g_taken;
 
   inline int diFPS2dcFPS(FrameRate fps)
   {
 
     switch(fps) {
-      case FPS_IGNORE:
-        return DC1394_FRAMERATE_15;
-      case FPS_5:
-        return DC1394_FRAMERATE_3_75;
-      case FPS_10:
-        return DC1394_FRAMERATE_7_5;
-      case FPS_15:
-        return DC1394_FRAMERATE_15;
-      case FPS_30:
-        return DC1394_FRAMERATE_30;
-      case FPS_60:
-        return DC1394_FRAMERATE_60;
-      case FPS_120:
-        return DC1394_FRAMERATE_120;
-      case FPS_COUNT:
-        ;
+    case FPS_IGNORE:
+      return DC1394_FRAMERATE_15;
+    case FPS_5:
+      return DC1394_FRAMERATE_3_75;
+    case FPS_10:
+      return DC1394_FRAMERATE_7_5;
+    case FPS_15:
+      return DC1394_FRAMERATE_15;
+    case FPS_30:
+      return DC1394_FRAMERATE_30;
+    case FPS_60:
+      return DC1394_FRAMERATE_60;
+    case FPS_120:
+      return DC1394_FRAMERATE_120;
+    case FPS_COUNT:
+      ;
     }
 
     return DC1394_FRAMERATE_15;
+  }
+
+  static VideoCamera::CameraFeature fromNativeFeature(const dc1394feature_info_t & native)
+  {
+    VideoCamera::CameraFeature feat;
+
+    feat.id = featureTypeFromNative(native.id);
+//    feat.num_modes = native.modes.num;
+
+    feat.absolute_capable = native.absolute_capable;
+    feat.abs_max = native.abs_max;
+    feat.abs_min = native.abs_min;
+    feat.abs_value = native.abs_value;
+    feat.available = native.available;
+
+    if(native.current_mode == DC1394_FEATURE_MODE_MANUAL)
+      feat.current_mode = VideoCamera::MODE_MANUAL;
+    else if(native.current_mode == DC1394_FEATURE_MODE_AUTO)
+      feat.current_mode = VideoCamera::MODE_AUTO;
+    else if(native.current_mode == DC1394_FEATURE_MODE_ONE_PUSH_AUTO)
+        feat.current_mode = VideoCamera::MODE_ONE_PUSH_AUTO;
+
+    feat.is_on = native.is_on;
+    feat.max = native.max;
+    feat.min = native.min;
+    feat.on_off_capable = native.on_off_capable;
+    feat.polarity_capable = native.polarity_capable;
+    feat.readout_capable = native.readout_capable;
+    feat.value = native.value;
+
+    return feat;
   }
 
   const char * fps_labels[] =
@@ -122,14 +175,16 @@ namespace Radiant {
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  static dc1394_t * __dc = 0;
+  static dc1394_t * g_dc = 0;
+  static int g_count = 0;
 
-  static int __count = 0;
-
-  Video1394::Video1394()
-    : m_camera(0),
-    m_frame(0),
-    m_outside(0)
+  VideoCamera1394::VideoCamera1394(CameraDriver * driver)
+      : VideoCamera(driver),
+      m_camera(0),
+      m_frame(0),
+      m_outside(0),
+      m_fps(-1),
+      m_timeoutUs(-1)
   {
     m_videodevice = "/dev/video1394";
     m_framesBehind = 0;
@@ -138,44 +193,34 @@ namespace Radiant {
     m_cameraNum = 0;
     m_started = false;
 
-    if(!__dc)
-      __dc = dc1394_new();
+    if(!g_dc)
+      g_dc = dc1394_new();
 
-    __count++;
+    g_count++;
   }
 
-  Video1394::~Video1394()
+  VideoCamera1394::~VideoCamera1394()
   {
     if (m_initialized)
       close();
 
-    __count--;
+    g_count--;
 
-    /*if(!__count) {
-      dc1394_free(__dc);
-      __dc = 0;
+    /*if(!g_count) {
+      dc1394_free(g_dc);
+      g_dc = 0;
     }
     */
   }
 
-  ImageFormat Video1394::imageFormat() const
+  ImageFormat VideoCamera1394::imageFormat() const
   {
     return m_image.m_format;
   }
 
-  unsigned int Video1394::size() const
+  unsigned int VideoCamera1394::size() const
   {
     return m_image.size();
-  }
-
-  bool Video1394::hasMode(const dc1394feature_info_t & feature,
-      dc1394feature_mode_t mode)
-  {
-    for(uint i = 0; i < feature.modes.num; i++)
-      if(feature.modes.modes[i] == mode)
-        return true;
-
-    return false;
   }
 
   dc1394error_t has_mode(dc1394camera_t * camera,
@@ -197,59 +242,18 @@ namespace Radiant {
   }
 
   dc1394error_t has_auto_mode(dc1394camera_t *camera,
-      dc1394feature_t feature,
-      dc1394bool_t * val)
+                              dc1394feature_t feature,
+                              dc1394bool_t * val)
   {
     return has_mode(camera, feature, DC1394_FEATURE_MODE_AUTO, val);
   }
 
   dc1394error_t has_manual_mode(dc1394camera_t *camera,
-      dc1394feature_t feature,
-      dc1394bool_t * val)
+                                dc1394feature_t feature,
+                                dc1394bool_t * val)
   {
     return has_mode(camera, feature, DC1394_FEATURE_MODE_MANUAL, val);
   }
-
-  void Video1394::setPan(float value)
-  {
-    setFeature1394(DC1394_FEATURE_PAN, value);
-  }
-
-  void Video1394::setTilt(float value)
-  {
-    setFeature1394(DC1394_FEATURE_TILT, value);
-  }
-
-  void Video1394::setGamma(float value)
-  {
-    setFeature1394(DC1394_FEATURE_GAMMA, value);
-  }
-
-  void Video1394::setShutter(float value)
-  {
-    setFeature1394(DC1394_FEATURE_SHUTTER, value);
-  }
-
-  void Video1394::setGain(float value)
-  {
-    setFeature1394(DC1394_FEATURE_GAIN, value);
-  }
-
-  void Video1394::setExposure(float value)
-  {
-    setFeature1394(DC1394_FEATURE_EXPOSURE, value);
-  }
-
-  void Video1394::setBrightness(float value)
-  {
-    setFeature1394(DC1394_FEATURE_BRIGHTNESS, value);
-  }
-
-  void Video1394::setFocus(float value)
-  {
-    setFeature1394(DC1394_FEATURE_FOCUS, value);
-  }
-
 
   /** 
    * Try to adjust white balance feature for the camera. 
@@ -263,9 +267,9 @@ namespace Radiant {
    * with for example coriander software. Setting values out-of-range 
    * gives a warning.
    */
-  void Video1394::setWhiteBalance(float u_to_blue, float v_to_red)
+  void VideoCamera1394::setWhiteBalance(float u_to_blue, float v_to_red)
   {
-    const char * fname = "Video1394::setWhiteBalance";
+    const char * fname = "VideoCamera1394::setWhiteBalance";
 
     dc1394bool_t b = DC1394_FALSE;
 
@@ -275,21 +279,21 @@ namespace Radiant {
 
       if(b)
         dc1394_feature_set_mode(m_camera, 
-            DC1394_FEATURE_WHITE_BALANCE, 
-            DC1394_FEATURE_MODE_AUTO);
+                                DC1394_FEATURE_WHITE_BALANCE,
+                                DC1394_FEATURE_MODE_AUTO);
       else
         Radiant::debug("%s # no auto mode for white balance", fname);
     }
     else {
 
       has_manual_mode(m_camera, 
-          DC1394_FEATURE_WHITE_BALANCE,
-          & b);
+                      DC1394_FEATURE_WHITE_BALANCE,
+                      & b);
 
       if(b)
         dc1394_feature_set_mode(m_camera, 
-            DC1394_FEATURE_WHITE_BALANCE, 
-            DC1394_FEATURE_MODE_MANUAL);
+                                DC1394_FEATURE_WHITE_BALANCE,
+                                DC1394_FEATURE_MODE_MANUAL);
       else {
         Radiant::debug("%s # no manual mode for white balance", fname);
         return;
@@ -299,7 +303,7 @@ namespace Radiant {
       uint32_t high = 0;
 
       dc1394_feature_get_boundaries(m_camera, DC1394_FEATURE_WHITE_BALANCE, 
-          & low, & high);
+                                    & low, & high);
 
       uint32_t ublue, vred;
 
@@ -329,9 +333,11 @@ namespace Radiant {
    * than zero, then the camera will be switched to automatic control of
    * the feature. */
 
-  void Video1394::setFeature1394(dc1394feature_t feature, float value)
+  void VideoCamera1394::setFeature(VideoCamera::FeatureType id, float value)
   {
-    const char * fname = "Video1394::setFeature1394";
+    const char * fname = "VideoCamera1394::setFeature1394";
+
+    dc1394feature_t feature = featureTypeToNative(id);
 
     const char * name = dc1394_feature_get_string(feature);
 
@@ -381,102 +387,73 @@ namespace Radiant {
     }
   }
 
-  void Video1394::setFeature1394Raw(dc1394feature_t feature, int32_t value)
+  void VideoCamera1394::setFeatureRaw(VideoCamera::FeatureType id, int32_t value)
   {
+    dc1394feature_t feature = featureTypeToNative(id);
+
     dc1394_feature_set_mode(m_camera,  feature, DC1394_FEATURE_MODE_MANUAL);
     dc1394_feature_set_value(m_camera, feature, value);
   }
 
-  void Video1394::getFeatures(std::vector<dc1394feature_info_t> * feats)
+  void VideoCamera1394::getFeatures(std::vector<CameraFeature> * feats)
   {
     assert(isInitialized());
 
     dc1394featureset_t features;
     dc1394_feature_get_all(m_camera, & features);
-    feats->resize(DC1394_FEATURE_NUM);
-    for(int i = 0; i < DC1394_FEATURE_NUM; i++)
-      (*feats)[i] = features.feature[i];
+    feats->resize(VideoCamera::FEATURE_TYPE_MAX);
+
+    for(int i = 0; i < DC1394_FEATURE_NUM; i++) {
+      (*feats)[i] = fromNativeFeature(features.feature[i]);
+    }
   }
 
-  const char * Video1394::featureName(dc1394feature_t f)
-  {
-    static const char * names [] = {
-      "brightness",
-      "exposure",
-      "sharpness",
-      "white-balance",
-      "hue",
-      "saturation",
-      "gamma",
-      "shutter",
-      "gain",
-      "iris",
-      "focus",
-      "temperature",
-      "trigger",
-      "trigger delay",
-      "white shading",
-      "frame rate",
-      "zoom",
-      "pan",
-      "tilt",
-      "optical filter",
-      "capture size",
-      "capure quality"
-    };
-
-    int index = f - DC1394_FEATURE_MIN;
-
-    if(index < 0 || index >= DC1394_FEATURE_NUM)
-      return 0;
-
-    return names[index];
-  }
-
-
-  bool Video1394::enableTrigger(dc1394trigger_source_t source)
+  bool VideoCamera1394::enableTrigger(TriggerSource src)
   {
     assert(m_camera != 0);
 
+    dc1394trigger_source_t source = dc1394trigger_source_t(DC1394_TRIGGER_SOURCE_0 + src);
+
     if(dc1394_external_trigger_set_power(m_camera, DC1394_ON)
-        != DC1394_SUCCESS) {
-      Radiant::error("Video1394::enableTrigger # Could not turn trigger power on");
+      != DC1394_SUCCESS) {
+      Radiant::error("VideoCamera1394::enableTrigger # Could not turn trigger power on");
       return false;
     }
 
     if(dc1394_external_trigger_set_source(m_camera, source)
-        != DC1394_SUCCESS) {
-      Radiant::error("Video1394::enableTrigger # Could not set trigger source");
+      != DC1394_SUCCESS) {
+      Radiant::error("VideoCamera1394::enableTrigger # Could not set trigger source");
       return false;
     }
 
     return true;
   }
 
-  bool Video1394::setTriggerMode(dc1394trigger_mode_t mode)
+  bool VideoCamera1394::setTriggerMode(TriggerMode tm)
   {
     assert(m_camera != 0);
+    
+    dc1394trigger_mode_t mode = dc1394trigger_mode_t(DC1394_TRIGGER_MODE_0 + tm);
 
     if(dc1394_external_trigger_set_mode(m_camera, mode)
-        != DC1394_SUCCESS) {
-      error("Video1394::setTriggerMode # Could not set trigger mode");
+      != DC1394_SUCCESS) {
+      error("VideoCamera1394::setTriggerMode # Could not set trigger mode");
       return false;
     }
 
     return true;
   }
 
-  bool Video1394::setTriggerPolarity(bool up)
+  bool VideoCamera1394::setTriggerPolarity(TriggerPolarity tp)
   {
-    debug("Video1394::setTriggerPolarity # %d", (int) up);
+    debug("VideoCamera1394::setTriggerPolarity # %d", (int) tp);
 
-    dc1394trigger_polarity_t polarity = up ? 
-      DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
+    dc1394trigger_polarity_t polarity = (tp == TRIGGER_ACTIVE_HIGH) ? DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
 
     dc1394error_t e = dc1394_external_trigger_set_polarity(m_camera, polarity);
     
     if(e != DC1394_SUCCESS) {
-      error("Video1394::setTriggerPolarity # %s", dc1394_error_get_string(e));
+      error("VideoCamera1394::setTriggerPolarity # %s", dc1394_error_get_string(e));
       return false;
     }
 
@@ -484,55 +461,45 @@ namespace Radiant {
   }
 
 
-  bool Video1394::disableTrigger()
+  bool VideoCamera1394::disableTrigger()
   {
     assert(m_camera != 0);
 
     return dc1394_external_trigger_set_power(m_camera, DC1394_OFF) ==
-      DC1394_SUCCESS;
+        DC1394_SUCCESS;
   }
 
-  void Video1394::sendSoftwareTrigger()
+  void VideoCamera1394::sendSoftwareTrigger()
   {
     assert(m_camera != 0);
     dc1394_software_trigger_set_power(m_camera, DC1394_ON);
   }
   
-  static MutexAuto __mutex;
+  static MutexAuto g_mutex;
 
   /**
    * Initialize this instance and open connnection to the device to be
    * controlled.
    */
-  bool Video1394::open(const char * device, 
-                       const char * camera,
-                       const char * euid,
-                       ImageFormat fmt, 
-                       int width, 
-                       int height, 
-                       FrameRate framerate)
+  bool VideoCamera1394::open(uint64_t euid,
+                             int width,
+                             int height,
+                             ImageFormat fmt,
+                             FrameRate framerate)
   {
     // Only one thread at a time, just to make things sure.
-    Guard guard( & __mutex);
+    Guard guard(&g_mutex);
 
-    m_videodevice = device ? device : "/dev/video1394";
-    m_cameraNum = camera ? atoi(camera) : 0;
-    m_framesBehind = 0;
+    std::string videodevice("/dev/video1394");
 
     uint32_t i;
 
-    m_outside = 0;
-
-    const char * fname = "Video1394::initialize";
+    const char * fname = "VideoCamera1394::initialize";
 
     if(!findCamera(euid)) {
       error("%s # Could not find FireWire camera %s", fname, euid);
       return false;
     }
-
-    /* else
-       dc1394_print_feature_set(& m_features);
-       */
 
     dc1394video_mode_t video_modes[] = {
       difmt2dcfmt(fmt, width, height),
@@ -555,10 +522,10 @@ namespace Radiant {
     for(i = 0; video_modes[i] != 0; i++) {
       video_mode = video_modes[i];
       if (dc1394_video_get_supported_framerates(m_camera, 
-            video_mode, &framerates)
-          != DC1394_SUCCESS) {
+                                                video_mode, &framerates)
+        != DC1394_SUCCESS) {
         Radiant::error("%s # dc1394_video_get_supported_framerates",
-            fname);
+                       fname);
         // cleanup_and_exit(m_camera);
       }
       if(framerates.num != 0)
@@ -578,10 +545,10 @@ namespace Radiant {
 
     debug("%s # The video mode id = %d", fname, (int) video_mode);
     debug("%s # The frame rate id = %d (target = %d)", 
-        fname, (int) fps, targetfps);
+          fname, (int) fps, targetfps);
 
     if(dc1394_video_set_mode(m_camera, video_mode)
-        != DC1394_SUCCESS) {
+      != DC1394_SUCCESS) {
       error("%s # dc1394_video_set_mode failed",
             fname);
       return false;
@@ -653,14 +620,14 @@ namespace Radiant {
     return true;
   }
 
-  bool Video1394::openFormat7(const char * cameraeuid,
-			      Nimble::Recti roi,
-			      float fps,
-			      int mode)
+  bool VideoCamera1394::openFormat7(uint64_t cameraeuid,
+                                    Nimble::Recti roi,
+                                    float fps,
+                                    int mode)
   {
-    Guard guard( & __mutex);
+    Guard guard(&g_mutex);
 
-    const char * fname = "Video1394::openFormat7";
+    const char * fname = "VideoCamera1394::openFormat7";
 
     if(!findCamera(cameraeuid))
       return false;
@@ -669,7 +636,7 @@ namespace Radiant {
     unsigned minbytes, maxbytes;
 
     dc1394video_mode_t vmode = (dc1394video_mode_t)
-      (DC1394_VIDEO_MODE_FORMAT7_0 + mode);
+                               (DC1394_VIDEO_MODE_FORMAT7_0 + mode);
     
     err = dc1394_video_set_mode(m_camera, vmode);
     if(err != DC1394_SUCCESS) {
@@ -687,7 +654,7 @@ namespace Radiant {
     uint32_t maxh = 0;
     
     err = dc1394_format7_get_max_image_size
-      (m_camera, vmode, & maxw, & maxh);
+          (m_camera, vmode, & maxw, & maxh);
 
     debug("%s # fps = %f", fname, fps);
     debug("%s # Maximum image size = %d x %d", fname, (int) maxw, (int) maxh);
@@ -701,11 +668,11 @@ namespace Radiant {
     // Make the image size multiple of four...
     for(int i = 0; i < 2; i++) {
       while(roi.high()[i] & 0x3)
-	roi.high()[i]--;
+        roi.high()[i]--;
     }
 
     err = dc1394_format7_get_packet_parameters
-      (m_camera, vmode, & minbytes, & maxbytes);
+          (m_camera, vmode, & minbytes, & maxbytes);
 
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not get packet parameters", fname);
@@ -725,7 +692,7 @@ namespace Radiant {
       busPeriod = 0.0000625f;
     else {
       Radiant::error("%s # Cannot calculate bus speed as the speed (%d) is unknown",
-          fname, (int) m_speed);
+                     fname, (int) m_speed);
       return false;
     }
 
@@ -741,15 +708,15 @@ namespace Radiant {
     }
 
     dc1394_format7_set_color_coding(m_camera,
-				    vmode,
-				    DC1394_COLOR_CODING_MONO8);
+                                    vmode,
+                                    DC1394_COLOR_CODING_MONO8);
 
     err = dc1394_format7_set_roi(m_camera,
-				 vmode,
-				 DC1394_COLOR_CODING_MONO8,
-				 packetSize,
-				 roi.low().x, roi.low().y,
-				 roi.width(), roi.height());
+                                 vmode,
+                                 DC1394_COLOR_CODING_MONO8,
+                                 packetSize,
+                                 roi.low().x, roi.low().y,
+                                 roi.width(), roi.height());
 
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not set ROI", fname);
@@ -766,16 +733,16 @@ namespace Radiant {
     m_image.m_height = roi.height();
 
     debug("%s # initialized format-7 mode with resolution %d x %d",
-	  fname, m_image.m_width, m_image.m_height);
+          fname, m_image.m_width, m_image.m_height);
 
     m_initialized = true;
 
     return true;
   }
-
-  bool Video1394::printFormat7Modes(const char * cameraeuid)
+  /*
+  bool VideoCamera1394::printFormat7Modes(const char * cameraeuid)
   {
-    const char * fname = "Video1394::printFormat7Modes";
+    const char * fname = "VideoCamera1394::printFormat7Modes";
 
     if(!findCamera(cameraeuid))
       return false;
@@ -796,54 +763,54 @@ namespace Radiant {
     CameraInfo ci(cameraInfo());
     
     info("Format 7 mode information for %s %s (id = %s)",
-	 ci.m_vendor.c_str(), ci.m_model.c_str(), cameraeuid);
-    
+   ci.m_vendor.c_str(), ci.m_model.c_str(), cameraeuid);
+
     for(int i = 0; i < DC1394_VIDEO_MODE_FORMAT7_NUM; i++) {
 
       dc1394format7mode_t & mode = modeset.mode[i];
 
       if(!mode.present) {
-	info(" Format7 mode %d not present", i);
-	continue;
+  info(" Format7 mode %d not present", i);
+  continue;
       }
       
       info(" Format7 mode %d:", i);
       info("  size    = [%d %d]\n"
-	   "  maxsize = [%d %d]\n"
-	   "  pos     = [%d %d]",
-	   mode.size_x, mode.size_y, 
-	   mode.max_size_x, mode.max_size_y,
-	   mode.pos_x, mode.pos_y);
+     "  maxsize = [%d %d]\n"
+     "  pos     = [%d %d]",
+     mode.size_x, mode.size_y,
+     mode.max_size_x, mode.max_size_y,
+     mode.pos_x, mode.pos_y);
       info("  unitsize    = [%d %d]\n"
-	   "  unitpos     = [%d %d]",
-	   mode.unit_size_x, mode.unit_size_y, 
-	   mode.unit_pos_x, mode.unit_pos_y);
+     "  unitpos     = [%d %d]",
+     mode.unit_size_x, mode.unit_size_y,
+     mode.unit_pos_x, mode.unit_pos_y);
       info("  pixum    = %d",
-	   mode.pixnum);
+     mode.pixnum);
     }
     
     return close();
   }
-
-  bool Video1394::isInitialized() const
+*/
+  bool VideoCamera1394::isInitialized() const
   {
     return m_initialized;
   }
 
 
-  int Video1394::width() const
+  int VideoCamera1394::width() const
   {
     return m_image.m_width;
   }
 
 
-  int Video1394::height() const
+  int VideoCamera1394::height() const
   {
     return m_image.m_height;
   }
 
 
-  float Video1394::fps() const
+  float VideoCamera1394::fps() const
   {
     return m_fps;
   }
@@ -851,7 +818,7 @@ namespace Radiant {
   /**
    * Starts the camera data transmission. 
    */
-  bool Video1394::start()
+  bool VideoCamera1394::start()
   {
     assert(isInitialized());
 
@@ -861,14 +828,14 @@ namespace Radiant {
     // assert(m_started == false);
 
     if (dc1394_video_set_transmission(m_camera, DC1394_ON) != DC1394_SUCCESS) {
-      Radiant::error("Video1394::start # unable to start camera iso transmission");
+      Radiant::error("VideoCamera1394::start # unable to start camera iso transmission");
 
       return false;
     }
     else {
       dc1394switch_t trans;
       dc1394_video_get_transmission(m_camera, & trans);
-      debug("Video1394::start # %d", (int) trans);
+      debug("VideoCamera1394::start # %d", (int) trans);
     }
 
     m_started = true;
@@ -880,7 +847,7 @@ namespace Radiant {
   /**
    * Starts the camera data transmission. 
    */
-  bool Video1394::stop()
+  bool VideoCamera1394::stop()
   {
     assert(isInitialized());
 
@@ -888,7 +855,7 @@ namespace Radiant {
 
     dc1394_capture_stop(m_camera);
     if (dc1394_video_set_transmission(m_camera, DC1394_OFF) !=DC1394_SUCCESS) {
-      Radiant::error("Video1394::stop # unable to stop iso transmission");
+      Radiant::error("VideoCamera1394::stop # unable to stop iso transmission");
     }
 
     m_started = false;
@@ -896,149 +863,12 @@ namespace Radiant {
     return true;
   }
 
-  bool Video1394::queryCameras(std::vector<CameraInfo> * query)
-  {
-    Guard guard( & __mutex);
-
-    const char * fname = "Video1394::queryCameras";
-
-    uint32_t i, j;//, numCameras = 0;
-    // dc1394camera_t **cameras = 0;
-    dc1394error_t err;
-    dc1394camera_list_t * camlist = 0;
-
-    if(!__dc)
-      __dc = dc1394_new();
-
-#ifndef __linux__
-    // For OSX
-
-    static bool first = true;
-
-    if(!first) {
-      goto fillquery;
-    }
-
-    first = false;
-    
-	
-#endif
-
-    
-
-
-    if((err = dc1394_camera_enumerate(__dc, & camlist))
-        != DC1394_SUCCESS) {
-
-      // if(err != DC1394_NO_CAMERA)
-
-#ifdef __linux__
-      const char * username = getenv("USERNAME");
-      
-      if(username)
-	username = "username";
-      
-      error("%s # dc1394_find_cameras failed (%s)\n"
-          "*************************************************************\n"
-          "Please check that FireWire device files exist:\n"
-          "/dev/raw1394\n"
-          "/dev/video1394 (or /dev/video1394/0 etc)\n"
-          "And that you have permissions to use them.\n"
-          "\n"
-          "To gain permissions, try the following commands:\n\n"
-          "> sudo addgroup %s video\n"
-          "> sudo addgroup %s disk\n\nor:\n\n"
-          "> sudo chmod -R 777 /dev/*1394*\n\n"
-          "You may need to log in again for the changes to be effective.\n\n"
-          "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/linux\n"
-          "*************************************************************\n\n",
-	    fname, dc1394_error_get_string(err), username, username);
-#else
-      Radiant::error("%s # dc1394_find_cameras failed (%s)\n",
-          fname, dc1394_error_get_string(err));
-#endif
-      return false;
-    }
-    
-
-    debug("Getting %d FireWire cameras", (int) camlist->num);
-
-    __infos.clear();
-
-    for(i = 0; i < camlist->num; i++) {
-      bool already = false;
-
-      for(j = 0; j < __infos.size(); j++)
-        if(__infos[j]->guid == camlist->ids[i].guid)
-          already = true;
-
-      if(!already)
-        __infos.push_back(dc1394_camera_new(__dc, camlist->ids[i].guid));
-    }
-
-    debug("Copying FireWire camera information to user", (int) camlist->num);
-
-#ifndef __linux__
-  fillquery: 
-#endif
-
-    query->clear();
-
-    for(i = 0; i < __infos.size(); i++) {
-      dc1394camera_t * c = __infos[i];
-      CameraInfo ci;
-
-      if(!c) {
-	error("NULL camera");
-	continue;
-      }
-
-      if(!c->guid || !c->vendor || !c->model)
-        continue;
-      
-      debug("Got camera %p: %s %s (%llx)", c, c->vendor, c->model, c->guid);
-
-      ci.m_euid64 = c->guid;
-      ci.m_vendor = c->vendor;
-      ci.m_model  = c->model;
-
-      query->push_back(ci);
-    }
-
-    debug("Clearing camera list");
-
-#ifdef __linux__
-    dc1394_camera_free_list(camlist);
-#endif
-
-    return true;
-  }
-
-  bool Video1394::queryCamera(u_int64_t euid64, CameraInfo * camera)
-  {
-    std::vector<CameraInfo> query;
-
-    queryCameras( & query);
-
-    for(uint i = 0; i < query.size(); i++) {
-      if((u_int64_t) query[i].m_euid64 == euid64) {
-        *camera = query[i];
-        return true;
-      }
-    }
-
-    Radiant::error("Video1394::queryCamera # FAILED");
-
-    return false;
-  }
-
-
   /**
    * Capture a camera frame.
    */
-  const VideoImage * Video1394::captureImage(int timeoutus)
+  const VideoImage * VideoCamera1394::captureImage()
   {
-    // trace("Video1394::captureImage");
+    // trace("VideoCamera1394::captureImage");
 
     assert(isInitialized());
 
@@ -1047,7 +877,7 @@ namespace Radiant {
 
     m_frame = 0;
 
-    if(timeoutus > 0) {
+    if(m_timeoutUs > 0) {
 
       int fd = dc1394_capture_get_fileno(m_camera);
       fd_set fds;
@@ -1056,8 +886,8 @@ namespace Radiant {
       FD_ZERO(& fds);
       FD_SET(fd, & fds);
 
-      tv.tv_sec = timeoutus / 1000000;
-      tv.tv_usec = timeoutus % 1000000;
+      tv.tv_sec = m_timeoutUs / 1000000;
+      tv.tv_usec = m_timeoutUs % 1000000;
 
       select(fd + 1, &fds, 0, 0, &tv);
 
@@ -1065,7 +895,7 @@ namespace Radiant {
         ;
       else {
         FD_ZERO( & fds);
-        // error("Video1394::captureImage # no image available fd = %d r = %d", fd, r);
+        // error("VideoCamera1394::captureImage # no image available fd = %d r = %d", fd, r);
         return 0;
       }
       FD_ZERO( & fds);
@@ -1075,7 +905,7 @@ namespace Radiant {
                                      DC1394_CAPTURE_POLICY_WAIT, & m_frame);
 
     if(err ) {
-      Radiant::error("Video1394::captureImage # Unable to capture a frame!");
+      Radiant::error("VideoCamera1394::captureImage # Unable to capture a frame!");
       close();
       return 0;
     }
@@ -1090,19 +920,19 @@ namespace Radiant {
 
     m_framesBehind = m_frame->frames_behind;
 
-    // trace("Video1394::captureImage # EXIT");
+    // trace("VideoCamera1394::captureImage # EXIT");
 
     m_outside++;
 
     if(m_outside != 1) {
-      Radiant::error("Video1394::captureImage # Please release captured " 
-          "frames with doneImage()");
+      Radiant::error("VideoCamera1394::captureImage # Please release captured " 
+                     "frames with doneImage()");
     }
 
     return & m_image;
   }
 
-  void Video1394::doneImage()
+  void VideoCamera1394::doneImage()
   {
     m_outside--;
 
@@ -1116,7 +946,7 @@ namespace Radiant {
   /**
    * Shuts down the connection.
    */
-  bool Video1394::close()
+  bool VideoCamera1394::close()
   {
     // assert(isInitialized());
 
@@ -1133,16 +963,16 @@ namespace Radiant {
     m_initialized = false;
     m_camera = 0;
 
-    std::set<int>::iterator it = __taken.find(m_cameraNum);
-    if(it == __taken.end())
-      error("Video1394::close # taken mismatch %d", (int) m_cameraNum);
+    std::set<int>::iterator it = g_taken.find(m_cameraNum);
+    if(it == g_taken.end())
+      error("VideoCamera1394::close # taken mismatch %d", (int) m_cameraNum);
     else
-      __taken.erase(it);
+      g_taken.erase(it);
 
     return true;
   }
 
-  Video1394::CameraInfo Video1394::cameraInfo()
+  VideoCamera1394::CameraInfo VideoCamera1394::cameraInfo()
   {
     CameraInfo info;
 
@@ -1155,30 +985,28 @@ namespace Radiant {
     return info;
   }
 
-  bool Video1394::findCamera(const char * euid)
+  bool VideoCamera1394::findCamera(uint64_t euid)
   {
-    const char * fname = "Video1394::findCamera";
+    const char * fname = "VideoCamera1394::findCamera";
 
     uint32_t i;
 
     bzero( & m_camera, sizeof(m_camera));
 
-    m_euid = euid ? strtoll(euid, 0, 16) : m_euid;
+    m_euid = euid ? euid : m_euid;
 
     // if(euid != 0)
-    debug("Video1394::findCamera # m_euid = %.8x%.8x (%s)", 
-          (int) (m_euid >> 32), (int) m_euid, euid);
+    debug("VideoCamera1394::findCamera # m_euid = %.8x%.8x", (int) (m_euid >> 32), (int) m_euid);
 
     if (m_initialized)
       close();
 
     {
       std::vector<CameraInfo> cameras;
-
-      if(!queryCameras(&cameras)) return false;
+      if(driver()->queryCameras(cameras) == 0) return false;
     }
 
-    if(!__infos.size()) {
+    if(!g_infos.size()) {
       Radiant::error("%s # No FireWire cameras found", fname);
       return false;
     }
@@ -1191,7 +1019,7 @@ namespace Radiant {
 
     // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
     isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
-      sn.release[0] == '9' && sn.release[1] == '.';
+                sn.release[0] == '9' && sn.release[1] == '.';
 #endif
 
     // Clean up in the first start:
@@ -1201,8 +1029,8 @@ namespace Radiant {
       if(isleopard)
         debug("%s # Running Leopard, no FireWire bus reset", fname);
       else {
-        for(int c = 0; c < (int) __infos.size(); c++) {
-          dc1394_reset_bus(__infos[c]);
+        for(int c = 0; c < (int) g_infos.size(); c++) {
+          dc1394_reset_bus(g_infos[c]);
           Sleep::sleepMs(100);
         }
       }
@@ -1213,8 +1041,8 @@ namespace Radiant {
 
     bool foundCorrect = false;
 
-    for(i = 0; i < __infos.size() && m_euid != 0; i++) {
-      if(__infos[i]->guid == m_euid) {
+    for(i = 0; i < g_infos.size() && m_euid != 0; i++) {
+      if(g_infos[i]->guid == m_euid) {
         m_cameraNum = (int) i;
         foundCorrect = true;
         debug("%s # Got camera %d based on euid", fname, (int) i);
@@ -1224,22 +1052,22 @@ namespace Radiant {
 
     if(m_euid != 0 && !foundCorrect) {
       debug("%s # Could not find the camera with euid = %llx",
-	    fname, (long long) m_euid);
+            fname, (long long) m_euid);
       return false;
     }
 
-    if(__taken.find(m_cameraNum) != __taken.end()) {
+    if(g_taken.find(m_cameraNum) != g_taken.end()) {
       error("%s # Camera index %d is already taken", fname, (int) m_cameraNum);
     }
 
-    __taken.insert(m_cameraNum);
+    g_taken.insert(m_cameraNum);
 
-    assert(m_cameraNum < (int) __infos.size());
+    assert(m_cameraNum < (int) g_infos.size());
 
-    m_camera = __infos[m_cameraNum];
+    m_camera = g_infos[m_cameraNum];
 
     debug("%s # Initializing camera %s \"%s\"",
-	  fname, m_camera->vendor, m_camera->model);
+          fname, m_camera->vendor, m_camera->model);
 
     /* int isochan = m_cameraNum + 2;
        if(dc1394_video_specify_iso_channel(m_camera, isochan) !=DC1394_SUCCESS){
@@ -1249,9 +1077,9 @@ namespace Radiant {
        */
 
     if(dc1394_feature_get_all(m_camera, & m_features)
-        != DC1394_SUCCESS) {
-     debug("%s # unable to get feature set %d", 
-          fname, m_cameraNum);
+      != DC1394_SUCCESS) {
+      debug("%s # unable to get feature set %d",
+            fname, m_cameraNum);
     }
 
     bool try1394b = true;
@@ -1265,7 +1093,7 @@ namespace Radiant {
     if(strstr(m_camera->model, "Firefly") &&
        strstr(m_camera->vendor, "Point Grey")) {
       /* PTGrey Firefly is a popular camera, but it apparently reports
-	 itself as FW800 camera... */
+   itself as FW800 camera... */
       
       debug("PTGrey Firefly camera detected, going for FW400");
       try1394b = false;
@@ -1277,9 +1105,9 @@ namespace Radiant {
       bool is1394b = false;
 
       if(dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_1394B)
-          != DC1394_SUCCESS) {
+        != DC1394_SUCCESS) {
         dc1394_video_set_operation_mode(m_camera, DC1394_OPERATION_MODE_LEGACY);
-	debug("%s # Could not set operation mode to 1394B", fname);
+        debug("%s # Could not set operation mode to 1394B", fname);
       }
       else
         is1394b = true;
@@ -1288,12 +1116,12 @@ namespace Radiant {
 
       if(is1394b) {
         if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_800)
-            != DC1394_SUCCESS) {
-	  
-	  debug("%s # Could not set ISO speed to 800", fname);
+          != DC1394_SUCCESS) {
+
+          debug("%s # Could not set ISO speed to 800", fname);
 
           if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
-	     != DC1394_SUCCESS) {
+            != DC1394_SUCCESS) {
             error("%s # dc1394_video_set_iso_speed 400 failed",
                   fname);
             return false;
@@ -1301,9 +1129,9 @@ namespace Radiant {
         }
       }
       else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
-	      != DC1394_SUCCESS) {
-	error("%s # dc1394_video_set_iso_speed 400 failed", fname);
-	return false;
+        != DC1394_SUCCESS) {
+        error("%s # dc1394_video_set_iso_speed 400 failed", fname);
+        return false;
       }
     }
 
@@ -1317,25 +1145,156 @@ namespace Radiant {
     return true;
   }
 
-  void Video1394::captureSetup(int buffers)
+  void VideoCamera1394::captureSetup(int buffers)
   {
     int flags = DC1394_CAPTURE_FLAGS_DEFAULT;
 
-#ifdef __linux__
+#ifdef g_linuxg_
     if(getenv("WITHOUT_1394_BANDWIDTH_ALLOC")) {
       flags = DC1394_CAPTURE_FLAGS_CHANNEL_ALLOC;
-      debug("Video1394::captureSetup # Ignoring bandwidth allocation");
+      debug("VideoCamera1394::captureSetup # Ignoring bandwidth allocation");
     }
 #endif
     dc1394error_t res = dc1394_capture_setup(m_camera, buffers, flags);
     if(res != DC1394_SUCCESS) {
 
-      Radiant::error("Video1394::captureSetup # "
-		     "unable to setup camera- check that the video mode,"
-		     "framerate and format are supported (%s)", 
-		     dc1394_error_get_string(res));
+      Radiant::error("VideoCamera1394::captureSetup # "
+                     "unable to setup camera- check that the video mode,"
+                     "framerate and format are supported (%s)",
+                     dc1394_error_get_string(res));
     }
 
   }
 
+  bool VideoCamera1394::setCaptureTimeout(int ms)
+  {
+    m_timeoutUs = 1000 * ms;
+
+    return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+
+  size_t CameraDriver1394::queryCameras(std::vector<VideoCamera::CameraInfo> & cameras)
+  {
+    Guard guard(&g_mutex);
+
+    const char * fname = "CameraDriver1394::queryCameras";
+
+    uint32_t i, j;
+    dc1394error_t err;
+    dc1394camera_list_t * camlist = 0;
+
+    if(!g_dc)
+      g_dc = dc1394_new();
+
+    if(!g_dc) {
+      Radiant::error("%s::queryCameras # failed to initialize libdc1394. Make sure you have permissions to access FireWire devices.", fname);
+      return false;
+    }
+
+#ifndef g_linuxg_
+    // For OSX
+    static bool first = true;
+
+    if(!first) {
+      goto fillquery;
+    }
+
+    first = false;
+#endif
+
+    if((err = dc1394_camera_enumerate(g_dc, & camlist))
+      != DC1394_SUCCESS) {
+
+      // if(err != DC1394_NO_CAMERA)
+
+#ifdef g_linuxg_
+      const char * username = getenv("USERNAME");
+
+      if(username)
+        username = "username";
+
+      error("%s # dc1394_find_cameras failed (%s)\n"
+            "*************************************************************\n"
+            "Please check that FireWire device files exist:\n"
+            "/dev/raw1394\n"
+            "/dev/video1394 (or /dev/video1394/0 etc)\n"
+            "And that you have permissions to use them.\n"
+            "\n"
+            "To gain permissions, try the following commands:\n\n"
+            "> sudo addgroup %s video\n"
+            "> sudo addgroup %s disk\n\n"
+            "You may need to log in again for the changes to be effective.\n\n"
+            "See also: http://www.multitouch.fi/cornerstone/cornerstone-documentation/linux\n"
+            "*************************************************************\n\n",
+            fname, dc1394_error_get_string(err), username, username);
+#else
+      Radiant::error("%s # dc1394_find_cameras failed (%s)\n",
+                     fname, dc1394_error_get_string(err));
+#endif
+      return false;
+    }
+
+    debug("%s::Getting %d FireWire cameras", fname, (int) camlist->num);
+
+    g_infos.clear();
+
+    for(i = 0; i < camlist->num; i++) {
+      bool already = false;
+
+      for(j = 0; j < g_infos.size(); j++)
+        if(g_infos[j]->guid == camlist->ids[i].guid)
+          already = true;
+
+      if(!already)
+        g_infos.push_back(dc1394_camera_new(g_dc, camlist->ids[i].guid));
+    }
+
+    debug("Copying FireWire camera information to user", (int) camlist->num);
+
+#ifndef g_linuxg_
+    fillquery:
+#endif
+
+      //query->clear();
+
+      for(i = 0; i < g_infos.size(); i++) {
+        dc1394camera_t * c = g_infos[i];
+        VideoCamera::CameraInfo ci;
+
+        if(!c) {
+          error("NULL camera");
+          continue;
+        }
+
+        if(!c->guid || !c->vendor || !c->model)
+          continue;
+
+        debug("Got camera %p: %s %s (%llx)", c, c->vendor, c->model, c->guid);
+
+        ci.m_euid64 = c->guid;
+        ci.m_vendor = c->vendor;
+        ci.m_model  = c->model;
+        ci.m_driver = std::string("libdc1394");
+
+        cameras.push_back(ci);
+      }
+
+      debug("Clearing camera list");
+
+#ifdef g_linuxg_
+      dc1394_camera_free_list(camlist);
+#endif
+
+      return true;
+  }
+
+  VideoCamera * CameraDriver1394::createCamera()
+  {
+    return new VideoCamera1394(this);
+  }
+
 }
+

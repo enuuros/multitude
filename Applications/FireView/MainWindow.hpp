@@ -17,6 +17,7 @@
 #define FIREVIEW_MAINWINDOW_HPP
 
 #include <Radiant/VideoInput.hpp>
+#include <Radiant/VideoCamera.hpp>
 
 #include <QtGui/QMainWindow>
 
@@ -35,7 +36,7 @@ namespace FireView {
     Q_OBJECT;
   public:
     MainWindow(Radiant::FrameRate rate, float customFps,
-	       int triggerSource, int triggerMode, bool format7);
+         Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode, bool format7);
     virtual ~MainWindow();
 
     bool init();
@@ -49,8 +50,8 @@ namespace FireView {
     std::set<u_int64_t> m_cameras;
     Radiant::FrameRate m_rate;
     float m_customFps;
-    int   m_triggerSource;
-    int   m_triggerMode;
+    Radiant::VideoCamera::TriggerSource m_triggerSource;
+    Radiant::VideoCamera::TriggerMode m_triggerMode;
     bool  m_format7;
 
     std::set<QWidget *> m_displays;
