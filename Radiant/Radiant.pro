@@ -1,6 +1,6 @@
 include(../multitude.pri)
 HEADERS += CameraDriver.hpp
-unix:CONFIG += debug
+# unix:CONFIG += debug
 
 HEADERS += UDPSocket.hpp
 win32:HEADERS += VideoCameraPTGrey.hpp

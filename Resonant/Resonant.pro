@@ -1,6 +1,6 @@
 include(../multitude.pri)
 
-unix:CONFIG += debug
+# unix:CONFIG += debug
 
 HEADERS += Application.hpp 
 HEADERS += AudioFileHandler.hpp
