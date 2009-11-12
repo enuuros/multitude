@@ -73,6 +73,9 @@ namespace Valuable
 
       inline const ElementType & get(int i) const { return m_value[i]; }
       inline const ElementType * data() const { return m_value.data(); }
+
+      inline const ElementType & x() const { return m_value[0]; }
+      inline const ElementType & y() const { return m_value[1]; }
     private:
       VectorType m_value;
   };
