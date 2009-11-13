@@ -290,6 +290,22 @@ namespace Luminous
       return 0;
     }
 
+    GLSLProgramObject* program = new GLSLProgramObject();
+
+    if(!program->loadStrings(vsString, fsString)) {
+      delete program;
+      return 0;
+    }
+
+    return program;
+  }
+
+  bool GLSLProgramObject::loadStrings(const char* vsString, const char* fsString)
+  {
+    if(vsString == 0 && fsString == 0) {
+      return false;
+    }
+
     // Load & compile vertex shader
     GLSLShaderObject* vs = 0;
     if(vsString) {
@@ -309,9 +325,9 @@ namespace Luminous
     GLSLShaderObject* fs = 0;
     if(fsString) {
       fs = new GLSLShaderObject(GL_FRAGMENT_SHADER);
-      
+
       fs->setSource(fsString);
-  
+
       if(!fs->compile()) {
         error("GLSLProgramObject::fromStrings # fragment shader "
               "compile error:\n%s", fs->compilerLog());
@@ -319,21 +335,18 @@ namespace Luminous
         return 0;
       }
     }
-  
-    // Create a program object and link it
-    GLSLProgramObject* program = new GLSLProgramObject();
 
-    if(vs) program->addObject(vs);
-    if(fs) program->addObject(fs);
+    if(vs) addObject(vs);
+    if(fs) addObject(fs);
 
-    if(!program->link()) {
+    if(!link()) {
       error("GLSLProgramObject::fromStrings # linking shader failed:\n%s",
-            program->linkerLog());
-      delete program;
-      return 0;
+            linkerLog());
+      return false;
     }
 
-    return program;
+    return true;
   }
+
 }
 

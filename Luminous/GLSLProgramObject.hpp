@@ -89,6 +89,8 @@ namespace Luminous
     static GLSLProgramObject* fromStrings
     (const char* vsString, const char* fsString);
 
+    bool loadStrings(const char* vsString, const char* fsString);
+
     int shaderObjectCount() const { return m_shaderObjects.size(); } 
 
     GLuint handle() const { return m_handle; }

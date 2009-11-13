@@ -16,10 +16,10 @@
 #include "BinaryData.hpp"
 
 #include <Radiant/BinaryStream.hpp>
+#include <Radiant/Trace.hpp>
+#include <Radiant/ConfigReader.hpp>
 
 #include <Nimble/Math.hpp>
-
-#include <Radiant/Trace.hpp>
 
 #include <string.h>
 #include <stdlib.h>
@@ -31,6 +31,8 @@
 namespace Radiant {
 
   static bool __verbose = true;
+
+  using namespace Nimble;
 
   static void badmarker(const char * func, int32_t marker)
   {
@@ -269,11 +271,11 @@ namespace Radiant {
       char * end = (char *) source;
       double d = strtod(m_buf + m_current, & end);
       if(end == (char *) source) {
-	if(ok)
-	  *ok = false;
+        if(ok)
+          *ok = false;
       }
       else {
-	return d;
+        return d;
       }
     }
 
@@ -442,7 +444,7 @@ namespace Radiant {
 
   Nimble::Vector2f BinaryData::readVector2Float32(bool * ok)
   {
-    if(!available(12)) {
+    if(!available(4)) {
       if(ok) * ok = false;
       return Nimble::Vector2f(0, 0);
     }
@@ -450,10 +452,35 @@ namespace Radiant {
     int32_t marker = getRef<int32_t>();
 
     if(marker == VECTOR2F_MARKER) {
+
+      if(!available(8)) {
+        if(ok) * ok = false;
+        return Nimble::Vector2f(0, 0);
+      }
+
       return getRef<Nimble::Vector2f>();
     }
     else if(marker == VECTOR2I_MARKER) {
+
+      if(!available(8)) {
+        if(ok) * ok = false;
+        return Nimble::Vector2f(0, 0);
+      }
+
       return getRef<Nimble::Vector2i>();
+    }
+    else if(marker == STRING_MARKER) {
+
+      const char * source = & m_buf[m_current];
+      Radiant::Variant v(source);
+      Vector2f vect(0,0);
+      if(v.getFloats(vect.data(), 2) == 2)
+        return vect;
+      else {
+        if(ok)
+          *ok = false;
+        return Vector2f(0, 0);
+      }
     }
     else {
       skipParameter(marker);
