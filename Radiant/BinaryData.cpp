@@ -442,6 +442,21 @@ namespace Radiant {
     return n == recv;
   }
 
+#define BD_STR_TO_VEC(type, n, ok) \
+  const char * source = & m_buf[m_current]; \
+  Radiant::Variant v(source); \
+  skipParameter(marker); \
+  type vect; \
+  vect.clear(); \
+  if(v.getFloats(vect.data(), n) == n) \
+    return vect; \
+  else { \
+    if(ok) \
+      *ok = false; \
+    vect.clear(); \
+    return vect; \
+  }
+
   Nimble::Vector2f BinaryData::readVector2Float32(bool * ok)
   {
     if(!available(4)) {
@@ -470,7 +485,8 @@ namespace Radiant {
       return getRef<Nimble::Vector2i>();
     }
     else if(marker == STRING_MARKER) {
-
+      BD_STR_TO_VEC(Vector2f, 2, ok);
+      /*
       const char * source = & m_buf[m_current];
       Radiant::Variant v(source);
       Vector2f vect(0,0);
@@ -481,6 +497,7 @@ namespace Radiant {
           *ok = false;
         return Vector2f(0, 0);
       }
+      */
     }
     else {
       skipParameter(marker);
@@ -506,6 +523,9 @@ namespace Radiant {
     }
     else if(marker == VECTOR3I_MARKER) {
       return getRef<Nimble::Vector3i>();
+    }
+    else if(marker == STRING_MARKER) {
+      BD_STR_TO_VEC(Vector3f, 3, ok);
     }
     else {
       skipParameter(marker);
@@ -607,6 +627,9 @@ namespace Radiant {
     }
     else if(marker == VECTOR4F_MARKER) {
       return getRef<Nimble::Vector4f>();
+    }
+    else if(marker == STRING_MARKER) {
+      BD_STR_TO_VEC(Vector4f, 4, ok);
     }
     else {
       skipParameter(marker);
