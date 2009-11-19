@@ -75,7 +75,10 @@ namespace Valuable
   
     std::string path() const;
 
+    /// Process a message
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
+    /// Utility function for sending string message to the object
+    void processMessageString(const char * id, const char * str);
 
     virtual float       asFloat(bool * const ok = 0) const;
     virtual int         asInt(bool * const ok = 0) const;

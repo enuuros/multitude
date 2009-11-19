@@ -39,8 +39,6 @@ namespace Luminous {
     glDisable(GL_CULL_FACE);
     glDisable(GL_TEXTURE_2D);
     glUseProgram(0);
-    // glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glShadeModel(GL_SMOOTH);

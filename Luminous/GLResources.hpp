@@ -126,6 +126,22 @@ namespace Luminous
   };
 }
 
+/// A macro for creating accessing GLResource objects
+/** This macro will try to find a #GLResource object from the
+    resources. If the relevant object is not accessible, then new
+    object is created. This macro will also define the object so that
+    it is available after this macro has been called.
+
+    @arg type The class name of the object to be found (e.g. Texture2D etc).
+    
+    @arg name The variable name for this object (e.g. mytex etc.).
+
+    @karg ey The object that this resource is related to. Often the
+    this-pointer is used as the key, but one can create other keys.
+
+    @arg resources The GLResources object that is holding the OpenGL
+    resources for this thread.
+*/
 #define GLRESOURCE_ENSURE(type, name, key, resources)	\
   type * name = dynamic_cast<type *> (resources->getResource(key));	\
   if(!name) { \

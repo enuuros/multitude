@@ -167,9 +167,10 @@ namespace Luminous
       gluBuild2DMipmaps(GL_TEXTURE_2D, srcFormat.numChannels(),
 			w, h, srcFormat.layout(), srcFormat.type(), data);
     else {
-      Radiant::debug("TEXTURE UPLOAD :: INTERNAL %s FORMAT %s [%d %d]",
+      /* Radiant::debug("TEXTURE UPLOAD :: INTERNAL %s FORMAT %s [%d %d]",
 		     glInternalFormatToString(internalFormat),
 		     glFormatToString(srcFormat.layout()), w, h);
+      */
       glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0,
 		   srcFormat.layout(), srcFormat.type(), data);
     }

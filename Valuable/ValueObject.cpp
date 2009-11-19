@@ -66,7 +66,14 @@ namespace Valuable
   {
     Radiant::error("ValueObject::processMessage # Unimplemented for %s",
                    typeid(*this).name());
+  }
 
+  void ValueObject::processMessageString(const char * id, const char * str)
+  {
+    Radiant::BinaryData bd;
+    bd.writeString(str);
+    bd.rewind();
+    processMessage(id, bd);
   }
 
   float ValueObject::asFloat(bool * ok) const

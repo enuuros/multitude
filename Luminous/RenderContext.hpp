@@ -72,7 +72,14 @@ namespace Luminous
      */
     void drawPolyLine(const Nimble::Vector2f * vertices, int n,
 		      float width, const float * rgba);
-    
+    /** Draw a textured rectangle with given color. 
+
+	@arg size The size of the rectangle to be drawn.
+	
+	@arg rgba The color in RGBA format. If the argument is null,
+	then it will be ignored.
+*/
+    void drawTexRect(Nimble::Vector2 size, const float * rgba);
   protected:
 
     Luminous::GLResources * m_resources;

@@ -185,5 +185,37 @@ namespace Luminous
 
   }
 
+  void RenderContext::drawTexRect(Nimble::Vector2 size, const float * rgba)
+  {
+    Nimble::Matrix3 m = transform();
+
+    const Vector4 v[4] = {
+      Utils::project(m, Vector2(0,       0)),
+      Utils::project(m, Vector2(size.x,  0)),
+      Utils::project(m, Vector2(size.x,  size.y)),
+      Utils::project(m, Vector2(0,       size.y))
+    };
+
+    if(rgba)
+      glColor4fv(rgba);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex4fv(v[0].data());
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex4fv(v[1].data());
+  
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex4fv(v[2].data());
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex4fv(v[3].data());
+
+    glEnd();
+
+  }
+
 }
 
