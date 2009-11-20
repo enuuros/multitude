@@ -102,7 +102,7 @@ namespace Nimble {
     static Matrix4T<T> makeTranslation(const Vector3T<T> & v);
   
     /** Identity matrix. */
-    static const Matrix4T<T> IDENTITY;
+    NIMBLE_API static const Matrix4T<T> IDENTITY;
 
   private:
     inline static void swap(T &a, T& b);

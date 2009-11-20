@@ -133,7 +133,7 @@ namespace Nimble {
     inline Vector2T<T> project(const T & x, const T & y) const;
 
     /** Identity matrix. */
-    static const Matrix3T<T> IDENTITY;
+    NIMBLE_API static const Matrix3T<T> IDENTITY;
 
   private:
     inline static void swap(T &a, T& b);

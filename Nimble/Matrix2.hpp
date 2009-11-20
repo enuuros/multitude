@@ -97,7 +97,7 @@ namespace Nimble {
     static Matrix2T scaling(T s)  { Matrix2T m; m.identity(); m.set(0, 0, s); m.set(1, 1, s); return m; }
     
     /** Identity matrix. */
-    static const Matrix2T<T> IDENTITY;
+    NIMBLE_API static const Matrix2T<T> IDENTITY;
 
   private:
     inline static void swap(T &a, T& b);
