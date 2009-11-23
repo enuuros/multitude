@@ -16,6 +16,7 @@
 #include "BinaryData.hpp"
 
 #include <Radiant/BinaryStream.hpp>
+#include "DateTime.hpp"
 #include <Radiant/Trace.hpp>
 #include <Radiant/ConfigReader.hpp>
 
@@ -289,7 +290,7 @@ namespace Radiant {
 
   int32_t BinaryData::readInt32(bool * ok)
   {
-    if(!available(8)) {
+    if(!available(4)) {
       if(ok) * ok = false;
       unavailable("BinaryData::readInt32");
       return 0;
@@ -297,14 +298,26 @@ namespace Radiant {
 
     int32_t marker = getRef<int32_t>();
 
-    if(marker == INT32_MARKER)
+    if(marker == INT32_MARKER && available(4))
       return getRef<int32_t>();
-    else if(marker == INT64_MARKER)
+    else if(marker == INT64_MARKER && available(8))
       return int32_t(getRef<int64_t>());
-    else if(marker == FLOAT_MARKER)
+    else if(marker == FLOAT_MARKER && available(4))
       return Nimble::Math::Round(getRef<float>());
-    else if(marker == DOUBLE_MARKER)
+    else if(marker == DOUBLE_MARKER && available(8))
       return Nimble::Math::Round(getRef<double>());
+    else if (marker == STRING_MARKER) {
+      const char * source = & m_buf[m_current];
+      char * end = (char *) source;
+      long d = strtol(m_buf + m_current, & end, 10);
+      if(end == (char *) source) {
+        if(ok)
+          *ok = false;
+      }
+      else {
+        return d;
+      }
+    }
     else if(ok) {
       badmarker("BinaryData::readInt32", marker);
       *ok = false;
@@ -343,15 +356,29 @@ namespace Radiant {
 
   int64_t BinaryData::readTimeStamp(bool * ok)
   {
-    if(!available(12)) {
+    if(!available(4)) {
       if(ok) * ok = false;
       return 0;
     }
 
     int32_t marker = getRef<int32_t>();
 
-    if(marker == TS_MARKER)
+    if(marker == TS_MARKER && available(8))
       return getRef<int64_t>();
+    else if (marker == STRING_MARKER && available(10)) {
+      const char * source = & m_buf[m_current];
+      DateTime dt;
+      bool dtok = dt.fromString(source);
+
+      /*
+      info("BinaryData::readTimeStamp # %s %d (%d %d %d)",
+           source, (int) dtok, (int) dt.year(), dt.month(), dt.monthDay());
+      */
+      if(!dtok && ok)
+        *ok = false;
+      else
+        return dt.asTimeStamp();
+    }
     else if(ok)
       *ok = false;
 

@@ -45,10 +45,10 @@ namespace Radiant
 
 
   Directory::Directory(const char * pathname, const char * suffixlist,
-		       int filters, SortFlag sortFlag)
-    : m_path(pathname),
-      m_filterFlags(filters),
-      m_sortFlags(sortFlag)
+                       int filters, SortFlag sortFlag)
+  : m_path(pathname),
+    m_filterFlags(filters),
+    m_sortFlags(sortFlag)
   {
     StringUtils::StringList suflist;
     StringUtils::split(suffixlist, ",", suflist);
@@ -59,22 +59,6 @@ namespace Radiant
     }
 
     populate();
-  }
-
-  Directory::Directory( const std::string &signature, const char * pathname, 
-			const char * suffixlist, int filters, 
-			SortFlag sortFlag ) throw( std::runtime_error )
-  {
-    if ("jcb" != signature )
-      throw( std::runtime_error("Bad Signature.") );
- 
-    if ( !exists(pathname) )
-      throw( std::runtime_error("Directory does not exists.") );
-    
-    init(pathname, suffixlist, filters, sortFlag);
-
-    populate();
-    
   }
 
   Directory::~Directory()

@@ -47,6 +47,9 @@ namespace Valuable
 
       operator const T & () const { return Base::m_value; }
 
+      ValueIntT<T> & operator |= (T i) { Base::m_value |= i; VALUEMIT_STD_OP }
+      ValueIntT<T> & operator &= (T i) { Base::m_value &= i; VALUEMIT_STD_OP }
+
       // Postfix
       ValueIntT<T> & operator ++ (int) { Base::m_value++; VALUEMIT_STD_OP }
       ValueIntT<T> & operator -- (int) { Base::m_value--; VALUEMIT_STD_OP }
@@ -58,6 +61,11 @@ namespace Valuable
       // Shift
       ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; VALUEMIT_STD_OP }
       ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; VALUEMIT_STD_OP }
+
+      bool operator < (const T & i) const { return Base::m_value < i; }
+      bool operator <= (const T & i) const { return Base::m_value <= i; }
+      bool operator > (const T & i) const { return Base::m_value > i; }
+      bool operator >= (const T & i) const { return Base::m_value >= i; }
 
     const char * type() const { return VO_TYPE_INT; }
 

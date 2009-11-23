@@ -26,6 +26,14 @@ namespace Radiant {
   class RADIANT_API DateTime
   {
   public:
+
+    enum DateFormat {
+      /// Date and time in ISO format
+      DATE_TIME_ISO,
+      /// Just the date in ISO format
+      DATE_ISO
+    };
+
     DateTime();
     DateTime(const TimeStamp & );
     ~DateTime();
@@ -59,6 +67,7 @@ namespace Radiant {
 
     void toNextMonth();
     void toNextMonthDay();
+    bool fromString(const std::string & s, DateFormat format = DATE_ISO);
     
     /** Returns the number of days in the month. This function does
 	take the leap years into account, so the length of Febuary changes

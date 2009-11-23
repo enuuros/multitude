@@ -21,6 +21,8 @@
 
 #include <sys/time.h>
 #include <time.h>
+#include <stdlib.h>
+
 
 namespace Radiant {
 
@@ -90,6 +92,29 @@ namespace Radiant {
 	m_year++;
       }
     }
+  }
+
+  bool DateTime::fromString(const std::string & s, DateFormat format)
+  { 
+
+    if(s.length() < 10)
+      return false;
+
+    std::string yearstr(s, 0, 4);
+    std::string monthstr(s, 5, 2);
+    std::string daystr(s, 8, 4);
+
+    m_year  = atoi(yearstr.c_str());
+    m_month = atoi(monthstr.c_str());
+    m_monthDay = atoi(daystr.c_str());
+
+    m_hour = 0;
+    m_minute = 0;
+    m_second = 0;
+    m_microsecond = 0;
+    m_summerTime = false;
+
+    return true;
   }
 
   int DateTime::daysInMonth(int month, int year)

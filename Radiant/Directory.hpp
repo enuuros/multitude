@@ -85,34 +85,6 @@ namespace Radiant
     Directory(const char * pathname, const char * suffixlist,
 	      int filters = AllEntries, SortFlag sortFlag = Name);
 
-    /** Creates a Directory object by immediately scanning
-	the contents of the directory. Entries matching
-	the given filters are included.  If the file does
-	not exist an exception is thrown.  If the
-	signature is not ok an exception is thrown too.
-
-	@param signature "jcb" string. Anything else will
-	trigger an exception. There is a already
-	constructor with the same signature that does not
-	throw exceptions hence the need for this author's
-	signature.
-
-	@param pathname directory path
-
-	@param suffixlist list of accpeted suffices, for
-	example "jpg,png,tiff"
-
-	@param filters one or more filter flags OR'ed
-	together
-
-	@param sortFlag flag indicating how the results
-	should be sorted
-
-    */
-    Directory( const std::string &signature, const char * pathname, 
-	       const char * suffixlist, int filters = AllEntries, 
-	       SortFlag sortFlag = Unsorted ) throw(std::runtime_error);
-
  
     /// Deallocates the list
     virtual ~Directory();

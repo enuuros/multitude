@@ -32,7 +32,7 @@ namespace Radiant
 
   ///  @todo DT_DIR seems to incorrectly match also to symbolic links under linux
   bool applyFilters(const struct dirent * dent, int filterFlags,
-		    const std::vector<std::string> & suffixes) {
+                    const std::vector<std::string> & suffixes) {
     bool ok = true;
 
     const std::string name(dent->d_name);
@@ -50,10 +50,10 @@ namespace Radiant
       ok = false;
 
       for(unsigned i = 0; i < suffixes.size(); i++) {
-	if(suffix == suffixes[i]) {
-	  ok = true;
-	  break;
-	}
+        if(suffix == suffixes[i]) {
+          ok = true;
+          break;
+        }
       }
     }
 
