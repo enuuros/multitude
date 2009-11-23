@@ -532,6 +532,9 @@ namespace Luminous
     if(codec) {
       ret = codec->write(*this, file);
     }
+    else {
+      error("Image::write # No codec for file '%s'", filename);
+    }
 
     fclose(file);
 

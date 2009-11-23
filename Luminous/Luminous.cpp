@@ -17,8 +17,15 @@
 #include <Luminous/Image.hpp>
 #include <Luminous/CodecRegistry.hpp>
 #include <Luminous/ImageCodecTGA.hpp>
+
+
+#ifdef USE_QT45
+#include <Luminous/ImageCodecQT.hpp>
+#include <QImageWriter>
+#else
 #include <Luminous/ImageCodecPNG.hpp>
 #include <Luminous/ImageCodecJPEG.hpp>
+#endif // USE_QT45
 
 #include <Radiant/Trace.hpp>
 
@@ -83,10 +90,21 @@ namespace Luminous
 
     done = true;
 
+#ifdef USE_QT45
+    QList<QByteArray> formats =
+        QImageWriter::supportedImageFormats ();
+    for(QList<QByteArray>::iterator it = formats.begin();
+    it != formats.end(); it++){
+      QByteArray & format = (*it);
+      Image::codecs()->registerCodec(new ImageCodecQT(format.data()));
+    }
+    Image::codecs()->registerCodec(new ImageCodecQT("jpg"));
+#else
     // Register built-in image codecs
     Image::codecs()->registerCodec(new ImageCodecJPEG());
     Image::codecs()->registerCodec(new ImageCodecPNG());
-    
+#endif
+
     /* TGA has to be last, because its ping may return true even if
        the file has other type. */
     Image::codecs()->registerCodec(new ImageCodecTGA());

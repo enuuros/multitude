@@ -46,8 +46,8 @@ namespace Poetic
     FT_GlyphSlot ftGlyph = m_face->glyph(glyphIndex, FT_LOAD_NO_HINTING);
     
     if(ftGlyph) {
-        CPUBitmapGlyph * tempGlyph = new CPUBitmapGlyph(ftGlyph);
-        return tempGlyph;
+      CPUBitmapGlyph * tempGlyph = new CPUBitmapGlyph(ftGlyph);
+      return tempGlyph;
     }    
 
     m_error = m_face->error(); 

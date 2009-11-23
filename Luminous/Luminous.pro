@@ -1,8 +1,8 @@
 include(../multitude.pri)
 
 # unix:CONFIG += debug
-
-HEADERS += BGThread.hpp
+HEADERS += BGThread.hpp \
+    ImageCodecQT.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
@@ -38,8 +38,8 @@ HEADERS += Transformer.hpp
 HEADERS += Utils.hpp
 HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
-
-SOURCES += BGThread.cpp
+SOURCES += BGThread.cpp \
+    ImageCodecQT.cpp
 SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -69,26 +69,37 @@ SOURCES += Texture.cpp
 SOURCES += Transformer.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
+LIBS += $$LIB_RADIANT \
+    -lGLEW \
+    $$LIB_OPENGL
+LIBS += $$LIB_VALUABLE \
+    $$LIB_GLU \
+    $$LIB_NIMBLE \
+    $$LIB_PATTERNS
+unix:LIBS += -ljpeg \
+    -lpng
+win32 { 
+    DEFINES += LUMINOUS_EXPORT
+    INCLUDEPATH += ../Win32x/include/libjpeg
+    LIBS += libjpeg-static-mt.lib \
+        -lWin32x
+    
+    # This seems to be important under Windows. libpng crashes if you mix release & debug code.
+    CONFIG(debug, debug|release) { 
+        message(debug libpng)
+        message($$CONFIG)
+        LIBS += libpng13d.lib
+    }
+    else { 
+        message(release libpng)
+        LIBS += libpng13.lib
+    }
+}
 
-LIBS += $$LIB_RADIANT -lGLEW $$LIB_OPENGL
-LIBS += $$LIB_VALUABLE $$LIB_GLU $$LIB_NIMBLE $$LIB_PATTERNS
-
-unix: LIBS += -ljpeg -lpng
-
-win32 {
-	DEFINES += LUMINOUS_EXPORT
-	INCLUDEPATH += ../Win32x/include/libjpeg
-	LIBS += libjpeg-static-mt.lib -lWin32x
-	
-	# This seems to be important under Windows. libpng crashes if you mix release & debug code.
-	CONFIG(debug, debug|release) {
-		message(debug libpng)
-		message($$CONFIG)
-		LIBS += libpng13d.lib
-	} else { 
-		message(release libpng)
-		LIBS += libpng13.lib
-	}
+contains(HAS_QT_45,YES) {
+  message(Including QT Image codecs)
+  CONFIG += qt
+  QT += gui
 }
 
 include(../library.pri)
