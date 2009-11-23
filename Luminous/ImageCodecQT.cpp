@@ -8,6 +8,8 @@
 #include <QImageReader>
 #include <QImage>
 
+#include <stdint.h>
+
 namespace Luminous
 {
   using namespace Radiant;
