@@ -32,6 +32,14 @@ namespace Luminous
     return Nimble::Vector2(p.x / p.z, p.y / p.z);
   }
 
+  Nimble::Vector2 Transformer::unproject(Nimble::Vector2 v) const
+  {
+    Nimble::Matrix3 m = transform().inverse();
+    Nimble::Vector3 p = m * v;
+
+    return Nimble::Vector2(p.x / p.z, p.y / p.z);
+  }
+
   float Transformer::scale() const
   {
     return transform().extractScale();

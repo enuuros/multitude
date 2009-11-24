@@ -37,6 +37,8 @@ namespace Luminous
 
     /// Apply the current transformation matrix on a 2D vector.
     Nimble::Vector2 project(Nimble::Vector2) const;
+    /// Apply inverse of the current transformation matrix on a 2D vector.
+    Nimble::Vector2 unproject(Nimble::Vector2) const;
 
     float scale() const;
 
