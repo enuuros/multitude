@@ -128,7 +128,7 @@ namespace Radiant
 
     while((got < bytes) && (m_d->state() == QAbstractSocket::ConnectedState)) {
 
-      bool something = m_d->waitForReadyRead(1);
+      m_d->waitForReadyRead(1);
 
       int n = m_d->read(ptr + got, bytes - got);
       got += n;

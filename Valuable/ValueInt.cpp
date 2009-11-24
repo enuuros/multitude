@@ -29,12 +29,32 @@ namespace Valuable
     if(ok)
       *this = v;
   }
+  
+  template <>
+  void ValueIntT<uint32_t>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    uint32_t v = uint32_t(data.readInt32( & ok));
+    
+    if(ok)
+      *this = v;
+  }
 
   template <>
   void ValueIntT<int64_t>::processMessage(const char *, Radiant::BinaryData & data)
   {
     bool ok = true;
     int64_t v = data.readInt64( & ok);
+    
+    if(ok)
+      *this = v;
+  }
+  
+  template <>
+  void ValueIntT<uint64_t>::processMessage(const char *, Radiant::BinaryData & data)
+  {
+    bool ok = true;
+    uint64_t v = uint64_t(data.readInt64( & ok));
     
     if(ok)
       *this = v;
@@ -51,7 +71,10 @@ namespace Valuable
   }
 
   template class ValueIntT<int32_t>;
+  template class ValueIntT<uint32_t>;
   template class ValueIntT<int64_t>;
+  template class ValueIntT<uint64_t>;
+  
   template class ValueIntT<Radiant::TimeStamp>;
 
 }

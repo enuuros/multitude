@@ -119,7 +119,7 @@ namespace Nimble {
 
     /// Calculates the absolute value of the argument.
     template <class T>
-    inline T Abs(T x) { return (x > 0) ? x : -x; }
+    inline T Abs(T x) { return (x > T(0)) ? x : -x; }
 
     /// Calculates the fraction of the floating point number
     template <class T>

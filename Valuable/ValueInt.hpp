@@ -77,7 +77,10 @@ namespace Valuable
   /// Integer value object.
   typedef ValueIntT<int32_t> ValueInt;
   typedef ValueIntT<int32_t> ValueInt32;
+  typedef ValueIntT<uint32_t> ValueUInt32;
   typedef ValueIntT<int64_t> ValueInt64;
+  typedef ValueIntT<uint64_t> ValueUInt64;
+  
   /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
 

@@ -1,9 +1,7 @@
 include(../multitude.pri)
-HEADERS += CameraDriver.hpp
-# unix:CONFIG += debug
 
+HEADERS += CameraDriver.hpp
 HEADERS += UDPSocket.hpp
-win32:HEADERS += VideoCameraPTGrey.hpp
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -61,7 +59,6 @@ HEADERS += VideoCamera.hpp
 SOURCES += CameraDriver.cpp
 SOURCES += BinaryData.cpp
 SOURCES += VideoCamera.cpp
-win32:SOURCES += VideoCameraPTGrey.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
 SOURCES += Condition.cpp
@@ -111,28 +108,30 @@ unix {
 }
 win32 { 
     DEFINES += RADIANT_EXPORT
-    SOURCES += VideoCameraCMU.cpp
-    SOURCES += 
+    
+	HEADERS += VideoCameraCMU.hpp
+    
+	SOURCES += VideoCameraCMU.cpp
     SOURCES += PlatformUtilsWin32.cpp
     SOURCES += SerialPortWin32.cpp
     SOURCES += DirectoryQt.cpp
     SOURCES += TCPServerSocketQt.cpp
     SOURCES += TCPSocketQt.cpp
     SOURCES += UDPSocketQt.cpp
-    HEADERS += VideoCameraCMU.hpp
-    HEADERS += 
-    LIBS += win32x.lib \
-        wsock32.lib \
-        pthreadVC2.lib \
-        ShLwApi.lib \
-        shell32.lib \
-        FlyCapture2.lib \
-        1394camera.lib
+
+    LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib
+		
     QMAKE_CXXFLAGS += -Zc:wchar_t
     CONFIG += qt
-    QT = core \
-        network
-    INCLUDEPATH += "C:\Program Files\Point Grey Research\FlyCapture2\include"
-    LIBPATH += "C:\Program Files\Point Grey Research\FlyCapture2\lib"
+    QT = core network
+
+	exists("C:\Program Files\Point Grey Research\FlyCapture2\include") {
+		HEADERS += VideoCameraPTGrey.hpp
+		SOURCES += VideoCameraPTGrey.cpp
+		INCLUDEPATH += "C:\Program Files\Point Grey Research\FlyCapture2\include"
+		LIBPATH += "C:\Program Files\Point Grey Research\FlyCapture2\lib"
+		LIBS += FlyCapture2.lib
+	}
 }
+
 include(../library.pri)
