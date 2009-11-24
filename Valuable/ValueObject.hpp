@@ -44,6 +44,8 @@ namespace Valuable
       value is changed, then a call-back to soem other object is
       followed. The listener-API is a bit hard-core, but it has plenty
       of power when you need to track the state of other objects.
+
+      @see HasValues
   */
   class VALUABLE_API ValueObject
   {
@@ -76,9 +78,26 @@ namespace Valuable
     std::string path() const;
 
     /// Process a message
+    /** This method is a key element in the event-passing system.
+        It is used to deliver information between objects. The information contains
+        two parts:
+
+        <OL>
+        <LI>Identifier: A character string that gives the address for the adjustment</LI>
+        <LI>Data: A binary blob that contains information for the message</LI>
+        </OL>
+
+        This function is overridden in number of classes that need to receive and
+        process events. In a typical case, when overriding this function, you should
+        either process the message, or call the function of the parent class.
+    */
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
     /// Utility function for sending string message to the object
     void processMessageString(const char * id, const char * str);
+    /// Utility function for sending a float message to the object
+    void processMessageFloat(const char * id, float v);
+    /// Utility function for sending an int message to the object
+    void processMessageInt(const char * id, int v);
 
     virtual float       asFloat(bool * const ok = 0) const;
     virtual int         asInt(bool * const ok = 0) const;
@@ -112,7 +131,7 @@ namespace Valuable
     virtual void emitDelete();
 
   private:
-    /// The object that holds this object
+    // The object that holds this object
     HasValues * m_parent;
     std::string m_name;
     bool m_transit;
@@ -120,8 +139,6 @@ namespace Valuable
     ValueListeners m_listeners;
 
     friend class HasValues;
-
-
   };
 
 }

@@ -72,6 +72,10 @@ namespace Radiant {
     m_second = 0;
   }
 
+  void DateTime::toNextYear()
+  {
+    m_year++;
+  }
   void DateTime::toNextMonth()
   {
     m_month++;
@@ -105,8 +109,8 @@ namespace Radiant {
     std::string daystr(s, 8, 4);
 
     m_year  = atoi(yearstr.c_str());
-    m_month = atoi(monthstr.c_str());
-    m_monthDay = atoi(daystr.c_str());
+    m_month = atoi(monthstr.c_str()) - 1;
+    m_monthDay = atoi(daystr.c_str()) - 1;
 
     m_hour = 0;
     m_minute = 0;

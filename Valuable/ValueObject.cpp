@@ -76,6 +76,22 @@ namespace Valuable
     processMessage(id, bd);
   }
 
+  void ValueObject::processMessageFloat(const char * id, float v)
+  {
+    Radiant::BinaryData bd;
+    bd.writeFloat32(v);
+    bd.rewind();
+    processMessage(id, bd);
+  }
+
+  void ValueObject::processMessageInt(const char * id, int v)
+  {
+    Radiant::BinaryData bd;
+    bd.writeInt32(v);
+    bd.rewind();
+    processMessage(id, bd);
+  }
+
   float ValueObject::asFloat(bool * ok) const
   {   
     if(ok) *ok = false;

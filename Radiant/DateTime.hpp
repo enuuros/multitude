@@ -65,6 +65,7 @@ namespace Radiant {
     void setMinute(int minute) { m_minute = minute; }
     void setSecond(int second) { m_second = second; }
 
+    void toNextYear();
     void toNextMonth();
     void toNextMonthDay();
     bool fromString(const std::string & s, DateFormat format = DATE_ISO);

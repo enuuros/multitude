@@ -33,7 +33,7 @@ namespace Valuable
   /** Base class for objects that include member variables with automatic IO.
       
       This base class has a list of #ValueObject child objects (aka
-      member variables) that are named with uniqye striong.
+      member variables) that are named with unique striong.
   
       Deleting the child objects is the responsibility of the child
       classes, HasValues simply maintains a list of children.
