@@ -21,6 +21,8 @@
 
 #include <Radiant/Trace.hpp>
 
+#include <stdio.h>
+
 namespace Valuable
 {
   struct DOMElement::Wrapped

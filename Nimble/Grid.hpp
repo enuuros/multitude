@@ -28,6 +28,8 @@
 
 #include <string.h>
 
+#include <stdint.h>
+
 namespace Nimble {
 
   /// Grid (aka 2D array) base class with memory management

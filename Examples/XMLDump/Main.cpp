@@ -19,6 +19,7 @@
 #include <Valuable/DOMElement.hpp>
 #include <Valuable/Valuable.hpp>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

@@ -22,6 +22,7 @@
 #include <WinPort.h>
 #endif
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string>
 

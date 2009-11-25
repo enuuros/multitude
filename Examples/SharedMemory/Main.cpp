@@ -17,6 +17,7 @@
 #include <Radiant/Sleep.hpp>
 #include <Radiant/Trace.hpp>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
