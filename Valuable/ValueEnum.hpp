@@ -22,7 +22,7 @@ namespace Valuable
 {
 
 
-  class ValueEnum : public ValueInt32
+  class VALUABLE_API ValueEnum : public ValueIntT<int32_t>
   {
   public:
     ValueEnum(Valuable::HasValues * host, const char * name,

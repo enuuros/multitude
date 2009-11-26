@@ -83,7 +83,7 @@ namespace Valuable
   
   /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
-
+/*
 #ifdef WIN32
 #ifdef VALUABLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported
@@ -91,7 +91,7 @@ namespace Valuable
   template class ValueIntT<Radiant::TimeStamp>;
 #endif
 #endif
-
+*/
 }
 
 #undef VALUEMIT_STD_OP

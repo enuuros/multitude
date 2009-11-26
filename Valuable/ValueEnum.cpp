@@ -24,7 +24,7 @@ namespace Valuable
 
   ValueEnum::ValueEnum(Valuable::HasValues * host, const char * name,
                        const char ** enumnames, int current)
-  : ValueInt32(host, name, current),
+  : ValueIntT<int32_t>(host, name, current),
     m_enumnames(enumnames)
   {
     assert(enumnames != 0);
@@ -34,7 +34,7 @@ namespace Valuable
   {}
 
 
-  void ValueEnum::processMessage(const char * id, Radiant::BinaryData & data)
+  void ValueEnum::processMessage(const char * , Radiant::BinaryData & data)
   {
     std::string str;
     data.readString(str);
