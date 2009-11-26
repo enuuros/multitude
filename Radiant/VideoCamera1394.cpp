@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 // Some original source code by Juha Laitinen still may be around.
@@ -166,7 +166,7 @@ namespace Radiant {
       else if(fmt == IMAGE_YUV_422 || fmt == IMAGE_YUV_422P)
         return DC1394_VIDEO_MODE_1024x768_YUV422;
       else
-        return DC1394_VIDEO_MODE_1024x768_YUV422;    
+        return DC1394_VIDEO_MODE_1024x768_YUV422;
     }
 
     return DC1394_VIDEO_MODE_640x480_YUV411;
@@ -255,16 +255,16 @@ namespace Radiant {
     return has_mode(camera, feature, DC1394_FEATURE_MODE_MANUAL, val);
   }
 
-  /** 
-   * Try to adjust white balance feature for the camera. 
-   * @note NOTE: may fail, if, for example, the camera doesn't 
+  /**
+   * Try to adjust white balance feature for the camera.
+   * @note NOTE: may fail, if, for example, the camera doesn't
    * support this feature.
-   * @param u_to_blue manual U to blue ratio, setting either 
+   * @param u_to_blue manual U to blue ratio, setting either
    * one of these to below zero sets auto white balance mode.
-   * @param v_to_red manual V to red ratio, setting either one 
-   * of these to below zero sets auto white balance mode. These values are 
+   * @param v_to_red manual V to red ratio, setting either one
+   * of these to below zero sets auto white balance mode. These values are
    * basicly device-dependent. You should test suitable configuration
-   * with for example coriander software. Setting values out-of-range 
+   * with for example coriander software. Setting values out-of-range
    * gives a warning.
    */
   void VideoCamera1394::setWhiteBalance(float u_to_blue, float v_to_red)
@@ -278,7 +278,7 @@ namespace Radiant {
       has_auto_mode(m_camera, DC1394_FEATURE_WHITE_BALANCE, &b);
 
       if(b)
-        dc1394_feature_set_mode(m_camera, 
+        dc1394_feature_set_mode(m_camera,
                                 DC1394_FEATURE_WHITE_BALANCE,
                                 DC1394_FEATURE_MODE_AUTO);
       else
@@ -286,12 +286,12 @@ namespace Radiant {
     }
     else {
 
-      has_manual_mode(m_camera, 
+      has_manual_mode(m_camera,
                       DC1394_FEATURE_WHITE_BALANCE,
                       & b);
 
       if(b)
-        dc1394_feature_set_mode(m_camera, 
+        dc1394_feature_set_mode(m_camera,
                                 DC1394_FEATURE_WHITE_BALANCE,
                                 DC1394_FEATURE_MODE_MANUAL);
       else {
@@ -302,7 +302,7 @@ namespace Radiant {
       uint32_t low  = 0;
       uint32_t high = 0;
 
-      dc1394_feature_get_boundaries(m_camera, DC1394_FEATURE_WHITE_BALANCE, 
+      dc1394_feature_get_boundaries(m_camera, DC1394_FEATURE_WHITE_BALANCE,
                                     & low, & high);
 
       uint32_t ublue, vred;
@@ -432,7 +432,7 @@ namespace Radiant {
   bool VideoCamera1394::setTriggerMode(TriggerMode tm)
   {
     assert(m_camera != 0);
-    
+
     dc1394trigger_mode_t mode = dc1394trigger_mode_t(DC1394_TRIGGER_MODE_0 + tm);
 
     if(dc1394_external_trigger_set_mode(m_camera, mode)
@@ -451,7 +451,7 @@ namespace Radiant {
     dc1394trigger_polarity_t polarity = (tp == TRIGGER_ACTIVE_HIGH) ? DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
 
     dc1394error_t e = dc1394_external_trigger_set_polarity(m_camera, polarity);
-    
+
     if(e != DC1394_SUCCESS) {
       error("VideoCamera1394::setTriggerPolarity # %s", dc1394_error_get_string(e));
       return false;
@@ -474,7 +474,7 @@ namespace Radiant {
     assert(m_camera != 0);
     dc1394_software_trigger_set_power(m_camera, DC1394_ON);
   }
-  
+
   static MutexAuto g_mutex;
 
   /**
@@ -521,7 +521,7 @@ namespace Radiant {
 
     for(i = 0; video_modes[i] != 0; i++) {
       video_mode = video_modes[i];
-      if (dc1394_video_get_supported_framerates(m_camera, 
+      if (dc1394_video_get_supported_framerates(m_camera,
                                                 video_mode, &framerates)
         != DC1394_SUCCESS) {
         Radiant::error("%s # dc1394_video_get_supported_framerates",
@@ -544,7 +544,7 @@ namespace Radiant {
     }
 
     debug("%s # The video mode id = %d", fname, (int) video_mode);
-    debug("%s # The frame rate id = %d (target = %d)", 
+    debug("%s # The frame rate id = %d (target = %d)",
           fname, (int) fps, targetfps);
 
     if(dc1394_video_set_mode(m_camera, video_mode)
@@ -562,14 +562,14 @@ namespace Radiant {
 
     // If the camera is already running (eg. unclean exit), stop it
     dc1394switch_t isoWasOn;
-    if(dc1394_video_get_transmission(m_camera, &isoWasOn) != DC1394_SUCCESS)     
+    if(dc1394_video_get_transmission(m_camera, &isoWasOn) != DC1394_SUCCESS)
       Radiant::error("%s # dc1394_video_get_transmission failed", fname);
 
     if(isoWasOn == DC1394_ON) {
       debug("%s # Camera is already running, stopping it", fname);
 
       if(dc1394_video_set_transmission(m_camera, DC1394_OFF) !=DC1394_SUCCESS)
-        Radiant::error("%s # dc1394_video_set_transmission failed", fname);      
+        Radiant::error("%s # dc1394_video_set_transmission failed", fname);
     }
 
     captureSetup(NUM_BUFFERS);
@@ -589,7 +589,7 @@ namespace Radiant {
 
       if(fmt == IMAGE_RAWBAYER)
         m_image.m_format = IMAGE_RAWBAYER;
-      else 
+      else
         m_image.m_format = IMAGE_GRAYSCALE;
 
       m_image.m_planes[0].m_type = PLANE_GRAYSCALE;
@@ -601,7 +601,7 @@ namespace Radiant {
 
       if(fmt == IMAGE_RAWBAYER)
         m_image.m_format = IMAGE_RAWBAYER;
-      else 
+      else
         m_image.m_format = IMAGE_GRAYSCALE;
 
       m_image.m_format = IMAGE_GRAYSCALE;
@@ -637,7 +637,7 @@ namespace Radiant {
 
     dc1394video_mode_t vmode = (dc1394video_mode_t)
                                (DC1394_VIDEO_MODE_FORMAT7_0 + mode);
-    
+
     err = dc1394_video_set_mode(m_camera, vmode);
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not set mode to format7_0", fname);
@@ -649,10 +649,10 @@ namespace Radiant {
     bzero( & modeset, sizeof(modeset));
 
     err = dc1394_format7_get_modeset(m_camera, & modeset);
-    
+
     uint32_t maxw = 0;
     uint32_t maxh = 0;
-    
+
     err = dc1394_format7_get_max_image_size
           (m_camera, vmode, & maxw, & maxh);
 
@@ -702,7 +702,7 @@ namespace Radiant {
     int packetSize = 2.01 * (roi.area() * 8 + denom - 1) / denom;
 
     if(packetSize > (int) maxbytes) {
-      
+
       debug("%s # Limiting packet size to %u", fname, maxbytes);
       packetSize = maxbytes;
     }
@@ -753,7 +753,7 @@ namespace Radiant {
     bzero( & modeset, sizeof(modeset));
 
     err = dc1394_format7_get_modeset(m_camera, & modeset);
-    
+
     if(err != DC1394_SUCCESS) {
       Radiant::error("%s # Could not get modeset", fname);
       close();
@@ -761,7 +761,7 @@ namespace Radiant {
     }
 
     CameraInfo ci(cameraInfo());
-    
+
     info("Format 7 mode information for %s %s (id = %s)",
    ci.m_vendor.c_str(), ci.m_model.c_str(), cameraeuid);
 
@@ -773,7 +773,7 @@ namespace Radiant {
   info(" Format7 mode %d not present", i);
   continue;
       }
-      
+
       info(" Format7 mode %d:", i);
       info("  size    = [%d %d]\n"
      "  maxsize = [%d %d]\n"
@@ -788,7 +788,7 @@ namespace Radiant {
       info("  pixum    = %d",
      mode.pixnum);
     }
-    
+
     return close();
   }
 */
@@ -816,7 +816,7 @@ namespace Radiant {
   }
 
   /**
-   * Starts the camera data transmission. 
+   * Starts the camera data transmission.
    */
   bool VideoCamera1394::start()
   {
@@ -845,7 +845,7 @@ namespace Radiant {
 
 
   /**
-   * Starts the camera data transmission. 
+   * Starts the camera data transmission.
    */
   bool VideoCamera1394::stop()
   {
@@ -925,7 +925,7 @@ namespace Radiant {
     m_outside++;
 
     if(m_outside != 1) {
-      Radiant::error("VideoCamera1394::captureImage # Please release captured " 
+      Radiant::error("VideoCamera1394::captureImage # Please release captured "
                      "frames with doneImage()");
     }
 
@@ -952,7 +952,7 @@ namespace Radiant {
 
     if(!m_camera)
       return false;
-    
+
     if (m_started)
       stop();
 
@@ -1071,7 +1071,7 @@ namespace Radiant {
 
     /* int isochan = m_cameraNum + 2;
        if(dc1394_video_specify_iso_channel(m_camera, isochan) !=DC1394_SUCCESS){
-       error(ERR_UNKNOWN, "%s # unable to set ISO channel to %d", 
+       error(ERR_UNKNOWN, "%s # unable to set ISO channel to %d",
        fname, isochan);
        }
        */
@@ -1094,7 +1094,7 @@ namespace Radiant {
        strstr(m_camera->vendor, "Point Grey")) {
       /* PTGrey Firefly is a popular camera, but it apparently reports
    itself as FW800 camera... */
-      
+
       debug("PTGrey Firefly camera detected, going for FW400");
       try1394b = false;
     }
@@ -1120,7 +1120,7 @@ namespace Radiant {
 
           debug("%s # Could not set ISO speed to 800", fname);
 
-          if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400) 
+          if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
             != DC1394_SUCCESS) {
             error("%s # dc1394_video_set_iso_speed 400 failed",
                   fname);
@@ -1175,6 +1175,9 @@ namespace Radiant {
 
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
+
+  CameraDriver1394::~CameraDriver1394()
+  {}
 
   size_t CameraDriver1394::queryCameras(std::vector<VideoCamera::CameraInfo> & cameras)
   {

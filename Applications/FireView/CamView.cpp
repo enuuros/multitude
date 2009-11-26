@@ -7,10 +7,10 @@
  * See file "Applications/FireView.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "CamView.hpp"
@@ -42,7 +42,7 @@ namespace FireView {
   CamView::InputThread::InputThread()
       : m_camera(0),
       m_state(UNINITIALIZED),
-      m_continue(false),      
+      m_continue(false),
       m_frameCount(0),
       m_lastCheckFrame(0),
       m_lastCheckFps(0)
@@ -83,19 +83,19 @@ namespace FireView {
 
     if(!run())
       return false;
-    
+
     while(m_state == STARTING) {
       Radiant::Sleep::sleepMs(20);
     }
-    
+
     return m_state == RUNNING;
   }
-  
+
   void CamView::InputThread::stop()
   {
     if(!m_continue)
       return;
-    
+
     m_continue = false;
     waitEnd();
   }
@@ -155,7 +155,7 @@ namespace FireView {
           debug("Attempting to re-open camera.");
 
           m_frameCount = 0;
-          
+
           if(!openCamera()) {
             m_continue = false;
             break;
@@ -244,7 +244,7 @@ namespace FireView {
       Nimble::Recti r = CamView::format7Area();
       ok = m_camera->openFormat7(m_euid64, r, m_customFps, CamView::format7Mode());
     }
-    
+
     if(!ok) {
       m_state = FAILED;
       return false;
@@ -316,7 +316,7 @@ namespace FireView {
 
     {
       m_featureSend.resize(m_features.size());
-      
+
       for(unsigned i = 0; i < m_features.size(); i++) {
         Radiant::VideoCamera::CameraFeature & info = m_features[i];
         if(info.id == Radiant::VideoCamera::GAMMA &&
@@ -380,33 +380,33 @@ namespace FireView {
     connect(t, SIGNAL(timeout()), this, SLOT(triggerAnalysis()));
     t->start(1000);
   }
-  
+
   CamView::~CamView()
   {
     delete m_params;
     m_thread.stop();
   }
-  
+
   bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
                       float customFps,
                       Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode, bool format7)
   {
     Radiant::VideoCamera::CameraInfo info;
-    
+
     // Find the camera info by guid
     std::vector<VideoCamera::CameraInfo> cameras;
     Radiant::CameraDriver * cd = Radiant::VideoCamera::drivers().getPreferredCameraDriver();
     if(cd) cd->queryCameras(cameras);
 
     for(size_t i = 0; i < cameras.size(); i++)
-        if(cameras[i].m_euid64 == euid64) { info = cameras[i]; break; }
+      if((uint64_t) cameras[i].m_euid64 == euid64) { info = cameras[i]; break; }
 
     QString title;
 
-    title.sprintf("%s: %s (%llx)", 
+    title.sprintf("%s: %s (%llx)",
                   info.m_vendor.c_str(), info.m_model.c_str(),
                   (long long) euid64);
-    
+
     ((QWidget *) parent())->setWindowTitle(title);
 
     m_texFrame = -1;
@@ -444,7 +444,7 @@ namespace FireView {
     m_showAverages = !m_showAverages;
     m_doAnalysis = true;
   }
-  
+
   void CamView::toggleHalfInchToThirdInch()
   {
     m_halfToThird = (HalfToThird) ((m_halfToThird + 1) % AS_COUNT);
@@ -520,7 +520,7 @@ namespace FireView {
 
       Radiant::Guard g( & m_thread.m_mutex);
       Radiant::VideoImage frame = m_thread.m_frame;
-      
+
       if((m_tex->width()  != frame.width()) || (m_tex->height() != frame.height())) {
 
           m_tex->loadBytes(GL_LUMINANCE, frame.width(), frame.height(), frame.m_planes[0].m_data, PixelFormat(PixelFormat::LAYOUT_LUMINANCE, PixelFormat::TYPE_UBYTE), false);
@@ -533,7 +533,7 @@ namespace FireView {
 
         //  if(!frame.m_planes.empty())
         //    bzero(frame.m_planes[0].m_data, 640 * 20); // black strip
-        
+
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
                         frame.width(), frame.height(),
                         GL_LUMINANCE, GL_UNSIGNED_BYTE,
@@ -560,7 +560,7 @@ namespace FireView {
     glLoadIdentity ();
 
     gluOrtho2D(0, dw, dh, 0);
-    
+
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 
@@ -568,7 +568,7 @@ namespace FireView {
       glEnable(GL_TEXTURE_2D);
       m_tex->bind();
       glColor3f(1.0f, 1.0f, 1.0f);
-      
+
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
       float aspect = m_tex->width() / (float) m_tex->height();
@@ -585,7 +585,7 @@ namespace FireView {
       }
 
       m_imageScale = imw / m_tex->width();
-      
+
       if(m_filtering) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -627,7 +627,7 @@ namespace FireView {
 
       for(int i = 0; i < AREA_COUNT && m_showAverages; i++) {
 
-        Analysis & an = m_averages[i];	
+        Analysis & an = m_averages[i];
         tmp.sprintf("%.1f", an.average);
 
         if(an.average < 128)
@@ -644,7 +644,7 @@ namespace FireView {
         const char * warningtext = "Waiting for camera frames";
         float w = foo.boundingRect(0, 0, 500, 500,
                                    Qt::AlignLeft, warningtext).width();
-        renderText((int) (width() * 0.5f - w * 0.5f), height() / 2, 
+        renderText((int) (width() * 0.5f - w * 0.5f), height() / 2,
                    warningtext);
       }
     }
@@ -663,7 +663,7 @@ namespace FireView {
       renderText(sp.x + 10, sp.y, m_text);
     }
   }
-  
+
   void CamView::grabImageLuminosity(int screenx, int screeny)
   {
     if(m_thread.m_frameCount < 2)
@@ -682,9 +682,9 @@ namespace FireView {
     }
 
     int lumi = frame.m_planes[0].line(p.y)[p.x];
-    
+
     char buf[64];
-    
+
     sprintf(buf, "%d [%d %d]", lumi, p.x, p.y);
 
     m_text = buf;
@@ -701,7 +701,7 @@ namespace FireView {
   Nimble::Vector2i CamView::imageToScreen(Nimble::Vector2i p) const
   {
     return Nimble::Vector2i((int) (p.x * m_imageScale),
-                            (int) (p.y * m_imageScale));    
+                            (int) (p.y * m_imageScale));
   }
 
   /** Returns the effective imaging area. The area includes the border
@@ -713,7 +713,7 @@ namespace FireView {
 
     int w = m_tex->width() - 1;
     int h = m_tex->height() - 1;
-    
+
     if(m_halfToThird == AS_VGA_THIRD) {
       /* We assume that the pixels in half inch sensor are 9.9f / 7.4f times
    the size of pixels in third-inch sensor. Half-inch sensor has
@@ -722,7 +722,7 @@ namespace FireView {
       float scale = 9.9f / 7.4f;
       float remove = (scale - 1.0f) * 0.5f;
       float keep = 1.0f - remove;
-      
+
       int lx = Nimble::Math::Round(remove * w);
       int ly = Nimble::Math::Round(remove * h);
       int hx = Nimble::Math::Round(keep * w);
@@ -745,7 +745,7 @@ namespace FireView {
       float scale_x = 9.9f / 6.1875f * (750.0f / 640.0f);
       float remove_x = (scale_x - 1.0f) * 0.5f;
       float keep_x = 1.0f - remove_x;
-      
+
       int lx = Nimble::Math::Round(remove_x * w);
       int ly = Nimble::Math::Round(remove_y * h);
       int hx = Nimble::Math::Round(keep_x * w);
@@ -762,7 +762,7 @@ namespace FireView {
     Rect a = getEffectiveArea();
 
     Vector2 span = a.span();
-    
+
     Radiant::VideoImage frame = m_thread.m_frame; // Already mutex locked, safe access
 
     float s = 1.0f / AREA_DIVISION;

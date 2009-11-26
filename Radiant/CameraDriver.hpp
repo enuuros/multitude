@@ -15,7 +15,9 @@ namespace Radiant
   /// Each camera driver should implement this interface in addition to VideoCamera interface.
   class RADIANT_API CameraDriver
   {
-      public:
+  public:
+    CameraDriver();
+    virtual ~CameraDriver();
     /// Get a list of available cameras on the system that this driver supports
     /// @arg cameras array of cameras where the new cameras will be appended to
     /// @return number of cameras found by this driver

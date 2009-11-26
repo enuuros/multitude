@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_VIDEO_CAMERA_1394_HPP
@@ -34,7 +34,7 @@ namespace Radiant {
       http://damien.douxchamps.net/ieee1394/libdc1394/ */
   class VideoCamera1394 : public VideoCamera
   {
-  public:  
+  public:
     VideoCamera1394(CameraDriver * driver);
     virtual ~VideoCamera1394();
 
@@ -48,19 +48,19 @@ namespace Radiant {
     /// The frame rate of the video stream.
     virtual float fps() const;
     /// Native image format of the stream.
-    virtual ImageFormat imageFormat() const;  
+    virtual ImageFormat imageFormat() const;
     virtual unsigned int size() const;
 
 
 
      /** Sets a given feature to relative value, in range 0-1.*/
     virtual void setFeature(VideoCamera::FeatureType feature, float value);
-    /** Sets a given feature to an absolute integer value. 
-	
-	The minimum/maximum range of the value depends on the
-	parameter, and the camera model.
+    /** Sets a given feature to an absolute integer value.
+
+  The minimum/maximum range of the value depends on the
+  parameter, and the camera model.
      */
-    virtual void setFeatureRaw(VideoCamera::FeatureType feature, int32_t value);    
+    virtual void setFeatureRaw(VideoCamera::FeatureType feature, int32_t value);
     virtual void getFeatures(std::vector<CameraFeature> * features);
 
     virtual void setWhiteBalance(float u_to_blue, float v_to_red);
@@ -73,16 +73,16 @@ namespace Radiant {
     virtual bool disableTrigger();
     /// Sends a software trigger signal to the camera
     virtual void sendSoftwareTrigger();
-    
+
     /// Initializes the FireWire camera
     /** Some of the arguments are frankly ignored at the moment, for
-	the example the device name (which is selected
-	automatically). */
+  the example the device name (which is selected
+  automatically). */
   virtual bool open(uint64_t euid, int width, int height, ImageFormat fmt = IMAGE_UNKNOWN, FrameRate framerate = FPS_IGNORE);
 
     /// Initializes the FireWire camera to format 7 mode
     virtual bool openFormat7(uint64_t cameraeuid, Nimble::Recti roi, float fps, int mode);
-    
+
     virtual bool isInitialized() const;
     virtual bool start();
     virtual bool stop();
@@ -97,18 +97,18 @@ namespace Radiant {
     dc1394camera_t * dc1394Camera() { return m_camera; }
 
     /** Returns the number of frames that would be immediately readable.
-	
-	This function is not implemented on all platforms, so use it
-	with some care.
+
+  This function is not implemented on all platforms, so use it
+  with some care.
      */
     virtual int framesBehind() const { return m_framesBehind; }
- 
+
   private:
-    bool enableCameraFeature(unsigned int feature, 
-			     const std::string & description, 
-			     bool automatic_mode,
-			     unsigned int * feature_min_value,
-			     unsigned int * feature_max_value);
+    bool enableCameraFeature(unsigned int feature,
+           const std::string & description,
+           bool automatic_mode,
+           unsigned int * feature_min_value,
+           unsigned int * feature_max_value);
 
     bool findCamera(uint64_t euid);
     void captureSetup(int buffers);
@@ -146,8 +146,9 @@ namespace Radiant {
 
   class CameraDriver1394 : public CameraDriver
   {
-    public:
+  public:
     CameraDriver1394() {}
+    virtual ~CameraDriver1394();
 
     virtual size_t queryCameras(std::vector<VideoCamera::CameraInfo> & cameras);
     virtual VideoCamera * createCamera();
