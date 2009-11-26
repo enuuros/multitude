@@ -216,6 +216,7 @@ namespace Luminous {
         alpha value. */
     static void glUsualBlend();
     static void glAdditiveBlend();
+    static void glSubtractiveBlend();
 
     static void glGrayf(float level);
     static inline void glWhite() { glGrayf(1.0f); }

@@ -100,7 +100,6 @@ namespace Radiant {
 
   bool DateTime::fromString(const std::string & s, DateFormat format)
   { 
-
     if(s.length() < 10)
       return false;
 

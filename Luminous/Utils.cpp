@@ -1621,6 +1621,14 @@ namespace Luminous {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   }
 
+  void Utils::glSubtractiveBlend()
+  {
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
+
+
   void Utils::glGrayf(float level)
   {
     glColor3f(level, level, level);

@@ -29,6 +29,15 @@ namespace Luminous
   class LUMINOUS_API RenderContext : public Transformer
   {
   public:
+
+    enum BlendFunc {
+      BLEND_USUAL,
+      BLEND_NONE,
+      BLEND_ADDITIVE,
+      BLEND_SUBTRACTIVE
+    };
+
+
     RenderContext(Luminous::GLResources * resources);
     virtual ~RenderContext();
 
@@ -62,24 +71,31 @@ namespace Luminous
 
     /** Draws a line that contains multiple segments. 
 
-	@arg vertices Pointer to the line vertices
+        @arg vertices Pointer to the line vertices
 
-	@arg n Number of vertices
-	
-	@arg width Width of the line
+        @arg n Number of vertices
 
-	@arg rgba The line color in RGBA format
+        @arg width Width of the line
+
+        @arg rgba The line color in RGBA format
      */
     void drawPolyLine(const Nimble::Vector2f * vertices, int n,
-		      float width, const float * rgba);
+                      float width, const float * rgba);
     /** Draw a textured rectangle with given color. 
 
-	@arg size The size of the rectangle to be drawn.
-	
-	@arg rgba The color in RGBA format. If the argument is null,
-	then it will be ignored.
-*/
+        @arg size The size of the rectangle to be drawn.
+
+        @arg rgba The color in RGBA format. If the argument is null,
+        then it will be ignored.
+    */
     void drawTexRect(Nimble::Vector2 size, const float * rgba);
+
+    /// Sets the current blend function, and enables blending
+    /** If the function is BLEND_NONE, then blending is disabled. */
+    void setBlendFunc(BlendFunc f);
+
+    static const char ** blendFuncNames();
+
   protected:
 
     Luminous::GLResources * m_resources;

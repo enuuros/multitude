@@ -217,5 +217,36 @@ namespace Luminous
 
   }
 
+  void RenderContext::setBlendFunc(BlendFunc f)
+  {
+    if(f == BLEND_NONE) {
+      glDisable(GL_BLEND);
+      return;
+    }
+
+    glEnable(GL_BLEND);
+
+    if(f == BLEND_USUAL)
+      Utils::glUsualBlend();
+    else if(f == BLEND_ADDITIVE)
+      Utils::glAdditiveBlend();
+    else if(f == BLEND_SUBTRACTIVE) {
+      Utils::glSubtractiveBlend();
+    }
+
+  }
+
+  const char ** RenderContext::blendFuncNames()
+  {
+    static const char * names [] = {
+      "usual",
+      "none",
+      "additive",
+      "subtractive"
+    };
+
+    return names;
+  }
+
 }
 
