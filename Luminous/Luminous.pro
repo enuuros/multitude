@@ -1,8 +1,7 @@
 include(../multitude.pri)
 
-# unix:CONFIG += debug
-HEADERS += BGThread.hpp \
-    ImageCodecQT.hpp
+HEADERS += BGThread.hpp
+HEADERS += ImageCodecQT.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
@@ -20,8 +19,6 @@ HEADERS += GLSLProgramObject.hpp
 HEADERS += GLSLShaderObject.hpp
 HEADERS += GPUMipmaps.hpp
 HEADERS += ImageCodec.hpp
-HEADERS += ImageCodecJPEG.hpp
-HEADERS += ImageCodecPNG.hpp
 HEADERS += ImageCodecTGA.hpp
 HEADERS += Image.hpp
 HEADERS += ImagePyramid.hpp
@@ -38,8 +35,9 @@ HEADERS += Transformer.hpp
 HEADERS += Utils.hpp
 HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
-SOURCES += BGThread.cpp \
-    ImageCodecQT.cpp
+
+SOURCES += BGThread.cpp
+SOURCES += ImageCodecQT.cpp
 SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -54,8 +52,6 @@ SOURCES += GLResources.cpp
 SOURCES += GLSLProgramObject.cpp
 SOURCES += GLSLShaderObject.cpp
 SOURCES += GPUMipmaps.cpp
-SOURCES += ImageCodecJPEG.cpp
-SOURCES += ImageCodecPNG.cpp
 SOURCES += ImageCodecTGA.cpp
 SOURCES += Image.cpp
 SOURCES += Luminous.cpp
@@ -69,31 +65,30 @@ SOURCES += Texture.cpp
 SOURCES += Transformer.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
+
 LIBS += $$LIB_RADIANT \
     -lGLEW \
-    $$LIB_OPENGL
-LIBS += $$LIB_VALUABLE \
+    $$LIB_OPENGL \
+	$$LIB_VALUABLE \
     $$LIB_GLU \
     $$LIB_NIMBLE \
     $$LIB_PATTERNS
-unix:LIBS += -ljpeg \
-    -lpng
+
+	
+unix {
+	LIBS += -ljpeg -lpng
+
+	!contains(HAS_QT_45,YES) {
+		HEADERS += ImageCodecPNG.hpp
+		HEADERS += ImageCodecTGA.hpp
+		SOURCES += ImageCodecJPEG.cpp
+		SOURCES += ImageCodecPNG.cpp
+	}
+}
+
 win32 { 
     DEFINES += LUMINOUS_EXPORT
-    INCLUDEPATH += ../Win32x/include/libjpeg
-    LIBS += libjpeg-static-mt.lib \
-        -lWin32x
-    
-    # This seems to be important under Windows. libpng crashes if you mix release & debug code.
-    CONFIG(debug, debug|release) { 
-        message(debug libpng)
-        message($$CONFIG)
-        LIBS += libpng13d.lib
-    }
-    else { 
-        message(release libpng)
-        LIBS += libpng13.lib
-    }
+	LIBS += -lWin32x
 }
 
 contains(HAS_QT_45,YES) {

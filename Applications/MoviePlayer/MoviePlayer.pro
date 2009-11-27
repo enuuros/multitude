@@ -1,7 +1,5 @@
 include(../Applications.pri)
 
-unix:CONFIG += debug
-
 HEADERS += VideoWindow.hpp
 
 SOURCES += VideoWindow.cpp

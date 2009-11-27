@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-# unix:CONFIG += debug
-
 HEADERS += AudioTransfer.hpp
 HEADERS += Export.hpp
 HEADERS += ShowGL.hpp

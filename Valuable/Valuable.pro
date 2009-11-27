@@ -1,6 +1,7 @@
 include(../multitude.pri)
-HEADERS += ChangeMap.hpp \
-    ValueEnum.hpp
+
+HEADERS += ChangeMap.hpp
+HEADERS += ValueEnum.hpp
 HEADERS += ConfigDocument.hpp
 HEADERS += ConfigElement.hpp
 HEADERS += ConfigValue.hpp
@@ -23,8 +24,9 @@ HEADERS += ValueString.hpp
 HEADERS += ValueStringImpl.hpp
 HEADERS += ValueVector.hpp
 HEADERS += ValueVectorImpl.hpp
-SOURCES += ChangeMap.cpp \
-    ValueEnum.cpp
+
+SOURCES += ChangeMap.cpp
+SOURCES += ValueEnum.cpp
 SOURCES += ConfigDocument.cpp
 SOURCES += ConfigElement.cpp
 SOURCES += ConfigValue.cpp
@@ -40,12 +42,15 @@ SOURCES += ValueObject.cpp
 SOURCES += ValueRect.cpp
 SOURCES += ValueString.cpp
 SOURCES += ValueVector.cpp
+
 LIBS += $$LIB_RADIANT \
     $$LIB_NIMBLE
+
 unix:LIBS += -lxerces-c
 win32 { 
     DEFINES += VALUABLE_EXPORT
     LIBS += xerces-c_2.lib
     QMAKE_CXXFLAGS += -Zc:wchar_t
 }
+
 include(../library.pri)

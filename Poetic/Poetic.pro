@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-# unix:CONFIG += debug
-
 HEADERS += BBox.hpp
 HEADERS += Charmap.hpp
 HEADERS += CPUBitmapFont.hpp
