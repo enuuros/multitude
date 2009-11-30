@@ -1,7 +1,6 @@
 include(../multitude.pri)
 
 HEADERS += BGThread.hpp
-HEADERS += ImageCodecQT.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
@@ -37,7 +36,6 @@ HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
 
 SOURCES += BGThread.cpp
-SOURCES += ImageCodecQT.cpp
 SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -93,6 +91,8 @@ win32 {
 
 contains(HAS_QT_45,YES) {
   message(Including QT Image codecs)
+  HEADERS += ImageCodecQT.hpp
+  SOURCES += ImageCodecQT.cpp
   CONFIG += qt
   QT += gui
 }
