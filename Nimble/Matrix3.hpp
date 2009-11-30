@@ -215,13 +215,6 @@ namespace Nimble {
   typedef Matrix3T<float> Matrix3;
   typedef Matrix3T<float> Matrix3f;
 
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Matrix3T<float>;
-#endif
-#endif
-
   template <class T>
   inline void Matrix3T<T>::swap(T &a, T& b)
   {

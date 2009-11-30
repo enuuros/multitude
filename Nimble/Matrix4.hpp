@@ -321,13 +321,6 @@ namespace Nimble {
   typedef Matrix4T<float> Matrix4f;
   typedef Matrix4T<double> Matrix4d;
 
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Matrix4T<float>;
-#endif
-#endif
-
 }
 
 template <class T>
