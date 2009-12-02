@@ -48,7 +48,8 @@ namespace {
 
   Radiant::VideoCamera::FeatureType featureTypeFromNative(dc1394feature_t id)
   {
-    Radiant::VideoCamera::FeatureType result = Radiant::VideoCamera::FeatureType(int(id) - int(DC1394_FEATURE_BRIGHTNESS));
+    Radiant::VideoCamera::FeatureType result =
+        Radiant::VideoCamera::FeatureType(int(id) - int(DC1394_FEATURE_BRIGHTNESS));
 
     return result;
   }
@@ -99,7 +100,7 @@ namespace Radiant {
     VideoCamera::CameraFeature feat;
 
     feat.id = featureTypeFromNative(native.id);
-//    feat.num_modes = native.modes.num;
+    //    feat.num_modes = native.modes.num;
 
     feat.absolute_capable = native.absolute_capable;
     feat.abs_max = native.abs_max;
@@ -112,7 +113,24 @@ namespace Radiant {
     else if(native.current_mode == DC1394_FEATURE_MODE_AUTO)
       feat.current_mode = VideoCamera::MODE_AUTO;
     else if(native.current_mode == DC1394_FEATURE_MODE_ONE_PUSH_AUTO)
-        feat.current_mode = VideoCamera::MODE_ONE_PUSH_AUTO;
+      feat.current_mode = VideoCamera::MODE_ONE_PUSH_AUTO;
+
+
+    feat.num_modes = 0;
+
+    for(unsigned i = 0; i < native.modes.num && i < VideoCamera::MODE_MAX; i++) {
+      dc1394feature_mode_t fm = native.modes.modes[i];
+
+      if(fm == DC1394_FEATURE_MODE_MANUAL) {
+        feat.modes[feat.num_modes++] = VideoCamera::MODE_MANUAL;
+      }
+      else if(fm == DC1394_FEATURE_MODE_AUTO) {
+        feat.modes[feat.num_modes++] = VideoCamera::MODE_AUTO;
+      }
+      else if(fm == DC1394_FEATURE_MODE_ONE_PUSH_AUTO) {
+        feat.modes[feat.num_modes++] = VideoCamera::MODE_ONE_PUSH_AUTO;
+      }
+    }
 
     feat.is_on = native.is_on;
     feat.max = native.max;
@@ -448,7 +466,9 @@ namespace Radiant {
   {
     debug("VideoCamera1394::setTriggerPolarity # %d", (int) tp);
 
-    dc1394trigger_polarity_t polarity = (tp == TRIGGER_ACTIVE_HIGH) ? DC1394_TRIGGER_ACTIVE_HIGH : DC1394_TRIGGER_ACTIVE_LOW;
+    dc1394trigger_polarity_t polarity =
+        (tp == TRIGGER_ACTIVE_HIGH) ? DC1394_TRIGGER_ACTIVE_HIGH :
+        DC1394_TRIGGER_ACTIVE_LOW;
 
     dc1394error_t e = dc1394_external_trigger_set_polarity(m_camera, polarity);
 
@@ -1262,37 +1282,37 @@ namespace Radiant {
     fillquery:
 #endif
 
-      //query->clear();
+    //query->clear();
 
-      for(i = 0; i < g_infos.size(); i++) {
-        dc1394camera_t * c = g_infos[i];
-        VideoCamera::CameraInfo ci;
+    for(i = 0; i < g_infos.size(); i++) {
+      dc1394camera_t * c = g_infos[i];
+      VideoCamera::CameraInfo ci;
 
-        if(!c) {
-          error("NULL camera");
-          continue;
-        }
-
-        if(!c->guid || !c->vendor || !c->model)
-          continue;
-
-        debug("Got camera %p: %s %s (%llx)", c, c->vendor, c->model, c->guid);
-
-        ci.m_euid64 = c->guid;
-        ci.m_vendor = c->vendor;
-        ci.m_model  = c->model;
-        ci.m_driver = std::string("libdc1394");
-
-        cameras.push_back(ci);
+      if(!c) {
+        error("NULL camera");
+        continue;
       }
 
-      debug("Clearing camera list");
+      if(!c->guid || !c->vendor || !c->model)
+        continue;
+
+      debug("Got camera %p: %s %s (%llx)", c, c->vendor, c->model, c->guid);
+
+      ci.m_euid64 = c->guid;
+      ci.m_vendor = c->vendor;
+      ci.m_model  = c->model;
+      ci.m_driver = std::string("libdc1394");
+
+      cameras.push_back(ci);
+    }
+
+    debug("Clearing camera list");
 
 #ifdef __linux__
-      dc1394_camera_free_list(camlist);
+    dc1394_camera_free_list(camlist);
 #endif
 
-      return true;
+    return true;
   }
 
   VideoCamera * CameraDriver1394::createCamera()

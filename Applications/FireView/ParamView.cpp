@@ -18,6 +18,7 @@
 #include "CamView.hpp"
 
 #include <Radiant/VideoCamera.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <QtGui/QComboBox>
 #include <QtGui/QGridLayout>
@@ -26,10 +27,12 @@
 
 namespace FireView {
   
+  using namespace Radiant;
+
   ParamView::ParamView(CamView * camview)
-    : m_camview(camview)
+      : m_camview(camview)
   {}
-    
+
   ParamView::~ParamView()
   {}
 
@@ -43,12 +46,18 @@ namespace FireView {
 
     m_rows.resize(features.size());
 
+    debug("ParamView::init # camera has %d features", (int) features.size());
+
     for(unsigned i = 0; i < features.size(); i++) {
 
       const Radiant::VideoCamera::CameraFeature & f = features[i];
 
+      debug("ParamView::init # feature[%u] settings = %d %d %d %d",
+            i, (int) f.available, (int) Radiant::VideoCamera::hasManualMode(f),
+            (int) f.min, (int) f.max);
+
       if(!f.available || !Radiant::VideoCamera::hasManualMode(f) || (f.min == f.max))
-	continue;
+        continue;
       
       QSlider * slider = new QSlider(Qt::Horizontal, this);
       QLabel  * label1 = new QLabel(Radiant::VideoCamera::featureName(f.id), this);
@@ -56,19 +65,19 @@ namespace FireView {
       Mapper  * mapper = new Mapper(this, i);
 
       if(Radiant::VideoCamera::hasAutoMode(f)) {
-	Mapper  * mapper2 = new Mapper(this, i);
-	QComboBox * cb = new QComboBox(this);
+        Mapper  * mapper2 = new Mapper(this, i);
+        QComboBox * cb = new QComboBox(this);
 
-	cb->addItem("Auto");
-	cb->addItem("Man");
+        cb->addItem("Auto");
+        cb->addItem("Man");
         cb->setCurrentIndex(f.current_mode == Radiant::VideoCamera::MODE_AUTO ? 0 : 1);
 
-	connect(cb, SIGNAL(activated(int)), mapper2, SLOT(setInt(int)));
-	connect(mapper2, SIGNAL(emitInt(int,int)),
-		this, SLOT(setAuto(int,int)));
+        connect(cb, SIGNAL(activated(int)), mapper2, SLOT(setInt(int)));
+        connect(mapper2, SIGNAL(emitInt(int,int)),
+                this, SLOT(setAuto(int,int)));
 
-	layout->addWidget(cb, row, 1);
-	cb->show();
+        layout->addWidget(cb, row, 1);
+        cb->show();
       }
 
       layout->addWidget(label1, row, 0);
@@ -82,7 +91,7 @@ namespace FireView {
 
       connect(slider, SIGNAL(valueChanged(int)), mapper, SLOT(setInt(int)));
       connect(mapper, SIGNAL(emitInt(int,int)),
-	      this, SLOT(sliderMoved(int,int)));
+              this, SLOT(sliderMoved(int,int)));
 
       label1->show();
       slider->show();
@@ -94,7 +103,7 @@ namespace FireView {
       row++;
     }
   }
-    
+
   void ParamView::sliderMoved(int index, int val)
   {
     if(m_rows[index].value)

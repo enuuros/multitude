@@ -78,7 +78,7 @@ namespace Radiant {
     /** Some of the arguments are frankly ignored at the moment, for
   the example the device name (which is selected
   automatically). */
-  virtual bool open(uint64_t euid, int width, int height, ImageFormat fmt = IMAGE_UNKNOWN, FrameRate framerate = FPS_IGNORE);
+    virtual bool open(uint64_t euid, int width, int height, ImageFormat fmt = IMAGE_UNKNOWN, FrameRate framerate = FPS_IGNORE);
 
     /// Initializes the FireWire camera to format 7 mode
     virtual bool openFormat7(uint64_t cameraeuid, Nimble::Recti roi, float fps, int mode);
@@ -98,17 +98,17 @@ namespace Radiant {
 
     /** Returns the number of frames that would be immediately readable.
 
-  This function is not implemented on all platforms, so use it
-  with some care.
+        This function is not implemented on all platforms, so use it
+        with some care.
      */
     virtual int framesBehind() const { return m_framesBehind; }
 
   private:
     bool enableCameraFeature(unsigned int feature,
-           const std::string & description,
-           bool automatic_mode,
-           unsigned int * feature_min_value,
-           unsigned int * feature_max_value);
+                             const std::string & description,
+                             bool automatic_mode,
+                             unsigned int * feature_min_value,
+                             unsigned int * feature_max_value);
 
     bool findCamera(uint64_t euid);
     void captureSetup(int buffers);
@@ -128,7 +128,7 @@ namespace Radiant {
 
     int m_isoChannel;
 
-    /// Numberof images the user is holding.
+    /// Number of images the user is holding.
     int m_outside;
     int m_framesBehind;
 

@@ -7,13 +7,13 @@
 namespace Radiant
 {
 
-    VideoCamera::VideoCamera(CameraDriver * driver)
-    : VideoInput(),
-    m_driver(driver)
-    {}
+  VideoCamera::VideoCamera(CameraDriver * driver)
+      : VideoInput(),
+      m_driver(driver)
+  {}
 
-    VideoCamera::~VideoCamera()
-    {}
+  VideoCamera::~VideoCamera()
+  {}
 
   void VideoCamera::setPan(float value)
   {
@@ -87,8 +87,8 @@ namespace Radiant
     return names[index];
   }
 
-   bool VideoCamera::hasMode(const CameraFeature & feature,
-      FeatureMode mode)
+  bool VideoCamera::hasMode(const CameraFeature & feature,
+                            FeatureMode mode)
   {
     for(uint32_t i = 0; i < feature.num_modes; i++)
       if(feature.modes[i] == mode)
@@ -97,10 +97,10 @@ namespace Radiant
     return false;
   }
 
-   CameraDriverFactory g_factory;
+  CameraDriverFactory g_factory;
 
-   CameraDriverFactory & VideoCamera::drivers()
-   {
-     return g_factory;
-   }
+  CameraDriverFactory & VideoCamera::drivers()
+  {
+    return g_factory;
+  }
 }
