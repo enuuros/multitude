@@ -3,7 +3,8 @@
 CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
-CONFIG += release
+# CONFIG += release
+CONFIG += debug
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD

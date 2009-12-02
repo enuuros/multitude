@@ -52,7 +52,7 @@ namespace Luminous
 
       MyWidget is the object that uses OpenGL resources
 
-      class MyWidget : public Widget
+      class MyWidget : public virtual Widget
       {
       public:
 
