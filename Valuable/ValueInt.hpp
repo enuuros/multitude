@@ -33,45 +33,45 @@ namespace Valuable
       @see ValueInt, ValueTimeStamp */
 
   template<class T>
-  class VALUABLE_API ValueIntT : public ValueNumeric<T>
+      class VALUABLE_API ValueIntT : public ValueNumeric<T>
   {
     typedef ValueNumeric<T> Base;
 
-    public:
-      ValueIntT() : Base() {}
-      ValueIntT(HasValues * parent, const std::string & name, T v, bool transit = false)
-      : ValueNumeric<T>(parent, name, v, transit)
-      {}
+  public:
+    ValueIntT() : Base() {}
+    ValueIntT(HasValues * parent, const std::string & name, T v, bool transit = false)
+        : ValueNumeric<T>(parent, name, v, transit)
+    {}
 
-      ValueIntT<T> & operator = (T i) { Base::m_value = i; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator = (T i) { Base::m_value = i; VALUEMIT_STD_OP }
 
-      operator const T & () const { return Base::m_value; }
+    operator const T & () const { return Base::m_value; }
 
-      ValueIntT<T> & operator |= (T i) { Base::m_value |= i; VALUEMIT_STD_OP }
-      ValueIntT<T> & operator &= (T i) { Base::m_value &= i; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator |= (T i) { Base::m_value |= i; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator &= (T i) { Base::m_value &= i; VALUEMIT_STD_OP }
 
-      // Postfix
-      ValueIntT<T> & operator ++ (int) { Base::m_value++; VALUEMIT_STD_OP }
-      ValueIntT<T> & operator -- (int) { Base::m_value--; VALUEMIT_STD_OP }
+    // Postfix
+    ValueIntT<T> & operator ++ (int) { Base::m_value++; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator -- (int) { Base::m_value--; VALUEMIT_STD_OP }
 
-      // Prefix
-      ValueIntT<T> & operator ++ () { ++Base::m_value; VALUEMIT_STD_OP }
-      ValueIntT<T> & operator -- () { --Base::m_value; VALUEMIT_STD_OP }
+    // Prefix
+    ValueIntT<T> & operator ++ () { ++Base::m_value; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator -- () { --Base::m_value; VALUEMIT_STD_OP }
 
-      // Shift
-      ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; VALUEMIT_STD_OP }
-      ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; VALUEMIT_STD_OP }
+    // Shift
+    ValueIntT<T> & operator <<= (int i) { Base::m_value <<= i; VALUEMIT_STD_OP }
+    ValueIntT<T> & operator >>= (int i) { Base::m_value >>= i; VALUEMIT_STD_OP }
 
-      bool operator < (const T & i) const { return Base::m_value < i; }
-      bool operator <= (const T & i) const { return Base::m_value <= i; }
-      bool operator > (const T & i) const { return Base::m_value > i; }
-      bool operator >= (const T & i) const { return Base::m_value >= i; }
+    bool operator < (const T & i) const { return Base::m_value < i; }
+    bool operator <= (const T & i) const { return Base::m_value <= i; }
+    bool operator > (const T & i) const { return Base::m_value > i; }
+    bool operator >= (const T & i) const { return Base::m_value >= i; }
 
     const char * type() const { return VO_TYPE_INT; }
 
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
 
-      bool deserializeXML(DOMElement element);
+    bool deserializeXML(DOMElement element);
   };
 
   /// Integer value object.
@@ -83,7 +83,7 @@ namespace Valuable
   
   /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
-/*
+  /*
 #ifdef WIN32
 #ifdef VALUABLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported

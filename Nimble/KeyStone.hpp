@@ -77,15 +77,15 @@ namespace Nimble {
 
     /// Set vertices, and other parameters.
     void setVertices(const char * str, 
-		     int w, int h,
-		     int dpyw, int dpyh,
-		     int dpyx, int dpyy);
+                     int w, int h,
+                     int dpyw, int dpyh,
+                     int dpyx, int dpyy);
 
     /// Set vertices, and other parameters.
     void setVertices(const Nimble::Vector2 * vertices, 
-		     int w, int h,
-		     int dpyw, int dpyh,
-		     int dpyx, int dpyy);
+                     int w, int h,
+                     int dpyw, int dpyh,
+                     int dpyx, int dpyy);
     
     /// Sets the output (display) geometry
     void setOutputGeometry(unsigned w, unsigned h, int x, int y);
@@ -99,22 +99,22 @@ namespace Nimble {
 
     /// Project a vector from camera coordinates to the display coordinates
     /** This function applies the lens correction and projection
-	matrix on the coordinates. */
+  matrix on the coordinates. */
     Nimble::Vector2 project(const Nimble::Vector2 &) const;
     /** Project the point from camera coordinates to normalized
-	coordinates in range [0,1].*/
+  coordinates in range [0,1].*/
     Nimble::Vector2 project01(const Nimble::Vector2 &) const;
     /// Applies a 3x3 correction marix on a 2D vector.
     static Nimble::Vector2 project(const Nimble::Matrix3 & m,
-				   const Nimble::Vector2 & v)
+                                   const Nimble::Vector2 & v)
     {
       Nimble::Vector3 p = m * v;
       return Nimble::Vector2(p.x / p.z, p.y / p.z);
     }
     
     /** Do inverse projection (from screen to camera coordinates),
-	ignoring the camera barrel distortion. Useful as a rough
-	estimation of the point location on the camera image. x*/
+  ignoring the camera barrel distortion. Useful as a rough
+  estimation of the point location on the camera image. x*/
     Nimble::Vector2 projectInverse(const Nimble::Vector2 &) const;
 
     /// Returns a corner point in camera coordinates
@@ -123,7 +123,7 @@ namespace Nimble {
     Nimble::Vector2 originalCenter() const
     {
       return 0.25f * (m_originals[0] + m_originals[1] +
-		      m_originals[2] + m_originals[3]);
+                      m_originals[2] + m_originals[3]);
     }
 
     /// Moves the closest corner point
@@ -151,8 +151,8 @@ namespace Nimble {
 
     /// Information on which pixels are inside the camera area
     /** Each item (2D vector) contains values for the first pixel
-	inside the camera area and width of the camera area, per
-	scanline. */
+  inside the camera area and width of the camera area, per
+  scanline. */
     const std::vector<Nimble::Vector2i> & limits() const { return m_limits; }
     const std::vector<Nimble::Vector2i> & extraLimits() const
     { return m_extraLimits; }
@@ -180,7 +180,7 @@ namespace Nimble {
     
     /// The output area of the screen
     /** This function basically returns the information you would
-	get from dpyWidth, dpyheight, dpyX and dpyY. */
+  get from dpyWidth, dpyheight, dpyX and dpyY. */
     Nimble::Rect outputBounds();
     /// Test the keystone correction routines
     static void testCorrection();
@@ -191,16 +191,16 @@ namespace Nimble {
     /// Adjusts the lens correction
     void setLensParam(int i, float v);
     /** Applies correction, based on four screen-space coordinate pairs.
-	
-	@param targets The desired target coordinates.
 
-	@param real The observed coordinates.
+        @param targets The desired target coordinates.
 
-	@param center the center point observed coordinates
+        @param real The observed coordinates.
+
+        @param center the center point observed coordinates
       */
     void calibrateOutput(const Nimble::Vector2 * targets,
-			 const Nimble::Vector2 * real,
-			 const Nimble::Vector2 * center);
+                         const Nimble::Vector2 * real,
+                         const Nimble::Vector2 * center);
     /// Returns the extension (fine-tuning) matrix
     const Nimble::Matrix3 & outputExtension() const { return m_matrixExtension;}
     /// Sets the extension (fine-tuning) matrix
@@ -220,9 +220,9 @@ namespace Nimble {
     void updateLimits();
 
     /** Returns the version number of the object. Whenever the
-	keystone information is modified, the version number is
-	incremented. This information can be used by other objects to
-	check is they need to update some of their data structures.*/
+  keystone information is modified, the version number is
+  incremented. This information can be used by other objects to
+  check is they need to update some of their data structures.*/
     int version() { return m_version; }
 
     void setUseCenterShift(bool use) { m_useCenterShift = use; }
