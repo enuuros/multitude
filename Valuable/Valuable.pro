@@ -30,8 +30,6 @@ SOURCES += ValueEnum.cpp
 SOURCES += ConfigDocument.cpp
 SOURCES += ConfigElement.cpp
 SOURCES += ConfigValue.cpp
-SOURCES += DOMDocument.cpp
-SOURCES += DOMElement.cpp
 SOURCES += HasValues.cpp
 SOURCES += Valuable.cpp
 SOURCES += ValueColor.cpp
@@ -46,11 +44,27 @@ SOURCES += ValueVector.cpp
 LIBS += $$LIB_RADIANT \
     $$LIB_NIMBLE
 
-unix:LIBS += -lxerces-c
-win32 { 
+contains(HAS_QT_45,YES) {
+  message(Using QT XML parser)
+
+  SOURCES += DOMDocumentQT.cpp
+  SOURCES += DOMElementQT.cpp
+  
+  CONFIG += qt
+  QT += xml
+}
+else {
+  message(Using Xerces XML parser)
+
+  SOURCES += DOMDocumentXerces.cpp
+  SOURCES += DOMElementXerces.cpp
+
+  unix:LIBS += -lxerces-c
+  win32 { 
     DEFINES += VALUABLE_EXPORT
     LIBS += xerces-c_2.lib
     QMAKE_CXXFLAGS += -Zc:wchar_t
+  }
 }
 
 include(../library.pri)

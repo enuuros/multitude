@@ -15,6 +15,8 @@
 
 #include "Valuable.hpp"
 
+#ifndef USE_QT45
+
 #include <xercesc/util/PlatformUtils.hpp>
 
 XERCES_CPP_NAMESPACE_USE;
@@ -33,3 +35,20 @@ namespace Valuable
   }
 
 }
+
+#else
+
+namespace Valuable
+{
+
+  void initialize()
+  {
+  }
+
+  void terminate()
+  {
+  }
+
+}
+
+#endif
