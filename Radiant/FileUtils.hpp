@@ -40,7 +40,8 @@ namespace Radiant
     RADIANT_API std::wstring readTextFile(const std::string & file);
 
     /// Writes a string to a text file.
-    RADIANT_API bool writeTextFile(const char * filename,const char * contents);
+    RADIANT_API bool writeTextFile(const char * filename, 
+				   const char * contents);
 
     /// Check if a given file is readable.
     RADIANT_API bool fileReadable(const char* filename);
