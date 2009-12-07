@@ -121,7 +121,6 @@ win32 {
 
     LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib
 		
-    QMAKE_CXXFLAGS += -Zc:wchar_t
     CONFIG += qt
     QT = core network
 

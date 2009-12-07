@@ -44,6 +44,8 @@ SOURCES += ValueVector.cpp
 LIBS += $$LIB_RADIANT \
     $$LIB_NIMBLE
 
+win32:DEFINES += VALUABLE_EXPORT
+
 contains(HAS_QT_45,YES) {
   message(Using QT XML parser)
 
@@ -52,8 +54,7 @@ contains(HAS_QT_45,YES) {
   
   CONFIG += qt
   QT += xml
-}
-else {
+} else {
   message(Using Xerces XML parser)
 
   SOURCES += DOMDocumentXerces.cpp

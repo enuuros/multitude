@@ -33,6 +33,5 @@ include(../library.pri)
 win32 {
 	DEFINES += RESONANT_EXPORT
 	INCLUDEPATH += ..\Win32x\include\portaudio ..\Win32x\include\libsndfile
-	LIBS += -llibsndfile-1 -lportaudio_x86 -lWin32x
-	QMAKE_CXXFLAGS += -Zc:wchar_t
+	LIBS += -llibsndfile-1 -lportaudio_x86 -lWin32x	
 }
