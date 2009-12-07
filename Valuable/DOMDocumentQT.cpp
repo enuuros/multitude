@@ -26,44 +26,61 @@
 
 namespace Valuable
 {
+  using namespace Radiant;
+
   struct DOMDocument::Wrapped {
-    QDomDocument * x;
+    Wrapped() : x("mtdoc")
+    {}
+
+    QDomDocument x;
   };
 
-  inline QDomDocument * QDOC(DOMDocument::Wrapped * x) { return reinterpret_cast<QDomDocument *> (x); }
-  inline QDomElement * QELEM(DOMElement::Wrapped * x) { return reinterpret_cast<QDomElement *> (x); }
-
-  inline DOMDocument::Wrapped * DOC(QDomDocument * x) { return reinterpret_cast<DOMDocument::Wrapped *> (x); }
-  inline DOMElement::Wrapped * ELEM(QDomElement * x) { return reinterpret_cast<DOMElement::Wrapped *> (x); }
+  struct DOMElement::Wrapped {
+    QDomElement x;
+  };
 
   DOMDocument::DOMDocument(DOMDocument::Wrapped * doc)
     : m_wrapped(doc)
   {}
 
+  DOMDocument::DOMDocument()
+    : m_wrapped(new Wrapped)
+  {}
+
   DOMDocument::~DOMDocument()
   {
-    if(m_wrapped)
-      delete QDOC(m_wrapped);
+    delete m_wrapped;
   }
 
   void DOMDocument::appendChild(DOMElement element)
   {
     if(element.isNull()) return;
 
-    assert(m_wrapped != 0);
+    m_wrapped->x.appendChild(element.m_wrapped->x);
+
+    /*
+
+    QDomElement e = m_wrapped->x.documentElement();
+    if(e.isNull()) {
+      e = m_wrapped->x.createElement("root");
+      doc.appendChild(e);
+    }
     
-    QDOC(m_wrapped)->documentElement().appendChild(*QELEM(element.m_wrapped));
+    e.appendChild(element.m_wrapped->x);
+    */
   }
 
   DOMDocument * DOMDocument::createDocument()
   {
-    return new DOMDocument(DOC(new QDomDocument));
+    return new DOMDocument();
   }
 
   DOMElement DOMDocument::createElement(const char * name)
   {
-    QDomElement de = QDOC(m_wrapped)->createElement(name);
-    return DOMElement(ELEM(new QDomElement(de)));
+    QDomElement de = m_wrapped->x.createElement(name);
+    DOMElement r;
+    r.m_wrapped->x = de;
+    return r;
   }
 
   DOMElement DOMDocument::createElement(const std::string & name)
@@ -75,13 +92,13 @@ namespace Valuable
   bool DOMDocument::writeToFile(const char * filename)
   {
     return Radiant::FileUtils::writeTextFile
-      (filename, QDOC(m_wrapped)->toByteArray().data());
+      (filename, m_wrapped->x.toByteArray().data());
   }
 
   bool DOMDocument::writeToMem(std::vector<char> & buffer)
   {
-    QDomDocument * qdoc = QDOC(m_wrapped);
-    std::string xml = qdoc->toString().toStdString();
+    QDomDocument & qdoc = m_wrapped->x;
+    std::string xml = qdoc.toString().toStdString();
 
     buffer.resize(xml.size());
 
@@ -96,8 +113,13 @@ namespace Valuable
     if (!file.open(QIODevice::ReadOnly))
       return false;
 
-    if (!QDOC(m_wrapped)->setContent( & file)) {
+    QString errstr;
+    int errline = 0;
+
+    if(!m_wrapped->x.setContent( & file, & errstr, & errline)) {
       file.close();
+      error("DOMDocument::readFromFile # Cannot read file %s, line %d: %s",
+            filename, errline, errstr.toStdString().c_str());
       return false;
     }
 
@@ -107,8 +129,9 @@ namespace Valuable
    
   DOMElement DOMDocument::getDocumentElement()
   {
-    QDomElement * de = new QDomElement(QDOC(m_wrapped)->documentElement());
-    return DOMElement(ELEM(de));
+    DOMElement r;
+    r.m_wrapped->x = m_wrapped->x.documentElement();
+    return r;
   }
 
 }

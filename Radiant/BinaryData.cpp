@@ -370,9 +370,10 @@ namespace Radiant {
       DateTime dt;
       bool dtok = dt.fromString(source);
 
+      /*
       info("BinaryData::readTimeStamp # %s %d (%d %d %d)",
            source, (int) dtok, (int) dt.year(), dt.month(), dt.monthDay());
-
+*/
       if(!dtok && ok)
         *ok = false;
       else

@@ -56,6 +56,7 @@ namespace Valuable
 
   private:
     DOMDocument(Wrapped * doc);
+    DOMDocument();
 
     Wrapped * m_wrapped;
   };

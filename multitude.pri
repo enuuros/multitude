@@ -1,10 +1,10 @@
-# This file is to be included by all project files of qmake.
 # Use this to setup global build options & variables.
+# This file is to be included by all project files of qmake.
 CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
-CONFIG += release
-# CONFIG += debug
+# CONFIG += release
+CONFIG += debug
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD

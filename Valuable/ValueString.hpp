@@ -32,22 +32,23 @@ namespace Valuable
   /** This template class is used to implement both normal 7/8-bit
       strings and wide strings*/
   template<class T>
-  class VALUABLE_API ValueStringT : public ValueObject
+      class VALUABLE_API ValueStringT : public ValueObject
   {
   public:
     ValueStringT() : ValueObject() {}
     ValueStringT(HasValues * parent, const std::string & name,
-		 const T & v, bool transit = false);
+                 const T & v, bool transit = false);
 
     ValueStringT(HasValues * parent, const std::string & name,
-		 const char * v, bool transit = false);
+                 const char * v, bool transit = false);
 
     ValueStringT(HasValues * parent, const std::string & name,
-		 bool transit = false);
+                 bool transit = false);
     
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
 
-    ValueStringT<T> & operator = (const ValueStringT<T> & i) { m_value = i.m_value; VALUEMIT_STD_OP }
+    ValueStringT<T> & operator = (const ValueStringT<T> & i)
+                                 { m_value = i.m_value; VALUEMIT_STD_OP }
     ValueStringT<T> & operator = (const T & i) { m_value = i; VALUEMIT_STD_OP }
     
     bool operator == (const T & that) { return that == m_value; }

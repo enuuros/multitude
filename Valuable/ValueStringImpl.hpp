@@ -207,13 +207,13 @@ namespace Valuable
   {
     if(name().empty()) {
       Radiant::error("ValueWString::serializeXML # attempt to serialize object with no name");
-      return DOMElement(0);
+      return DOMElement();
     }
 
     DOMElement elem = doc->createElement(name().c_str());
     elem.setAttribute("type", type());
   
-    const std::wstring & ws = asWString();
+    std::wstring ws = asWString();
     elem.setTextContent(ws);
 
     return elem;

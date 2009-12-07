@@ -27,40 +27,44 @@ namespace Valuable
   /// Wrapper for xercesc::DOMElement
   class VALUABLE_API DOMElement
   {
-    public:
-      struct Wrapped;
+  public:
+    struct Wrapped;
 
-      DOMElement(Wrapped * x); 
-      ~DOMElement() {}
+    DOMElement();
+    DOMElement(const DOMElement &);
+    ~DOMElement();
 
-      bool isNull() const { return (m_wrapped == 0);  }
+    DOMElement & operator = (const DOMElement &);
 
-      std::string getTagName() const;
+    bool isNull() const;
 
-      void appendChild(DOMElement element);
-      void setAttribute(const char * name, const char * value);
+    std::string getTagName() const;
 
-      bool hasAttribute(const char * name) const;
-      std::string getAttribute(const char * name) const;
+    void appendChild(DOMElement element);
+    void setAttribute(const char * name, const char * value);
 
-      std::string getTextContent() const;
-      std::wstring getTextContentW() const;
+    bool hasAttribute(const char * name) const;
+    std::string getAttribute(const char * name) const;
 
-      void setTextContent(const std::string & content);
-      void setTextContent(const std::wstring & content);
+    std::string getTextContent() const;
+    std::wstring getTextContentW() const;
 
-      typedef std::list<DOMElement> NodeList;
-      NodeList getChildNodes() const;
-      NodeList selectChildNodes(const char * tagname) const;
-      DOMElement getChildNode(const char * tagname);
+    void setTextContent(const std::string & content);
+    void setTextContent(const std::wstring & content);
 
-      void dumpInfo(FILE *, int recursion = 0);
+    typedef std::list<DOMElement> NodeList;
+    NodeList getChildNodes() const;
+    NodeList selectChildNodes(const char * tagname) const;
+    DOMElement getChildNode(const char * tagname);
 
-    private:
+    void dumpInfo(FILE *, int recursion = 0);
 
-      Wrapped * m_wrapped;
+  private:
+    DOMElement(Wrapped * x);
 
-      friend class DOMDocument;
+    Wrapped * m_wrapped;
+
+    friend class DOMDocument;
   };
 
 }

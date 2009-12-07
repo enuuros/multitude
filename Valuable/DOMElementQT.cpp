@@ -25,31 +25,56 @@
 
 namespace Valuable
 {
+  using namespace Radiant;
+
   struct DOMElement::Wrapped
   {
-    QDomElement * x;
+    QDomElement x;
   };
 
-  inline QDomElement * QELEM(DOMElement::Wrapped * x) 
-  { return reinterpret_cast <QDomElement *> (x); }
-  inline DOMElement::Wrapped * ELEM(QDomElement * x)
-  { return reinterpret_cast <DOMElement::Wrapped *> (x); }
   
-  DOMElement::DOMElement(DOMElement::Wrapped * x)
-  : m_wrapped(x)
+  DOMElement::DOMElement()
+      : m_wrapped(new Wrapped())
   {}
-  
+
+  DOMElement::DOMElement(Wrapped * )
+  {
+    assert("Not to be used with Qt" == 0);
+  }
+
+  DOMElement::DOMElement(const DOMElement & that)
+      : m_wrapped(new Wrapped())
+  {
+    m_wrapped->x = that.m_wrapped->x;
+  }
+
+  DOMElement::~DOMElement()
+  {
+    delete m_wrapped;
+  }
+
+  DOMElement & DOMElement::operator = (const DOMElement & that)
+  {
+    m_wrapped->x = that.m_wrapped->x;
+    return * this;
+  }
+
+  bool DOMElement::isNull() const
+  {
+    return m_wrapped->x.isNull();
+  }
+
   std::string DOMElement::getTagName() const
   {
     if(!m_wrapped)
       return std::string();
     
-    return QELEM(m_wrapped)->tagName().toStdString();
+    return m_wrapped->x.tagName().toStdString();
   }
 
   void DOMElement::appendChild(DOMElement element)
   {
-    QELEM(m_wrapped)->appendChild(*QELEM(element.m_wrapped));
+    m_wrapped->x.appendChild(element.m_wrapped->x);
   }
 
   void DOMElement::setAttribute(const char * name, const char * value)
@@ -60,7 +85,7 @@ namespace Valuable
     if(!strlen(value))
       return;
 
-    QELEM(m_wrapped)->setAttribute(name, value);
+    m_wrapped->x.setAttribute(name, value);
   }
 
   DOMElement::NodeList DOMElement::getChildNodes() const
@@ -70,14 +95,16 @@ namespace Valuable
     if(!m_wrapped)
       return list;
 
-    QDomNode n = QELEM(m_wrapped)->firstChild();
+    QDomNode n = m_wrapped->x.firstChild();
 
     while(!n.isNull()) {
 
       QDomElement de = n.toElement();
 
       if(!de.isNull()) {
-	list.push_back(DOMElement(ELEM(new QDomElement(de))));
+        DOMElement de2;
+        de2.m_wrapped->x = de;
+        list.push_back(de2);
       }
 
       n = n.nextSibling();
@@ -93,14 +120,16 @@ namespace Valuable
     if(!m_wrapped)
       return list;
 
-    QDomNode n = QELEM(m_wrapped)->firstChild();
+    QDomNode n = m_wrapped->x.firstChild();
 
     while(!n.isNull()) {
 
       QDomElement de = n.toElement();
 
       if(!de.isNull() && de.tagName() == tagname) {
-	list.push_back(DOMElement(ELEM(new QDomElement(de))));
+        DOMElement de2;
+        de2.m_wrapped->x = de;
+        list.push_back(de2);
       }
 
       n = n.nextSibling();
@@ -116,7 +145,7 @@ namespace Valuable
     for(NodeList::iterator it = nodes.begin(); it != nodes.end(); it++) {
       DOMElement e = *it;
       if(e.getTagName() == tagname)
-	return e;
+        return e;
     }
 
     return DOMElement(0);
@@ -135,7 +164,7 @@ namespace Valuable
 
     addSpace(f, recursion);
     fprintf(f, "NODE <%s> (%d children, %d deep)",
-	    getTagName().c_str(), (int) nodes.size(), recursion);
+            getTagName().c_str(), (int) nodes.size(), recursion);
 
     std::string str = getTextContent();
     if(str.size() > 0 && str.size() < 100) {
@@ -161,8 +190,8 @@ namespace Valuable
     if(isNull())
       return;
     
-    QDomElement * qde = QELEM(m_wrapped);
-    qde->appendChild(qde->ownerDocument().createTextNode(s.c_str()));
+    QDomElement & qde = m_wrapped->x;
+    qde.appendChild(qde.ownerDocument().createTextNode(s.c_str()));
   }
 
   void DOMElement::setTextContent(const std::wstring & ws)
@@ -171,8 +200,9 @@ namespace Valuable
       return;
     
     QString qs(QString::fromStdWString(ws));
-    QDomElement * qde = QELEM(m_wrapped);
-    qde->appendChild(qde->ownerDocument().createTextNode(qs));
+    QDomElement & qde = m_wrapped->x;
+    // info("WIDE Text content : %s : %d", qs.toStdString().c_str(), (int) ws.size());
+    qde.appendChild(qde.ownerDocument().createTextNode(qs));
   }
 
   std::string DOMElement::getTextContent() const
@@ -180,7 +210,7 @@ namespace Valuable
     if(isNull())
       return std::string();
 
-    return QELEM(m_wrapped)->text().toStdString();
+    return m_wrapped->x.text().toStdString();
   }
 
   std::wstring DOMElement::getTextContentW() const
@@ -188,7 +218,7 @@ namespace Valuable
     if(isNull())
       return std::wstring();
 
-    return QELEM(m_wrapped)->text().toStdWString();
+    return m_wrapped->x.text().toStdWString();
   }
 
   bool DOMElement::hasAttribute(const char * name) const
@@ -196,7 +226,7 @@ namespace Valuable
     if(isNull())
       return false;
 
-    return QELEM(m_wrapped)->hasAttribute(name);
+    return m_wrapped->x.hasAttribute(name);
   }
 
   std::string DOMElement::getAttribute(const char * name) const
@@ -204,7 +234,7 @@ namespace Valuable
     if(isNull())
       return std::string();
 
-    return QELEM(m_wrapped)->attribute(name).toStdString();
+    return m_wrapped->x.attribute(name).toStdString();
   }
 
 }

@@ -121,7 +121,7 @@ namespace Valuable
     if(m_name.empty()) {
       Radiant::error(
 "ValueObject::serializeXML # attempt to serialize object with no name");
-      return DOMElement(0);
+      return DOMElement();
     }
 
     DOMElement elem = doc->createElement(m_name.c_str());

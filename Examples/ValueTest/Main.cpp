@@ -18,7 +18,8 @@ int main(int, char **)
 
   ValueFloat v(&hv, "kissa", 1.f);
   ValueRect r(&hv, "nelio", Nimble::Rect(0.f, 0.f, 1.f, 1.f));
-  ValueWString ws(&hv, "unicode", L"mååmömi");
+  ValueWString ws(&hv, "unicode", "widestuff");
+  ValueString s(&hv, "str", "abcdefg");
 
   bool res = hv.saveToFileXML("test.xml");
 

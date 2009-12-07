@@ -27,7 +27,7 @@
 namespace Radiant {
 
   DateTime::DateTime()
-    : m_year(0),
+      : m_year(0),
       m_month(0),
       m_monthDay(0),
       m_weekDay(0),
@@ -92,8 +92,8 @@ namespace Radiant {
       m_monthDay = 0;
       m_month++;
       if(m_month >= 12) {
-	m_month = 0;
-	m_year++;
+        m_month = 0;
+        m_year++;
       }
     }
   }
@@ -133,7 +133,7 @@ namespace Radiant {
     if(month == 1) {
       // February
       if((year & 0x3) == 0)
-	days = 29;
+        days = 29;
     }
 
     return days;
