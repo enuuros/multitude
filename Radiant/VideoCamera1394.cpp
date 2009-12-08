@@ -1148,18 +1148,16 @@ namespace Radiant {
           }
         }
       }
-      else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
+    } else if(dc1394_video_set_iso_speed(m_camera, DC1394_ISO_SPEED_400)
         != DC1394_SUCCESS) {
-        error("%s # dc1394_video_set_iso_speed 400 failed", fname);
-        return false;
-      }
+      error("%s # dc1394_video_set_iso_speed 400 failed", fname);
+      return false;
     }
 
     if (dc1394_video_get_iso_speed(m_camera, &m_speed) != DC1394_SUCCESS) {
       error("%s # dc1394_video_get_iso_speed failed", fname);
       return false;
-    }
-    else
+    } else
       debug("%s # ISO speed = %u", fname, (uint) m_speed);
 
     return true;
