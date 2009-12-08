@@ -128,7 +128,7 @@ namespace Nimble {
     /** @arg p The center point of rotation
         @arg radians The amount of roration, in radians
     */
-    static Matrix3T<T> rotateAroundPoint2D(Vector2T<T> p,
+    NIMBLE_API static Matrix3T<T> rotateAroundPoint2D(Vector2T<T> p,
                                            T radians);
 
     inline static Matrix3T<T> makeRotation(T radians, const Vector3T<T> & axis);
