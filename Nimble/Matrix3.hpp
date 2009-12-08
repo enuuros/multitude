@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef NIMBLE_MATRIX3T_HPP
@@ -34,10 +34,10 @@ namespace Nimble {
     /// Constructs the matrix without initializing any values.
     Matrix3T() {}
     template <class S>
-    Matrix3T(const S * x) 
-    { 
-      m[0][0] = x[0]; m[0][1] = x[1]; m[0][2] = x[2]; 
-      m[1][0] = x[3]; m[1][1] = x[4]; m[1][2] = x[5]; 
+    Matrix3T(const S * x)
+    {
+      m[0][0] = x[0]; m[0][1] = x[1]; m[0][2] = x[2];
+      m[1][0] = x[3]; m[1][1] = x[4]; m[1][2] = x[5];
       m[2][0] = x[6]; m[2][1] = x[7]; m[2][2] = x[8];
     }
     Matrix3T(const Vector3T<T>& a, const Vector3T<T>& b, const Vector3T<T>& c) { m[0] = a; m[1] = b; m[2] = c; }
@@ -49,7 +49,7 @@ namespace Nimble {
     const Vector3T<T>& row(int i) const       { return m[i]; }
     /// Returns one column of the matrix
     /** As the matrix is is of row-major type, this method returns a
-	copy of the values of the column. */
+    copy of the values of the column. */
     Vector3T<T>        column(int i) const    { return Vector3T<T>(m[0][i],m[1][i],m[2][i]); }
     Vector3T<T>&       operator[](int i)      { return row(i); }
     const Vector3T<T>& operator[](int i) const{ return row(i); }
@@ -67,8 +67,8 @@ namespace Nimble {
     { m[0].make(v11, v12, v13); m[1].make(v21, v22, v23); m[2].make(v31, v32, v33); }
 
     inline void               transpose();
-    void                      clear() { m[0].clear(); m[1].clear(); m[2].clear(); } 
-    inline void               identity(); 
+    void                      clear() { m[0].clear(); m[1].clear(); m[2].clear(); }
+    inline void               identity();
     /// Create a rotation matrix, around X axis
     inline void               rotateX(T a);
     /// Create a rotation matrix, around Y axis
@@ -88,11 +88,11 @@ namespace Nimble {
     inline static void        test();
     /// Returns the number of rows in the matrix (=3)
     /** This function can be used when you build template-based
-	functions. */
+    functions. */
     static int                rows() { return 3; }
     /// Returns the number of columns in the matrix (=3)
     /** This function can be used when you build template-based
-	functions. */
+    functions. */
     static int                columns() { return 3; }
     /// Inserts the argument matrix into the top-left corner of this matrix
     inline void               insert(const Matrix2T<T>& m);
@@ -124,6 +124,13 @@ namespace Nimble {
     /// Create a matrix that performs 2D rotation
     inline static Matrix3T<T> rotate2D(T radians);
 
+    /// Rotate around a given point
+    /** @arg p The center point of rotation
+        @arg radians The amount of roration, in radians
+    */
+    static Matrix3T<T> rotateAroundPoint2D(Vector2T<T> p,
+                                           T radians);
+
     inline static Matrix3T<T> makeRotation(T radians, const Vector3T<T> & axis);
 
     /// Extract the scaling factor from a homogenous 2D transformation matrix
@@ -149,67 +156,67 @@ namespace Nimble {
     /* STORING & INDEXING ELEMENTS */
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = T(3*i+j);
-  
+    a[i][j] = T(3*i+j);
+
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	assert(a[i][j] == 3*i+j);
+    assert(a[i][j] == 3*i+j);
 
     /* CLEAR */
     a.clear();
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	assert(a[i][j] == 0);
+    assert(a[i][j] == 0);
 
     /* ROW & COLUMN OPERATORS */
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = T(3*i+j);
+    a[i][j] = T(3*i+j);
 
     for(i = 0; i < 3; i++)
-      for(j = 0; j < 3; j++) 
-	{
-	  assert(a.row(i)[j] == 3*i+j);
-	  assert(a.column(j)[i] == 3*i+j);
-	}
+      for(j = 0; j < 3; j++)
+    {
+      assert(a.row(i)[j] == 3*i+j);
+      assert(a.column(j)[i] == 3*i+j);
+    }
     /* TRANSPOSE */
     a.transpose();
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	assert(a[j][i] == 3*i+j);
+    assert(a[j][i] == 3*i+j);
 
     /* IDENTITY */
     a.identity();
 
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	{
-	  if( i == j ) assert(a[i][j] == 1);
-	  else assert(a[i][j] == 0);
-	}
+    {
+      if( i == j ) assert(a[i][j] == 1);
+      else assert(a[i][j] == 0);
+    }
 
     /* COPY OPERATOR, CONSTRUCTOR AND EQUALITY OPERATOR */
 
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = T(3*i+j);
-  
+    a[i][j] = T(3*i+j);
+
     Matrix3T<T> b(a);
     assert(a == b);
     assert(!(a != b));
-  
+
     /* MATRIX MULTIPLICATION */
-  
+
     Matrix3T<T> c;
     c.identity();
     b *= c;
     assert(a == b);
-  
+
     c.clear();
     b *= c;
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	assert(b[i][j] == 0);
+    assert(b[i][j] == 0);
   }
 
   typedef Matrix3T<float> Matrix3;
@@ -300,52 +307,52 @@ namespace Nimble {
 
     if ( radians > (T)0.0 ) {
       if ( radians < Math::PI ) {
-	axis[0] = data()[7]-data()[5];
-	axis[1] = data()[2]-data()[6];
-	axis[2] = data()[3]-data()[1];
-	axis.normalize();
+    axis[0] = data()[7]-data()[5];
+    axis[1] = data()[2]-data()[6];
+    axis[2] = data()[3]-data()[1];
+    axis.normalize();
       }
       else {
-	// angle is PI
-	T fHalfInverse;
-	if ( data()[0] >= data()[4] ) {
-	  // r00 >= r11
-	  if ( data()[0] >= data()[8] ) {
-	    // r00 is maximum diagonal term
-	    axis[0] = ((T)0.5)*Math::Sqrt(data()[0] -
-					  data()[4] - data()[8] + (T)1.0);
-	    fHalfInverse = ((T)0.5)/axis[0];
-	    axis[1] = fHalfInverse*data()[1];
-	    axis[2] = fHalfInverse*data()[2];
-	  }
-	  else {
-	    // r22 is maximum diagonal term
-	    axis[2] = ((T)0.5)*Math::Sqrt(data()[8] -
-					  data()[0] - data()[4] + (T)1.0);
-	    fHalfInverse = ((T)0.5)/axis[2];
-	    axis[0] = fHalfInverse*data()[2];
-	    axis[1] = fHalfInverse*data()[5];
-	  }
-	}
-	else {
-	  // r11 > r00
-	  if ( data()[4] >= data()[8] ) {
-	    // r11 is maximum diagonal term
-	    axis[1] = ((T)0.5)*Math::Sqrt(data()[4] -
-					  data()[0] - data()[8] + (T)1.0);
-	    fHalfInverse  = ((T)0.5)/axis[1];
-	    axis[0] = fHalfInverse*data()[1];
-	    axis[2] = fHalfInverse*data()[5];
-	  }
-	  else {
-	    // r22 is maximum diagonal term
-	    axis[2] = ((T)0.5)*Math::Sqrt(data()[8] -
-					  data()[0] - data()[4] + (T)1.0);
-	    fHalfInverse = ((T)0.5)/axis[2];
-	    axis[0] = fHalfInverse*data()[2];
-	    axis[1] = fHalfInverse*data()[5];
-	  }
-	}
+    // angle is PI
+    T fHalfInverse;
+    if ( data()[0] >= data()[4] ) {
+      // r00 >= r11
+      if ( data()[0] >= data()[8] ) {
+        // r00 is maximum diagonal term
+        axis[0] = ((T)0.5)*Math::Sqrt(data()[0] -
+                      data()[4] - data()[8] + (T)1.0);
+        fHalfInverse = ((T)0.5)/axis[0];
+        axis[1] = fHalfInverse*data()[1];
+        axis[2] = fHalfInverse*data()[2];
+      }
+      else {
+        // r22 is maximum diagonal term
+        axis[2] = ((T)0.5)*Math::Sqrt(data()[8] -
+                      data()[0] - data()[4] + (T)1.0);
+        fHalfInverse = ((T)0.5)/axis[2];
+        axis[0] = fHalfInverse*data()[2];
+        axis[1] = fHalfInverse*data()[5];
+      }
+    }
+    else {
+      // r11 > r00
+      if ( data()[4] >= data()[8] ) {
+        // r11 is maximum diagonal term
+        axis[1] = ((T)0.5)*Math::Sqrt(data()[4] -
+                      data()[0] - data()[8] + (T)1.0);
+        fHalfInverse  = ((T)0.5)/axis[1];
+        axis[0] = fHalfInverse*data()[1];
+        axis[2] = fHalfInverse*data()[5];
+      }
+      else {
+        // r22 is maximum diagonal term
+        axis[2] = ((T)0.5)*Math::Sqrt(data()[8] -
+                      data()[0] - data()[4] + (T)1.0);
+        fHalfInverse = ((T)0.5)/axis[2];
+        axis[0] = fHalfInverse*data()[2];
+        axis[1] = fHalfInverse*data()[5];
+      }
+    }
       }
     }
     else {
@@ -376,7 +383,7 @@ namespace Nimble {
     T fXSin = axis.x*sa;
     T fYSin = axis.y*sa;
     T fZSin = axis.z*sa;
-    
+
     m[0][0] = fX2*fOneMinusCos+ca;
     m[0][1] = fXYM-fZSin;
     m[0][2] = fXZM+fYSin;
@@ -394,34 +401,34 @@ namespace Nimble {
     // rot =  cy*cz          -cy*sz           sy
     //        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
     //       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
-  
+
     if ( m[0][2] < 1.0f )
       {
-	if ( m[0][2] > -1.0f )
-	  {
-	    xa = Math::ATan2(-m[1][2],m[2][2]);
-	    ya = (T)asin(m[0][2]);
-	    za = Math::ATan2(-m[0][1],m[0][0]);
-	    return true;
-	  }
+    if ( m[0][2] > -1.0f )
+      {
+        xa = Math::ATan2(-m[1][2],m[2][2]);
+        ya = (T)asin(m[0][2]);
+        za = Math::ATan2(-m[0][1],m[0][0]);
+        return true;
+      }
         else
-	  {
+      {
             // WARNING.  Not unique.  XA - ZA = -atan2(r10,r11)
             xa = -Math::ATan2(m[1][0],m[1][1]);
             ya = -(T)Math::HALF_PI;
             za = 0.0f;
             return false;
-	  }
+      }
       }
     else
       {
-	// WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
-	xa = Math::ATan2(m[1][0],m[1][1]);
-	ya = (T)Math::HALF_PI;
-	za = 0.0f;
-	return false;
+    // WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
+    xa = Math::ATan2(m[1][0],m[1][1]);
+    ya = (T)Math::HALF_PI;
+    za = 0.0f;
+    return false;
       }
-  
+
   }
 
   /** this = this * that. */
@@ -469,7 +476,7 @@ namespace Nimble {
 
     if(Math::Abs(fDet) <= tolerance ) {
       if(ok)
-	*ok = false;
+    *ok = false;
       return res;
     }
     else if(ok)
@@ -478,14 +485,14 @@ namespace Nimble {
     T fInvDet = 1.0f / fDet;
     for (int iRow = 0; iRow < 3; iRow++) {
       for (int iCol = 0; iCol < 3; iCol++)
-	res[iRow][iCol] *= fInvDet;
+    res[iRow][iCol] *= fInvDet;
     }
     return res;
   }
 
 template <class T>
-inline Nimble::Matrix3T<T> operator * (const Nimble::Matrix3T<T>& m1, 
-				     const Nimble::Matrix3T<T>& m2)
+inline Nimble::Matrix3T<T> operator * (const Nimble::Matrix3T<T>& m1,
+                     const Nimble::Matrix3T<T>& m2)
 {
   Nimble::Matrix3T<T> res;
 
@@ -501,7 +508,7 @@ inline Nimble::Matrix3T<T> operator * (const Nimble::Matrix3T<T>& m1,
 
 template <class S, class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
-				   const Nimble::Vector3T<T>& m2)
+                   const Nimble::Vector3T<T>& m2)
 {
   Nimble::Vector3T<T> res;
   for(int i = 0; i < 3; i++)
@@ -511,7 +518,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
 
 template <class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
-				   const Nimble::Vector2T<T>& m2)
+                   const Nimble::Vector2T<T>& m2)
 {
   Nimble::Vector3T<T> res;
   for(int i = 0; i < 3; i++)
@@ -520,8 +527,8 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
 }
 
 template <class T>
-inline Nimble::Vector3T<T> operator*(const Nimble::Vector3T<T>& m2, 
-				   const Nimble::Matrix3T<T>& m1)
+inline Nimble::Vector3T<T> operator*(const Nimble::Vector3T<T>& m2,
+                   const Nimble::Matrix3T<T>& m1)
 {
   Nimble::Vector3T<T> res;
   for(int i = 0; i < 3; i++)
@@ -534,7 +541,7 @@ inline void Matrix3T<T>::insert(const Matrix2T<T>& b)
 {
   m[0].x = b.get(0, 0);
   m[0].y = b.get(0, 1);
-  
+
   m[1].x = b.get(1, 0);
   m[1].y = b.get(1, 1);
 }
@@ -542,13 +549,13 @@ inline void Matrix3T<T>::insert(const Matrix2T<T>& b)
 template<class T>
 inline Matrix3T<T> Matrix3T<T>::translate2D(const Vector2T<T> & t)
 {
-  Matrix3T<T> m; 
-  m.identity(); 
-  
-  m.set(0, 2, t.x); 
-  m.set(1, 2, t.y); 
+  Matrix3T<T> m;
+  m.identity();
 
-  return m; 
+  m.set(0, 2, t.x);
+  m.set(1, 2, t.y);
+
+  return m;
 }
 
 template<class T>
@@ -601,12 +608,12 @@ Matrix3T<T> Matrix3T<T>::makeRotation(T radians, const Vector3T<T> & axis)
   T c = T(cos(radians));
   T t = T(1) - c;
   T s = T(sin(radians));
-  
+
   Vector3T<T> vn(axis);
   vn.normalize();
 
-  Matrix3T<T> m; 
- 
+  Matrix3T<T> m;
+
   T aa[9];
   aa[0] = t * vn.x * vn.x + c;
   aa[1] = t * vn.x * vn.y - s * vn.z;

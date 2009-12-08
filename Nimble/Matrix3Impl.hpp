@@ -7,9 +7,16 @@
 namespace Nimble {
 
   template <class T>
-  const Matrix3T<T> Matrix3T<T>::IDENTITY(1, 0, 0, 
-					  0, 1, 0,
-					  0, 0, 1);
+  Matrix3T<T> Matrix3T<T>::rotateAroundPoint2D(Vector2T<T> p,
+                                               T radians)
+  {
+    return translate2D(p) * rotate2D(radians) * translate2D(-p);
+  }
+
+  template <class T>
+  const Matrix3T<T> Matrix3T<T>::IDENTITY(1, 0, 0,
+                      0, 1, 0,
+                      0, 0, 1);
 
 }
 
