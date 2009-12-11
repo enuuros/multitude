@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef LUMINOUS_TEXTURE_HPP
@@ -35,7 +35,7 @@ namespace Luminous
     friend class Framebuffer;
 
   public:
-    TextureT(GLResources * res = 0) 
+    TextureT(GLResources * res = 0)
     : GLResource(res),
       m_textureId(0),
       m_width(0),
@@ -75,20 +75,27 @@ namespace Luminous
 
     int width() const { return m_width; }
     int height() const { return m_height; }
- 
+
     Nimble::Vector2i size() const
     { return Nimble::Vector2i(m_width, m_height); }
 
     void setWidth(int w) { m_width = w; }
     void setHeight(int h) { m_height = h; }
 
+    /// Returns the number of pixels in this texture.
+    /** Note that the one might have initialized the texture without setting
+        width and height, so this information may be unreliable. As a programmer
+        you would know if the values have been set properly. */
+    int pixelCount() const { return m_width * m_height; }
+
     /** Returns the aspect ratio of this texture. This operation makes
       sense mostly for 2D tetures.  */
-    float aspectRatio() 
+    float aspectRatio()
     { return m_height ? m_width / (float) m_height : 1.0f; }
 
-    virtual long consumesBytes() 
-    { 
+    /// Returns estimation of much GPU RAM the texture uses.
+    virtual long consumesBytes()
+    {
       float used = float(m_width) * m_height * m_pf.bytesPerPixel();
       // Mipmaps used 33% more memory
       used *= (m_haveMipmaps ? (4.f / 3.f) : 1.f);
@@ -97,7 +104,7 @@ namespace Luminous
 
     /** Returns the OpenGL texture id. */
     GLuint id() const { return m_textureId; };
-
+    /// Returns true if the texture is defined
     bool isDefined() const { return id() != 0; }
 
     const PixelFormat & pixelFormat() const { return m_pf; }
@@ -109,7 +116,7 @@ namespace Luminous
     PixelFormat m_pf;
     bool m_haveMipmaps;
   };
-  
+
   /// A 1D texture
   class LUMINOUS_API Texture1D : public TextureT<GL_TEXTURE_1D>
   {
@@ -130,23 +137,23 @@ namespace Luminous
     bool loadImage(const Luminous::Image & image, bool buildMipmaps = true);
 
     bool loadBytes(GLenum internalFormat, int w, int h,
-		   const void* data, 
-		   const PixelFormat& srcFormat,
-		   bool buildMipmaps = true);
+           const void* data,
+           const PixelFormat& srcFormat,
+           bool buildMipmaps = true);
     void loadSubBytes(int x, int y, int w, int h, const void * subData);
-  
+
     static Texture2D * fromFile(const char * filename, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromImage(Luminous::Image & img, bool buildMipmaps = true, GLResources * resources = 0);
     static Texture2D * fromBytes(GLenum internalFormat, int w, int h,
-				const void * data, 
-				const PixelFormat& srcFormat,
-				bool buildMipmaps = true, GLResources * resources = 0);
+                const void * data,
+                const PixelFormat& srcFormat,
+                bool buildMipmaps = true, GLResources * resources = 0);
   };
 
   /// A 3D texture
   class LUMINOUS_API Texture3D : public TextureT<GL_TEXTURE_3D>
   {};
-	
+
   /// A cubemap texture
   class LUMINOUS_API TextureCube : public TextureT<GL_TEXTURE_CUBE_MAP>
   {};

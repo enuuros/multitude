@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Radiant/Sleep.hpp>
@@ -23,8 +23,8 @@
 #include <stdlib.h>
 
 /** A simple application that plays ambient background.
-    
-    
+
+
 */
 
 int main(int argc, char ** argv)
@@ -56,16 +56,17 @@ int main(int argc, char ** argv)
   Resonant::ModuleSamplePlayer * player = new Resonant::ModuleSamplePlayer(0);
   item.setModule(player);
   item.module()->setId("sampleplayer");
-  
+
   control.writeInt32(2);
   control.rewind();
+
 
   item.module()->processMessage("channels", & control);
 
   player->createAmbientBackground(& dsp, directory, gain);
-  
+
   dsp.addModule(item);
-  
+
   Radiant::Sleep::sleepS(1000);
 
   dsp.stop();

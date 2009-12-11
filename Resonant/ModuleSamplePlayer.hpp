@@ -7,10 +7,10 @@
  * See file "Resonant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RESONANT_MODULE_SAMPLE_PLAYER_HPP
@@ -65,7 +65,7 @@ namespace Resonant {
 
         @arg network The DSP network to attach the ambient sound player to.
 
-        @arg directory Where the file are loaded from.
+        @arg directory Where the files are loaded from.
 
         @arg gain The gain (volume) to give to the background material.
 
@@ -115,7 +115,7 @@ namespace Resonant {
     public:
       SampleVoice(Sample * s = 0)
         : m_state(INACTIVE), m_gain(1), m_relPitch(1.0f),
-          m_sampleChannel(0), m_targetChannel(0), 
+          m_sampleChannel(0), m_targetChannel(0),
           m_sample(s), m_position(0)
       {}
 

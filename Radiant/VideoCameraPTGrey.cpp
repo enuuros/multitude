@@ -150,13 +150,13 @@ namespace Radiant
 
     // Set BUFFER_FRAMES & capture timeout
     FlyCapture2::FC2Config config;
-/*
+    /*
     err = m_camera.GetConfiguration(&config);
     if(err != FlyCapture2::PGRERROR_OK) {
       Radiant::error("VideoCameraPTGrey::open # %s", err.GetDescription());
       return false;
     }
-*/
+    */
     config.grabMode = FlyCapture2::BUFFER_FRAMES;
     config.numBuffers = NUM_BUFFERS;
     config.bandwidthAllocation = FlyCapture2::BANDWIDTH_ALLOCATION_ON;
@@ -200,7 +200,7 @@ namespace Radiant
 
   bool VideoCameraPTGrey::openFormat7(uint64_t euid, Nimble::Recti roi, float fps, int mode)
   {
-   // Look up PGRGuid from our map (updated in queryCameras())
+    // Look up PGRGuid from our map (updated in queryCameras())
     GuidMap::iterator it = g_guidMap.find(euid);
     if(it == g_guidMap.end()) {
       Radiant::error("VideoCameraPTGrey::open # guid not found");
@@ -353,7 +353,7 @@ namespace Radiant
       Radiant::error("VideoCameraPTGrey::captureImage # %s", err.GetDescription());
       return false;
     }
-/*
+    /*
     if(m_image.size() != img.GetDataSize()) {
       Radiant::info("ALLOCATED %dx%d bytes %d", m_image.width(), m_image.height(), m_image.size());
       Radiant::info("FRAME %dx%d stride %d bytes %d", img.GetCols(), img.GetRows(), img.GetStride(), img.GetDataSize());
@@ -396,12 +396,12 @@ namespace Radiant
   }
 
   float VideoCameraPTGrey::fps() const
-  {    
+  {
     return -1;
   }
 
   ImageFormat VideoCameraPTGrey::imageFormat() const
-  {    
+  {
     return Radiant::IMAGE_GRAYSCALE;
   }
 
@@ -442,7 +442,7 @@ namespace Radiant
     prop.type = propertyToFC2(id);
 
     m_camera.GetProperty(&prop);
-/*
+    /*
     Radiant::info("DEBUG: BEFORE ADJUSTMENT");
     Radiant::info("type %d", prop.type);
     Radiant::info("present %d", prop.present);
@@ -466,7 +466,7 @@ namespace Radiant
       Radiant::error("VideoCameraPTGrey::setFeatureRaw # %s", err.GetDescription());
       err.PrintErrorTrace();
     }
-/*
+    /*
     m_camera.GetProperty(&prop);
     Radiant::info("DEBUG: AFTER ADJUSTMENT");
     Radiant::info("abs control %d", prop.absControl);
@@ -477,8 +477,8 @@ namespace Radiant
 
   void VideoCameraPTGrey::setWhiteBalance(float /*u_to_blue*/, float /*v_to_red*/)
   {
-      Radiant::error("VideoCameraPTGrey::setWhiteBalance # not implemented");
-      assert(0);
+    Radiant::error("VideoCameraPTGrey::setWhiteBalance # not implemented");
+    assert(0);
   }
 
   bool VideoCameraPTGrey::enableTrigger(TriggerSource src)
@@ -645,7 +645,7 @@ namespace Radiant
     features->clear();
 
     for(int type = FlyCapture2::BRIGHTNESS; type <= FlyCapture2::TEMPERATURE; type++)
-        queryFeature(FlyCapture2::PropertyType(type), features);
+      queryFeature(FlyCapture2::PropertyType(type), features);
   }
 
   //////////////////////////////////////////////////////////////////////

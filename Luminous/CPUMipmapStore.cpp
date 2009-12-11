@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "CPUMipmapStore.hpp"
@@ -18,7 +18,7 @@
 #include <Radiant/Trace.hpp>
 
 namespace Luminous {
-  
+
   using namespace Radiant;
 
   static Radiant::MutexStatic __mutex;
@@ -40,12 +40,12 @@ namespace Luminous {
     ~MipmapItem() { /* delete m_mipmaps; */ }
 
     void incrCount() { m_linkCount++; }
-    void decrCount() 
+    void decrCount()
     {
       m_linkCount--;
       if(m_linkCount == 0) {
-	delete m_mipmaps;
-	m_mipmaps = 0;
+        delete m_mipmaps;
+        m_mipmaps = 0;
       }
     }
 
@@ -56,12 +56,12 @@ namespace Luminous {
   static std::map<std::string, MipmapItem> __mipmaps;
   typedef std::map<std::string, MipmapItem> MipMapItemContainer;
 
-  CPUMipmaps * CPUMipmapStore::acquire(const std::string & filename)
+  CPUMipmaps * CPUMipmapStore::acquire(const std::string & filename, bool immediate)
   {
     Radiant::GuardStatic g( & __mutex);
-    
+
     MipMapItemContainer::iterator it = __mipmaps.find(filename);
-    
+
     if(it !=  __mipmaps.end()) {
       MipmapItem & mmi = (*it).second;
       mmi.incrCount();
@@ -70,7 +70,7 @@ namespace Luminous {
 
     CPUMipmaps * mipmaps = new CPUMipmaps();
 
-    if(!mipmaps->startLoading(filename.c_str(), true)) {
+    if(!mipmaps->startLoading(filename.c_str(), immediate)) {
       delete mipmaps;
       return 0;
     }
@@ -79,14 +79,14 @@ namespace Luminous {
     __mipmaps[filename].incrCount();
 
     debug("CPUMipmapStore::acquire # Created new for %s (%d links)",
-	  filename.c_str(), __mipmaps[filename].m_linkCount);
+          filename.c_str(), __mipmaps[filename].m_linkCount);
 
     return mipmaps;
   }
 
-  CPUMipmaps * CPUMipmapStore::acquire(const char * filename)
+  CPUMipmaps * CPUMipmapStore::acquire(const char * filename, bool immediate)
   {
-    return acquire(std::string(filename));
+    return acquire(std::string(filename), immediate);
   }
 
   void CPUMipmapStore::release(CPUMipmaps * mipmaps)
@@ -97,14 +97,14 @@ namespace Luminous {
     Radiant::GuardStatic g( & __mutex);
 
     for(MipMapItemContainer::iterator it = __mipmaps.begin();
-	it != __mipmaps.end(); it++) {
+    it != __mipmaps.end(); it++) {
       MipmapItem & mmi = (*it).second;
       if(mmi.m_mipmaps == mipmaps) {
-	mmi.decrCount();
-	if(!mmi.m_linkCount) {
+        mmi.decrCount();
+        if(!mmi.m_linkCount) {
           // info("Erased mipmaps %p", mipmaps);
-	  __mipmaps.erase(it);
-	}
+          __mipmaps.erase(it);
+        }
         return;
       }
     }
