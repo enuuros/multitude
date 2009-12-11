@@ -117,7 +117,7 @@ namespace Radiant
   }
 
   VideoCameraPTGrey::VideoCameraPTGrey(CameraDriver * driver)
-      : VideoCamera(driver)
+    : VideoCamera(driver)
   {
   }
 
@@ -305,8 +305,6 @@ namespace Radiant
       return false;
     }
 
-
-
     // Allocate space for image
     m_image.allocateMemory(IMAGE_GRAYSCALE, f7s.width, f7s.height);
 
@@ -387,12 +385,12 @@ namespace Radiant
 
   int VideoCameraPTGrey::width() const
   {
-    return 640;
+    return m_image.m_width;
   }
 
   int VideoCameraPTGrey::height() const
   {
-    return 480;
+    return m_image.m_height;
   }
 
   float VideoCameraPTGrey::fps() const
