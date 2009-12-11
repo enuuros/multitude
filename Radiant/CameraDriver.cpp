@@ -1,7 +1,10 @@
 #include "CameraDriver.hpp"
+#include "Trace.hpp"
+
 
 #ifdef WIN32
 # include <Radiant/VideoCameraCMU.hpp>
+# include <Radiant/VideoCameraPTGrey.hpp>
 #else
 # include <Radiant/VideoCamera1394.hpp>
 #endif
@@ -48,6 +51,7 @@ namespace Radiant
     if(once && m_drivers.empty()) {
 #ifdef WIN32
       registerDriver(new CameraDriverCMU());
+      registerDriver(new CameraDriverPTGrey());
 #else
       registerDriver(new CameraDriver1394());
 #endif
@@ -64,14 +68,23 @@ namespace Radiant
   CameraDriver * CameraDriverFactory::getPreferredCameraDriver()
   {
     // If no preferences are set, use defaults
+#ifdef WIN32
+    if(m_preferredDrivers.empty())
+      setDriverPreference("ptgrey,cmu");
+#else
     if(m_preferredDrivers.empty())
       setDriverPreference("libdc,cmu,ptgrey");
+#endif
 
     std::vector<VideoCamera::CameraInfo> cameras;
 
     for(StringUtils::StringList::iterator it = m_preferredDrivers.begin(); it != m_preferredDrivers.end(); it++) {
 
-      CameraDriver * cd = getCameraDriver(*it);
+      CameraDriver * cd = getCameraDriver((*it));
+
+
+      info("CameraDriverFactory::getPreferredCameraDriver # Checking driver %s = %p",
+			(*it).c_str(), cd);
       if(cd) {
         // Make sure there is at least one camera available using this driver
         if(cd->queryCameras(cameras) > 0) return cd;

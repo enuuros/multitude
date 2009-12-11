@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 include(multitude.pri)
 
 win32: SUBDIRS += Win32x
+
 SUBDIRS += Patterns
 SUBDIRS += Nimble
 SUBDIRS += Radiant
