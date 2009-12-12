@@ -504,7 +504,7 @@ namespace Resonant {
   }
 
   void ModuleSamplePlayer::createAmbientBackground
-      (DSPNetwork * network, const char * directory, float gain)
+      (const char * directory, float gain)
   {
     using Radiant::Directory;
     Directory dir(directory, Directory::Files);
@@ -515,53 +515,77 @@ namespace Resonant {
 
       std::string file = dir.fileNameWithPath(i);
 
+      n++;
+
       SF_INFO info;
       SNDFILE * sndf = sf_open(file.c_str(), SFM_READ, & info);
 
       if(!sndf) {
-        Radiant::debug("ModuleSamplePlayer::createAmbientBackground # failed to load '%s'", file.c_str());
+        Radiant::debug("ModuleSamplePlayer::playSample # failed to load '%s'",
+                       file.c_str());
         continue;
       }
 
       sf_close(sndf);
 
-      n++;
-
       for(int c = 0; c < info.channels; c++) {
-
-        Radiant::BinaryData control;
-        control.writeString(std::string(id()) + "/playsample");
-
-        control.writeString(file);
-
-        control.writeString("gain");
-        control.writeFloat32(gain);
-
-        // Relative pitch
-        control.writeString("relpitch");
-        control.writeFloat32(info.samplerate / 44100.0f);
-
-        // Infinite looping;
-        control.writeString("loop");
-        control.writeInt32(1);
-
-        // Select a channel from the sample
-        control.writeString("samplechannel");
-        control.writeInt32(c);
-
-        // Select the target channel for the sample
-        control.writeString("targetchannel");
-        control.writeInt32(c);
-
-        // Finish parameters
-        control.writeString("end");
-
-        // Send the control message to the sample player.
-        network->send(control);
+        playSample(file.c_str(), gain, 1.0f, c, c, true);
       }
     }
 
     debug("ModuleSamplePlayer::createAmbientBackground # %d samples", n);
+  }
+
+
+  void ModuleSamplePlayer::playSample(const char * filename,
+                                      float gain,
+                                      float relpitch,
+                                      int targetChannel,
+                                      int samplechannel,
+                                      bool loop)
+  {
+
+    SF_INFO info;
+    SNDFILE * sndf = sf_open(filename, SFM_READ, & info);
+
+    if(!sndf) {
+      Radiant::debug("ModuleSamplePlayer::playSample # failed to load '%s'",
+                     filename);
+      return;
+    }
+
+    sf_close(sndf);
+
+    Radiant::BinaryData control;
+    control.writeString(std::string(id()) + "/playsample");
+
+    control.writeString(filename);
+
+    control.writeString("gain");
+    control.writeFloat32(gain);
+
+    // Relative pitch
+    control.writeString("relpitch");
+    control.writeFloat32(relpitch * info.samplerate / 44100.0f);
+
+    // Infinite looping;
+    control.writeString("loop");
+    control.writeInt32(loop);
+
+    // Select a channel from the sample
+    control.writeString("samplechannel");
+    control.writeInt32(samplechannel);
+
+    // Select the target channel for the sample
+    control.writeString("targetchannel");
+    control.writeInt32(targetChannel);
+
+    // Finish parameters
+    control.writeString("end");
+
+    // Send the control message to the sample player.
+    DSPNetwork::instance()->send(control);
+
   }
 
   int ModuleSamplePlayer::findFreeVoice()

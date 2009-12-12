@@ -7,10 +7,10 @@
  * See file "Resonant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RESONANT_DSPNETWORK_HPP
@@ -36,8 +36,9 @@ namespace Resonant {
 
   class ModuleOutCollect;
   class ModulePanner;
+  class ModuleSamplePlayer;
 
-  /* Stuff that needs implementing: 
+  /* Stuff that needs implementing:
 
       - When a module is put into the graph (that's running) it can
       end up with getting input from a source that is invalidated by
@@ -57,24 +58,24 @@ namespace Resonant {
   {
   public:
 
-    /** Holds audio sample buffers for inter-module transfer. 
+    /** Holds audio sample buffers for inter-module transfer.
 
-	Note the lack of destructor. You need to call "clear"
-	manually. */
+    Note the lack of destructor. You need to call "clear"
+    manually. */
     class Buf
     {
     public:
 
       Buf() : m_data(0), m_size(0)
       {}
-      
-      void allocate(int n) 
+
+      void allocate(int n)
       {
-	if(n != m_size) {
-	  delete [] m_data; 
-	  m_data = new float [n];
-	  m_size = n;
-	}
+        if(n != m_size) {
+          delete [] m_data;
+          m_data = new float [n];
+          m_size = n;
+        }
       }
 
       void init() { allocate(Module::MAX_CYCLE); }
@@ -84,34 +85,34 @@ namespace Resonant {
       float * m_data;
       int     m_size;
     };
-    
+
     /** Holds connection information between the DSP modules.*/
     class RESONANT_API Connection
     {
     public:
       Connection() : m_channel(0),m_buf(0) { m_moduleId[0] = '\0'; }
       Connection(const char * moduleId, int channel)
-        : m_channel(channel),m_buf(0)
+          : m_channel(channel),m_buf(0)
       {
-	setModuleId(moduleId);
+        setModuleId(moduleId);
       }
-      
+
       void setModuleId(const char * id)
       {
-	if(id)
+        if(id)
 #ifdef WIN32
-    strcpy_s(m_moduleId, id);
+          strcpy_s(m_moduleId, id);
 #else
         strcpy(m_moduleId, id);
 #endif
-	else
-    m_moduleId[0] = '\0';
+        else
+          m_moduleId[0] = '\0';
       }
 
       inline bool operator == (const Connection & that) const
       {
         return (strcmp(m_moduleId, that.m_moduleId) == 0) &&
-          (m_channel == that.m_channel);
+            (m_channel == that.m_channel);
       }
 
       char        m_moduleId[Module::MAX_ID_LENGTH];
@@ -121,7 +122,7 @@ namespace Resonant {
 
     /** Objects that store the information necessary to create new connections.
 
-	@see Connection
+    @see Connection
      */
     class RESONANT_API NewConnection
     {
@@ -174,7 +175,7 @@ namespace Resonant {
       std::list<NewConnection> m_connections;
       std::vector<float *> m_ins;
       std::vector<float *> m_outs;
-      
+
       bool m_compiled;
       bool m_done;
 
@@ -194,23 +195,27 @@ namespace Resonant {
 
     void send(Radiant::BinaryData & control);
 
+    ModuleSamplePlayer * samplePlayer();
+
     static DSPNetwork * instance();
-  
+
+
+
   private:
 
     virtual int callback(const void *in, void *out,
-			 unsigned long framesPerBuffer
-//       , const PaStreamCallbackTimeInfo* time,
-//			 PaStreamCallbackFlags status
-       );
-    
+                         unsigned long framesPerBuffer
+                         //       , const PaStreamCallbackTimeInfo* time,
+                         //			 PaStreamCallbackFlags status
+                         );
+
     void doCycle(int);
 
     void checkNewControl();
     void checkNewItems();
     void checkDoneItems();
-    void deliverControl(const char * moduleid, const char * commandid, 
-			Radiant::BinaryData &);
+    void deliverControl(const char * moduleid, const char * commandid,
+                        Radiant::BinaryData &);
 
     bool uncompile(Item &);
     bool compile(Item &);
@@ -228,7 +233,7 @@ namespace Resonant {
     container m_newItems;
 
     std::vector<Buf> m_buffers;
-    
+
     ModuleOutCollect *m_collect;
     ModulePanner   *m_panner;
 

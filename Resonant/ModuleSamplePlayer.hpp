@@ -71,8 +71,14 @@ namespace Resonant {
 
     */
 
-    void createAmbientBackground(DSPNetwork * network,
-                                 const char * directory, float gain);
+    void createAmbientBackground(const char * directory, float gain);
+
+    void playSample(const char * filename,
+                    float gain,
+                    float relpitch,
+                    int targetChannel,
+                    int samplechannel,
+                    bool loop = false);
 
   private:
 

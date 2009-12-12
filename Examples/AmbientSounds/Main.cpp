@@ -45,27 +45,15 @@ int main(int argc, char ** argv)
     }
   }
 
-
   Resonant::DSPNetwork dsp;
 
   dsp.start();
 
   Radiant::BinaryData control;
 
-  Resonant::DSPNetwork::Item item;
-  Resonant::ModuleSamplePlayer * player = new Resonant::ModuleSamplePlayer(0);
-  item.setModule(player);
-  item.module()->setId("sampleplayer");
+  Resonant::ModuleSamplePlayer * player = dsp.samplePlayer();
 
-  control.writeInt32(2);
-  control.rewind();
-
-
-  item.module()->processMessage("channels", & control);
-
-  player->createAmbientBackground(& dsp, directory, gain);
-
-  dsp.addModule(item);
+  player->createAmbientBackground(directory, gain);
 
   Radiant::Sleep::sleepS(1000);
 
