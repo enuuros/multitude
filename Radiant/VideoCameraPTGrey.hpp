@@ -53,9 +53,10 @@ namespace Radiant
 
     virtual int framesBehind() const { return 0; }
 
-    private:
+  private:
 
-    void queryFeature(FlyCapture2::PropertyType id, std::vector<VideoCamera::CameraFeature> * features);
+    void queryFeature(FlyCapture2::PropertyType id, 
+		      std::vector<VideoCamera::CameraFeature> * features);
 
     FlyCapture2::Camera m_camera;
     VideoImage m_image;
@@ -65,7 +66,7 @@ namespace Radiant
 
   class CameraDriverPTGrey : public CameraDriver
   {
-    public:
+  public:
     CameraDriverPTGrey();
 
     virtual size_t queryCameras(std::vector<VideoCamera::CameraInfo> & cameras);

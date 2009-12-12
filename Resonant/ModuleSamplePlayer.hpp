@@ -35,7 +35,19 @@ namespace Resonant {
 
   class DSPNetwork;
 
-  /** Audio sample player for Resonant. */
+  /** Audio sample player for Resonant.
+
+      This class implements a basic sample player, which can be used
+      as a minimal synthesizer.
+
+
+      <B>Memory management:</B> The samples (aka audio files)
+      are read from the disk as they are needed. The samples are loaded when they
+      are first used. To force the loading of a particular sample, you can
+      play the sample with zero volume. Samples are never dropped away from the
+      RAM which may cause memory usage issues if the application is using a lot
+      sound files.
+  */
   class RESONANT_API ModuleSamplePlayer : public Module
   {
   public:
@@ -73,6 +85,26 @@ namespace Resonant {
 
     void createAmbientBackground(const char * directory, float gain);
 
+    /// Plays an audio sample
+    /** This function starts the playback of an audio sample.
+
+        @arg filename The name of the audio sample file.
+
+        @arg gain The gain coefficient for playback. Setting gain to one
+        plays the file back at the original volume.
+
+        @arg relpitch The pitch for the playback. If the pitch is set to one,
+        then the file will play back at the original speed. With pitch of 0.5
+        the file will play back one octave below original pitch, and last
+        twice as long as nominal file duration.
+
+        @arg targeChannel Select the channel where the sound is going to.
+        For example in 8-channel environment, this parameter can range from zero
+        to seven.
+
+        @arg loop Turns of looping if necessary. With looping the sample will play
+        back for-ever.
+    */
     void playSample(const char * filename,
                     float gain,
                     float relpitch,
