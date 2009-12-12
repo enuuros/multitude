@@ -89,6 +89,7 @@ namespace Resonant {
       std::string m_filename;
     };
 
+    /* This class holds audio sample data in RAM. */
     class Sample
     {
     public:
@@ -116,6 +117,7 @@ namespace Resonant {
       std::string m_name;
     };
 
+    /* This class controls the playback of a sample. */
     class SampleVoice
     {
     public:
@@ -157,6 +159,7 @@ namespace Resonant {
       unsigned m_position;
     };
 
+    /* Loads samples from the disk, as necessary. */
     class LoadItem
     {
     public:
@@ -190,6 +193,7 @@ namespace Resonant {
       SampleVoice * m_waiting[WAITING_COUNT];
     };
 
+    /* Private sample loader thread. */
     class BGLoader : public Radiant::Thread
     {
     public:

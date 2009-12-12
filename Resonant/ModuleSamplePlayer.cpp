@@ -246,18 +246,21 @@ namespace Resonant {
 
     m_state = sample ? PLAYING : WAITING_FOR_SAMPLE;
 
-    debug("ModuleSamplePlayer::SampleVoice::init # Playing gain = %.3f "
-          "rp = %.3f, ss = %d, ts = %d", m_gain, m_relPitch,
+    debug("ModuleSamplePlayer::SampleVoice::init # %p Playing gain = %.3f "
+          "rp = %.3f, ss = %d, ts = %d", this, m_gain, m_relPitch,
           m_sampleChannel, m_targetChannel);
   }
 
   void ModuleSamplePlayer::SampleVoice::setSample(Sample * s)
   {
-    assert(m_state == WAITING_FOR_SAMPLE);
+    if(m_state != WAITING_FOR_SAMPLE) {
+
+      fatal("ModuleSamplePlayer::SampleVoice::setSample # Wrong state %p",
+            this);
+    }
     m_sample = s;
     m_state = PLAYING;
   }
-
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -301,9 +304,7 @@ namespace Resonant {
 
     for(int i = 0; i < BINS; i++) {
       if(m_loads[i].m_free) {
-        m_loads[i].m_name = filename;
-        m_loads[i].addWaiting(waiting);
-        m_loads[i].m_free = false;
+        m_loads[i].init(filename, waiting);
         break;
       }
     }
@@ -360,7 +361,7 @@ namespace Resonant {
                 break;
 
               debug("ModuleSamplePlayer::BGLoader::childLoop # Delivering "
-                    "\"%s\"", it.m_name.str());
+                    "\"%s\" to %p", it.m_name.str(), voice);
 
               voice->setSample(s);
             }
