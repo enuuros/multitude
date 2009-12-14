@@ -14,6 +14,8 @@
 
 namespace Radiant
 {
+  /* It seems that ptgrey drivers are not 100% thread-safe. To overcome this we 
+     use a mutex to lock captureImage calls to one-thread at a time. */
   static MutexStatic __cmutex; 
 
   typedef std::map<uint64_t, FlyCapture2::PGRGuid> GuidMap;
@@ -457,7 +459,7 @@ namespace Radiant
 
   void VideoCameraPTGrey::setFeature(FeatureType id, float value)
   {
-    Radiant::debug("VideoCameraPTGrey::setFeature # %d %f", id, value);
+    // Radiant::debug("VideoCameraPTGrey::setFeature # %d %f", id, value);
 
     // If less than zero, use automatic mode
     if(value < 0.f) {
@@ -482,7 +484,7 @@ namespace Radiant
 
   void VideoCameraPTGrey::setFeatureRaw(FeatureType id, int32_t value)
   {
-    Radiant::debug("VideoCameraPTGrey::setFeatureRaw # %d %d", id, value);
+    // Radiant::debug("VideoCameraPTGrey::setFeatureRaw # %d %d", id, value);
 
     FlyCapture2::Property prop;
     prop.type = propertyToFC2(id);
