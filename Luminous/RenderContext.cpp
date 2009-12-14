@@ -15,9 +15,11 @@
 
 #include "RenderContext.hpp"
 #include "Texture.hpp"
-#include "FrameBufferObject.hpp"
+#include "FramebufferObject.hpp"
 
 #include "Utils.hpp"
+
+#include <strings.h>
 
 #define DEFAULT_RECURSION_LIMIT 4
 
