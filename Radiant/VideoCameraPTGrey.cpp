@@ -123,14 +123,23 @@ namespace Radiant
 
   bool VideoCameraPTGrey::open(uint64_t euid, int , int , ImageFormat , FrameRate framerate)
   {
-    // Look up PGRGuid from our map (updated in queryCameras())
-    GuidMap::iterator it = g_guidMap.find(euid);
-    if(it == g_guidMap.end()) {
-      Radiant::error("VideoCameraPTGrey::open # guid not found");
-      return false;
-    }
+    FlyCapture2::PGRGuid guid;
 
-    FlyCapture2::PGRGuid guid = it->second;
+    // If the euid is zero, take the first camera
+    if(euid == 0) {
+      if(g_guidMap.empty())
+        return false;
+
+      guid = g_guidMap.begin()->second;
+    } else {
+      GuidMap::iterator it = g_guidMap.find(euid);
+      if(it == g_guidMap.end()) {
+        Radiant::error("VideoCameraPTGrey::open # guid not found");
+        return false;
+      }
+
+      guid = it->second;
+    }
 
     // Connect camera
     FlyCapture2::Error err = m_camera.Connect(&guid);
