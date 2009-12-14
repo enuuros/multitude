@@ -138,7 +138,7 @@ namespace FireView {
         m_camera->sendSoftwareTrigger();
       }
 
-      int timeout = m_frameCount ? 5000 : 15000;
+      int timeout = m_frameCount ? 8000 : 15000;
       m_camera->setCaptureTimeout(timeout);
 
       const Radiant::VideoImage * img = m_camera->captureImage();

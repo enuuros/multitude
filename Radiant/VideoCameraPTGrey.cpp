@@ -128,6 +128,8 @@ namespace Radiant
 
   bool VideoCameraPTGrey::open(uint64_t euid, int , int , ImageFormat , FrameRate framerate)
   {
+    GuardStatic g(__cmutex);
+
     FlyCapture2::PGRGuid guid;
 
     // If the euid is zero, take the first camera
@@ -228,6 +230,8 @@ namespace Radiant
 
   bool VideoCameraPTGrey::openFormat7(uint64_t euid, Nimble::Recti roi, float fps, int mode)
   {
+    GuardStatic g(__cmutex);
+
     // Look up PGRGuid from our map (updated in queryCameras())
     GuidMap::iterator it = g_guidMap.find(euid);
     if(it == g_guidMap.end()) {
@@ -354,6 +358,8 @@ namespace Radiant
 
   bool VideoCameraPTGrey::start()
   {
+    GuardStatic g(__cmutex);
+
 	  if(m_state != OPENED) {
 		  error("VideoCameraPTGrey::start # State != OPENED");
 		  /* If the device is already running, then return true. */
@@ -374,6 +380,8 @@ namespace Radiant
 
   bool VideoCameraPTGrey::stop()
   {
+    // GuardStatic g(__cmutex);
+
 	  if(m_state != RUNNING) {
 		  error("VideoCameraPTGrey::stop # State != RUNNING");
 		  /* If the device is already stopped, then return true. */
@@ -394,6 +402,8 @@ namespace Radiant
 
   bool VideoCameraPTGrey::close()
   {
+    // GuardStatic g(__cmutex);
+
     Radiant::info("VideoCameraPTGrey::close");
     m_camera.Disconnect();
 
@@ -532,6 +542,7 @@ namespace Radiant
 
   bool VideoCameraPTGrey::enableTrigger(TriggerSource src)
   {
+
     FlyCapture2::TriggerMode tm;
 
     FlyCapture2::Error err = m_camera.GetTriggerMode(&tm);
