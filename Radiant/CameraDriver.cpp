@@ -82,8 +82,7 @@ namespace Radiant
 
       CameraDriver * cd = getCameraDriver((*it));
 
-
-      info("CameraDriverFactory::getPreferredCameraDriver # Checking driver %s = %p",
+      debug("CameraDriverFactory::getPreferredCameraDriver # Checking driver %s = %p",
 			(*it).c_str(), cd);
       if(cd) {
         // Make sure there is at least one camera available using this driver

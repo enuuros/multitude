@@ -55,6 +55,12 @@ namespace Radiant
 
   private:
 
+    enum State {
+	  UNINITIALIZED,
+	  OPENED,
+	  RUNNING
+	};
+
     void queryFeature(FlyCapture2::PropertyType id, 
 		      std::vector<VideoCamera::CameraFeature> * features);
 
@@ -62,6 +68,8 @@ namespace Radiant
     VideoImage m_image;
 
     int m_captureTimeoutMs;
+	State m_state;
+	CameraInfo m_info;
   };
 
   class CameraDriverPTGrey : public CameraDriver

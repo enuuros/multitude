@@ -1,5 +1,6 @@
 #include "VideoCameraPTGrey.hpp"
 
+#include "Mutex.hpp"
 #include "Trace.hpp"
 
 #include <map>
@@ -13,6 +14,7 @@
 
 namespace Radiant
 {
+  static MutexStatic __cmutex; 
 
   typedef std::map<uint64_t, FlyCapture2::PGRGuid> GuidMap;
   GuidMap g_guidMap;
@@ -117,7 +119,8 @@ namespace Radiant
   }
 
   VideoCameraPTGrey::VideoCameraPTGrey(CameraDriver * driver)
-    : VideoCamera(driver)
+    : VideoCamera(driver),
+      m_state(UNINITIALIZED)
   {
   }
 
@@ -203,6 +206,20 @@ namespace Radiant
       err.PrintErrorTrace();
       return false;
     }
+
+	m_state = OPENED;
+
+
+    FlyCapture2::CameraInfo camInfo;
+    err = m_camera.GetCameraInfo(&camInfo);
+    if(err != FlyCapture2::PGRERROR_OK) {
+      Radiant::error("VideoCameraPTGrey::open # %s", err.GetDescription());
+    }
+
+    m_info.m_vendor = camInfo.vendorName;
+    m_info.m_model = camInfo.modelName;
+    m_info.m_euid64 = 0;
+    m_info.m_driver = driver()->driverName();
 
     return true;
   }
@@ -317,11 +334,30 @@ namespace Radiant
     // Allocate space for image
     m_image.allocateMemory(IMAGE_GRAYSCALE, f7s.width, f7s.height);
 
+	m_state = OPENED;
+
+    FlyCapture2::CameraInfo camInfo;
+    err = m_camera.GetCameraInfo(&camInfo);
+    if(err != FlyCapture2::PGRERROR_OK) {
+      Radiant::error("VideoCameraPTGrey::open # %s", err.GetDescription());
+    }
+
+    m_info.m_vendor = camInfo.vendorName;
+    m_info.m_model = camInfo.modelName;
+    m_info.m_euid64 = 0;
+    m_info.m_driver = driver()->driverName();
+
     return true;
   }
 
   bool VideoCameraPTGrey::start()
   {
+	  if(m_state != OPENED) {
+		  error("VideoCameraPTGrey::start # State != OPENED");
+		  /* If the device is already running, then return true. */
+		  return m_state == RUNNING;
+	  }
+
     FlyCapture2::Error err = m_camera.StartCapture();
     if(err != FlyCapture2::PGRERROR_OK) {
       Radiant::error("VideoCameraPTGrey::start # %s", err.GetDescription());
@@ -329,17 +365,27 @@ namespace Radiant
       return false;
     }
 
+	m_state = RUNNING;
+
     return true;
   }
 
   bool VideoCameraPTGrey::stop()
   {
+	  if(m_state != RUNNING) {
+		  error("VideoCameraPTGrey::stop # State != RUNNING");
+		  /* If the device is already stopped, then return true. */
+		  return m_state == OPENED;
+	  }
+
     Radiant::info("VideoCameraPTGrey::stop");
     FlyCapture2::Error err = m_camera.StopCapture();
     if(err != FlyCapture2::PGRERROR_OK) {
       Radiant::error("VideoCameraPTGrey::stop # %s", err.GetDescription());
       return false;
     }
+
+	m_state = OPENED;
 
     return true;
   }
@@ -349,11 +395,15 @@ namespace Radiant
     Radiant::info("VideoCameraPTGrey::close");
     m_camera.Disconnect();
 
+	m_state = UNINITIALIZED;
+
     return true;
   }
 
   const Radiant::VideoImage * VideoCameraPTGrey::captureImage()
   {
+    GuardStatic g(__cmutex);
+
     FlyCapture2::Image img;
     FlyCapture2::Error err = m_camera.RetrieveBuffer(&img);
     if(err != FlyCapture2::PGRERROR_OK) {
@@ -375,21 +425,9 @@ namespace Radiant
 
   VideoCamera::CameraInfo VideoCameraPTGrey::cameraInfo()
   {
-    VideoCamera::CameraInfo info;
-
-    FlyCapture2::CameraInfo camInfo;
-    FlyCapture2::Error err = m_camera.GetCameraInfo(&camInfo);
-    if(err != FlyCapture2::PGRERROR_OK) {
-      Radiant::error("VideoCameraPTGrey::cameraInfo # %s", err.GetDescription());
-      return info;
-    }
-
-    info.m_vendor = camInfo.vendorName;
-    info.m_model = camInfo.modelName;
-    info.m_euid64 = 0;
-    info.m_driver = driver()->driverName();
-
-    return info;
+    // GuardStatic g(__cmutex);
+    return m_info;
+	
   }
 
   int VideoCameraPTGrey::width() const
@@ -432,7 +470,8 @@ namespace Radiant
 
     FlyCapture2::Error err = m_camera.GetPropertyInfo(&pinfo);
     if(err != FlyCapture2::PGRERROR_OK) {
-      Radiant::error("VideoCameraPTGrey::setFeature # %s", err.GetDescription());
+		Radiant::debug("VideoCameraPTGrey::setFeature # Failed: \"%s\"",
+			err.GetDescription());
       return;
     }
 
@@ -470,7 +509,8 @@ namespace Radiant
 
     FlyCapture2::Error err = m_camera.SetProperty(&prop);
     if(err != FlyCapture2::PGRERROR_OK) {
-      Radiant::error("VideoCameraPTGrey::setFeatureRaw # %s", err.GetDescription());
+		Radiant::debug("VideoCameraPTGrey::setFeatureRaw # Failed: \"%s\"",
+			err.GetDescription());
       err.PrintErrorTrace();
     }
     /*
@@ -660,7 +700,11 @@ namespace Radiant
   std::vector<VideoCamera::CameraInfo> g_cameras;
 
   CameraDriverPTGrey::CameraDriverPTGrey()
-  {}
+  {
+    // Initialize the mutex.
+    __cmutex.lock();
+	__cmutex.unlock();
+  }
 
   size_t CameraDriverPTGrey::queryCameras(std::vector<VideoCamera::CameraInfo> & cameras)
   {
