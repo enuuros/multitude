@@ -79,7 +79,7 @@ LIBS += $${MULTI_LIB_FLAG}$$PWD/lib
 
 contains(QT_MAJOR_VERSION,4) {
 
-  contains(QT_MINOR_VERSION,5) {
+  contains(QT_MINOR_VERSION,5) || contains(QT_MINOR_VERSION,6) {
     HAS_QT_45=YES
     DEFINES += USE_QT45
   }
