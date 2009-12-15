@@ -7,14 +7,14 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 #include "Transformer.hpp"
 
-namespace Luminous 
+namespace Luminous
 {
 
   Transformer::Transformer()
@@ -53,6 +53,16 @@ namespace Luminous
   void Transformer::pushTransformRightMul(const Nimble::Matrix3 & m)
   {
     m_stack.push(m_stack.top() * m);
+  }
+
+  void Transformer::pushTransform()
+  {
+    m_stack.push(m_stack.top());
+  }
+
+  void Transformer::setTransform(const Nimble::Matrix3 & m)
+  {
+    m_stack.top() = m;
   }
 
   void Transformer::resetTransform()

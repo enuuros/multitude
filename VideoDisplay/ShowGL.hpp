@@ -7,10 +7,10 @@
  * See file "VideoDisplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 
@@ -95,17 +95,21 @@ namespace VideoDisplay {
       virtual void bind();
       virtual void unbind();
       void doTextures(int frame, Radiant::VideoImage *);
-      
+
       Vector2i planeSize(const Radiant::VideoImage *img, uint i);
-      
+
       Luminous::Texture2D & blankTex() { return m_blankTex; }
 
     private:
+
+      void doTexturesRGB(Radiant::VideoImage *);
+      void doTexturesYUV(Radiant::VideoImage *);
 
       int m_frame;
       Luminous::Texture2D  m_texIds[3];
       Vector2i             m_texSizes[3];
       Luminous::Texture2D  m_blankTex;
+
     };
 
   public:
@@ -117,7 +121,7 @@ namespace VideoDisplay {
 
     enum {
       HISTOGRAM_POINTS = 256
-    };
+                       };
 
     VIDEODISPLAY_API ShowGL();
     VIDEODISPLAY_API ~ShowGL();
@@ -126,12 +130,34 @@ namespace VideoDisplay {
     VIDEODISPLAY_API bool loadSubTitles(const char * filename, const char * type = 0);
 
     /// Initialize the file, but does not play it.
+    /** Does not actually start playback, just loads in information
+        about the video.
+
+        @arg filename The name ofthe video file to play.
+
+        @arg dsp The DSP graph that is used for audio playback. If null, then
+        this method will pick up the default network.
+
+        @arg targetChannel The sound output channel for the audio. If this value
+        is less than zero, then the sound-track of the video will be spread over
+        all output channels. For example if the file had two channels, and one was
+        running a sound system with 8 loudspeaker, then the stereo sound would be
+        replicated four times across the speakers. If the value is at least zero,
+        then the sound is directed only that speaker. Stereo (or multi-channel
+        sound-tracks) are spread over outputs so that the first audio channel goes
+        to the specified channel, and the other channels go to the speakers
+        after the first channel.
+
+        @arg flags Flags for the video playback. For the playback to work, the flags
+        should include Radiant::WITH_VIDEO and Radiant::WITH_AUDIO.
+
+    */
     VIDEODISPLAY_API bool init(const char * filename,
-			       Resonant::DSPNetwork  * dsp,
-			       float previewpos = 0.05f,
+                               Resonant::DSPNetwork  * dsp,
+                               float previewpos = 0.05f,
                                int targetChannel = -1,
-			       int flags = 
-			       Radiant::WITH_VIDEO | Radiant::WITH_AUDIO);
+                               int flags =
+                               Radiant::WITH_VIDEO | Radiant::WITH_AUDIO);
     /// Opens the file for playing.
     /* VIDEODISPLAY_API bool open(const char * filename, Resonant::DSPNetwork  * dsp,
                                Radiant::TimeStamp pos = 0);
@@ -155,7 +181,7 @@ namespace VideoDisplay {
     /// Update the video image from reader-thread
     VIDEODISPLAY_API void update();
     /// Render the video to the specified rectangle
-    /** 
+    /**
         @arg topleft Top-left corner of the video image
 
         @arg bottomright Bottom-right corner of the video image. If
@@ -179,7 +205,7 @@ namespace VideoDisplay {
     double relativePosition() { return position() / (double) duration(); }
 
     /** Seek to given position. Due to limitations of underlying seek
-	algorithms, this method is usually not exact. */
+    algorithms, this method is usually not exact. */
     VIDEODISPLAY_API void seekTo(Radiant::TimeStamp time);
     VIDEODISPLAY_API void seekToRelative(double relative);
     void seekBy(const Radiant::TimeStamp & ts) { seekTo(position() + ts); }
@@ -187,10 +213,10 @@ namespace VideoDisplay {
     VIDEODISPLAY_API void panAudioTo(Nimble::Vector2 location);
 
     /** Information on how the frames have been displayed. The
-	histogram information is useful mostly for debug purposes. */
-    int histogramPoint(int index) const { return m_histogram[index]; } 
+    histogram information is useful mostly for debug purposes. */
+    int histogramPoint(int index) const { return m_histogram[index]; }
     int histogramIndex() const { return m_updates; }
-    
+
     /** Returns true if this video has been loaded with subtitles. */
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
@@ -218,7 +244,7 @@ namespace VideoDisplay {
     Radiant::TimeStamp      m_position;
 
     SubTitles               m_subTitles;
-    
+
   };
 
 }

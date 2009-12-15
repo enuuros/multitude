@@ -7,10 +7,10 @@
  * See file "VideoDisplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "ShowGL.hpp"
@@ -30,7 +30,7 @@
 namespace VideoDisplay {
 
   ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
-    : Luminous::GLSLProgramObject(resources)
+      : Luminous::GLSLProgramObject(resources)
   {
     for(uint i = 0; i < PARAM_SIZEOF; i++)
       m_uniforms[i] = -1;
@@ -44,21 +44,21 @@ namespace VideoDisplay {
 
   bool ShowGL::YUVProgram::init()
   {
-    static const char * shadersource = 
-      "uniform sampler2D ytex;\n"
-      "uniform sampler2D utex;\n"
-      "uniform sampler2D vtex;\n"
-      "uniform mat3 zm;\n"
-      "void main (void) {\n"
-      "  vec4 ycolor = texture2D(ytex, gl_TexCoord[0].st);\n"
-      "  vec4 ucolor = texture2D(utex, gl_TexCoord[0].st);\n"
-      "  vec4 vcolor = texture2D(vtex, gl_TexCoord[0].st);\n"
-      "  vec3 yuv = vec3(ycolor.r, ucolor.r - 0.5, vcolor.r - 0.5);\n"
-      "  gl_FragColor.rgb = zm * yuv;\n"
-      "  gl_FragColor.a = gl_Color.a;\n"
-      "}\n";
+    static const char * shadersource =
+        "uniform sampler2D ytex;\n"
+        "uniform sampler2D utex;\n"
+        "uniform sampler2D vtex;\n"
+        "uniform mat3 zm;\n"
+        "void main (void) {\n"
+        "  vec4 ycolor = texture2D(ytex, gl_TexCoord[0].st);\n"
+        "  vec4 ucolor = texture2D(utex, gl_TexCoord[0].st);\n"
+        "  vec4 vcolor = texture2D(vtex, gl_TexCoord[0].st);\n"
+        "  vec3 yuv = vec3(ycolor.r, ucolor.r - 0.5, vcolor.r - 0.5);\n"
+        "  gl_FragColor.rgb = zm * yuv;\n"
+        "  gl_FragColor.a = gl_Color.a;\n"
+        "}\n";
     /*
-    static const char * shadersource = 
+    static const char * shadersource =
       "uniform sampler2D ytex;\n"
       "uniform sampler2D utex;\n"
       "uniform sampler2D vtex;\n"
@@ -77,13 +77,13 @@ namespace VideoDisplay {
     clear();
 
     Luminous::GLSLShaderObject * fragShader =
-      new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER, resources());
+        new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER, resources());
 
     fragShader->setSource(shadersource);
     if(!fragShader->compile()) {
 
-		Radiant::error("ShowGL::YUVProgram::init # compile: %s",
-          fragShader->compilerLog());
+      Radiant::error("ShowGL::YUVProgram::init # compile: %s",
+                     fragShader->compilerLog());
       return false;
     }
 
@@ -95,7 +95,6 @@ namespace VideoDisplay {
   void ShowGL::YUVProgram::bind()
   {
     Luminous::GLSLProgramObject::bind();
-
 
     static const float yuv2rgb[9] = {
       1.0f,  0.0f,    1.403f,
@@ -117,7 +116,7 @@ namespace VideoDisplay {
   bool ShowGL::YUVProgram::link()
   {
     if(!Luminous::GLSLProgramObject::link()) {
-		Radiant::error("ShowGL::YUVProgram::link # %s", linkerLog());
+      Radiant::error("ShowGL::YUVProgram::link # %s", linkerLog());
       return false;
     }
 
@@ -144,12 +143,12 @@ namespace VideoDisplay {
   {
     Luminous::GLSLProgramObject::clear();
   }
-  
+
   ShowGL::MyTextures::MyTextures(Luminous::GLResources * resources)
-    : GLResource(resources)
+      : GLResource(resources)
   {
     m_frame = -1;
-    
+
     bzero(m_texSizes, sizeof(m_texSizes));
   }
 
@@ -181,71 +180,13 @@ namespace VideoDisplay {
     if(m_frame == frame)
       return;
 
-    for(uint i = 0; i < 3; i++) {
-
-      glActiveTexture(GL_TEXTURE0 + i);
-      glEnable(GL_TEXTURE_2D);
-      Luminous::Texture2D * tex = & m_texIds[i];
-      tex->bind();
-      
-      Vector2i area, real = planeSize(img, i);
-      Vector2i & ts = m_texSizes[i];
-      
-      area = real;
-
-      if(area.x & 0x3) {
-        area.x -= area.x & 0x3;
-      }
-      if(area.y & 0x3)
-        area.y -= area.y & 0x3;
-
-      ts = area;
-
-      if(m_frame < 0 || area != tex->size()) {
-
-	debug("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
-	     area.x, area.y, img->m_planes[i].m_data);
-
-        tex->setWidth(area.x);
-        tex->setHeight(area.y);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
-		     area.x, area.y, 0, 
-		     GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);        
-
-        Luminous::Utils::glCheck
-          ("ShowGL::YUVProgram::doTextures # glTexImage2D");
-
-      }
-       
-      // info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
-      // frame, ts.x, ts.y);
-
-      if(real.x & 0x3) {
-        
-        for(int y = 0; y < area.y; y++) {
-          glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, 
-                          ts.x, 1,
-                          GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                          img->m_planes[i].m_data + y * real.x);
-          
-        }
-      }
-      else
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-                        ts.x, ts.y,
-                        GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                        img->m_planes[i].m_data);
-      
-      Luminous::Utils::glCheck
-        ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
+    if(img->m_format == Radiant::IMAGE_RGB_24) {
+      doTexturesRGB(img);
     }
+    else {
+      doTexturesYUV(img);
+    }
+
     m_frame = frame;
   }
 
@@ -269,11 +210,97 @@ namespace VideoDisplay {
   }
 
 
+  void ShowGL::MyTextures::doTexturesRGB(Radiant::VideoImage *img)
+  {
+    glActiveTexture(GL_TEXTURE0);
+
+    glEnable(GL_TEXTURE_2D);
+    Luminous::Texture2D * tex = & m_texIds[0];
+    tex->bind();
+    tex->loadBytes(GL_RGB, img->width(), img->height(), img->m_planes[0].m_data,
+                   Luminous::PixelFormat::rgbUByte());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  }
+
+  void ShowGL::MyTextures::doTexturesYUV(Radiant::VideoImage *img)
+  {
+
+    for(uint i = 0; i < 3; i++) {
+
+      glActiveTexture(GL_TEXTURE0 + i);
+      glEnable(GL_TEXTURE_2D);
+      Luminous::Texture2D * tex = & m_texIds[i];
+      tex->bind();
+
+      Vector2i area, real = planeSize(img, i);
+      Vector2i & ts = m_texSizes[i];
+
+      area = real;
+
+      if(area.x & 0x3) {
+        area.x -= area.x & 0x3;
+      }
+      if(area.y & 0x3)
+        area.y -= area.y & 0x3;
+
+      ts = area;
+
+      if(m_frame < 0 || area != tex->size()) {
+
+        debug("ShowGL::YUVProgram::doTextures # area = [%d %d] ptr = %p",
+              area.x, area.y, img->m_planes[i].m_data);
+
+        tex->setWidth(area.x);
+        tex->setHeight(area.y);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
+                     area.x, area.y, 0,
+                     GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        Luminous::Utils::glCheck
+            ("ShowGL::YUVProgram::doTextures # glTexImage2D");
+
+      }
+
+      // info("ShowGL::YUVProgram::doTextures # frame = %d, ts = [%d %d]",
+      // frame, ts.x, ts.y);
+
+      if(real.x & 0x3) {
+
+        for(int y = 0; y < area.y; y++) {
+          glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y,
+                          ts.x, 1,
+                          GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                          img->m_planes[i].m_data + y * real.x);
+
+        }
+      }
+      else
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                        ts.x, ts.y,
+                        GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                        img->m_planes[i].m_data);
+
+      Luminous::Utils::glCheck
+          ("ShowGL::YUVProgram::doTextures # glTexSubImage2D");
+    }
+  }
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
   ShowGL::ShowGL()
-    : m_video(0),
+      : m_video(0),
       m_frame(0),
       m_dsp(0),
       m_audio(0),
@@ -299,9 +326,9 @@ namespace VideoDisplay {
   }
 
   bool ShowGL::init(const char * filename, Resonant::DSPNetwork  * dsp,
-		    float /*previewpos*/,
+                    float /*previewpos*/,
                     int targetChannel,
-		    int flags)
+                    int flags)
   {
     // debug("ShowGL::init # %f", previewpos);
 
@@ -326,7 +353,7 @@ namespace VideoDisplay {
     m_duration = Radiant::TimeStamp::createSecondsD(m_video->durationSeconds());
 
     debug("ShowGL::init # Opened %s (%lf secs)",
-	  filename, m_duration.secondsD());
+          filename, m_duration.secondsD());
 
     return true;
   }
@@ -335,7 +362,7 @@ namespace VideoDisplay {
   bool ShowGL::start(bool fromOldPos)
   {
     debug("ShowGL::start");
-    
+
     if(m_state == PLAY) {
       return false;
     }
@@ -371,7 +398,7 @@ namespace VideoDisplay {
 
     if(m_state != PLAY)
       return false;
-    
+
     /*
     if(m_frame && (m_frame != & m_preview) && m_video) {
 
@@ -392,7 +419,7 @@ namespace VideoDisplay {
     }
 
     m_dsp->markDone(m_dspItem);
-    
+
     m_audio->forgetVideo();
     m_audio = 0;
 
@@ -438,7 +465,7 @@ namespace VideoDisplay {
 
     if(Radiant::TimeStamp(m_duration - m_position).secondsD() < 2.5)
       pos = 0;
-    
+
     return false; // play(pos);
   }
 
@@ -455,11 +482,11 @@ namespace VideoDisplay {
     if(m_audio) {
       videoFrame = m_audio->videoFrame();
       if(m_audio->atEnd()) {
-	info("ShowGL::update # At end");
-	stop();
+        info("ShowGL::update # At end");
+        stop();
       }
       // info("Audio reports frame %d", videoFrame);
-      
+
     }
     else {
       videoFrame = m_video->latestFrame();
@@ -499,17 +526,18 @@ namespace VideoDisplay {
   }
 
   static Luminous::Collectable yuvkey;
+  static Luminous::Collectable rgbkey;
   // static int yuvkeyaa = 0;
 
   void ShowGL::render(Luminous::GLResources * resources,
-		      Vector2 topleft, Vector2 bottomright,
-		      const Nimble::Matrix3f * transform,
-		      Poetic::GPUFont * subtitleFont,
-		      float subTitleSpace)
+                      Vector2 topleft, Vector2 bottomright,
+                      const Nimble::Matrix3f * transform,
+                      Poetic::GPUFont * subtitleFont,
+                      float subTitleSpace)
   {
     GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, & yuvkey, resources);
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
- 
+
     assert(yuv2rgb != 0);
 
     Vector2i s = size();
@@ -525,18 +553,22 @@ namespace VideoDisplay {
 
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
-      yuv2rgb->bind();
+
+      if(m_frame->m_image.m_format < Radiant::IMAGE_RGB_24)
+        yuv2rgb->bind();
+      else
+        ; // info("No shader needed, plain RGB video.");
     }
 
     glEnable(GL_BLEND);
-    
+
     Nimble::Vector4 white(1, 1, 1, 1);
 
     if(transform) {
       Nimble::Matrix3 m = *transform * Nimble::Matrix3::translate2D(topleft);
 
       Luminous::Utils::glTexRectAA(bottomright - topleft, *transform,
-				   white.data());
+                                   white.data());
     }
     else {
       Nimble::Rect r(topleft, bottomright);
@@ -567,22 +599,22 @@ namespace VideoDisplay {
       float subH = fontH * 2.2f;
 
       int linecount = sub->lineCount();
-      
+
       bool below = false;
-      
+
       if(subTitleSpace <= 0)
         subTitleSpace = bottomright.y;
       else if((subTitleSpace - subH) <  bottomright.y)
         subTitleSpace = bottomright.y;
       else {
         subTitleSpace = bottomright.y + subH;
-	below = true;
+        below = true;
       }
       Nimble::Vector2f loc(topleft.x + fontH, subTitleSpace - fontH * 0.2f);
 
       if(linecount == 1) {
-	if(below)
-	  loc.y -= fontH;
+        if(below)
+          loc.y -= fontH;
         subtitleFont->render(sub->m_lines[0], loc);
       }
       else if(linecount  == 2) {
@@ -651,5 +683,5 @@ namespace VideoDisplay {
   {
     bzero(m_histogram, sizeof(m_histogram));
   }
-  
+
 }

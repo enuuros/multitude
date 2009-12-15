@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_VIDEO_IMAGE_HPP
@@ -23,7 +23,7 @@
 namespace Radiant {
 
   /// Enumeration of different video image formats
-  enum ImageFormat 
+  enum ImageFormat
     {
       IMAGE_UNKNOWN,
 
@@ -36,14 +36,17 @@ namespace Radiant {
       IMAGE_YUV_422,
       IMAGE_YUV_422P,
 
-      IMAGE_RGB = 128,
-      IMAGE_RGBA,
+      IMAGE_RGB_24 = 128,
+      IMAGE_RGBA_32,
+
+      IMAGE_RGB = IMAGE_RGB_24,
+      IMAGE_RGBA = IMAGE_RGBA_32,
 
       IMAGE_RAWBAYER = 256
     };
 
   /// Enumeration of different video image plane types
-  enum PlaneType 
+  enum PlaneType
     {
       PLANE_UNKNOWN,
 
@@ -80,13 +83,13 @@ namespace Radiant {
   class RADIANT_API VideoImage
   {
   public:
-    VideoImage(ImageFormat fmt = IMAGE_UNKNOWN, int w = 0, int h = 0) 
+    VideoImage(ImageFormat fmt = IMAGE_UNKNOWN, int w = 0, int h = 0)
       : m_format(fmt), m_width(w), m_height(h) {}
     ~VideoImage();
 
     /** Holds the data for one image plane.
 
-	@see #VideoImage
+    @see #VideoImage
      */
     class RADIANT_API Plane {
     public:
@@ -112,8 +115,8 @@ namespace Radiant {
 
     /// Resets the image
 
-    void reset() 
-    { 
+    void reset()
+    {
       VideoImage tmp;
       *this = tmp;
     }
@@ -163,18 +166,28 @@ namespace Radiant {
       m_planes[3].m_type = PLANE_UNKNOWN;
     }
 
+    /// Sets the image format to planar RGB24.
+    void setFormatRGB24()
+    {
+      m_format = IMAGE_RGB_24;
+      m_planes[0].m_type = PLANE_RGB;
+      m_planes[1].m_type = PLANE_UNKNOWN;
+      m_planes[2].m_type = PLANE_UNKNOWN;
+      m_planes[3].m_type = PLANE_UNKNOWN;
+    }
+
     static Nimble::Vector2i planeSize(ImageFormat fmt, int w, int h, int plane);
 
     /// Allocates memory and sets the image format.
     bool allocateMemory(ImageFormat fmt, int w, int h);
     /// Allocates memory and sets the image format, based on another image
     /** This function can be used when preparing to copy contents from
-	from anoher image. */
+    from anoher image. */
     bool allocateMemory(const VideoImage & that)
     { return allocateMemory(that.m_format, that.width(), that.height()); }
 
     /** Copies the image data. The image format, image size and data
-	buffers should be set correctly before calling this method. */
+    buffers should be set correctly before calling this method. */
     bool copyData(const VideoImage & that);
 
     /// Free memory on all the planes
@@ -190,18 +203,18 @@ namespace Radiant {
       unsigned pixels = m_width * m_height;
 
       if(m_format == IMAGE_GRAYSCALE)
-	s = pixels;
-      else if(m_format == IMAGE_RGB) 
-	s = pixels * 3;
-      else 
-	s = 0;
+    s = pixels;
+      else if(m_format == IMAGE_RGB)
+    s = pixels * 3;
+      else
+    s = 0;
 
       return s;
     }
 
     /// Returns a readable name of a given image format
     static const char * formatName(ImageFormat);
-  
+
     /// The width of the image
     int width()  const { return m_width; }
     /// The height of the image

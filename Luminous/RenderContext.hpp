@@ -25,6 +25,7 @@
 
 namespace Luminous
 {
+  class Texture2D;
 
   /// RenderContext contains the current rendering state.
   class LUMINOUS_API RenderContext : public Transformer
@@ -57,12 +58,17 @@ namespace Luminous
       /** Copies the data pointers from the argument object. */
       FBOHolder & operator = (const FBOHolder & that);
 
+      Luminous::Texture2D * finish();
+      /** The relative texture coordinates for this useful texture area. */
+      const Nimble::Vector2 & texUV() const { return m_texUV; }
+
     private:
 
       void release();
 
       RenderContext * m_context;
       FBOPackage    * m_package;
+      Nimble::Vector2 m_texUV;
     };
 
 #endif
@@ -88,7 +94,7 @@ namespace Luminous
     const Nimble::Rect & visibleArea() const;
 
     ///@internal
-    FBOHolder getTemporaryFBO(Nimble::Vector2i minimumsize);
+    FBOHolder getTemporaryFBO(Nimble::Vector2 basicsize, float scaling);
 
     // Render functions:
 
@@ -121,6 +127,10 @@ namespace Luminous
         then it will be ignored.
     */
     void drawTexRect(Nimble::Vector2 size, const float * rgba);
+    void drawTexRect(Nimble::Vector2 size, const float * rgba,
+                     const Nimble::Rect & texUV);
+    void drawTexRect(Nimble::Vector2 size, const float * rgba,
+                     Nimble::Vector2 texUV);
 
     /// Sets the current blend function, and enables blending
     /** If the function is BLEND_NONE, then blending is disabled. */

@@ -71,11 +71,14 @@ namespace Luminous
 
   RenderContext::FBOHolder::FBOHolder()
       : m_context(0),
-      m_package(0)
-  {}
+      m_package(0),
+      m_texUV(1,1)
+  {
+  }
 
   RenderContext::FBOHolder::FBOHolder(RenderContext * context, FBOPackage * package)
-      : m_context(context), m_package(package)
+      : m_context(context), m_package(package),
+      m_texUV(1,1)
   {
     m_package->m_users++;
   }
@@ -85,6 +88,7 @@ namespace Luminous
     FBOHolder * that2 = (FBOHolder *) & that;
     m_context = that2->m_context;
     m_package = that2->m_package;
+    m_texUV   = that2->m_texUV;
     m_package->m_users++;
   }
 
@@ -101,10 +105,23 @@ namespace Luminous
     FBOHolder * that2 = (FBOHolder *) & that;
     m_context = that2->m_context;
     m_package = that2->m_package;
+    m_texUV   = that2->m_texUV;
     m_package->m_users++;
     return *this;
   }
 
+
+  Luminous::Texture2D * RenderContext::FBOHolder::finish()
+  {
+    if(!m_package)
+      return 0;
+
+    Luminous::Texture2D * tex = & m_package->m_tex;
+
+    release();
+
+    return tex;
+  }
 
   void RenderContext::FBOHolder::release()
   {
@@ -240,8 +257,11 @@ namespace Luminous
     return m_data->m_clipStack.top();
   }
 
-  RenderContext::FBOHolder RenderContext::getTemporaryFBO(Nimble::Vector2i minimumsize)
+  RenderContext::FBOHolder RenderContext::getTemporaryFBO
+      (Nimble::Vector2f basicsize, float scaling)
   {
+    Nimble::Vector2i minimumsize = basicsize * scaling;
+
     /* First we try to find a reasonable available FBO, that is not more than
        100% too large.
     */
@@ -249,10 +269,11 @@ namespace Luminous
     long maxpixels = 2 * minimumsize.x * minimumsize.y;
 
     FBOHolder ret;
+    FBOPackage * fbo = 0;
 
     for(Internal::FBOPackages::iterator it = m_data->m_fbos.begin();
     it != m_data->m_fbos.end(); it++) {
-      FBOPackage * fbo = (*it).ptr();
+      fbo = (*it).ptr();
       if(fbo->userCount() ||
          fbo->m_tex.width() < minimumsize.x ||
          fbo->m_tex.height() < minimumsize.y ||
@@ -265,10 +286,12 @@ namespace Luminous
 
     if(!ret.m_package) {
       // Nothing available, we need to create a new FBOPackage
-      info("Creating a new FBOPackage");
-      FBOPackage * fbo = new FBOPackage();
+      // info("Creating a new FBOPackage");
+      fbo = new FBOPackage();
       fbo->setSize(minimumsize + minimumsize / 4);
       m_data->m_fbos.push_back(fbo);
+
+      ret = FBOHolder(this, fbo);
     }
 
     /* We now have a valid FBO, next job is to set it up for rendering.
@@ -285,6 +308,9 @@ namespace Luminous
     glDrawBuffer(Luminous::COLOR0);
 
     // Save and setup viewport to match the FBO
+    glViewport(0, 0, fbo->m_tex.width(), fbo->m_tex.height());
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, minimumsize.x, minimumsize.y);
 
     // Save matrix stack
@@ -298,7 +324,17 @@ namespace Luminous
 
     m_data->pushFBO(ret.m_package);
 
-    // Probably we should to do something to the matrix stack...
+    // Lets adjust the matrix stack to take into account the new
+    // reality:
+    pushTransform();
+    setTransform(Nimble::Matrix3::scale2D(
+        minimumsize.x / basicsize.x,
+        minimumsize.y / basicsize.y));
+
+    ret.m_texUV.make(minimumsize.x / (float) fbo->m_tex.width(),
+                     minimumsize.y / (float) fbo->m_tex.height());
+
+    // info("texuv = %f %f", ret.m_texUV.x, ret.m_texUV.y);
 
     return ret;
   }
@@ -447,6 +483,45 @@ namespace Luminous
 
   }
 
+  void RenderContext::drawTexRect(Nimble::Vector2 size, const float * rgba,
+                                  const Nimble::Rect & texUV)
+  {
+    Nimble::Matrix3 m = transform();
+
+    const Vector4 v[4] = {
+      Utils::project(m, Vector2(0,       0)),
+      Utils::project(m, Vector2(size.x,  0)),
+      Utils::project(m, Vector2(size.x,  size.y)),
+      Utils::project(m, Vector2(0,       size.y))
+    };
+
+    if(rgba)
+      glColor4fv(rgba);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(texUV.low().x, texUV.low().y);
+    glVertex4fv(v[0].data());
+
+    glTexCoord2f(texUV.high().x, texUV.low().y);
+    glVertex4fv(v[1].data());
+
+    glTexCoord2f(texUV.high().x, texUV.high().y);
+    glVertex4fv(v[2].data());
+
+    glTexCoord2f(texUV.low().x, texUV.high().y);
+    glVertex4fv(v[3].data());
+
+    glEnd();
+
+  }
+
+  void RenderContext::drawTexRect(Nimble::Vector2 size, const float * rgba,
+                                  Nimble::Vector2 texUV)
+  {
+    drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
+  }
+
   void RenderContext::setBlendFunc(BlendFunc f)
   {
     if(f == BLEND_NONE) {
@@ -490,6 +565,7 @@ namespace Luminous
       fbo->activate();
     }
     else {
+      // info("Back to back-buffer");
       glDrawBuffer(GL_BACK);
     }
 
@@ -500,6 +576,8 @@ namespace Luminous
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    popTransform();
   }
 
 }

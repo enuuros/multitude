@@ -2,7 +2,6 @@ include(../multitude.pri)
 
 HEADERS += CameraDriver.hpp
 HEADERS += UDPSocket.hpp
-HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
 HEADERS += Color.hpp
@@ -89,11 +88,11 @@ SOURCES += WatchDog.cpp
 LIBS += $$LIB_NIMBLE \
     $$LIB_PATTERNS
 linux-*:SOURCES += PlatformUtilsLinux.cpp
-macx { 
+macx {
     SOURCES += PlatformUtilsOSX.cpp
     LIBS += -framework,CoreFoundation
 }
-unix { 
+unix {
     HEADERS += VideoCamera1394.hpp
     SOURCES += DirectoryPosix.cpp
     SOURCES += SerialPortPosix.cpp
@@ -106,12 +105,12 @@ unix {
         -ldl
     PKGCONFIG += libdc1394-2
 }
-win32 { 
+win32 {
     DEFINES += RADIANT_EXPORT
-    
-	HEADERS += VideoCameraCMU.hpp
-    
-	SOURCES += VideoCameraCMU.cpp
+
+    HEADERS += VideoCameraCMU.hpp
+
+    SOURCES += VideoCameraCMU.cpp
     SOURCES += PlatformUtilsWin32.cpp
     SOURCES += SerialPortWin32.cpp
     SOURCES += DirectoryQt.cpp
@@ -120,17 +119,17 @@ win32 {
     SOURCES += UDPSocketQt.cpp
 
     LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib
-		
+
     CONFIG += qt
     QT = core network
 
-	exists("C:\Program Files\Point Grey Research\FlyCapture2\include") {
-		HEADERS += VideoCameraPTGrey.hpp
-		SOURCES += VideoCameraPTGrey.cpp
-		INCLUDEPATH += "C:\Program Files\Point Grey Research\FlyCapture2\include"
-		LIBPATH += "C:\Program Files\Point Grey Research\FlyCapture2\lib"
-		LIBS += FlyCapture2.lib
-	}
+    exists("C:\Program Files\Point Grey Research\FlyCapture2\include") {
+        HEADERS += VideoCameraPTGrey.hpp
+        SOURCES += VideoCameraPTGrey.cpp
+        INCLUDEPATH += "C:\Program Files\Point Grey Research\FlyCapture2\include"
+        LIBPATH += "C:\Program Files\Point Grey Research\FlyCapture2\lib"
+        LIBS += FlyCapture2.lib
+    }
 }
 
 include(../library.pri)

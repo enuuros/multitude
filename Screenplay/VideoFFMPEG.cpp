@@ -7,10 +7,10 @@
  * See file "Screenplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "VideoFFMPEG.hpp"
@@ -39,7 +39,7 @@ namespace Screenplay {
   using namespace Radiant;
 
   static Radiant::MutexStatic __openmutex;
-  
+
   int VideoInputFFMPEG::m_debug = 1;
 
   VideoInputFFMPEG::VideoInputFFMPEG()
@@ -101,19 +101,19 @@ namespace Screenplay {
       int ret = av_read_packet(m_ic, m_pkt);
 
       if(ret < 0) {
-	
-	debug("VideoInputFFMPEG::captureImage ret < 0 %x", m_flags);
-	
-	if(! (m_flags & DO_LOOP))
-	  return 0;
-	else {
-	  debug("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
-	  m_offsetTS = m_lastTS;
-	  av_seek_frame(m_ic, -1, (int64_t) 0, 0);
-	  ret = av_read_packet(m_ic, m_pkt);
-	  if(ret < 0) 
-	    return 0;
-	}
+
+    debug("VideoInputFFMPEG::captureImage ret < 0 %x", m_flags);
+
+    if(! (m_flags & DO_LOOP))
+      return 0;
+    else {
+      debug("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
+      m_offsetTS = m_lastTS;
+      av_seek_frame(m_ic, -1, (int64_t) 0, 0);
+      ret = av_read_packet(m_ic, m_pkt);
+      if(ret < 0)
+        return 0;
+    }
       }
 
       // trace("TS NOW %ld", (long) m_ic->timestamp);
@@ -123,8 +123,8 @@ namespace Screenplay {
       got_picture = 0;
 
       if (m_pkt->stream_index == m_vindex) {
-        vlen = avcodec_decode_video(m_vcontext, 
-            m_frame, & got_picture, 
+        vlen = avcodec_decode_video(m_vcontext,
+            m_frame, & got_picture,
             m_pkt->data, m_pkt->size);
         // printf("|");fflush(0);
 
@@ -151,7 +151,7 @@ namespace Screenplay {
           /*
              printf("VideoInputFFMPEG::captureImage # ls = %d, "
              "pts = %ld (%ld/%ld) secs %.2lf\n",
-             (int) m_frame->linesize[0], (long) pts, 
+             (int) m_frame->linesize[0], (long) pts,
              (long) time_base.num, (long) time_base.den,
              secs);
              */
@@ -174,22 +174,22 @@ namespace Screenplay {
 
           debug("VideoInputFFMPEG::captureImage # pts = %d %d %d lts = %lf\n",
                 (int) m_frame->pts, (int) m_pkt->pts, (int) m_pkt->dts,
-                m_lastTS.secondsD()); 
+                m_lastTS.secondsD());
 
-	  m_lastTS += m_offsetTS;
+      m_lastTS += m_offsetTS;
 
-	  if(m_capturedVideo == 0)
-	    m_firstTS = m_lastTS;
+      if(m_capturedVideo == 0)
+        m_firstTS = m_lastTS;
         }
 
         if(m_sinceSeek == 0) {
-	  /*
+      /*
           Radiant::TimeStamp sought = Radiant::TimeStamp::createSecondsD(m_lastSeek);
           if(Radiant::TimeStamp(sought - m_lastTS).secondsD() > 1.1f)
             m_offsetTS = sought;
           else
             m_offsetTS = 0;
-	  */
+      */
         }
 
         // m_lastTS += m_offsetTS;
@@ -203,17 +203,17 @@ namespace Screenplay {
 
         int aframes = (m_audioBuffer.size() - index) * 2;
 
-        avcodec_decode_audio2(m_acontext, 
+        avcodec_decode_audio2(m_acontext,
                               & m_audioBuffer[index],
                               & aframes, m_pkt->data, m_pkt->size);
 
         aframes /= (2 * m_audioChannels);
-	int64_t pts = m_pkt->pts;
+    int64_t pts = m_pkt->pts;
 
-	if(pts <= 0)
-	  pts = m_pkt->dts;
-	if(pts <= 0)
-	  pts = m_acontext->frame_number;
+    if(pts <= 0)
+      pts = m_pkt->dts;
+    if(pts <= 0)
+      pts = m_acontext->frame_number;
 
         AVRational time_base = m_acontext->time_base;
 
@@ -225,33 +225,33 @@ namespace Screenplay {
         double rate = av_q2d(time_base);
         double secs = pts * rate;
 
-	/*
-	debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf tb = %ld/%ld",
-	      aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts, 
+    /*
+    debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf tb = %ld/%ld",
+          aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts,
               (int) m_acontext->frame_number, secs,
-	      (long) time_base.num, (long) time_base.den);
-	*/
+          (long) time_base.num, (long) time_base.den);
+    */
         if(aframes > 10000)
           pts = m_capturedAudio;
 
-	if(m_audioFrames == 0) {
+    if(m_audioFrames == 0) {
           if(secs > 0.0001)
             m_audioTS = TimeStamp::createSecondsD(secs);
           else if(pts)
-	    m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
-	  else
-	    m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
+        m_audioTS = TimeStamp::createSecondsD(pts / 44100.0);
+      else
+        m_audioTS = TimeStamp::createSecondsD(m_capturedAudio / 44100.0);
 
-	  m_audioTS += m_offsetTS;
-	}
+      m_audioTS += m_offsetTS;
+    }
 
         debug("Decoding audio # %d %lf", aframes, m_audioTS.secondsD());
-	
+
         m_audioFrames   += aframes;
         m_capturedAudio += aframes;
 
         if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-	  Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble %d %d",
+      Radiant::error("VideoInputFFMPEG::captureImage # Audio trouble %d %d",
               aframes, m_audioFrames);
         }
         // printf("_"); fflush(0);
@@ -267,12 +267,12 @@ namespace Screenplay {
       int perFrame = (int) (frames - m_capturedAudio);
 
       if(perFrame > 20000) {
-	debug("VideoInputFFMPEG::captureImage # Large audio generated");
-	perFrame = 20000;
+    debug("VideoInputFFMPEG::captureImage # Large audio generated");
+    perFrame = 20000;
       }
 
       debug("VideoInputFFMPEG::captureImage # %lf %d %d %d aufr in total %d vidfr",
-	    secs, perFrame, (int) m_audioFrames, (int) m_capturedAudio, (int) m_capturedVideo);
+        secs, perFrame, (int) m_audioFrames, (int) m_capturedAudio, (int) m_capturedVideo);
 
       m_audioTS = m_lastTS;
 
@@ -280,9 +280,9 @@ namespace Screenplay {
       m_capturedAudio += perFrame;
 
       if((uint)(m_audioFrames * m_audioChannels) >= m_audioBuffer.size()) {
-	error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d %lf",
-	      perFrame, m_audioFrames, secs);
-	assert(perFrame > 0);
+    error("VideoInputFFMPEG::captureImage # Audio trouble B %d %d %lf",
+          perFrame, m_audioFrames, secs);
+    assert(perFrame > 0);
       }
     }
 
@@ -298,15 +298,20 @@ namespace Screenplay {
       if(m_debug && m_capturedVideo < 10)
         debug("%s # PIX_FMT_YUV420P", fname);
     }
-    else if(avcfmt == PIX_FMT_YUVJ420P) {  
-      m_image.setFormatYUV420P(); 
+    else if(avcfmt == PIX_FMT_YUVJ420P) {
+      m_image.setFormatYUV420P();
       if(m_debug && m_capturedVideo < 10)
         debug("%s # PIX_FMT_YUV420P", fname);
     }
-    else if(avcfmt == PIX_FMT_YUVJ422P) {  
-      m_image.setFormatYUV422P(); 
+    else if(avcfmt == PIX_FMT_YUVJ422P) {
+      m_image.setFormatYUV422P();
       if(m_debug && m_capturedVideo < 10)
         debug("%s # PIX_FMT_YUV422P", fname);
+    }
+    else if(avcfmt == PIX_FMT_RGB24) {
+      m_image.setFormatRGB();
+      if(m_debug && m_capturedVideo < 10)
+        debug("%s # PIX_FMT_RGB24", fname);
     }
     else {
       Radiant::error("%s # unsupported FFMPEG pixel format %d", fname, (int) avcfmt);
@@ -325,7 +330,7 @@ namespace Screenplay {
     m_image.m_planes[2].m_linesize = m_frame->linesize[2];
 
     if(!m_image.m_width) {
-		error("Captured image has zero width %d %d %d", 
+        error("Captured image has zero width %d %d %d",
           m_image.m_planes[0].m_linesize,
           m_image.m_planes[1].m_linesize,
           m_image.m_planes[2].m_linesize);
@@ -345,7 +350,7 @@ namespace Screenplay {
 
   const void * VideoInputFFMPEG::captureAudio(int * frameCount)
   {
-    /* trace2("VideoInputFFMPEG::captureAudio # %d %d", 
+    /* trace2("VideoInputFFMPEG::captureAudio # %d %d",
      * frameCount, m_audioFrames); */
 
     if(!m_audioBuffer.size()) {
@@ -359,21 +364,21 @@ namespace Screenplay {
     return & m_audioBuffer[0];
   }
 
-  void VideoInputFFMPEG::getAudioParameters(int * channels, 
+  void VideoInputFFMPEG::getAudioParameters(int * channels,
       int * sample_rate,
       Radiant::AudioSampleFormat * format)
   {
     if(!m_acontext){
 
       if(m_flags & WITH_AUDIO) {
-	* channels = 2;
-	* sample_rate = 44100;
-	* format = Radiant::ASF_INT16;
+    * channels = 2;
+    * sample_rate = 44100;
+    * format = Radiant::ASF_INT16;
       }
       else {
-	* channels = 0;
-	* sample_rate = 0;
-	* format = Radiant::ASF_INT16;
+    * channels = 0;
+    * sample_rate = 0;
+    * format = Radiant::ASF_INT16;
       }
     }
     else {
@@ -417,7 +422,7 @@ namespace Screenplay {
       }
     }
 
-    double r = (double) time_base.den / 
+    double r = (double) time_base.den /
       ((double) time_base.num);
 
     if(m_lastPts != 0) {
@@ -442,7 +447,7 @@ namespace Screenplay {
   }
 
   bool VideoInputFFMPEG::open(const char * filename,
-			      int flags)
+                  int flags)
   {
 
     if(m_vcodec)
@@ -474,13 +479,13 @@ namespace Screenplay {
     int err = av_open_input_file( & m_ic, filename, iformat, 0, ap);
 
     if(err < 0) {
-      error("%s # Could not open file \"%s\" %s", 
+      error("%s # Could not open file \"%s\" %s",
           fname, filename, strerror(-err));
       return false;
     }
 
     /* trace2("%s # Opened %s with %d Hx, %d channels, %dx%d",
-       fname, filename, ap->sample_rate, ap->channels, 
+       fname, filename, ap->sample_rate, ap->channels,
        ap->width, ap->height); */
 
     av_read_play(m_ic);
@@ -554,7 +559,7 @@ namespace Screenplay {
     const char * vcname = m_vcodec ? m_vcodec->name : 0;
     const char * acname = m_acodec ? m_acodec->name : 0;
 
-    float ratio = m_vcontext ? 
+    float ratio = m_vcontext ?
       (float) av_q2d(m_vcontext->sample_aspect_ratio) : 0.0f;
 
     m_lastSeek = 0;
@@ -568,7 +573,7 @@ namespace Screenplay {
       debug("%s # File %s has unsupported audio codec.", fname, filename);
       // return false;
     }
-    
+
     debug("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;
@@ -662,7 +667,7 @@ namespace Screenplay {
   }
 
   bool VideoInputFFMPEG::isStarted() const
-  {  
+  {
     return ((m_vcodec == 0) ? false : true);
   }
 
@@ -676,4 +681,4 @@ namespace Screenplay {
     m_debug = debug;
   }
 
-} 
+}
