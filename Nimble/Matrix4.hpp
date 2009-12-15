@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef NIMBLE_MATRIX4T_HPP
@@ -28,22 +28,22 @@ namespace Nimble {
   template <class T>
   class Matrix4T
   {
-  public:		
+  public:
     template <class S>
     Matrix4T(const S * x) { const S * end = x + 16; T * my = data(); while(x!=end) *my++ = *x++; }
 
     Matrix4T() {}
-    Matrix4T(T x11, T x12, T x13, T x14, 
-	     T x21, T x22, T x23, T x24,
-	     T x31, T x32, T x33, T x34,
-	     T x41, T x42, T x43, T x44) 
-    { 
-      m[0].make(x11, x12, x13, x14); 
-      m[1].make(x21, x22, x23, x24); 
-      m[2].make(x31, x32, x33, x34); 
-      m[3].make(x41, x42, x43, x44); 
+    Matrix4T(T x11, T x12, T x13, T x14,
+         T x21, T x22, T x23, T x24,
+         T x31, T x32, T x33, T x34,
+         T x41, T x42, T x43, T x44)
+    {
+      m[0].make(x11, x12, x13, x14);
+      m[1].make(x21, x22, x23, x24);
+      m[2].make(x31, x32, x33, x34);
+      m[3].make(x41, x42, x43, x44);
     }
-    Matrix4T(const Vector4T<T>& a, const Vector4T<T>& b, const Vector4T<T>& c, const Vector4T<T>& d)  
+    Matrix4T(const Vector4T<T>& a, const Vector4T<T>& b, const Vector4T<T>& c, const Vector4T<T>& d)
     { m[0] = a; m[1] = b; m[2] = c; m[3] = d; }
     Vector4T<T>&       row(int i)             { return m[i]; }
     const Vector4T<T>& row(int i) const       { return m[i]; }
@@ -66,18 +66,18 @@ namespace Nimble {
     Vector3T<T>               getTranslation() const;
 
     inline Matrix4T<T>&       transpose();
-    void                      clear()         { m[0].clear(); m[1].clear(); m[2].clear(); m[3].clear(); } 
+    void                      clear()         { m[0].clear(); m[1].clear(); m[2].clear(); m[3].clear(); }
     inline void               identity();
     inline void               scalingMatrix(const Vector3T<T> &);
-    void                      make(T x11, T x12, T x13, T x14, 
-			    T x21, T x22, T x23, T x24,
-			    T x31, T x32, T x33, T x34,
-			    T x41, T x42, T x43, T x44)
+    void                      make(T x11, T x12, T x13, T x14,
+                T x21, T x22, T x23, T x24,
+                T x31, T x32, T x33, T x34,
+                T x41, T x42, T x43, T x44)
       {
-	m[0].make(x11, x12, x13, x14); 
-	m[1].make(x21, x22, x23, x24); 
-	m[2].make(x31, x32, x33, x34); 
-	m[3].make(x41, x42, x43, x44); 
+    m[0].make(x11, x12, x13, x14);
+    m[1].make(x21, x22, x23, x24);
+    m[2].make(x31, x32, x33, x34);
+    m[3].make(x41, x42, x43, x44);
       }
     inline Matrix4T<T>        inverse(bool * ok) const;
 
@@ -91,7 +91,7 @@ namespace Nimble {
     inline static void        test();
 
     T *       data()       { return m[0].data(); }
-    const T * data() const { return m[0].data(); }	
+    const T * data() const { return m[0].data(); }
 
     template <class S>
     void copy (const S * x) { const S * end = x + 16; T * my = data(); while(x!=end) *my++ = (T) *x++; }
@@ -100,7 +100,9 @@ namespace Nimble {
 
     static Matrix4T<T> makeRotation(T radians, const Vector3T<T> & axis);
     static Matrix4T<T> makeTranslation(const Vector3T<T> & v);
-  
+    static Matrix4T<T> translate3D(const Vector3T<T> & v);
+    static Matrix4T<T> scale3D(const Vector3T<T> & v);
+
     /** Identity matrix. */
     NIMBLE_API static const Matrix4T<T> IDENTITY;
 
@@ -118,75 +120,75 @@ namespace Nimble {
     /* STORING & INDEXING ELEMENTS */
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = T(4*i+j);
-  
+    a[i][j] = T(4*i+j);
+
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	assert(a[i][j] == 4*i+j);
+    assert(a[i][j] == 4*i+j);
 
     /* CLEAR */
     a.clear();
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	assert(a[i][j] == 0);
+    assert(a[i][j] == 0);
 
     /* ROW & COLUMN OPERATORS */
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = T(4*i+j);
+    a[i][j] = T(4*i+j);
 
     for(i = 0; i < 4; i++)
-      for(j = 0; j < 4; j++) 
-	{
-	  assert(a.row(i)[j] == 4*i+j);
-	  assert(a.column(j)[i] == 4*i+j);
-	}
+      for(j = 0; j < 4; j++)
+    {
+      assert(a.row(i)[j] == 4*i+j);
+      assert(a.column(j)[i] == 4*i+j);
+    }
     /* TRANSPOSE */
     a.transpose();
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	assert(a[j][i] == 4*i+j);
+    assert(a[j][i] == 4*i+j);
 
     /* IDENTITY */
     a.identity();
 
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	{
-	  if( i == j ) assert(a[i][j] == 1);
-	  else assert(a[i][j] == 0);
-	}
+    {
+      if( i == j ) assert(a[i][j] == 1);
+      else assert(a[i][j] == 0);
+    }
 
     /* COPY OPERATOR, CONSTRUCTOR AND EQUALITY OPERATOR */
 
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	a[i][j] = T(4*i+j);  
-  
+    a[i][j] = T(4*i+j);
+
     Matrix4T<T> b(a);
     assert(a == b);
     assert(!(a != b));
-  
+
     /* MATRIX MULTIPLICATION */
-  
+
     Matrix4T<T> c;
     c.identity();
     b *= c;
     assert(a == b);
-  
+
     c.clear();
     b *= c;
     for(i = 0; i < 4; i++)
       for(j = 0; j < 4; j++)
-	assert(b[i][j] == 0);
+    assert(b[i][j] == 0);
 
     /* Test setRotation/getRotation */
 
     Matrix3T<T> a3,b3;
     for(i = 0; i < 3; i++)
       for(j = 0; j < 3; j++)
-	a[i][j] = T(3*i+j);  
-  
+    a[i][j] = T(3*i+j);
+
     a.setRotation(a3);
     b3 = a.getRotation();
     assert(a3 == b3);
@@ -205,7 +207,7 @@ namespace Nimble {
   {
     for(int i = 0; i < 3; i++)
       for(int j = 0; j < 3; j++)
-	m[i][j] = that[i][j];
+    m[i][j] = that[i][j];
   }
 
   template <class T>
@@ -213,8 +215,8 @@ namespace Nimble {
   {
     Matrix3T<T> res;
     for(int i = 0; i < 3; i++)
-      for(int j = 0; j < 3; j++)  
-	res[i][j] = m[i][j];
+      for(int j = 0; j < 3; j++)
+    res[i][j] = m[i][j];
     return res;
   }
 
@@ -235,7 +237,7 @@ namespace Nimble {
   {
     for(int i = 0; i < rows(); i++)
       for(int j = 0; j < columns(); j++)
-	m[i][j] = (i == j) ? 1.0f : 0.0f;
+    m[i][j] = (i == j) ? 1.0f : 0.0f;
   }
 
   template <class T>
@@ -266,7 +268,7 @@ namespace Nimble {
     T fB3 = my[ 9]*my[14] - my[10]*my[13];
     T fB4 = my[ 9]*my[15] - my[11]*my[13];
     T fB5 = my[10]*my[15] - my[11]*my[14];
-    
+
     T fDet = fA0*fB5-fA1*fB4+fA2*fB3+fA3*fB2-fA4*fB1+fA5*fB0;
     if ( Math::Abs(fDet) <= 1.0e-10 ) {
       *ok = false;
@@ -298,7 +300,7 @@ namespace Nimble {
     T fInvDet = ((T)1.0)/fDet;
     for (int iRow = 0; iRow < 4; iRow++)
       for (int iCol = 0; iCol < 4; iCol++)
-	inv[iRow][iCol] *= fInvDet;
+    inv[iRow][iCol] *= fInvDet;
 
     return inv;
   }
@@ -308,13 +310,13 @@ namespace Nimble {
   {
     for(int i = 0; i < columns(); i++)
       {
-	const Vector4T<T> t = column(i);
-	m[0][i] = ::dot(that[0],t);
-	m[1][i] = ::dot(that[1],t);
-	m[2][i] = ::dot(that[2],t);
-	m[3][i] = ::dot(that[3],t);
+    const Vector4T<T> t = column(i);
+    m[0][i] = ::dot(that[0],t);
+    m[1][i] = ::dot(that[1],t);
+    m[2][i] = ::dot(that[2],t);
+    m[3][i] = ::dot(that[3],t);
       }
-    return *this; 
+    return *this;
   }
 
   typedef Matrix4T<float> Matrix4;
@@ -420,7 +422,7 @@ Nimble::Matrix4T<T> Nimble::Matrix4T<T>::makeTranslation(const Nimble::Vector3T<
 {
   Nimble::Matrix4T<T> mm;
   mm.identity();
-  
+
   mm.setTranslation(v);
   return mm;
 }

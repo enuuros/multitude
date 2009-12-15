@@ -29,6 +29,8 @@
 
 namespace VideoDisplay {
 
+  using namespace Nimble;
+
   ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
       : Luminous::GLSLProgramObject(resources)
   {
@@ -48,13 +50,14 @@ namespace VideoDisplay {
         "uniform sampler2D ytex;\n"
         "uniform sampler2D utex;\n"
         "uniform sampler2D vtex;\n"
-        "uniform mat3 zm;\n"
+        "uniform float contrast;\n"
+        "uniform mat4 zm;\n"
         "void main (void) {\n"
         "  vec4 ycolor = texture2D(ytex, gl_TexCoord[0].st);\n"
         "  vec4 ucolor = texture2D(utex, gl_TexCoord[0].st);\n"
         "  vec4 vcolor = texture2D(vtex, gl_TexCoord[0].st);\n"
-        "  vec3 yuv = vec3(ycolor.r, ucolor.r - 0.5, vcolor.r - 0.5);\n"
-        "  gl_FragColor.rgb = zm * yuv;\n"
+        "  vec4 yuv = vec4(ycolor.r, ucolor.r - 0.5, vcolor.r - 0.5, 1.0);\n"
+        "  gl_FragColor.rgb = (zm * yuv).rgb;\n"
         "  gl_FragColor.a = gl_Color.a;\n"
         "}\n";
     /*
@@ -92,17 +95,23 @@ namespace VideoDisplay {
     return link();
   }
 
-  void ShowGL::YUVProgram::bind()
+  void ShowGL::YUVProgram::bind(float contrast)
   {
     Luminous::GLSLProgramObject::bind();
 
-    static const float yuv2rgb[9] = {
-      1.0f,  0.0f,    1.403f,
-      1.0f, -0.344f, -0.714f,
-      1.0f,  1.77f,   0.0f
-    };
+    static const Nimble::Matrix4 yuv2rgb(
+        1.0f,  0.0f,    1.403f, 0,
+        1.0f, -0.344f, -0.714f, 0,
+        1.0f,  1.77f,   0.0f, 0,
+        0, 0, 0, 1);
 
-    glUniformMatrix3fv(m_uniforms[PARAM_MATRIX], 1, true, yuv2rgb);
+    Nimble::Matrix4 m =
+        Nimble::Matrix4::translate3D(Vector3(0.5f, 0.5f, 0.5f)) *
+        Nimble::Matrix4::scale3D(Vector3(contrast, contrast, contrast)) *
+        Nimble::Matrix4::translate3D(Vector3(-0.5f, -0.5f, -0.5f)) *
+        yuv2rgb;
+
+    glUniformMatrix4fv(m_uniforms[PARAM_MATRIX], 1, true, m.data());
     glUniform1i(m_uniforms[PARAM_YTEX], 0);
     glUniform1i(m_uniforms[PARAM_UTEX], 1);
     glUniform1i(m_uniforms[PARAM_VTEX], 2);
@@ -308,7 +317,8 @@ namespace VideoDisplay {
       m_videoFrame(-1),
       m_count(0),
       m_state(PAUSE),
-      m_updates(0)
+      m_updates(0),
+      m_contrast(this, "contrast", -1.5f)
   {
     clearHistogram();
   }
@@ -555,9 +565,10 @@ namespace VideoDisplay {
       textures->bind();
 
       if(m_frame->m_image.m_format < Radiant::IMAGE_RGB_24)
-        yuv2rgb->bind();
-      else
+        yuv2rgb->bind(m_contrast);
+      else {
         ; // info("No shader needed, plain RGB video.");
+      }
     }
 
     glEnable(GL_BLEND);

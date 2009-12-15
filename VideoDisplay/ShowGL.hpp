@@ -31,6 +31,9 @@
 
 #include <Resonant/DSPNetwork.hpp>
 
+#include <Valuable/HasValues.hpp>
+#include <Valuable/ValueFloat.hpp>
+
 #include <VideoDisplay/Export.hpp>
 #include <VideoDisplay/SubTitles.hpp>
 #include <VideoDisplay/VideoIn.hpp>
@@ -56,7 +59,8 @@ namespace VideoDisplay {
   /// Objects that displays video using an OpenGL device
   /** From application-programmers perspective, this is the main class
       of the VideoDisplay framework. */
-  class ShowGL : public Luminous::Collectable
+  class ShowGL : public Luminous::Collectable,
+  public Valuable::HasValues
 
   {
   private:
@@ -68,7 +72,7 @@ namespace VideoDisplay {
       virtual ~YUVProgram();
 
       bool init();
-      virtual void bind();
+      virtual void bind(float contrast);
       virtual void unbind();
       virtual bool link();
       virtual void clear();
@@ -222,6 +226,14 @@ namespace VideoDisplay {
 
     const std::string & filename() const { return m_filename; }
 
+    /// Adjusts the contrast
+    /** Contrast of 1.0f means that the video image is unmodified,
+        which is the default. Values greater than 1.0 amplify the dark and
+        bright areas, with midtones retaining their brightness.
+        Values between zero and 1.0 reduce the contrast.
+          */
+    void setContrast(float contrast) { m_contrast = contrast; }
+
   private:
 
     void clearHistogram();
@@ -245,6 +257,7 @@ namespace VideoDisplay {
 
     SubTitles               m_subTitles;
 
+    Valuable::ValueFloat    m_contrast;
   };
 
 }
