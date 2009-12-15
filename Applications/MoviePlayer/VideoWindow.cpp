@@ -7,10 +7,10 @@
  * See file "Applications/MoviePlayer.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "VideoWindow.hpp"
@@ -36,6 +36,8 @@
 #include <QtGui/QMouseEvent>
 
 using namespace Nimble;
+
+float VideoWindow::m_contrast = 1.0f;
 
 VideoWindow::VideoWindow()
   : m_subCPUFont(0),
@@ -64,13 +66,14 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
 
   Radiant::RefPtr<Item> item = new Item();
 
+  item.ptr()->m_show.setContrast(m_contrast);
   std::string srtfile = Radiant::FileUtils::baseFilename(filename) + ".srt";
 
   item->m_show.loadSubTitles(srtfile.c_str());
 
   if(!item->m_show.init(filename, & m_dsp, 0, 0))
     return false;
-  
+
   m_movies.push_back(item);
 
   Radiant::trace(Radiant::DEBUG, "VideoWindow::open # EXIT OK");
@@ -97,7 +100,7 @@ void VideoWindow::randomOperation()
 
   // Select movie object to stress:
   int index = m_rand.randN(m_movies.size());
-  
+
   iterator it = m_movies.begin();
 
   for(int i = 0; i < index; i++)
@@ -106,7 +109,7 @@ void VideoWindow::randomOperation()
   VideoDisplay::ShowGL & show = (*it).ptr()->m_show;
 
   int operation = m_rand.randN(OPERATIONS_COUNT);
-  
+
   Radiant::info("Random operation %d on item %d", operation, index);
 
   if(operation == START) {
@@ -127,15 +130,15 @@ void VideoWindow::randomOperation()
 
     std::string filename = show.filename();
     (*it) = 0; // delete old
-    
+
     Radiant::RefPtr<Item> item = new Item();
 
     if(!item.ptr()->m_show.init(filename.c_str(), & m_dsp, 0, 0)) {
       Radiant::error("Could not recreate video player for \"%s\"", filename.c_str());
     }
-    else 
+    else
       Radiant::info("Recreated video player for \"%s\"", filename.c_str());
-    
+
     (*it) = item;
   }
 
@@ -221,10 +224,10 @@ void VideoWindow::paintGL()
 
   m_glResources.eraseResources();
   Luminous::GarbageCollector::clear();
-  
-  
+
+
   Poetic::GPUFont * gpufont = 0;
-  
+
   if(m_subCPUFont) {
     gpufont = m_subCPUFont->getGPUFont();
   }
@@ -235,14 +238,14 @@ void VideoWindow::paintGL()
   glViewport (0, 0, w, h);
   glMatrixMode (GL_MODELVIEW);
   glLoadIdentity ();
-  
+
   glDisable(GL_LIGHTING);
-  
+
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   gluOrtho2D(0, width(), height(), 0);
-  
+
   ALL_MOVIES(update());
 
   int n = m_movies.size();
@@ -253,7 +256,7 @@ void VideoWindow::paintGL()
     cols++;
 
   int index = 0;
-  
+
   int itemw = w / cols;
   int itemh = h / rows;
 
@@ -261,11 +264,11 @@ void VideoWindow::paintGL()
     Radiant::TimeStamp(Radiant::TimeStamp::getTime() - m_lastActivity).secondsD();
 
   float maxDisplay = 6.0f;
-  
+
   m_showProgress = inactsecs < maxDisplay;
 
   for(iterator it = m_movies.begin(); it != m_movies.end(); it++) {
-  
+
     VideoDisplay::ShowGL & show = (*it)->m_show;
 
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -274,7 +277,7 @@ void VideoWindow::paintGL()
     float wa = itemw / (float) itemh;
     Nimble::Vector2i ss = show.size();
     float sa = ss.x / (float) ss.y;
-  
+
     float realw;
     float realh;
 
@@ -289,18 +292,18 @@ void VideoWindow::paintGL()
 
     Vector2f center(itemw, itemh);
     center *= 0.5f;
-    
+
     Vector2f span(realw, realh);
     span *= 0.5f;
 
     Luminous::MatrixStep mstep;
     glTranslatef(float((index % cols) * itemw),
-		 float((index / cols) * itemh), 0.0f);
+         float((index / cols) * itemh), 0.0f);
     index++;
 
     show.render(& m_glResources,
-		center - span, center + span, 0, gpufont, h);
-    
+        center - span, center + span, 0, gpufont, h);
+
     if(!m_showProgress)
       continue;
 
@@ -309,7 +312,7 @@ void VideoWindow::paintGL()
     Luminous::Utils::glUsualBlend();
 
     glDisable(GL_TEXTURE_2D);
-    
+
     float mainAlpha = 1.0f;
 
     float fadeTime = 3.0f;
@@ -324,39 +327,39 @@ void VideoWindow::paintGL()
       float sscale = (float) itemw / VideoDisplay::ShowGL::HISTOGRAM_POINTS;
 
       for(int i = 0; i < VideoDisplay::ShowGL::HISTOGRAM_POINTS; i++) {
-	int delta =
-	  (show.histogramIndex() + VideoDisplay::ShowGL::HISTOGRAM_POINTS-i) %
-	  VideoDisplay::ShowGL::HISTOGRAM_POINTS;
-	
-	float a = 1.0f - 0.7f *
-	  powf(delta / (float) VideoDisplay::ShowGL::HISTOGRAM_POINTS, 0.25);
-      
-	glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
-	
-	glVertex2f(float(i) * sscale,
-		   float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
+    int delta =
+      (show.histogramIndex() + VideoDisplay::ShowGL::HISTOGRAM_POINTS-i) %
+      VideoDisplay::ShowGL::HISTOGRAM_POINTS;
+
+    float a = 1.0f - 0.7f *
+      powf(delta / (float) VideoDisplay::ShowGL::HISTOGRAM_POINTS, 0.25);
+
+    glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
+
+    glVertex2f(float(i) * sscale,
+           float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
       }
-      
+
       glEnd();
     }
-    
+
     glColor4f(0.3f, 0.3f, 0.3f, 0.7f * mainAlpha);
     glRectf(0.0f, float(itemh) - 35.0f, float(itemw), float(itemh));
-    
+
     glColor4f(1.0f, 1.0f, 1.0f, 0.7f * mainAlpha);
-    
+
     float relative = show.relativePosition();
 
     glRectf(0.0f, float(itemh) - 30.0f,
-	    float(itemw) * relative, float(itemh) - 5.0f);
+        float(itemw) * relative, float(itemh) - 5.0f);
 
     if(gpufont) {
       Radiant::DateTime dt(show.position());
       char buf[64];
       sprintf(buf, "%d:%.2d:%.2d", dt.hour(), dt.minute(), dt.second());
-      
+
       gpufont->render
-	(buf, Vector2(10.0f, itemh - m_subCPUFont->lineHeight()));
+    (buf, Vector2(10.0f, itemh - m_subCPUFont->lineHeight()));
     }
   }
 }

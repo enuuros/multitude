@@ -73,9 +73,7 @@ namespace VideoDisplay {
 
       bool init();
       virtual void bind(float contrast);
-      virtual void unbind();
       virtual bool link();
-      virtual void clear();
 
     private:
 
@@ -230,7 +228,11 @@ namespace VideoDisplay {
     /** Contrast of 1.0f means that the video image is unmodified,
         which is the default. Values greater than 1.0 amplify the dark and
         bright areas, with midtones retaining their brightness.
-        Values between zero and 1.0 reduce the contrast.
+        Values between zero and 1.0 reduce the contrast. You can also use
+        negative contrast values, to create special effects.
+
+        The contrast parameter may not be honored by all rendering back-ends.•
+
           */
     void setContrast(float contrast) { m_contrast = contrast; }
 

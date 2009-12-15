@@ -31,6 +31,17 @@ namespace VideoDisplay {
 
   using namespace Nimble;
 
+  static const char * rgbshader =
+      "uniform sampler2D tex;\n"
+      "uniform float contrast;\n"
+      "void main (void) {\n"
+      "  vec4 color = texture2D(tex, gl_TexCoord[0].st);\n"
+      "  gl_FragColor.rgb = vec3(0.5, 0.5, 0.5) + \n"
+      "     contrast * (color.rgb - vec3(0.5, 0.5, 0.5));\n"
+      "  gl_FragColor.a = gl_Color.a;\n"
+      "}\n";
+
+
   ShowGL::YUVProgram::YUVProgram(Luminous::GLResources * resources)
       : Luminous::GLSLProgramObject(resources)
   {
@@ -50,7 +61,6 @@ namespace VideoDisplay {
         "uniform sampler2D ytex;\n"
         "uniform sampler2D utex;\n"
         "uniform sampler2D vtex;\n"
-        "uniform float contrast;\n"
         "uniform mat4 zm;\n"
         "void main (void) {\n"
         "  vec4 ycolor = texture2D(ytex, gl_TexCoord[0].st);\n"
@@ -102,8 +112,8 @@ namespace VideoDisplay {
     static const Nimble::Matrix4 yuv2rgb(
         1.0f,  0.0f,    1.403f, 0,
         1.0f, -0.344f, -0.714f, 0,
-        1.0f,  1.77f,   0.0f, 0,
-        0, 0, 0, 1);
+        1.0f,  1.77f,   0.0f,   0,
+        0,     0,       0,      1);
 
     Nimble::Matrix4 m =
         Nimble::Matrix4::translate3D(Vector3(0.5f, 0.5f, 0.5f)) *
@@ -117,10 +127,6 @@ namespace VideoDisplay {
     glUniform1i(m_uniforms[PARAM_VTEX], 2);
   }
 
-  void ShowGL::YUVProgram::unbind()
-  {
-    Luminous::GLSLProgramObject::unbind();
-  }
 
   bool ShowGL::YUVProgram::link()
   {
@@ -148,10 +154,6 @@ namespace VideoDisplay {
     return ok;
   }
 
-  void ShowGL::YUVProgram::clear()
-  {
-    Luminous::GLSLProgramObject::clear();
-  }
 
   ShowGL::MyTextures::MyTextures(Luminous::GLResources * resources)
       : GLResource(resources)
@@ -318,7 +320,7 @@ namespace VideoDisplay {
       m_count(0),
       m_state(PAUSE),
       m_updates(0),
-      m_contrast(this, "contrast", -1.5f)
+      m_contrast(this, "contrast", 1.0f)
   {
     clearHistogram();
   }
@@ -550,6 +552,8 @@ namespace VideoDisplay {
 
     assert(yuv2rgb != 0);
 
+    Luminous::GLSLProgramObject * shader = 0;
+
     Vector2i s = size();
 
     if(bottomright == topleft) {
@@ -564,10 +568,22 @@ namespace VideoDisplay {
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
 
-      if(m_frame->m_image.m_format < Radiant::IMAGE_RGB_24)
+      if(m_frame->m_image.m_format < Radiant::IMAGE_RGB_24) {
         yuv2rgb->bind(m_contrast);
+        shader = yuv2rgb;
+      }
       else {
-        ; // info("No shader needed, plain RGB video.");
+        GLRESOURCE_ENSURE(Luminous::GLSLProgramObject, rgb2rgb, & rgbkey, resources);
+        if(rgb2rgb->shaderObjectCount() == 0) {
+          assert(rgb2rgb->loadStrings(0, rgbshader));
+          info("Loaded rgb2rgb shader");
+        }
+
+        rgb2rgb->bind();
+        glUniform1f(rgb2rgb->getUniformLoc("contrast"), m_contrast);
+
+        shader = rgb2rgb;
+        // info("No shader needed, plain RGB video.");
       }
     }
 
@@ -588,7 +604,9 @@ namespace VideoDisplay {
 
     // Then a thin strip around to anti-alias:
 
-    yuv2rgb->unbind();
+    if(shader)
+      shader->unbind();
+
     textures->unbind();
 
     const SubTitles::Text * sub = m_subTitles.current();

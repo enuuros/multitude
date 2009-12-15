@@ -7,10 +7,10 @@
  * See file "Applications/MoviePlayer.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "VideoWindow.hpp"
@@ -45,6 +45,10 @@ int main(int argc, char ** argv)
       Radiant::enableVerboseOutput(true);
     else if(strcmp(argv[i], "--stress") == 0)
       vw->stressTest();
+    else if(strcmp(argv[i], "--contrast") == 0 && (i + 1) < argc) {
+      float contrast = atof(argv[++i]);
+      VideoWindow::setContrast(contrast);
+    }
     else {
       filename = argv[i];
 
@@ -59,7 +63,7 @@ int main(int argc, char ** argv)
   vw->raise();
 
   QObject::connect( & qa, SIGNAL(lastWindowClosed()), & qa, SLOT(quit()));
-  
+
   int res = qa.exec();
 
   delete vw;

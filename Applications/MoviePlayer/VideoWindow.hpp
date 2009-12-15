@@ -7,10 +7,10 @@
  * See file "Applications/MoviePlayer.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VIDEO_WINDOW_HPP
@@ -50,8 +50,11 @@ public:
   /** Performs a stress test, using all the movies that are available. */
   void stressTest();
 
+  static void setContrast(float contrast)
+  { m_contrast = contrast; }
+
 public slots:
-  
+
   /** Perform some random operation as part of the stress testing. */
   void randomOperation();
 
@@ -61,7 +64,7 @@ protected:
   public:
     Item() {}
     ~Item() {}
-    
+
     VideoDisplay::ShowGL    m_show;
   };
 
@@ -79,7 +82,7 @@ protected:
   void toggleFullScreen();
 
   container m_movies;
-  
+
   Resonant::DSPNetwork    m_dsp;
 
   QTimer m_timer;
@@ -91,6 +94,7 @@ protected:
 
   Luminous::GLResources      m_glResources;
   Nimble::RandomUniform m_rand;
+  static float m_contrast;
   bool   m_showProgress;
   bool   m_showSteps;
 };
