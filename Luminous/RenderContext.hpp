@@ -49,18 +49,18 @@ namespace Luminous
       friend class RenderContext;
     public:
 
-      FBOHolder();
-      FBOHolder(RenderContext * context, FBOPackage * package);
-      FBOHolder(const FBOHolder & that);
+      LUMINOUS_API FBOHolder();
+      LUMINOUS_API FBOHolder(RenderContext * context, FBOPackage * package);
+      LUMINOUS_API FBOHolder(const FBOHolder & that);
 
-      ~FBOHolder();
+      LUMINOUS_API ~FBOHolder();
 
       /** Copies the data pointers from the argument object. */
-      FBOHolder & operator = (const FBOHolder & that);
+      LUMINOUS_API FBOHolder & operator = (const FBOHolder & that);
 
-      Luminous::Texture2D * finish();
+      LUMINOUS_API Luminous::Texture2D * finish();
       /** The relative texture coordinates for this useful texture area. */
-      const Nimble::Vector2 & texUV() const { return m_texUV; }
+      inline const Nimble::Vector2 & texUV() const { return m_texUV; }
 
     private:
 

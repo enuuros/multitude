@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Luminous/GLSLProgramObject.hpp>
@@ -27,7 +27,7 @@ namespace Luminous
   using Radiant::error;
 
   GLSLProgramObject::GLSLProgramObject(GLResources * resources)
-    : GLResource(resources),
+      : GLResource(resources),
       m_isLinked(false)
   {
     m_handle = glCreateProgram();
@@ -36,7 +36,7 @@ namespace Luminous
   GLSLProgramObject::~GLSLProgramObject()
   {
     GLSLProgramObject::clear();
-    
+
     glDeleteProgram(m_handle);
   }
 
@@ -97,7 +97,7 @@ namespace Luminous
   }
 
   void GLSLProgramObject::clear()
-  {    
+  {
     std::list<GLSLShaderObject*>::iterator i;
     for(i = m_shaderObjects.begin(); i != m_shaderObjects.end(); i++) {
       glDetachShader(m_handle, (*i)->m_handle);
@@ -129,7 +129,7 @@ namespace Luminous
     glGetProgramInfoLog(m_handle, logLen, &readLen, & m_linkerLog[0]);
 #else
     m_linkerLog.resize(512);
-    
+
     glGetProgramInfoLog(m_handle, 512, 0, & m_linkerLog[0]);
 #endif
 
@@ -202,7 +202,7 @@ namespace Luminous
   }
 
   bool GLSLProgramObject::setUniformVector2(const char * name,
-					    Nimble::Vector2f value)
+                                            Nimble::Vector2f value)
   {
     int loc = getUniformLoc(name);
 
@@ -225,9 +225,9 @@ namespace Luminous
   }
 
   GLSLProgramObject* GLSLProgramObject::fromFiles
-  (const char* vsFile, const char* fsFile)
+      (const char* vsFile, const char* fsFile)
   {
-    if(vsFile == 0 && fsFile == 0) { 
+    if(vsFile == 0 && fsFile == 0) {
       return 0;
     }
 
@@ -253,10 +253,10 @@ namespace Luminous
     GLSLShaderObject* fs = 0;
     if(fsFile) {
       fs = new GLSLShaderObject(GL_FRAGMENT_SHADER);
-      
-      char* code = Radiant::FileUtils::loadTextFile(fsFile); 
+
+      char* code = Radiant::FileUtils::loadTextFile(fsFile);
       fs->setSource(code);
-  
+
       delete [] code;
 
       if(!fs->compile()) {
@@ -266,7 +266,7 @@ namespace Luminous
         return 0;
       }
     }
-  
+
     // Create a program object and link it
     GLSLProgramObject* program = new GLSLProgramObject();
 
@@ -284,9 +284,9 @@ namespace Luminous
   }
 
   GLSLProgramObject* GLSLProgramObject::fromStrings
-  (const char* vsString, const char* fsString)
+      (const char* vsString, const char* fsString)
   {
-    if(vsString == 0 && fsString == 0) { 
+    if(vsString == 0 && fsString == 0) {
       return 0;
     }
 
