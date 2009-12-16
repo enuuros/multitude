@@ -7,14 +7,15 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "Image.hpp"
 #include "ImageCodec.hpp"
+#include "Luminous.hpp"
 #include "CodecRegistry.hpp"
 
 #include <Nimble/Math.hpp>
@@ -42,11 +43,11 @@ using namespace Radiant;
 namespace Luminous
 {
 
-  CodecRegistry * Image::codecs() 
+  CodecRegistry * Image::codecs()
   {
     static CodecRegistry cr;
 
-    return &cr;    
+    return &cr;
   }
 
   Image::Image()
@@ -143,7 +144,7 @@ namespace Luminous
           float fw11 = wy1 * wx1;
 
           for(int c = 0; c < 3; c++) {
-            float val = 
+            float val =
               (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 + (*v11) * fw11;
 
             *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
@@ -215,7 +216,7 @@ namespace Luminous
           float ascale = asum > 0.00001 ? 1.0f / asum : 0.0f;
 
           for(int c = 0; c < 3; c++) {
-            float val = 
+            float val =
               ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
                (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
 
@@ -445,12 +446,12 @@ namespace Luminous
 
     forgetLastPixels(xlose);
     forgetLastLines(ylose);
-    
-  }
-  
 
-  Image& Image::operator = (const Image& img) 
-  {    
+  }
+
+
+  Image& Image::operator = (const Image& img)
+  {
     allocate(img.m_width, img.m_height, img.m_pixelFormat);
 
     unsigned int bytes = m_width * m_height * m_pixelFormat.numChannels();
@@ -481,7 +482,7 @@ namespace Luminous
   }
 /*
   // Guess the filetype from the extension
-  static Image::ImageType typeFromFileExt(const std::string & filename) 
+  static Image::ImageType typeFromFileExt(const std::string & filename)
   {
     Image::ImageType type = Image::IMAGE_TYPE_UNKNOWN;
     string ext = filename.substr(filename.rfind(".") + 1);
@@ -496,6 +497,8 @@ namespace Luminous
 */
   bool Image::read(const char* filename)
   {
+    initDefaultImageCodecs();
+
     bool result = false;
 
     clear();
@@ -520,6 +523,8 @@ namespace Luminous
 
   bool Image::write(const char* filename)
   {
+    initDefaultImageCodecs();
+
     bool ret = false;
 
     FILE * file = fopen(filename, "wb");
@@ -554,7 +559,7 @@ namespace Luminous
   }
 
 
-  void Image::clear() 
+  void Image::clear()
   {
     delete[] m_data;
     m_data = 0;
@@ -575,7 +580,7 @@ namespace Luminous
      }
 #if 1
 dest = *this;
-#else 
+#else
   // Compute new dimensions
   int newWidth, newHeight;
 
@@ -618,7 +623,7 @@ dest = *this;
   }
 #endif
 }
-*/    
+*/
 /// @todo currently ignores alpha channel
 void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
 {
@@ -639,7 +644,7 @@ void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int des
       unsigned int dstOffset = destY * dest.width() + destX;
       unsigned int srcOffset = y * m_width + x;
 
-      for(int c = 0; c < nc; c++) 
+      for(int c = 0; c < nc; c++)
         dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
     }
   }
@@ -668,7 +673,7 @@ bool Image::ping(const char * filename, ImageInfo & info)
     Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
     return result;
   }
-  
+
   ImageCodec * codec = codecs()->getCodec(filename, file);
   if(codec) {
     result = codec->ping(info, file);

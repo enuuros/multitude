@@ -161,6 +161,25 @@ namespace Luminous
         dest += 4;
       }
     }
+    else if(image.pixelFormat() == PixelFormat::luminanceUByte()) {
+
+      qi = QImage(image.width(), image.height(),
+                  QImage::Format_RGB32);
+
+      uint8_t * dest = qi.bits();
+
+      while(src < sentinel) {
+        dest[0] = src[0];
+        dest[1] = src[0];
+        dest[2] = src[0];
+        dest[3] = 255;
+        src ++;
+        dest += 4;
+      }
+    }
+    else {
+      error("ImageCodecQT::write # Unsupported pixel format");
+    }
 
     // info("File is almost written");
 
