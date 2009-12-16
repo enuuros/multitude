@@ -7,10 +7,10 @@
  * See file "VideoDisplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "VideoIn.hpp"
@@ -31,7 +31,7 @@ namespace VideoDisplay {
   using namespace Radiant;
 
   VideoIn::Frame::Frame()
-    : m_audioFrames(0),
+      : m_audioFrames(0),
       m_type(FRAME_INVALID)
   {
     bzero(m_audio, sizeof(m_audio));
@@ -53,7 +53,7 @@ namespace VideoDisplay {
   int VideoIn::m_debug = 1;
 
   VideoIn::VideoIn()
-    : m_decodedFrames(0),
+      : m_decodedFrames(0),
       m_consumedFrames(0),
       m_consumedAuFrames(0),
       m_playing(false),
@@ -100,8 +100,8 @@ namespace VideoDisplay {
     if(index < 0)
       return 0;
 
-    /* Radiant::debug("VideoIn::nextFrame # dec = %u cons = %u", 
-		  m_decodedFrames, m_consumedFrames);
+    /* Radiant::debug("VideoIn::nextFrame # dec = %u cons = %u",
+          m_decodedFrames, m_consumedFrames);
     */
     assert((int) m_decodedFrames > index);
 
@@ -133,7 +133,7 @@ namespace VideoDisplay {
     m_finalFrames   = (uint) -1;
 
     m_continue = true;
-    
+
     m_flags = flags;
 
     bool ok = open(filename, pos);
@@ -197,43 +197,46 @@ namespace VideoDisplay {
     return false;
   }
 
-  int VideoIn::selectFrame(int, Radiant::TimeStamp time) const
+  int VideoIn::selectFrame(int bottom, Radiant::TimeStamp time) const
   {
 
     int latest = latestFrame();
 
     int best = latest; // Nimble::Math::Min(latest, startfrom);
-    int low = Nimble::Math::Min((int) m_consumedFrames, 
-				(int) m_consumedAuFrames);
+    int low = Nimble::Math::Min((int) m_consumedFrames,
+                                (int) m_consumedAuFrames);
+    if(low < bottom)
+      low = bottom;
+
     // (int) (best - frameRingBufferSize() / 2));
     low = Nimble::Math::Max(low, 0);
     TimeStamp bestdiff = TimeStamp::createSecondsD(10000);
 
     double close = -1.0;
-    
+
     for(int i = best; i >= low; i--) {
       const Frame * f = m_frames[i % m_frames.size()].ptr();
 
       if(!f)
-	continue;
+        continue;
 
       if(f->m_type == FRAME_INVALID ||
          f->m_type == FRAME_IGNORE)
-        continue;
+        break;
 
       TimeStamp diff = Nimble::Math::Abs(f->m_absolute - time);
       if(diff < bestdiff) {
-	best = i;
-	bestdiff = diff;
-	close = f->m_absolute.secondsD();
+        best = i;
+        bestdiff = diff;
+        close = f->m_absolute.secondsD();
       }
       else
-	break;
+        break;
     }
-    
+
     debug("VideoIn::selectFrame # %d (%d %d) (%d %d) %lf %lf",
-	  best, low, latest, m_consumedFrames, m_consumedAuFrames,
-	  close, time.secondsD());
+          best, low, latest, m_consumedFrames, m_consumedAuFrames,
+          close, time.secondsD());
 
     return best;
   }
@@ -276,21 +279,21 @@ namespace VideoDisplay {
         debug("VideoIn::childLoop # REQ = %d p = %d",(int) r, (int) playing());
 
       if(r == START) {
-	videoPlay(rt);
-	m_playing = true;
+        videoPlay(rt);
+        m_playing = true;
       }
       else if(r == STOP) {
-	videoStop();
-	m_playing = false;
+        videoStop();
+        m_playing = false;
       }
       else if(r == SEEK) {
-	if(playing())
-	  videoPlay(rt);
-	else 
-	  videoGetSnapshot(rt);
+        if(playing())
+          videoPlay(rt);
+        else
+          videoGetSnapshot(rt);
       }
       else if(playing())
-	videoGetNextFrame();
+        videoGetNextFrame();
 
       Radiant::Sleep::sleepMs(5);
     }
@@ -300,16 +303,25 @@ namespace VideoDisplay {
 
 
   VideoIn::Frame * VideoIn::putFrame(const Radiant::VideoImage * im,
-				     FrameType type,
-				     Radiant::TimeStamp show, 
-				     Radiant::TimeStamp absolute)
+                                     FrameType type,
+                                     Radiant::TimeStamp show,
+                                     Radiant::TimeStamp absolute,
+                                     bool immediate)
   {
 
     assert(m_frames.size() != 0);
 
     m_vmutex.lock();
+
+    if(immediate && false) {
+      // Ignored.
+      while((m_decodedFrames - 4) >= m_consumedFrames &&
+            (m_decodedFrames - 4) >= m_consumedAuFrames)
+        m_decodedFrames--;
+    }
+
     while(((m_decodedFrames + 4) >= (m_consumedFrames + m_frames.size()) ||
-           (m_decodedFrames + 4) >= (m_consumedAuFrames + m_frames.size())) && 
+           (m_decodedFrames + 4) >= (m_consumedAuFrames + m_frames.size())) &&
           m_continue)
       // m_vcond.wait(1000);
       m_vcond.wait(m_vmutex, 500);
@@ -321,12 +333,12 @@ namespace VideoDisplay {
     Radiant::Guard g(mutex());
 
     RefPtr<Frame> & rf = m_frames[m_decodedFrames % m_frames.size()];
-    
+
     if(!rf.ptr())
       rf = new Frame;
 
     Frame & f = * rf.ptr();
-    
+
     f.m_type = type;
     f.m_time = show;
     f.m_absolute = absolute;
@@ -335,7 +347,7 @@ namespace VideoDisplay {
 
     if(type == FRAME_SNAPSHOT)
       m_consumedAuFrames = m_decodedFrames;
-    
+
     if(!f.m_image.m_planes[0].m_data)
       f.m_image.allocateMemory(*im);
 
@@ -351,15 +363,16 @@ namespace VideoDisplay {
 
     if(m_debug)
       debug("VideoIn::putFrame # %p %u %u %lf",
-	    & f, m_decodedFrames, m_consumedFrames, absolute.secondsD());
+            & f, m_decodedFrames, m_consumedFrames, absolute.secondsD());
 
-    // info("VideoIn::putFrame # %d", m_decodedFrames);
+    // debug("VideoIn::putFrame # %d", m_decodedFrames);
 
     return & f;
   }
 
   void VideoIn::ignorePreviousFrames()
   {
+    debug("VideoIn::ignorePreviousFrames # %d", m_decodedFrames);
     for(uint i = m_consumedFrames; (i + 1) < m_decodedFrames; i++)
       m_frames[i % m_frames.size()].ptr()->m_type = FRAME_IGNORE;
   }

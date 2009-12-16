@@ -7,10 +7,10 @@
  * See file "VideoDisplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "VideoInFFMPEG.hpp"
@@ -22,10 +22,10 @@
 
 namespace VideoDisplay {
 
-  class FFVideoInfo
+  class FFVideodebug
   {
   public:
-    FFVideoInfo() : m_channels(0), m_duration(0.0f) {}
+    FFVideodebug() : m_channels(0), m_duration(0.0f) {}
 
     Radiant::VideoImage m_firstFrame;
     int   m_channels;
@@ -33,19 +33,19 @@ namespace VideoDisplay {
   };
 
   /* Here we cache the first frames off all viedos. */
-  static std::map<std::string, FFVideoInfo> __ffcache;
+  static std::map<std::string, FFVideodebug> __ffcache;
 
   static Radiant::MutexStatic __mutex;
 
-  const FFVideoInfo * __cachedInfo(const std::string & filename)
+  const FFVideodebug * __cacheddebug(const std::string & filename)
   {
     Radiant::GuardStatic g(&__mutex);
 
-    std::map<std::string, FFVideoInfo>::iterator it = __ffcache.find(filename);
+    std::map<std::string, FFVideodebug>::iterator it = __ffcache.find(filename);
 
     if(it == __ffcache.end())
       return 0;
-    
+
     return & (*it).second;
   }
 
@@ -54,8 +54,9 @@ namespace VideoDisplay {
   VideoInFFMPEG::VideoInFFMPEG()
     : m_channels(0),
       m_sampleRate(44100),
+      m_audioCount(0),
       m_auformat(ASF_INT16)
-  
+
   {
     m_audiobuf.resize(2 * 44100);
   }
@@ -71,9 +72,9 @@ namespace VideoDisplay {
     debug("VideoInFFMPEG::~VideoInFFMPEG # EXIT");
   }
 
-  void VideoInFFMPEG::getAudioParameters(int * channels, 
-					 int * sample_rate,
-					 AudioSampleFormat * format)
+  void VideoInFFMPEG::getAudioParameters(int * channels,
+                     int * sample_rate,
+                     AudioSampleFormat * format)
   {
     * channels = m_channels;
     * sample_rate = m_sample_rate;
@@ -100,10 +101,11 @@ namespace VideoDisplay {
     m_name = filename;
 
     m_buffered = 0;
+    m_audioCount = 0;
 
     float latency = 1.7f;
 
-    const FFVideoInfo * vi = __cachedInfo(filename);
+    const FFVideodebug * vi = __cacheddebug(filename);
 
     if(vi) {
 
@@ -113,11 +115,11 @@ namespace VideoDisplay {
       const VideoImage * img = & vi->m_firstFrame;
 
       m_info.m_videoFrameSize.make(img->m_width, img->m_height);
-      
+
       m_frames.resize(latency * fps());
 
-      putFrame(img, FRAME_SNAPSHOT, 0, 0);
-      
+      putFrame(img, FRAME_SNAPSHOT, 0, 0, false);
+
       m_channels = vi->m_channels;
 
       return true;
@@ -139,14 +141,14 @@ namespace VideoDisplay {
     if(!m_video.hasAudioCodec()) {
       Radiant::debug("%s # No audio codec", fname);
       /* m_video.close();
-	 return false; */
+     return false; */
     }
     pos = TimeStamp::createSecondsD(0.0);
 
     if(pos != 0) {
       debug("%s # Doing a seek", fname);
       if(!m_video.seekPosition(pos.secondsD()))
-	m_video.seekPosition(0);
+    m_video.seekPosition(0);
     }
 
     const VideoImage * img = m_video.captureImage();
@@ -172,16 +174,16 @@ namespace VideoDisplay {
 
     m_video.getAudioParameters( & channels, & sample_rate, & fmt);
 
-    putFrame(img, FRAME_SNAPSHOT, m_video.frameTime(), m_video.frameTime());
+    putFrame(img, FRAME_SNAPSHOT, m_video.frameTime(), m_video.frameTime(), false);
 
     {
       // Cache the first frame for later use.
       Radiant::GuardStatic g(&__mutex);
-      
+
       m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
 
-      FFVideoInfo & vi2 = __ffcache[filename];
-      
+      FFVideodebug & vi2 = __ffcache[filename];
+
       vi2.m_duration = m_duration;
       vi2.m_firstFrame.allocateMemory(*img);
       vi2.m_firstFrame.copyData(*img);
@@ -217,7 +219,7 @@ namespace VideoDisplay {
       return;
     }
 
-    putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime());
+    putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime(), false);
 
     m_frameTime = m_video.frameTime();
 
@@ -227,17 +229,18 @@ namespace VideoDisplay {
   void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)
   {
     debug("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
-    
+
     if(!m_video.open(m_name.c_str(), m_flags)) {
       endOfFile();
       debug("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
-	   m_name.c_str());
+       m_name.c_str());
       return;
     }
 
     m_channels = 0;
     m_sampleRate = 44100;
     m_auformat = ASF_INT16;
+    m_audioCount = 0;
 
     m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
 
@@ -253,14 +256,14 @@ namespace VideoDisplay {
 
     if(!img) {
       debug("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
-	   m_name.c_str());
+       m_name.c_str());
       endOfFile();
       return;
     }
 
     m_frameTime = m_video.frameTime();
 
-    Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime());
+    Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime(), true);
 
     int aframes = 0;
     const void * audio = m_video.captureAudio( & aframes);
@@ -268,9 +271,9 @@ namespace VideoDisplay {
     if(aframes && f) {
       Radiant::Guard g(mutex());
       f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
+      m_audioCount = 1;
+      ignorePreviousFrames();
     }
-
-    ignorePreviousFrames();
 
     debug("VideoInFFMPEG::videoPlay # EXIT OK %d %p", aframes, f);
   }
@@ -287,16 +290,22 @@ namespace VideoDisplay {
     }
 
     TimeStamp vt = m_video.frameTime();
-    
+
     m_frameDelta = m_frameTime.secsTo(vt);
-    
-    Frame * f = putFrame(img, FRAME_STREAM, vt + m_syncOffset, vt);
-    
+
+    Frame * f = putFrame(img, FRAME_STREAM, vt + m_syncOffset, vt, false);
+
     int aframes = 0;
     const void * audio = m_video.captureAudio( & aframes);
 
     if(aframes && f) {
       f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
+
+      if(!m_audioCount) {
+        ignorePreviousFrames();
+      }
+
+      m_audioCount++;
     }
     else if(f) {
       f->m_audioFrames = 0;
@@ -319,7 +328,7 @@ namespace VideoDisplay {
   /*
   void VideoInFFMPEG::enableLooping(bool enable)
   {
-    info("VideoInFFMPEG::enableLooping # %d", (int) enable);
+    debug("VideoInFFMPEG::enableLooping # %d", (int) enable);
     m_video.enableLooping(enable);
     m_duration = TimeStamp::createSecondsD(m_video.durationSeconds());
   }

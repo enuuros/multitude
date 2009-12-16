@@ -7,10 +7,10 @@
  * See file "VideoDisplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 
@@ -47,7 +47,7 @@ namespace VideoDisplay {
       MAX_AUDIO_CHANS = 5,
       MAX_AUDIO_SAMPLES_IN_FRAME = MAX_AUDIO_CHANS * 28000
     };
-    
+
     enum FrameType {
       FRAME_INVALID,
       FRAME_IGNORE,
@@ -56,7 +56,7 @@ namespace VideoDisplay {
       FRAME_SNAPSHOT
     };
 
-    /* Request from the host. */ 
+    /* Request from the host. */
     enum Request {
       NO_REQUEST,
       START,
@@ -76,10 +76,10 @@ namespace VideoDisplay {
                      Radiant::TimeStamp ts)
       {
         int n = frames * channels;
-        
+
         if(format == Radiant::ASF_INT16) {
           const int16_t * au16 = (const int16_t *) audio;
-          
+
           for(int i = 0; i < n; i++)
             m_audio[i] = au16[i] * (1.0f / (1 << 16));
         }
@@ -96,15 +96,15 @@ namespace VideoDisplay {
       int       m_audioFrames;
       FrameType m_type;
     };
-    
+
     /** Basic informationa about a video file. */
     class VIDEODISPLAY_API VideoInfo
     {
     public:
       VideoInfo()
-	: m_videoFrameSize(0, 0),
-	  m_videoDurationSecs(0),
-	  m_fps(-1)
+    : m_videoFrameSize(0, 0),
+      m_videoDurationSecs(0),
+      m_fps(-1)
       {}
 
       Nimble::Vector2i m_videoFrameSize;
@@ -115,20 +115,20 @@ namespace VideoDisplay {
     VIDEODISPLAY_API VideoIn();
     VIDEODISPLAY_API virtual ~VideoIn();
 
-    
+
     VIDEODISPLAY_API Frame * getFrame(int i, bool updateCounter);
 
     VIDEODISPLAY_API virtual bool init(const char * filename,
-				       Radiant::TimeStamp pos,
-				       int flags);
+                       Radiant::TimeStamp pos,
+                       int flags);
     VIDEODISPLAY_API virtual bool play(Radiant::TimeStamp pos = -1);
     VIDEODISPLAY_API virtual void stop();
     VIDEODISPLAY_API virtual bool seek(Radiant::TimeStamp pos);
     // VIDEODISPLAY_API virtual void enableLooping(bool enable) = 0;
 
-    VIDEODISPLAY_API virtual void getAudioParameters(int * channels, 
-				    int * sample_rate,
-				    Radiant::AudioSampleFormat * format) = 0;
+    VIDEODISPLAY_API virtual void getAudioParameters(int * channels,
+                    int * sample_rate,
+                    Radiant::AudioSampleFormat * format) = 0;
 
     VIDEODISPLAY_API virtual float fps() = 0;
 
@@ -174,15 +174,16 @@ namespace VideoDisplay {
     VIDEODISPLAY_API virtual void videoStop() = 0;
 
     /** An implmentation should use the methods below: */
-    VIDEODISPLAY_API void allocateFrames(uint frameCount, uint width, uint height, 
-			Radiant::ImageFormat fmt);
+    VIDEODISPLAY_API void allocateFrames(uint frameCount, uint width, uint height,
+            Radiant::ImageFormat fmt);
 
     VIDEODISPLAY_API void deallocateFrames();
 
     VIDEODISPLAY_API Frame * putFrame(const Radiant::VideoImage *,
-		     FrameType type,
-		     Radiant::TimeStamp show, 
-		     Radiant::TimeStamp absolute);
+             FrameType type,
+             Radiant::TimeStamp show,
+             Radiant::TimeStamp absolute,
+             bool immediate);
 
     VIDEODISPLAY_API void ignorePreviousFrames();
 

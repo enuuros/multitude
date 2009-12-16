@@ -547,10 +547,7 @@ namespace VideoDisplay {
                       Poetic::GPUFont * subtitleFont,
                       float subTitleSpace)
   {
-    GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, & yuvkey, resources);
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
-
-    assert(yuv2rgb != 0);
 
     Luminous::GLSLProgramObject * shader = 0;
 
@@ -569,6 +566,7 @@ namespace VideoDisplay {
       textures->bind();
 
       if(m_frame->m_image.m_format < Radiant::IMAGE_RGB_24) {
+        GLRESOURCE_ENSURE(YUVProgram, yuv2rgb, & yuvkey, resources);
         yuv2rgb->bind(m_contrast);
         shader = yuv2rgb;
       }
@@ -576,7 +574,7 @@ namespace VideoDisplay {
         GLRESOURCE_ENSURE(Luminous::GLSLProgramObject, rgb2rgb, & rgbkey, resources);
         if(rgb2rgb->shaderObjectCount() == 0) {
           assert(rgb2rgb->loadStrings(0, rgbshader));
-          info("Loaded rgb2rgb shader");
+          debug("Loaded rgb2rgb shader");
         }
 
         rgb2rgb->bind();
