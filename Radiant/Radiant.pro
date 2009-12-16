@@ -122,14 +122,20 @@ win32 {
 
     CONFIG += qt
     QT = core network
+	
+	PTGREY_PATH="C:\Program Files\Point Grey Research\FlyCapture2"
 
-    exists("C:\Program Files\Point Grey Research\FlyCapture2\include") {
-        HEADERS += VideoCameraPTGrey.hpp
-        SOURCES += VideoCameraPTGrey.cpp
-        INCLUDEPATH += "C:\Program Files\Point Grey Research\FlyCapture2\include"
-        LIBPATH += "C:\Program Files\Point Grey Research\FlyCapture2\lib"
-        LIBS += FlyCapture2.lib
-    }
+	exists($$PTGREY_PATH\include) {
+		HEADERS += VideoCameraPTGrey.hpp
+		SOURCES += VideoCameraPTGrey.cpp
+		INCLUDEPATH += $$PTGREY_PATH\include
+		
+		# 64bit libs have different path
+		exists($$PTGREY_PATH\lib64):LIBPATH += $$PTGREY_PATH\lib64
+		exists(PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
+		LIBS += FlyCapture2.lib
+	}
+
 }
 
 include(../library.pri)
