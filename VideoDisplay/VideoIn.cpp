@@ -70,10 +70,14 @@ namespace VideoDisplay {
       m_done(false),
       m_request(NO_REQUEST),
       m_listener(0)
-  {}
+  {
+    debug("VideoIn::VideoIn # %p", this);
+  }
 
   VideoIn::~VideoIn()
   {
+    debug("VideoIn::~VideoIn # %p", this);
+
     Guard g(mutex());
 
     if(m_listener)

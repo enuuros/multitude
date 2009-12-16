@@ -344,6 +344,10 @@ namespace VideoDisplay {
   {
     // debug("ShowGL::init # %f", previewpos);
 
+    if(m_filename == filename) {
+      return true;
+    }
+
     m_filename = filename;
     m_dsp = dsp;
     m_targetChannel = targetChannel;
