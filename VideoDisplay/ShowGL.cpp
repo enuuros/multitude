@@ -342,10 +342,14 @@ namespace VideoDisplay {
                     int targetChannel,
                     int flags)
   {
-    // debug("ShowGL::init # %f", previewpos);
+    debug("ShowGL::init # %s", filename);
 
     if(m_filename == filename) {
       return true;
+    }
+
+    if(m_state == PLAY) {
+      stop();
     }
 
     m_filename = filename;

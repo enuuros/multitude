@@ -121,6 +121,9 @@ namespace Nimble {
     /// Create a matrix that performs 2D scaling
     inline static Matrix3T<T> scaleUniform2D(const T & s)
     { return scale2D(Vector2T<T>(s, s)); }
+    NIMBLE_API static Matrix3T<T> scaleUniformAroundPoint2D(Vector2T<T> p,
+                                                     T s);
+
     /// Create a matrix that performs 2D rotation
     inline static Matrix3T<T> rotate2D(T radians);
 
