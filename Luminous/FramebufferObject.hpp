@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef LUMINOUS_FRAMEBUFFEROBJECT_HPP
@@ -56,6 +56,8 @@ namespace Luminous
     void storageFormat(int width, int height, GLenum format);
 
   private:
+    void create();
+
     GLuint m_bufferId;
 
     friend class Framebuffer;
@@ -74,29 +76,31 @@ namespace Luminous
     bool check();
 
     void attachTexture1D(Texture1D* texture,
-			 FramebufferAttachment attachment,
-			 int mipmapLevel = 0);
+             FramebufferAttachment attachment,
+             int mipmapLevel = 0);
     void detachTexture1D(FramebufferAttachment attachment);
-    
+
     void attachTexture2D(Texture2D* texture,
-			 FramebufferAttachment attachment,
-			 int mipmapLevel = 0);
+             FramebufferAttachment attachment,
+             int mipmapLevel = 0);
     void detachTexture2D(FramebufferAttachment attachment);
 
     void attachTexture3D(Texture3D* texture,
-			 FramebufferAttachment attachment,
-			 int zSlice, int mipmapLevel = 0);
+             FramebufferAttachment attachment,
+             int zSlice, int mipmapLevel = 0);
     void detachTexture3D(FramebufferAttachment attachment);
 
     void attachTextureCube(TextureCube* texture,
-			   FramebufferAttachment attachment, 
-			   int face, int mipmapLevel = 0);
+               FramebufferAttachment attachment,
+               int face, int mipmapLevel = 0);
     void detachTextureCube(FramebufferAttachment attachment, int face);
 
     void attachRenderbuffer(Renderbuffer* renderbuffer,
-			    FramebufferAttachment attachment);		
+                FramebufferAttachment attachment);
     void detachRenderbuffer(FramebufferAttachment attachment);
+
   private:
+    void create();
     GLuint m_bufferId;
   };
 

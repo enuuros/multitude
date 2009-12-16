@@ -52,7 +52,7 @@ namespace VideoDisplay {
   using namespace Radiant;
 
   VideoInFFMPEG::VideoInFFMPEG()
-    : m_channels(0),
+      : m_channels(0),
       m_sampleRate(44100),
       m_audioCount(0),
       m_auformat(ASF_INT16)
@@ -73,8 +73,8 @@ namespace VideoDisplay {
   }
 
   void VideoInFFMPEG::getAudioParameters(int * channels,
-                     int * sample_rate,
-                     AudioSampleFormat * format)
+                                         int * sample_rate,
+                                         AudioSampleFormat * format)
   {
     * channels = m_channels;
     * sample_rate = m_sample_rate;
@@ -148,7 +148,7 @@ namespace VideoDisplay {
     if(pos != 0) {
       debug("%s # Doing a seek", fname);
       if(!m_video.seekPosition(pos.secondsD()))
-    m_video.seekPosition(0);
+        m_video.seekPosition(0);
     }
 
     const VideoImage * img = m_video.captureImage();
@@ -233,7 +233,7 @@ namespace VideoDisplay {
     if(!m_video.open(m_name.c_str(), m_flags)) {
       endOfFile();
       debug("VideoInFFMPEG::videoPlay # Open failed for \"%s\"",
-       m_name.c_str());
+            m_name.c_str());
       return;
     }
 
@@ -256,7 +256,7 @@ namespace VideoDisplay {
 
     if(!img) {
       debug("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
-       m_name.c_str());
+            m_name.c_str());
       endOfFile();
       return;
     }

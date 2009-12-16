@@ -200,6 +200,8 @@ namespace VideoDisplay {
   int VideoIn::selectFrame(int bottom, Radiant::TimeStamp time) const
   {
 
+    if(bottom < 0)
+      bottom = 0;
     int latest = latestFrame();
 
     int best = latest; // Nimble::Math::Min(latest, startfrom);

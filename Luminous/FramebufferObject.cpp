@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Luminous/FramebufferObject.hpp>
@@ -23,8 +23,8 @@ namespace Luminous
 {
 
   Renderbuffer::Renderbuffer()
+      : m_bufferId((GLuint) -1)
   {
-    glGenRenderbuffersEXT(1, &m_bufferId);
   }
 
   Renderbuffer::~Renderbuffer()
@@ -34,6 +34,7 @@ namespace Luminous
 
   void Renderbuffer::bind()
   {
+    create();
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_bufferId);
   }
 
@@ -48,12 +49,19 @@ namespace Luminous
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, format, width, height);
   }
 
+
+  void Renderbuffer::create()
+  {
+    if(m_bufferId == (GLuint) -1)
+      glGenRenderbuffersEXT(1, &m_bufferId);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
   Framebuffer::Framebuffer()
+      : m_bufferId((GLuint) -1)
   {
-    glGenFramebuffersEXT(1, &m_bufferId);
   }
 
   Framebuffer::~Framebuffer()
@@ -63,6 +71,7 @@ namespace Luminous
 
   void Framebuffer::bind()
   {
+    create();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_bufferId);
   }
 
@@ -73,6 +82,8 @@ namespace Luminous
 
   bool Framebuffer::check(void)
   {
+    create();
+
     GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 
     switch(status)
@@ -115,7 +126,7 @@ namespace Luminous
   {
     bind();
     glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT, attachment,
-			      GL_TEXTURE_1D, texture->id(), level);
+                  GL_TEXTURE_1D, texture->id(), level);
   }
 
   void Framebuffer::detachTexture1D(FramebufferAttachment attachment)
@@ -128,7 +139,7 @@ namespace Luminous
   {
     bind();
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D,
-			      texture->id(), level);
+                  texture->id(), level);
   }
 
   void Framebuffer::detachTexture2D(FramebufferAttachment attachment)
@@ -141,7 +152,7 @@ namespace Luminous
   {
     bind();
     glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_3D,
-			      texture->id(), level, zOffset);
+                  texture->id(), level, zOffset);
   }
 
   void Framebuffer::detachTexture3D(FramebufferAttachment attachment)
@@ -149,13 +160,13 @@ namespace Luminous
     bind();
     glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_3D, 0, 0, 0);
   }
-  
+
   void Framebuffer::attachTextureCube(TextureCube* texture, FramebufferAttachment attachment, int face, int level)
   {
     bind();
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
-			      GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + face,
-			      texture->id(), level);
+                  GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + face,
+                  texture->id(), level);
   }
 
   void Framebuffer::detachTextureCube(FramebufferAttachment attachment, int face)
@@ -174,6 +185,12 @@ namespace Luminous
   {
     bind();
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
+  }
+
+  void Framebuffer::create()
+  {
+    if(m_bufferId == (GLuint) -1)
+      glGenFramebuffersEXT(1, &m_bufferId);
   }
 
 }
