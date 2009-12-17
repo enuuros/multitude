@@ -383,7 +383,7 @@ namespace VideoDisplay {
   {
     debug("ShowGL::start");
 
-    if(m_state == PLAY) {
+    if(m_state == PLAY || !m_video) {
       return false;
     }
 
@@ -422,12 +422,6 @@ namespace VideoDisplay {
     /*
     if(m_frame && (m_frame != & m_preview) && m_video) {
 
-      Radiant::Guard g(m_video->mutex());
-
-      m_preview.m_image.allocateMemory(m_frame->m_image);
-      m_preview.m_image.copyData(m_frame->m_image);
-      m_preview.m_time = m_frame->m_time;
-      m_frame = & m_preview;x
     }
     */
 
@@ -438,11 +432,19 @@ namespace VideoDisplay {
       i++;
     }
 
+    if(m_frame) {
+      Radiant::Guard g(m_video->mutex());
+
+      m_preview.m_image.allocateMemory(m_frame->m_image);
+      m_preview.m_image.copyData(m_frame->m_image);
+      m_preview.m_time = m_frame->m_time;
+      m_frame = & m_preview;
+    }
+
     m_dsp->markDone(m_dspItem);
 
     m_audio->forgetVideo();
     m_audio = 0;
-    m_frame = 0;
 
     m_video->setAudioListener(0);
     m_video->stop();
@@ -498,6 +500,9 @@ namespace VideoDisplay {
   */
   void ShowGL::update()
   {
+    if(!m_video)
+      return;
+
     int videoFrame;
 
     if(m_audio) {
@@ -667,6 +672,9 @@ namespace VideoDisplay {
 
   Nimble::Vector2i ShowGL::size() const
   {
+    if(!m_video)
+      return Nimble::Vector2i(640, 480);
+
     assert(m_video != 0);
 
     return m_video->vdebug().m_videoFrameSize;
@@ -674,6 +682,9 @@ namespace VideoDisplay {
 
   void ShowGL::seekTo(Radiant::TimeStamp time)
   {
+    if(!m_video)
+      return;
+
     if(time < 0)
       time = 0;
     else if(time >= m_duration)
@@ -693,11 +704,17 @@ namespace VideoDisplay {
 
   void ShowGL::seekToRelative(double relative)
   {
+    if(!m_video)
+      return;
+
     seekTo(TimeStamp(duration() * relative));
   }
 
   void ShowGL::panAudioTo(Nimble::Vector2 location)
   {
+    if(!m_video)
+      return;
+
     if(!m_audio)
       return;
 
