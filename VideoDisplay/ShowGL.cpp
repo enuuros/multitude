@@ -322,12 +322,13 @@ namespace VideoDisplay {
       m_updates(0),
       m_contrast(this, "contrast", 1.0f)
   {
+    debug("ShowGL::ShowGL # %p", this);
     clearHistogram();
   }
 
   ShowGL::~ShowGL()
   {
-    info("ShowGL::~ShowGL");
+    debug("ShowGL::~ShowGL # %p", this);
     stop();
     delete m_video;
   }
@@ -355,7 +356,6 @@ namespace VideoDisplay {
     m_filename = filename;
     m_dsp = dsp;
     m_targetChannel = targetChannel;
-    delete m_video;
 
     VideoInFFMPEG * ffmpg = new VideoInFFMPEG();
 
@@ -367,6 +367,17 @@ namespace VideoDisplay {
       return false;
     }
 
+    if(m_frame && (m_frame != & m_preview)) {
+      Radiant::Guard g(m_video->mutex());
+
+      m_preview.m_image.allocateMemory(m_frame->m_image);
+      m_preview.m_image.copyData(m_frame->m_image);
+      m_preview.m_time = m_frame->m_time;
+      m_frame = & m_preview;
+      debug("Captured preview frame %p", m_frame);
+    }
+
+    delete m_video;
     m_video = ffmpg;
 
     m_position = 0;
@@ -383,7 +394,7 @@ namespace VideoDisplay {
   {
     static int __count = 1;
 
-    debug("ShowGL::start");
+    debug("ShowGL::start # %p", this);
 
     if(m_state == PLAY || !m_video) {
       return false;
@@ -416,7 +427,7 @@ namespace VideoDisplay {
 
   bool ShowGL::stop()
   {
-    debug("ShowGL::stop");
+    debug("ShowGL::stop # %p", this);
 
     if(m_state != PLAY)
       return false;
@@ -426,7 +437,6 @@ namespace VideoDisplay {
 
     }
     */
-
     int i = 0;
 
     while(!m_audio->stopped() && !m_audio->started() && i < 10) {
@@ -434,14 +444,6 @@ namespace VideoDisplay {
       i++;
     }
 
-    if(m_frame && (m_frame != & m_preview)) {
-      Radiant::Guard g(m_video->mutex());
-
-      m_preview.m_image.allocateMemory(m_frame->m_image);
-      m_preview.m_image.copyData(m_frame->m_image);
-      m_preview.m_time = m_frame->m_time;
-      m_frame = & m_preview;
-    }
 
     m_dsp->markDone(m_dspItem);
 
@@ -450,6 +452,7 @@ namespace VideoDisplay {
 
     m_video->setAudioListener(0);
     m_video->stop();
+    
 
     m_state = PAUSE;
 
@@ -550,6 +553,8 @@ namespace VideoDisplay {
       m_videoFrame = videoFrame;
     }
 
+    debug("ShowGL::update # %p f = %p", this, m_frame);
+
     m_subTitles.update(m_position);
   }
 
@@ -563,6 +568,7 @@ namespace VideoDisplay {
                       Poetic::GPUFont * subtitleFont,
                       float subTitleSpace)
   {
+    debug("ShowGL::render");
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
 
     Luminous::GLSLProgramObject * shader = 0;
@@ -574,9 +580,11 @@ namespace VideoDisplay {
       bottomright.y = topleft.y + s.y;
     }
 
+    debug("ShowGL::render # %p f = %p", this, m_frame);
+
     if(m_frame) {
 
-      // debug("ShowGL::render # %p", m_frame);
+      // debug("ShowGL::render # %p %p", this, m_frame);
 
       textures->doTextures(m_count, & m_frame->m_image);
       textures->bind();
@@ -670,6 +678,7 @@ namespace VideoDisplay {
     // info("The video frame is %d", m_videoFrame);
 
     Luminous::Utils::glCheck("ShowGL::render");
+    debug("ShowGL::render # EXIT");
   }
 
   Nimble::Vector2i ShowGL::size() const

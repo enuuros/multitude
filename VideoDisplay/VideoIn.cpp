@@ -34,11 +34,13 @@ namespace VideoDisplay {
       : m_audioFrames(0),
       m_type(FRAME_INVALID)
   {
+    debug("VideoIn::Frame::Frame # %p", this);
     bzero(m_audio, sizeof(m_audio));
   }
 
   VideoIn::Frame::~Frame()
   {
+    debug("VideoIn::Frame::~Frame # %p", this);
     m_image.freeMemory();
   }
 
