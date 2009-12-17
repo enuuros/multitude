@@ -381,6 +381,8 @@ namespace VideoDisplay {
 
   bool ShowGL::start(bool fromOldPos)
   {
+    static int __count = 1;
+
     debug("ShowGL::start");
 
     if(m_state == PLAY || !m_video) {
@@ -390,7 +392,7 @@ namespace VideoDisplay {
     AudioTransfer * au = new AudioTransfer(0, m_video);
 
     char buf[128];
-    sprintf(buf, "showgl-audiotransfer-%p", this);
+    sprintf(buf, "showgl-audiotransfer-%p-%.4d", this, __count++);
 
     au->setId(buf);
 
