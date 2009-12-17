@@ -434,7 +434,7 @@ namespace VideoDisplay {
       i++;
     }
 
-    if(m_frame) {
+    if(m_frame && (m_frame != & m_preview)) {
       Radiant::Guard g(m_video->mutex());
 
       m_preview.m_image.allocateMemory(m_frame->m_image);
