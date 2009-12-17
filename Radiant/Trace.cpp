@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "Trace.hpp"
@@ -33,6 +33,8 @@ namespace Radiant {
 
   std::string g_appname;
 
+  static FILE * __outfile = 0;
+
   const char * prefixes[] = {
     "[DEBUG] ",
     "",
@@ -41,7 +43,7 @@ namespace Radiant {
     "[FATAL] "
   };
 
-  void enableVerboseOutput(bool enable) 
+  void enableVerboseOutput(bool enable)
   {
     g_enableVerboseOutput = enable;
   }
@@ -53,7 +55,17 @@ namespace Radiant {
 
   static void g_output(Severity s, const char * msg)
   {
+#ifdef WIN32
+    if(!__outfile)
+      __outfile = fopen("C:\\CornerStone\\log.txt", "w");
+#endif
+
+
     FILE * out = (s > WARNING) ? stdout : stderr;
+
+    if(__outfile)
+      out = __outfile;
+
     Radiant::TimeStamp now = Radiant::TimeStamp::getTime();
 
     g_mutex.lock();
@@ -80,22 +92,22 @@ namespace Radiant {
       g_output(s, buf);
 
       if(s >= FATAL) {
-	exit(0);
-	// Sometimes "exit" is not enough, this is guaranteed to work
-	int * bad = 0;
-	*bad = 123456;
+        exit(0);
+        // Sometimes "exit" is not enough, this is guaranteed to work
+        int * bad = 0;
+        *bad = 123456;
       }
     }
   }
 
- void debug(const char * msg, ...)
+  void debug(const char * msg, ...)
   {
     if(!g_enableVerboseOutput)
       return;
 
     char buf[4096];
     va_list args;
-    
+
     va_start(args, msg);
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
@@ -107,7 +119,7 @@ namespace Radiant {
   {
     char buf[4096];
     va_list args;
-    
+
     va_start(args, msg);
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
@@ -119,7 +131,7 @@ namespace Radiant {
   {
     char buf[4096];
     va_list args;
-    
+
     va_start(args, msg);
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
@@ -131,11 +143,11 @@ namespace Radiant {
   {
     char buf[4096];
     va_list args;
-    
+
     va_start(args, msg);
     vsnprintf(buf, 4096, msg, args);
     va_end(args);
-    
+
     g_output(FATAL, buf);
 
     exit(EXIT_FAILURE);
