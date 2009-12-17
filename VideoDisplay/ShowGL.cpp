@@ -442,6 +442,7 @@ namespace VideoDisplay {
 
     m_audio->forgetVideo();
     m_audio = 0;
+    m_frame = 0;
 
     m_video->setAudioListener(0);
     m_video->stop();
