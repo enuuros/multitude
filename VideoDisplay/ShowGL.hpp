@@ -57,11 +57,19 @@ namespace VideoDisplay {
   class AudioTransfer;
 
   /// Objects that displays video using an OpenGL device
-  /** From application-programmers perspective, this is the main class
+  /** This class manages the process of reading the file from a disc,
+      playing back the audio and displaying the video with OpenGL. The
+      video rendering is performed with the aid of shaders, so this
+      class will not work in cases where OpenGL 2.0 -level hardware is
+      not available.
+
+      In the rendering phase one can adjust the contrast. This is
+      internally done by using a shader to with relevant controls.
+
+      From application-programmers perspective, this is the main class
       of the VideoDisplay framework. */
   class ShowGL : public Luminous::Collectable,
   public Valuable::HasValues
-
   {
   private:
 

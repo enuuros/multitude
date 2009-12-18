@@ -432,11 +432,6 @@ namespace VideoDisplay {
     if(m_state != PLAY)
       return false;
 
-    /*
-    if(m_frame && (m_frame != & m_preview) && m_video) {
-
-    }
-    */
     int i = 0;
 
     while(!m_audio->stopped() && !m_audio->started() && i < 10) {
