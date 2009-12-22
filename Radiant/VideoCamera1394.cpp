@@ -1037,9 +1037,10 @@ namespace Radiant {
     struct utsname sn;
     uname(& sn);
 
-    // trace("System: %s # %s # %s", sn.sysname, sn.release, sn.version);
+    debug("%s # System: %s # %s # %s", fname, sn.sysname, sn.release, sn.version);
     isleopard = strcmp(sn.sysname, "Darwin") == 0 &&
-                sn.release[0] == '9' && sn.release[1] == '.';
+                ((strncmp(sn.release, "9.", 2) == 0) ||
+                 (strncmp(sn.release, "10.", 3) == 0));
 #endif
 
     // Clean up in the first start:
@@ -1157,9 +1158,18 @@ namespace Radiant {
     if (dc1394_video_get_iso_speed(m_camera, &m_speed) != DC1394_SUCCESS) {
       error("%s # dc1394_video_get_iso_speed failed", fname);
       return false;
-    } else
-      debug("%s # ISO speed = %u", fname, (uint) m_speed);
-
+    } else {
+      int speedbits = 0;
+      if(m_speed == DC1394_ISO_SPEED_100)
+        speedbits = 100;
+      else if(m_speed == DC1394_ISO_SPEED_200)
+        speedbits = 200;
+      else if(m_speed == DC1394_ISO_SPEED_400)
+        speedbits = 400;
+      else if(m_speed == DC1394_ISO_SPEED_800)
+        speedbits = 800;
+      debug("%s # ISO speed = %d Mbits per second", fname, speedbits);
+    }
     return true;
   }
 
