@@ -130,9 +130,9 @@ win32 {
 		SOURCES += VideoCameraPTGrey.cpp
 		INCLUDEPATH += $$PTGREY_PATH\include
 		
-		# 64bit libs have different path
+		# 64bit libs have a different path
 		exists($$PTGREY_PATH\lib64):LIBPATH += $$PTGREY_PATH\lib64
-		exists(PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
+		exists($$PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
 		LIBS += FlyCapture2.lib
 	}
 
