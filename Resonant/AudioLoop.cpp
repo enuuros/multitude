@@ -142,7 +142,7 @@ namespace Resonant {
       long decoded = end - devkey;
       if(decoded == (long) strlen(devkey)) {
         m_d->m_outParams.device = i;
-        Radiant::debug("AudioLoop::startReadWrite # Selected device %d (%s)",
+        Radiant::info("AudioLoop::startReadWrite # Selected device %d (%s)",
                        (int) m_d->m_outParams.device, devkey);
         
       }
@@ -164,9 +164,10 @@ namespace Resonant {
 
     const PaDeviceInfo * info = Pa_GetDeviceInfo(m_d->m_outParams.device);
 
+    Radiant::info("AudioLoop::startReadWrite # Got audio device %d = %s",
+		  (int) m_d->m_outParams.device, info->name);
+
     if(Radiant::enabledVerboseOutput()) {
-      Radiant::debug("AudioLoop::startReadWrite # Got device %d = %s",
-                     (int) m_d->m_outParams.device, info->name);
       int n = Pa_GetDeviceCount();
 
       for(int i = 0; i < n; i++) {
@@ -179,16 +180,15 @@ namespace Resonant {
     
     // int minchans = Nimble::Math::Min(info->maxInputChannels, info->maxOutputChannels);
     int minchans = info->maxOutputChannels; 
-
     
-    Radiant::info("AudioLoop::startReadWrite # channels = %d limits = %d %d",
-                  channels, info->maxInputChannels, info->maxOutputChannels);
-
     if(channels < minchans) {
       Radiant::info("AudioLoop::startReadWrite # Expanding to %d channels",
                     minchans);
       channels = minchans;
     }
+
+    Radiant::info("AudioLoop::startReadWrite # channels = %d limits = %d %d",
+                  channels, info->maxInputChannels, info->maxOutputChannels);
 
     // channels = 26;
 

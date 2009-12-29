@@ -55,12 +55,6 @@ namespace Radiant {
 
   static void g_output(Severity s, const char * msg)
   {
-#ifdef WIN32
-    if(!__outfile)
-      __outfile = fopen("C:\\CornerStone\\log.txt", "w");
-#endif
-
-
     FILE * out = (s > WARNING) ? stdout : stderr;
 
     if(__outfile)
@@ -157,4 +151,12 @@ namespace Radiant {
   {
     g_appname = appname;
   }
+  
+  void setTraceFile(const char * filename)
+  {
+    __outfile = fopen(filename, "w");
+    printf("Trace file set to %s (%p)\n", filename, __outfile);
+    fflush(0);
+  }
+
 }

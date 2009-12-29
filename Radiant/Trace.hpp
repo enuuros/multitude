@@ -99,6 +99,9 @@ namespace Radiant {
 
   RADIANT_API void setApplicationName(const char * appname);
 
+  /** Uses the given file as the output target for all debug/error output. */
+  RADIANT_API void setTraceFile(const char * filename);
+
 }
 
 #endif
