@@ -48,7 +48,7 @@ namespace Radiant {
     Recursion should work on all platforms. */
     bool init(bool shared = false, 
 	      bool prio_inherit = true,
-	      bool recursive = false);
+	      bool recursive = true);
   
     /// Close the mutex.
     bool close();
