@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "Directory.hpp"
@@ -38,13 +38,14 @@ namespace Radiant
     const std::string name(dent->d_name);
 
     if(dent->d_type == DT_DIR && !(filterFlags & Directory::Dirs)) ok = false;
-    if(dent->d_type == DT_REG && !(filterFlags & Directory::Files)) ok = false;
-    if( (name == DOT || name == DOTDOT) && (filterFlags & Directory::NoDotAndDotDot)) 
-        ok = false;
-    if( (name[0] == '.' && (name != DOT && name != DOTDOT)) 
-        && !(filterFlags & Directory::Hidden) ) ok = false;
+    else if(dent->d_type == DT_REG && !(filterFlags & Directory::Files)) ok = false;
+    else if( (name == DOT || name == DOTDOT) && (filterFlags & Directory::NoDotAndDotDot))
+      ok = false;
+    else if( (name[0] == '.' && (name != DOT && name != DOTDOT))
+        && !(filterFlags & Directory::Hidden) )
+      ok = false;
 
-    if(suffixes.size()) {
+    if(!suffixes.empty()) {
       std::string suffix = StringUtils::lowerCase(FileUtils::suffix(name));
 
       ok = false;
@@ -81,11 +82,11 @@ namespace Radiant
     DIR * d = opendir(dir.c_str());
     if(!d)
       return false;
-    
+
     closedir(d);
     return true;
   }
-      
+
   void Directory::populate()
   {
     // Try to open the directory

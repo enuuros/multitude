@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 #ifndef RADIANT_STRING_UTILS_HPP
 #define RADIANT_STRING_UTILS_HPP
@@ -66,7 +66,7 @@ namespace Radiant
     RADIANT_API void split(const std::wstring & ws, const std::wstring & delim, WStringList & out);
 
     RADIANT_API void merge(std::wstring & dest, const WStringList & src);
-    
+
     RADIANT_API const char * strchrnul(const char * str, int c);
 
     /// Count the number of lines in the string.
@@ -74,8 +74,19 @@ namespace Radiant
 
     /// Convert utf8 string to wide string.
     RADIANT_API void utf8ToStdWstring(std::wstring & dest, const std::string & src);
+    /// Convert utf8 string to wide string
+    /** This function is effectively the same as #utf8ToStdWstring,
+        but the this function is usually slightly easier to use, and
+        it is slightly slower.
+
+    */
+    RADIANT_API std::wstring utf8AsStdWstring(const std::string & src);
+
     /// Convert wide string to utf8 string.
     RADIANT_API void stdWstringToUtf8(std::string & dest, const std::wstring & src);
+    /// Convert wide string to utf8 string.
+    RADIANT_API std::string stdWstringAsUtf8(const std::wstring & src);
+
     /// Count the number of decoded unicode characters in a utf8 string.
     RADIANT_API int utf8DecodedLength(const std::string & src);
     /// Count the number of encoded utf8 bytes characters in a wide string.
@@ -86,12 +97,12 @@ namespace Radiant
     RADIANT_API char upperCaseASCII(char c);
 
     /** Finds the str in strings and return the index. The
-	strings-variable is terminated by null string. If the str is
-	not found in the strings, then -1 is returned. */
+    strings-variable is terminated by null string. If the str is
+    not found in the strings, then -1 is returned. */
     RADIANT_API int which(const char ** strings, const char * str);
 
     /** Finds the str in strings and return the index. If the str is
-	not found in the strings, then -1 is returned. */
+    not found in the strings, then -1 is returned. */
     RADIANT_API int which(const StringList & strings, const std::string & str);
 
     template<class T>
@@ -100,7 +111,7 @@ namespace Radiant
         os << x;
         return os.str();
     }
-    
+
     template <class T>
     inline T fromString(const char * str)
     { return T(atoll(str)); }
