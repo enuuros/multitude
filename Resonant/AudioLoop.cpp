@@ -201,8 +201,6 @@ namespace Resonant {
     m_d->m_inParams = m_d->m_outParams;
     m_d->m_inParams.device = Pa_GetDefaultInputDevice();
 
-
-
     m_continue = true;
 
     PaError err = Pa_OpenStream(& m_d->m_stream,
@@ -235,7 +233,8 @@ namespace Resonant {
     m_isRunning = true;
 
     Radiant::debug("AudioLoop::startReadWrite # %d channels lt = %lf, EXIT OK",
-           m_d->m_outParams.channelCount, m_d->m_streamInfo->outputLatency);
+		   (int) m_d->m_outParams.channelCount, 
+		   (double) m_d->m_streamInfo->outputLatency);
 
     return true;
   }
