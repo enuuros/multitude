@@ -7,10 +7,10 @@
  * See file "Resonant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "AudioLoop.hpp"
@@ -35,7 +35,7 @@
 
 namespace Resonant {
 
-  class AudioLoop::AudioLoopInternal 
+  class AudioLoop::AudioLoopInternal
   {
     public:
       AudioLoopInternal()
@@ -117,7 +117,7 @@ namespace Resonant {
   bool AudioLoop::startReadWrite(int samplerate, int channels)
   {
     assert(!isRunning());
-    
+
     m_d->m_stream = 0;
     m_d->m_streamInfo = 0;
 
@@ -135,16 +135,16 @@ namespace Resonant {
       }
     }
     else {
-      
+
       char * end = 0;
       int i = strtol(devkey, & end, 10);
-      
+
       long decoded = end - devkey;
       if(decoded == (long) strlen(devkey)) {
         m_d->m_outParams.device = i;
         Radiant::info("AudioLoop::startReadWrite # Selected device %d (%s)",
                        (int) m_d->m_outParams.device, devkey);
-        
+
       }
       else {
         int n = Pa_GetDeviceCount();
@@ -153,7 +153,7 @@ namespace Resonant {
           const PaDeviceInfo * info = Pa_GetDeviceInfo(i);
           if(strstr(info->name, devkey) != 0) {
             m_d->m_outParams.device = i;
-            
+
             Radiant::debug("AudioLoop::startReadWrite # Selected device %d %s",
                            (int) m_d->m_outParams.device, info->name);
             break;
@@ -165,7 +165,7 @@ namespace Resonant {
     const PaDeviceInfo * info = Pa_GetDeviceInfo(m_d->m_outParams.device);
 
     Radiant::info("AudioLoop::startReadWrite # Got audio device %d = %s",
-		  (int) m_d->m_outParams.device, info->name);
+          (int) m_d->m_outParams.device, info->name);
 
     if(Radiant::enabledVerboseOutput()) {
       int n = Pa_GetDeviceCount();
@@ -177,10 +177,10 @@ namespace Resonant {
                         i, info2->name, apiinfo->name);
       }
     }
-    
+
     // int minchans = Nimble::Math::Min(info->maxInputChannels, info->maxOutputChannels);
-    int minchans = info->maxOutputChannels; 
-    
+    int minchans = info->maxOutputChannels;
+
     if(channels < minchans) {
       Radiant::info("AudioLoop::startReadWrite # Expanding to %d channels",
                     minchans);
@@ -201,7 +201,7 @@ namespace Resonant {
     m_d->m_inParams = m_d->m_outParams;
     m_d->m_inParams.device = Pa_GetDefaultInputDevice();
 
-    
+
 
     m_continue = true;
 
@@ -213,18 +213,18 @@ namespace Resonant {
                                 paClipOff,
                                 m_d->paCallback,
                                 this );
-    
+
     if( err != paNoError ) {
       Radiant::error("AudioLoop::startReadWrite # Pa_OpenStream failed");
       return false;
     }
-    
+
     err = Pa_SetStreamFinishedCallback(m_d->m_stream, & m_d->paFinished );
 
     m_d->m_streamInfo = Pa_GetStreamInfo(m_d->m_stream);
 
     err = Pa_StartStream(m_d->m_stream);
-    
+
     if( err != paNoError ) {
       Radiant::error("AudioLoop::startReadWrite # Pa_StartStream failed");
       return false;
@@ -235,11 +235,11 @@ namespace Resonant {
     m_isRunning = true;
 
     Radiant::debug("AudioLoop::startReadWrite # %d channels lt = %lf, EXIT OK",
-		   channels, m_d->m_streamInfo->outputLatency);
+           m_d->m_outParams.channelCount, m_d->m_streamInfo->outputLatency);
 
     return true;
   }
-  
+
   bool AudioLoop::stop()
   {
     if(!isRunning())
@@ -248,7 +248,7 @@ namespace Resonant {
     m_continue = false;
 
     int i = 0;
-    
+
     int err = Pa_StopStream(m_d->m_stream);
     if(err != paNoError) {
       trace(Radiant::FAILURE, "AudioLoop::stop # Could not stop the stream");
@@ -265,7 +265,7 @@ namespace Resonant {
     if(err != paNoError) {
       trace(Radiant::FAILURE, "AudioLoop::stop # Could not close stream");
     }
-    
+
     m_d->m_stream = 0;
     m_d->m_streamInfo = 0;
 
@@ -273,10 +273,10 @@ namespace Resonant {
   }
 
   int AudioLoop::AudioLoopInternal::paCallback(const void *in, void *out,
-			    unsigned long framesPerBuffer,
-			    const PaStreamCallbackTimeInfo * /*time*/,
-			    PaStreamCallbackFlags /*status*/,
-			    void * self)
+                unsigned long framesPerBuffer,
+                const PaStreamCallbackTimeInfo * /*time*/,
+                PaStreamCallbackFlags /*status*/,
+                void * self)
   {
     AudioLoop * au = (AudioLoop *) self;
 
@@ -291,7 +291,7 @@ namespace Resonant {
     Radiant::debug("AudioLoop::paFinished # %p", self);
   }
 
-  
+
   void AudioLoop::finished()
   {
     m_isRunning = false;
