@@ -26,6 +26,9 @@ namespace VideoDisplay {
 
   using namespace Radiant;
 
+  static Radiant::MutexStatic __countermutex;
+  int    __instancecount = 0;
+
   AudioTransfer::AudioTransfer(Resonant::Application * a, VideoIn * video)
       : Module(a),
       m_video(video),
@@ -40,7 +43,6 @@ namespace VideoDisplay {
       m_end(false),
       m_audioLatency(0.0f)
   {
-    Radiant::debug("AudioTransfer::AudioTransfer # %p", this);
     const char * lat = getenv("RESONANT_LATENCY");
     if(lat) {
       double ms = atof(lat);
@@ -52,11 +54,25 @@ namespace VideoDisplay {
 
     if(m_video)
       m_video->setAudioListener(this);
+
+    int tmp = 0;
+    {
+      Radiant::GuardStatic g(__countermutex);
+      __instancecount++;
+      tmp = __instancecount;
+    }
+    debug("AudioTransfer::AudioTransfer # %p Instance count at %d", this, tmp);
   }
 
   AudioTransfer::~AudioTransfer()
   {
-    Radiant::debug("AudioTransfer::~AudioTransfer # %p", this);
+    int tmp = 0;
+    {
+      Radiant::GuardStatic g(__countermutex);
+      __instancecount--;
+      tmp = __instancecount;
+    }
+    debug("AudioTransfer::~AudioTransfer # %p Instance count at %d", this, tmp);
   }
 
   bool AudioTransfer::prepare(int & channelsIn, int & channelsOut)

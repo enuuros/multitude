@@ -30,17 +30,32 @@ namespace VideoDisplay {
 
   using namespace Radiant;
 
+  static Radiant::MutexStatic __countermutex;
+  int    __framecount = 0;
+
   VideoIn::Frame::Frame()
       : m_audioFrames(0),
       m_type(FRAME_INVALID)
   {
-    debug("VideoIn::Frame::Frame # %p", this);
+    int tmp = 0;
+    {
+      Radiant::GuardStatic g(__countermutex);
+      __framecount++;
+      tmp = __framecount;
+    }
+    debug("VideoIn::Frame::Frame # %p Instance count at %d", this, tmp);
     bzero(m_audio, sizeof(m_audio));
   }
 
   VideoIn::Frame::~Frame()
   {
-    debug("VideoIn::Frame::~Frame # %p", this);
+    int tmp = 0;
+    {
+      Radiant::GuardStatic g(__countermutex);
+      __framecount--;
+      tmp = __framecount;
+    }
+    debug("VideoIn::Frame::~Frame # %p Instance count at %d", this, tmp);
     m_image.freeMemory();
   }
 

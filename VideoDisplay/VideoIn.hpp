@@ -65,7 +65,7 @@ namespace VideoDisplay {
     };
 
     /** Video image, for use inside the VideoDisplay library. */
-    class VIDEODISPLAY_API Frame
+    class VIDEODISPLAY_API Frame : public Patterns::NotCopyable
     {
     public:
       Frame();
