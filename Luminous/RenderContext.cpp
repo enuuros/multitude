@@ -374,7 +374,7 @@ namespace Luminous
   }
 
   void RenderContext::drawPolyLine(const Nimble::Vector2f * vertices, int n,
-                   float width, const float * rgba)
+				   float width, const float * rgba)
   {
     if(n < 2)
       return;
@@ -394,7 +394,13 @@ namespace Luminous
     Vector2f dir0 = m.project(vertices[1]) - cprev;
 
     Vector2 p01 = dir0.perpendicular();
-    p01.normalize();
+
+    float len01 = p01.length();
+    
+    if(len01 < 1.0e-5f)
+      p01.make(1,0);
+    else
+      p01.normalize();
 
     for(int i = 1; i < n; i++) {
 
@@ -413,8 +419,18 @@ namespace Luminous
       Vector2f dir1 = cnext - cnow;
       Vector2f dir2 = cnow - cprev;
 
-      dir1.normalize();
-      dir2.normalize();
+      float l1 = dir1.length();
+      float l2 = dir2.length();
+
+      if(l1 < 1.0e-5f)
+	dir1.make(1, 0);
+      else
+	dir1 /= l1;
+
+      if(l2 < 1.0e-5f)
+	dir2.make(1, 0);
+      else
+	dir2 /= l2;
 
       Vector2 q = dir1.perpendicular();
 
