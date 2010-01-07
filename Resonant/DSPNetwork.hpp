@@ -152,6 +152,12 @@ namespace Resonant {
         m_targetChannel = channel;
       }
 
+      void deleteModule()
+      {
+        delete m_module;
+        m_module = 0;
+      }
+
     private:
 
       inline void process(int n)

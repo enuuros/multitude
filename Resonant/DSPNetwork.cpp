@@ -456,12 +456,12 @@ namespace Resonant {
         uncompile(item);
 
         item.m_module->stop();
+        item.deleteModule();
 
         debug("DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
         iterator tmp = it;
-        tmp++;
-        m_items.erase(it);
-        it = tmp;
+        it++;
+        m_items.erase(tmp);
 
 
       }
