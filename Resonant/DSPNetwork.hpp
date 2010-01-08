@@ -205,8 +205,6 @@ namespace Resonant {
 
     static DSPNetwork * instance();
 
-
-
   private:
 
     virtual int callback(const void *in, void *out,

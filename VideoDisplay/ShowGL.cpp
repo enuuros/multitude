@@ -18,9 +18,10 @@
 #include "AudioTransfer.hpp"
 #include "VideoInFFMPEG.hpp"
 
-#include <Radiant/Trace.hpp>
 #include <Radiant/ImageConversion.hpp>
 #include <Radiant/Sleep.hpp>
+#include <Radiant/PlatformUtils.hpp>
+#include <Radiant/Trace.hpp>
 
 #include <Poetic/GPUFont.hpp>
 #include <Poetic/CPUFont.hpp>
@@ -154,6 +155,7 @@ namespace VideoDisplay {
     return ok;
   }
 
+  // static int __mytexcount = 0;
 
   ShowGL::MyTextures::MyTextures(Luminous::GLResources * resources)
       : GLResource(resources)
@@ -161,11 +163,14 @@ namespace VideoDisplay {
     m_frame = -1;
 
     bzero(m_texSizes, sizeof(m_texSizes));
+    // __mytexcount++;
+    // info("ShowGL::MyTextures::MyTextures # %d", __mytexcount);
   }
 
   ShowGL::MyTextures::~MyTextures()
   {
-    // info("ShowGL::MyTextures::~MyTextures");
+    // __mytexcount--;
+    // info("ShowGL::MyTextures::~MyTextures # %d", __mytexcount);
   }
 
   void ShowGL::MyTextures::bind()
@@ -439,7 +444,6 @@ namespace VideoDisplay {
       i++;
     }
 
-
     m_dsp->markDone(m_dspItem);
 
     m_audio->forgetVideo();
@@ -551,7 +555,7 @@ namespace VideoDisplay {
 
     debug("ShowGL::update # %p f = %p", this, m_frame);
 
-    m_subTitles.update(m_position);
+    // m_subTitles.update(m_position);
   }
 
   static Luminous::Collectable yuvkey;
@@ -564,6 +568,7 @@ namespace VideoDisplay {
                       Poetic::GPUFont * subtitleFont,
                       float subTitleSpace)
   {
+
     debug("ShowGL::render");
     GLRESOURCE_ENSURE(MyTextures, textures, this, resources);
 

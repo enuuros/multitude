@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 
@@ -25,9 +25,9 @@
 namespace Radiant {
 
   void VideoImage::Plane::freeMemory()
-  { 
-    delete [] m_data; 
-    m_data = 0; 
+  {
+    free(m_data);
+    m_data = 0;
   }
 
 
@@ -40,7 +40,7 @@ namespace Radiant {
 
   Nimble::Vector2i VideoImage::planeSize(ImageFormat fmt, int w, int h, int plane)
   {
-    
+
     Nimble::Vector2i area(w, h);
 
     if(plane == 3) {
@@ -68,7 +68,7 @@ namespace Radiant {
 
     return area;
   }
-  
+
 
   bool VideoImage::allocateMemory(ImageFormat fmt, int w, int h)
   {
@@ -81,7 +81,7 @@ namespace Radiant {
     unsigned pixels = w * h;
 
     if(fmt == IMAGE_RGB ||
-       fmt == IMAGE_RGBA ||  
+       fmt == IMAGE_RGBA ||
        fmt == IMAGE_GRAYSCALE) {
 
       m_format = fmt;
@@ -104,7 +104,7 @@ namespace Radiant {
       else
         trace(FATAL, "VideoImage::allocateMemory");
 
-      unsigned char * buf = new unsigned char [ls * h];
+      unsigned char * buf = (unsigned char*) malloc(ls * h);
 
       m_planes[0].set(buf, ls, pt);
     }
@@ -114,9 +114,9 @@ namespace Radiant {
 
       int pixels4 = pixels >> 2;
 
-      m_planes[0].set(new unsigned char [pixels],  w, PLANE_Y);
-      m_planes[1].set(new unsigned char [pixels4], w / 2, PLANE_U);
-      m_planes[2].set(new unsigned char [pixels4], w / 2, PLANE_V);
+      m_planes[0].set((unsigned char *) malloc(pixels),  w, PLANE_Y);
+      m_planes[1].set((unsigned char *) malloc(pixels4), w / 2, PLANE_U);
+      m_planes[2].set((unsigned char *) malloc(pixels4), w / 2, PLANE_V);
     }
     else if(fmt == IMAGE_YUV_422P) {
 
@@ -124,9 +124,9 @@ namespace Radiant {
 
       int pixels2 = pixels >> 1;
 
-      m_planes[0].set(new unsigned char [pixels], w, PLANE_Y);
-      m_planes[1].set(new unsigned char [pixels2], w / 2, PLANE_U);
-      m_planes[2].set(new unsigned char [pixels2], w / 2, PLANE_V);
+      m_planes[0].set((unsigned char *) malloc(pixels), w, PLANE_Y);
+      m_planes[1].set((unsigned char *) malloc(pixels2), w / 2, PLANE_U);
+      m_planes[2].set((unsigned char *) malloc(pixels2), w / 2, PLANE_V);
     }
     else
       return false;
@@ -142,12 +142,12 @@ namespace Radiant {
       return false;
 
     // The line counts of different planes
-    uint linecount[4] = { 
-      m_height, m_height, m_height, 0 
+    uint linecount[4] = {
+      m_height, m_height, m_height, 0
     };
 
-    uint rowbytes[4] = { 
-      m_width, m_width, m_width, 0 
+    uint rowbytes[4] = {
+      m_width, m_width, m_width, 0
     };
 
     if(m_format == IMAGE_GRAYSCALE) {
@@ -251,9 +251,9 @@ namespace Radiant {
   }
 
 
-  void VideoImage::freeMemory() 
-  { 
-    for(int i = 0; i < 4; i++) 
-      m_planes[i].freeMemory(); 
+  void VideoImage::freeMemory()
+  {
+    for(int i = 0; i < 4; i++)
+      m_planes[i].freeMemory();
   }
 }

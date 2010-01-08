@@ -16,6 +16,7 @@
 #include "AudioTransfer.hpp"
 #include "VideoIn.hpp"
 
+#include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <assert.h>
@@ -249,7 +250,6 @@ namespace VideoDisplay {
     */
     debug("AudioTransfer::process # EXIT %d %d (%lf)",
           m_showFrame, m_total, time.secondsD());
-
   }
 
   bool AudioTransfer::stop()

@@ -82,7 +82,7 @@ namespace Screenplay {
       __instancecount++;
       tmp = __instancecount;
     }
-    debug("VideoInputFFMPEG::VideoInputFFMPEG # Instance count at %d", tmp);
+    info("VideoInputFFMPEG::VideoInputFFMPEG # Instance count at %d", tmp);
   }
 
   VideoInputFFMPEG::~VideoInputFFMPEG()
@@ -97,7 +97,7 @@ namespace Screenplay {
       __instancecount--;
       tmp = __instancecount;
     }
-    debug("VideoInputFFMPEG::~VideoInputFFMPEG # Instance count at %d", tmp);
+    info("VideoInputFFMPEG::~VideoInputFFMPEG # Instance count at %d", tmp);
   }
 
   const Radiant::VideoImage * VideoInputFFMPEG::captureImage()
@@ -122,15 +122,21 @@ namespace Screenplay {
 
         debug("VideoInputFFMPEG::captureImage ret < 0 %x", m_flags);
 
-        if(! (m_flags & DO_LOOP))
+        if(! (m_flags & DO_LOOP)) {
+          av_free_packet(m_pkt);
           return 0;
+        }
         else {
           debug("VideoInputFFMPEG::captureImage # Looping %s", m_fileName.c_str());
           m_offsetTS = m_lastTS;
           av_seek_frame(m_ic, -1, (int64_t) 0, 0);
+
+          av_free_packet(m_pkt);
           ret = av_read_packet(m_ic, m_pkt);
-          if(ret < 0)
+          if(ret < 0) {
+            av_free_packet(m_pkt);
             return 0;
+          }
         }
       }
 

@@ -151,7 +151,7 @@ namespace Radiant {
   {
     g_appname = appname;
   }
-  
+
   void setTraceFile(const char * filename)
   {
     __outfile = fopen(filename, "w");

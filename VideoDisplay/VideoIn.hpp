@@ -77,31 +77,15 @@ namespace VideoDisplay {
 
       void copyAudio(const void * audio, int channels, int frames,
                      Radiant::AudioSampleFormat format,
-                     Radiant::TimeStamp ts)
-      {
-        int n = frames * channels;
-
-        if(m_audio.size() < (unsigned) n) {
-          m_audio.resize(n);
-        }
-
-        if(format == Radiant::ASF_INT16) {
-          const int16_t * au16 = (const int16_t *) audio;
-
-          for(int i = 0; i < n; i++)
-            m_audio[i] = au16[i] * (1.0f / (1 << 16));
-        }
-
-        m_audioFrames = frames;
-        m_audioTS = ts;
-      }
+                     Radiant::TimeStamp ts);
 
       Radiant::VideoImage m_image;
       Radiant::TimeStamp m_time;
       Radiant::TimeStamp m_absolute;
       Radiant::TimeStamp m_audioTS;
       Radiant::TimeStamp m_lastUse;
-      std::vector<float> m_audio;
+      float   * m_audio;
+      int       m_allocatedAudio;
       int       m_audioFrames;
       FrameType m_type;
     };
@@ -185,7 +169,7 @@ namespace VideoDisplay {
 
     /** An implmentation should use the methods below: */
     VIDEODISPLAY_API void allocateFrames(uint frameCount, uint width, uint height,
-            Radiant::ImageFormat fmt);
+                                         Radiant::ImageFormat fmt);
 
     VIDEODISPLAY_API void deallocateFrames();
 

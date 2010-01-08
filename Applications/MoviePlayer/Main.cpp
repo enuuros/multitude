@@ -16,10 +16,43 @@
 #include "VideoWindow.hpp"
 
 #include <Luminous/Luminous.hpp>
+#include <Luminous/Luminous.hpp>
 
+#include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Trace.hpp>
+#include <ScreenPlay/VideoFFMPEG.hpp>
 
 #include <QtGui/QApplication>
+
+using Radiant::info;
+
+void opentest(const char * filename)
+{
+  for(int i = 0; i < 60; i++) {
+
+    info("Opening %s, memory usage = %lld",
+         filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
+
+    Screenplay::VideoInputFFMPEG * ffde =
+        new Screenplay::VideoInputFFMPEG();
+
+    ffde->open(filename);
+
+    for(int j = 0; j < 20; j++) {
+      ffde->captureImage();
+      ffde->doneImage();
+    }
+
+    info("Captured from %s, memory usage = %lld",
+         filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
+
+    delete ffde;
+
+    info("Closed %s, memory usage = %lld",
+         filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
+  }
+
+}
 
 int main(int argc, char ** argv)
 {
@@ -43,6 +76,8 @@ int main(int argc, char ** argv)
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--verbose") == 0)
       Radiant::enableVerboseOutput(true);
+    if(strcmp(argv[i], "--opentest") == 0 && (i + 1) < argc)
+      opentest(argv[++i]);
     else if(strcmp(argv[i], "--stress") == 0)
       vw->stressTest();
     else if(strcmp(argv[i], "--contrast") == 0 && (i + 1) < argc) {

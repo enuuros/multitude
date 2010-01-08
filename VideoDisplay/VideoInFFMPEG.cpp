@@ -15,6 +15,7 @@
 
 #include "VideoInFFMPEG.hpp"
 
+// #include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <map>
@@ -96,6 +97,7 @@ namespace VideoDisplay {
 
   bool VideoInFFMPEG::open(const char * filename, Radiant::TimeStamp pos)
   {
+
     static const char * fname = "VideoInFFMPEG::open";
 
     m_name = filename;
@@ -195,7 +197,6 @@ namespace VideoDisplay {
 
     debug("%s # EXIT OK", fname);
 
-
     return true;
   }
 
@@ -228,6 +229,7 @@ namespace VideoDisplay {
 
   void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)
   {
+
     debug("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
 
     if(!m_video.open(m_name.c_str(), m_flags)) {
@@ -318,6 +320,7 @@ namespace VideoDisplay {
   {
     debug("VideoInFFMPEG::videoStop");
     m_video.close();
+
   }
 
   double VideoInFFMPEG::durationSeconds()

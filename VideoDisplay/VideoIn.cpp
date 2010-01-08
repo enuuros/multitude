@@ -17,6 +17,7 @@
 
 #include "AudioTransfer.hpp"
 
+// #include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Sleep.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/VideoInput.hpp>
@@ -34,7 +35,9 @@ namespace VideoDisplay {
   int    __framecount = 0;
 
   VideoIn::Frame::Frame()
-      : m_audioFrames(0),
+      : m_audio(0),
+      m_allocatedAudio(0),
+      m_audioFrames(0),
       m_type(FRAME_INVALID)
   {
     int tmp = 0;
@@ -56,7 +59,36 @@ namespace VideoDisplay {
     }
     debug("VideoIn::Frame::~Frame # %p Instance count at %d", this, tmp);
     m_image.freeMemory();
+    if(m_audio)
+      free(m_audio);
   }
+
+  void VideoIn::Frame::copyAudio(const void * audio, int channels, int frames,
+                                 Radiant::AudioSampleFormat format,
+                                 Radiant::TimeStamp ts)
+  {
+    int n = frames * channels;
+
+    if(m_allocatedAudio < n ||
+       (n < 10000 && m_allocatedAudio > 20000)) {
+      debug("VideoIn::Frame::copyAudio # %d -> %d", m_allocatedAudio, n);
+
+      free(m_audio);
+      m_audio = (float *) malloc(n * sizeof(float));
+      m_allocatedAudio = n;
+  }
+
+    if(format == Radiant::ASF_INT16) {
+      const int16_t * au16 = (const int16_t *) audio;
+
+      for(int i = 0; i < n; i++)
+        m_audio[i] = au16[i] * (1.0f / (1 << 16));
+    }
+
+    m_audioFrames = frames;
+    m_audioTS = ts;
+  }
+
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -82,10 +114,13 @@ namespace VideoDisplay {
       m_auBufferSize(0),
       m_auFrameBytes(0),
       m_continue(true),
+      m_vmutex(false, false, false),
+      m_amutex(false, false, false),
       m_fps(30.0),
       m_done(false),
       m_request(NO_REQUEST),
-      m_listener(0)
+      m_listener(0),
+      m_mutex(false, false, false)
   {
     debug("VideoIn::VideoIn # %p", this);
   }
@@ -344,7 +379,6 @@ namespace VideoDisplay {
                                      Radiant::TimeStamp absolute,
                                      bool immediate)
   {
-
     assert(m_frames.size() != 0);
 
     m_vmutex.lock();
@@ -370,8 +404,9 @@ namespace VideoDisplay {
 
     RefPtr<Frame> & rf = m_frames[m_decodedFrames % m_frames.size()];
 
-    if(!rf.ptr())
+    if(!rf.ptr()) {
       rf = new Frame;
+    }
 
     Frame & f = * rf.ptr();
 
@@ -379,13 +414,15 @@ namespace VideoDisplay {
     f.m_time = show;
     f.m_absolute = absolute;
     f.m_audioFrames = 0;
+    // f.m_audio.clear();
     f.m_audioTS = 0;
 
     if(type == FRAME_SNAPSHOT)
       m_consumedAuFrames = m_decodedFrames;
 
-    if(!f.m_image.m_planes[0].m_data)
+    if(!f.m_image.m_planes[0].m_data) {
       f.m_image.allocateMemory(*im);
+    }
 
     bool ok = f.m_image.copyData(*im);
 
@@ -411,8 +448,11 @@ namespace VideoDisplay {
   void VideoIn::ignorePreviousFrames()
   {
     debug("VideoIn::ignorePreviousFrames # %d", m_decodedFrames);
-    for(uint i = m_consumedFrames; (i + 1) < m_decodedFrames; i++)
-      m_frames[i % m_frames.size()].ptr()->m_type = FRAME_IGNORE;
+    for(uint i = m_consumedFrames; (i + 1) < m_decodedFrames; i++) {
+      Frame * f = m_frames[i % m_frames.size()].ptr();
+      if(f)
+        f->m_type = FRAME_IGNORE;
+    }
   }
 
   void VideoIn::freeFreeableMemory()

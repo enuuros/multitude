@@ -455,15 +455,15 @@ namespace Resonant {
 
         uncompile(item);
 
+        info("DSPNetwork::checkDoneItems # Stopped %p (%ld bufferbytes)",
+             item.m_module, countBufferBytes());
+
         item.m_module->stop();
         item.deleteModule();
 
-        debug("DSPNetwork::checkDoneItems # Stopped %p", item.m_module);
         iterator tmp = it;
         it++;
         m_items.erase(tmp);
-
-
       }
       else
         it++;

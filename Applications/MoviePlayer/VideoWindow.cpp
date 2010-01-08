@@ -28,19 +28,18 @@
 #include <VideoDisplay/SubTitles.hpp>
 
 #include <Poetic/FontManager.hpp>
-// #include <Poetic/CPUBitmapFont.hpp>
-// #include <Poetic/GPUTextureFont.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QMouseEvent>
 
 using namespace Nimble;
+using namespace Radiant;
 
 float VideoWindow::m_contrast = 1.0f;
 
 VideoWindow::VideoWindow()
-  : m_subCPUFont(0),
+    : m_subCPUFont(0),
     // m_subGPUFont(0),
     m_glResources(m_resourceLocator),
     m_showProgress(true),
@@ -225,7 +224,6 @@ void VideoWindow::paintGL()
   m_glResources.eraseResources();
   Luminous::GarbageCollector::clear();
 
-
   Poetic::GPUFont * gpufont = 0;
 
   if(m_subCPUFont) {
@@ -261,7 +259,7 @@ void VideoWindow::paintGL()
   int itemh = h / rows;
 
   float inactsecs =
-    Radiant::TimeStamp(Radiant::TimeStamp::getTime() - m_lastActivity).secondsD();
+      Radiant::TimeStamp(Radiant::TimeStamp::getTime() - m_lastActivity).secondsD();
 
   float maxDisplay = 6.0f;
 
@@ -298,11 +296,11 @@ void VideoWindow::paintGL()
 
     Luminous::MatrixStep mstep;
     glTranslatef(float((index % cols) * itemw),
-         float((index / cols) * itemh), 0.0f);
+                 float((index / cols) * itemh), 0.0f);
     index++;
 
     show.render(& m_glResources,
-        center - span, center + span, 0, gpufont, h);
+                center - span, center + span, 0, gpufont, h);
 
     if(!m_showProgress)
       continue;
@@ -327,17 +325,17 @@ void VideoWindow::paintGL()
       float sscale = (float) itemw / VideoDisplay::ShowGL::HISTOGRAM_POINTS;
 
       for(int i = 0; i < VideoDisplay::ShowGL::HISTOGRAM_POINTS; i++) {
-    int delta =
-      (show.histogramIndex() + VideoDisplay::ShowGL::HISTOGRAM_POINTS-i) %
-      VideoDisplay::ShowGL::HISTOGRAM_POINTS;
+        int delta =
+            (show.histogramIndex() + VideoDisplay::ShowGL::HISTOGRAM_POINTS-i) %
+            VideoDisplay::ShowGL::HISTOGRAM_POINTS;
 
-    float a = 1.0f - 0.7f *
-      powf(delta / (float) VideoDisplay::ShowGL::HISTOGRAM_POINTS, 0.25);
+        float a = 1.0f - 0.7f *
+                  powf(delta / (float) VideoDisplay::ShowGL::HISTOGRAM_POINTS, 0.25);
 
-    glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
+        glColor4f(a, 0.0f, 0.0f, a * mainAlpha);
 
-    glVertex2f(float(i) * sscale,
-           float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
+        glVertex2f(float(i) * sscale,
+                   float(itemh - 1 - show.histogramPoint(i)) * 35.0f * 0.5f);
       }
 
       glEnd();
@@ -351,7 +349,7 @@ void VideoWindow::paintGL()
     float relative = show.relativePosition();
 
     glRectf(0.0f, float(itemh) - 30.0f,
-        float(itemw) * relative, float(itemh) - 5.0f);
+            float(itemw) * relative, float(itemh) - 5.0f);
 
     if(gpufont) {
       Radiant::DateTime dt(show.position());
@@ -359,9 +357,11 @@ void VideoWindow::paintGL()
       sprintf(buf, "%d:%.2d:%.2d", dt.hour(), dt.minute(), dt.second());
 
       gpufont->render
-    (buf, Vector2(10.0f, itemh - m_subCPUFont->lineHeight()));
+          (buf, Vector2(10.0f, itemh - m_subCPUFont->lineHeight()));
     }
   }
+
+
 }
 
 void VideoWindow::toggleFullScreen()
