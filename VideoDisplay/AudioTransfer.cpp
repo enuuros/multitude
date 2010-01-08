@@ -222,7 +222,7 @@ namespace VideoDisplay {
       debug("AudioTransfer::process # Got new i = %d a = %d %lf", m_videoFrame,
             m_availAudio, f->m_audioTS.secondsD());
 
-      deInterleave(out, f->m_audio, m_channels, take, taken);
+      deInterleave(out, & f->m_audio[0], m_channels, take, taken);
 
       n -= take;
       m_availAudio -= take;

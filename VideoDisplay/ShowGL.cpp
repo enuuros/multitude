@@ -447,7 +447,7 @@ namespace VideoDisplay {
 
     m_video->setAudioListener(0);
     m_video->stop();
-    
+
 
     m_state = PAUSE;
 
@@ -515,6 +515,7 @@ namespace VideoDisplay {
 
     }
     else {
+      m_video->freeUnusedMemory();
       videoFrame = m_video->latestFrame();
 
       // info("Video has frame %d", videoFrame);

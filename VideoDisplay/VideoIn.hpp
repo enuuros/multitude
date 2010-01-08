@@ -43,11 +43,14 @@ namespace VideoDisplay {
   {
   public:
 
+    /*
+      unused now.
+
     enum {
       MAX_AUDIO_CHANS = 5,
       MAX_AUDIO_SAMPLES_IN_FRAME = MAX_AUDIO_CHANS * 28000
     };
-
+    */
     enum FrameType {
       FRAME_INVALID,
       FRAME_IGNORE,
@@ -61,7 +64,8 @@ namespace VideoDisplay {
       NO_REQUEST,
       START,
       SEEK,
-      STOP
+      STOP,
+      FREE_MEMORY
     };
 
     /** Video image, for use inside the VideoDisplay library. */
@@ -76,6 +80,10 @@ namespace VideoDisplay {
                      Radiant::TimeStamp ts)
       {
         int n = frames * channels;
+
+        if(m_audio.size() < (unsigned) n) {
+          m_audio.resize(n);
+        }
 
         if(format == Radiant::ASF_INT16) {
           const int16_t * au16 = (const int16_t *) audio;
@@ -92,7 +100,8 @@ namespace VideoDisplay {
       Radiant::TimeStamp m_time;
       Radiant::TimeStamp m_absolute;
       Radiant::TimeStamp m_audioTS;
-      float     m_audio[MAX_AUDIO_SAMPLES_IN_FRAME];
+      Radiant::TimeStamp m_lastUse;
+      std::vector<float> m_audio;
       int       m_audioFrames;
       FrameType m_type;
     };
@@ -124,6 +133,7 @@ namespace VideoDisplay {
     VIDEODISPLAY_API virtual bool play(Radiant::TimeStamp pos = -1);
     VIDEODISPLAY_API virtual void stop();
     VIDEODISPLAY_API virtual bool seek(Radiant::TimeStamp pos);
+    VIDEODISPLAY_API virtual void freeUnusedMemory();
     // VIDEODISPLAY_API virtual void enableLooping(bool enable) = 0;
 
     VIDEODISPLAY_API virtual void getAudioParameters(int * channels,
@@ -186,6 +196,7 @@ namespace VideoDisplay {
              bool immediate);
 
     VIDEODISPLAY_API void ignorePreviousFrames();
+    VIDEODISPLAY_API void freeFreeableMemory();
 
     std::vector<Radiant::RefPtr<Frame> > m_frames;
 

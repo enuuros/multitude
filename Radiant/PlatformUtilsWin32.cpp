@@ -7,16 +7,18 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 #include "PlatformUtils.hpp"
 #include "StringUtils.hpp"
 #include "Trace.hpp"
 
 #include <assert.h>
+
+#include <psapi.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 
@@ -29,7 +31,7 @@ namespace Radiant
   namespace PlatformUtils
   {
 
-    std::string getExecutablePath() 
+    std::string getExecutablePath()
     {
       // Get the full exe path / fileneme
 
@@ -131,6 +133,26 @@ namespace Radiant
       return (void *)(LoadLibrary(wp.data()));
     }
 
+    uint64_t processMemoryUsage()
+    {
+      HANDLE hProcess;
+      PROCESS_MEMORY_COUNTERS pmc;
+
+      hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION |
+                               PROCESS_VM_READ,
+                                    FALSE, processID );
+      if(!hProcess)
+        return;
+
+      if (!GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc)) )
+      {
+        error("PlatformUtils::processMemoryUsage # GetProcessMemoryInfo failed");
+      }
+
+      CloseHandle( hProcess );
+
+      return pmc.WorkingSetSize;
+    }
   }
 
 }

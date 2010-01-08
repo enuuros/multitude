@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 #include "PlatformUtils.hpp"
 #include "Trace.hpp"
@@ -27,7 +27,7 @@ namespace Radiant
   namespace PlatformUtils
   {
 
-    std::string getExecutablePath() 
+    std::string getExecutablePath()
     {
       char buf[512];
       int len;
@@ -44,7 +44,7 @@ namespace Radiant
 
     std::string getUserHomePath()
     {
-      return std::string(getenv("HOME"));  
+      return std::string(getenv("HOME"));
     }
 
     std::string getModuleGlobalDataPath(const char * module, bool isapplication)
@@ -84,6 +84,12 @@ namespace Radiant
       return dlopen(path, RTLD_NOW | RTLD_GLOBAL);
     }
 
+    uint64_t processMemoryUsage()
+    {
+      struct rusage r_usage;
+      getrusage(RUSAGE_SELF, &r_usage);
+      return r_usage.ru_idrss;
+    }
   }
 
 }

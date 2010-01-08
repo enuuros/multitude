@@ -44,7 +44,6 @@ namespace VideoDisplay {
       tmp = __framecount;
     }
     debug("VideoIn::Frame::Frame # %p Instance count at %d", this, tmp);
-    bzero(m_audio, sizeof(m_audio));
   }
 
   VideoIn::Frame::~Frame()
@@ -144,6 +143,8 @@ namespace VideoDisplay {
       m_vcond.wakeAll();
     }
 
+    im->m_lastUse = Radiant::TimeStamp::getTime();
+
     return im;
   }
 
@@ -208,6 +209,15 @@ namespace VideoDisplay {
     m_requestTime = pos;
 
     return true;
+  }
+
+  void VideoIn::freeUnusedMemory()
+  {
+    Guard g( & m_requestMutex);
+
+    m_request = FREE_MEMORY;
+    m_requestTime = 0;
+
   }
 
   bool VideoIn::atEnd()
@@ -315,6 +325,9 @@ namespace VideoDisplay {
         else
           videoGetSnapshot(rt);
       }
+      else if(r == FREE_MEMORY) {
+        freeFreeableMemory();
+      }
       else if(playing())
         videoGetNextFrame();
 
@@ -390,6 +403,8 @@ namespace VideoDisplay {
 
     // debug("VideoIn::putFrame # %d", m_decodedFrames);
 
+    f.m_lastUse = Radiant::TimeStamp::getTime();
+
     return & f;
   }
 
@@ -398,6 +413,22 @@ namespace VideoDisplay {
     debug("VideoIn::ignorePreviousFrames # %d", m_decodedFrames);
     for(uint i = m_consumedFrames; (i + 1) < m_decodedFrames; i++)
       m_frames[i % m_frames.size()].ptr()->m_type = FRAME_IGNORE;
+  }
+
+  void VideoIn::freeFreeableMemory()
+  {
+    Radiant::Guard g(mutex());
+
+    Radiant::TimeStamp limit = Radiant::TimeStamp::getTime() -
+                               Radiant::TimeStamp::createSecondsI(10);
+
+    for(unsigned i = 0; i < m_frames.size(); i++) {
+      Frame * f = m_frames[i].ptr();
+
+      if(f && (f->m_lastUse < limit)) {
+        m_frames[i] = 0;
+      }
+    }
   }
 
 }
