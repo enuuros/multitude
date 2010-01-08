@@ -118,7 +118,7 @@ win32 {
     SOURCES += TCPSocketQt.cpp
     SOURCES += UDPSocketQt.cpp
 
-    LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib
+    LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib psapi.lib
 
     CONFIG += qt
     QT = core network

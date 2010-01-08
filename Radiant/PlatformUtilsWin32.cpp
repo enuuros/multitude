@@ -18,9 +18,11 @@
 
 #include <assert.h>
 
-#include <psapi.h>
 #include <shlobj.h>
 #include <shlwapi.h>
+
+#include <psapi.h>
+#include <process.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -138,15 +140,15 @@ namespace Radiant
       HANDLE hProcess;
       PROCESS_MEMORY_COUNTERS pmc;
 
-      hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION |
-                               PROCESS_VM_READ,
-                                    FALSE, processID );
+      hProcess = OpenProcess(PROCESS_QUERY_INFORMATION |
+                             PROCESS_VM_READ, FALSE, _getpid() );
       if(!hProcess)
-        return;
+        return 0;
 
       if (!GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc)) )
       {
         error("PlatformUtils::processMemoryUsage # GetProcessMemoryInfo failed");
+	return 0;
       }
 
       CloseHandle( hProcess );
