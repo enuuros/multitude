@@ -369,6 +369,8 @@ namespace VideoDisplay {
       Radiant::Sleep::sleepMs(5);
     }
 
+    m_frames.clear();
+
     debug("VideoIn::childLoop # EXIT");
   }
 

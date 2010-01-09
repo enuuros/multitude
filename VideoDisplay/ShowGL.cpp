@@ -583,6 +583,8 @@ namespace VideoDisplay {
 
     debug("ShowGL::render # %p f = %p", this, m_frame);
 
+    Luminous::Utils::glCheck("ShowGL::render # entry");
+
     if(m_frame) {
 
       // debug("ShowGL::render # %p %p", this, m_frame);
@@ -609,6 +611,8 @@ namespace VideoDisplay {
         // info("No shader needed, plain RGB video.");
       }
     }
+
+    Luminous::Utils::glCheck("ShowGL::render # half");
 
     glEnable(GL_BLEND);
 
