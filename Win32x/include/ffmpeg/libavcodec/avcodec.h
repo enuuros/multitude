@@ -30,7 +30,7 @@
 #include "libavutil/avutil.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 52
-#define LIBAVCODEC_VERSION_MINOR 29
+#define LIBAVCODEC_VERSION_MINOR 45
 #define LIBAVCODEC_VERSION_MICRO  0
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
@@ -196,6 +196,12 @@ enum CodecID {
     CODEC_ID_V210X,
     CODEC_ID_TMV,
     CODEC_ID_V210,
+    CODEC_ID_DPX,
+    CODEC_ID_MAD,
+    CODEC_ID_FRWU,
+    CODEC_ID_FLASHSV2,
+    CODEC_ID_CDGRAPHICS,
+    CODEC_ID_R210,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -222,6 +228,7 @@ enum CodecID {
     CODEC_ID_PCM_F32LE,
     CODEC_ID_PCM_F64BE,
     CODEC_ID_PCM_F64LE,
+    CODEC_ID_PCM_BLURAY,
 
     /* various ADPCM codecs */
     CODEC_ID_ADPCM_IMA_QT= 0x11000,
@@ -317,6 +324,7 @@ enum CodecID {
     CODEC_ID_TWINVQ,
     CODEC_ID_TRUEHD,
     CODEC_ID_MP4ALS,
+    CODEC_ID_ATRAC1,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,
@@ -325,6 +333,8 @@ enum CodecID {
     CODEC_ID_XSUB,
     CODEC_ID_SSA,
     CODEC_ID_MOV_TEXT,
+    CODEC_ID_HDMV_PGS_SUBTITLE,
+    CODEC_ID_DVB_TELETEXT,
 
     /* other specific kind of codecs (generally used for attachments) */
     CODEC_ID_TTF= 0x18000,
@@ -380,6 +390,11 @@ enum SampleFormat {
 #define CH_STEREO_LEFT            0x20000000  ///< Stereo downmix.
 #define CH_STEREO_RIGHT           0x40000000  ///< See CH_STEREO_LEFT.
 
+/** Channel mask value used for AVCodecContext.request_channel_layout
+    to indicate that the user requests the channel order of the decoder output
+    to be the native codec channel order. */
+#define CH_LAYOUT_NATIVE          0x8000000000000000LL
+
 /* Audio channel convenience macros */
 #define CH_LAYOUT_MONO              (CH_FRONT_CENTER)
 #define CH_LAYOUT_STEREO            (CH_FRONT_LEFT|CH_FRONT_RIGHT)
@@ -392,6 +407,7 @@ enum SampleFormat {
 #define CH_LAYOUT_5POINT1           (CH_LAYOUT_5POINT0|CH_LOW_FREQUENCY)
 #define CH_LAYOUT_5POINT0_BACK      (CH_LAYOUT_SURROUND|CH_BACK_LEFT|CH_BACK_RIGHT)
 #define CH_LAYOUT_5POINT1_BACK      (CH_LAYOUT_5POINT0_BACK|CH_LOW_FREQUENCY)
+#define CH_LAYOUT_7POINT0           (CH_LAYOUT_5POINT0|CH_BACK_LEFT|CH_BACK_RIGHT)
 #define CH_LAYOUT_7POINT1           (CH_LAYOUT_5POINT1|CH_BACK_LEFT|CH_BACK_RIGHT)
 #define CH_LAYOUT_7POINT1_WIDE      (CH_LAYOUT_5POINT1_BACK|\
                                           CH_FRONT_LEFT_OF_CENTER|CH_FRONT_RIGHT_OF_CENTER)
@@ -566,6 +582,7 @@ typedef struct RcOverride{
 #define CODEC_FLAG2_CHUNKS        0x00008000 ///< Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries.
 #define CODEC_FLAG2_NON_LINEAR_QUANT 0x00010000 ///< Use MPEG-2 nonlinear quantizer.
 #define CODEC_FLAG2_BIT_RESERVOIR 0x00020000 ///< Use a bit reservoir when encoding if possible
+#define CODEC_FLAG2_MBTREE        0x00040000 ///< Use macroblock tree ratecontrol (x264 only)
 
 /* Unsupported options :
  *              Syntax Arithmetic coding (SAC)
@@ -599,6 +616,10 @@ typedef struct RcOverride{
  * Codec can export data for HW decoding (VDPAU).
  */
 #define CODEC_CAP_HWACCEL_VDPAU    0x0080
+/**
+ * Codec can output multiple frames per AVPacket
+ */
+#define CODEC_CAP_SUBFRAMES        0x0100
 
 //The following defines may change, don't expect compatibility if you use them.
 #define MB_TYPE_INTRA4x4   0x0001
@@ -950,7 +971,10 @@ typedef struct AVPacket {
      */
     int64_t convergence_duration;
 } AVPacket;
-#define PKT_FLAG_KEY   0x0001
+#define AV_PKT_FLAG_KEY   0x0001
+#if LIBAVCODEC_VERSION_MAJOR < 53
+#define PKT_FLAG_KEY AV_PKT_FLAG_KEY
+#endif
 
 /**
  * Audio Video Frame.
@@ -1109,7 +1133,7 @@ typedef struct AVCodecContext {
      * - encoding: Set by user.
      * - decoding: Set by libavcodec.
      */
-    enum SampleFormat sample_fmt;  ///< sample format, currently unused
+    enum SampleFormat sample_fmt;  ///< sample format
 
     /* The following data should not be initialized. */
     /**
@@ -1117,7 +1141,9 @@ typedef struct AVCodecContext {
      */
     int frame_size;
     int frame_number;   ///< audio or video frame number
+#if LIBAVCODEC_VERSION_MAJOR < 53
     int real_pict_num;  ///< Returns the real picture number of previous encoded frame.
+#endif
 
     /**
      * Number of frames the decoded output will be delayed relative to
@@ -1326,6 +1352,9 @@ typedef struct AVCodecContext {
      * If pic.reference is set then the frame will be read later by libavcodec.
      * avcodec_align_dimensions() should be used to find the required width and
      * height, as they normally need to be rounded up to the next multiple of 16.
+     * if CODEC_CAP_DR1 is not set then get_buffer() must call
+     * avcodec_default_get_buffer() instead of providing buffers allocated by
+     * some other means.
      * - encoding: unused
      * - decoding: Set by libavcodec., user can override.
      */
@@ -1954,6 +1983,9 @@ typedef struct AVCodecContext {
      * libavcodec will pass previous buffer in pic, function should return
      * same buffer or new buffer with old frame "painted" into it.
      * If pic.data[0] == NULL must behave like get_buffer().
+     * if CODEC_CAP_DR1 is not set then reget_buffer() must call
+     * avcodec_default_reget_buffer() instead of providing buffers allocated by
+     * some other means.
      * - encoding: unused
      * - decoding: Set by libavcodec., user can override
      */
@@ -2504,7 +2536,37 @@ typedef struct AVCodecContext {
      * - encoding: Set by user
      * - decoding: Set by libavcodec
      */
-     enum AVChromaLocation chroma_sample_location;
+    enum AVChromaLocation chroma_sample_location;
+
+    /**
+     * The codec may call this to execute several independent things.
+     * It will return only after finishing all tasks.
+     * The user may replace this with some multithreaded implementation,
+     * the default implementation will execute the parts serially.
+     * Also see avcodec_thread_init and e.g. the --enable-pthread configure option.
+     * @param c context passed also to func
+     * @param count the number of things to execute
+     * @param arg2 argument passed unchanged to func
+     * @param ret return values of executed functions, must have space for "count" values. May be NULL.
+     * @param func function that will be called count times, with jobnr from 0 to count-1.
+     *             threadnr will be in the range 0 to c->thread_count-1 < MAX_THREADS and so that no
+     *             two instances of func executing at the same time will have the same threadnr.
+     * @return always 0 currently, but code should handle a future improvement where when any call to func
+     *         returns < 0 no further calls to func may be done and < 0 is returned.
+     * - encoding: Set by libavcodec, user can override.
+     * - decoding: Set by libavcodec, user can override.
+     */
+    int (*execute2)(struct AVCodecContext *c, int (*func)(struct AVCodecContext *c2, void *arg, int jobnr, int threadnr), void *arg2, int *ret, int count);
+
+    /**
+     * explicit P-frame weighted prediction analysis method
+     * 0: off
+     * 1: fast blind weighting (one reference duplicate with -1 offset)
+     * 2: smart weighting (full fade detection analysis)
+     * - encoding: Set by user.
+     * - decoding: unused
+     */
+    int weighted_p_pred;
 } AVCodecContext;
 
 /**
@@ -2539,8 +2601,8 @@ typedef struct AVCodec {
     const AVRational *supported_framerates; ///< array of supported framerates, or NULL if any, array is terminated by {0,0}
     const enum PixelFormat *pix_fmts;       ///< array of supported pixel formats, or NULL if unknown, array is terminated by -1
     /**
-     * Descriptive name for the codec, meant to be more human readable than \p name.
-     * You \e should use the NULL_IF_CONFIG_SMALL() macro to define it.
+     * Descriptive name for the codec, meant to be more human readable than name.
+     * You should use the NULL_IF_CONFIG_SMALL() macro to define it.
      */
     const char *long_name;
     const int *supported_samplerates;       ///< array of supported audio samplerates, or NULL if unknown, array is terminated by 0
@@ -2594,7 +2656,7 @@ typedef struct AVHWAccel {
      * Meaningful frame information (codec specific) is guaranteed to
      * be parsed at this point. This function is mandatory.
      *
-     * Note that \p buf can be NULL along with \p buf_size set to 0.
+     * Note that buf can be NULL along with buf_size set to 0.
      * Otherwise, this means the whole frame is available at this point.
      *
      * @param avctx the codec context
@@ -2721,6 +2783,7 @@ typedef struct AVSubtitle {
     uint32_t end_display_time; /* relative to packet pts, in ms */
     unsigned num_rects;
     AVSubtitleRect **rects;
+    int64_t pts;    ///< Same as packet pts, in AV_TIME_BASE
 } AVSubtitle;
 
 /* packet functions */
@@ -2888,7 +2951,7 @@ void avpicture_free(AVPicture *picture);
  * @return size of the image data in bytes
  */
 int avpicture_fill(AVPicture *picture, uint8_t *ptr,
-                   int pix_fmt, int width, int height);
+                   enum PixelFormat pix_fmt, int width, int height);
 int avpicture_layout(const AVPicture* src, enum PixelFormat pix_fmt, int width, int height,
                      unsigned char *dest, int dest_size);
 
@@ -2910,18 +2973,24 @@ const char *avcodec_get_pix_fmt_name(enum PixelFormat pix_fmt);
 void avcodec_set_dimensions(AVCodecContext *s, int width, int height);
 
 /**
- * Returns the pixel format corresponding to the name \p name.
+ * Returns the pixel format corresponding to the name name.
  *
- * If there is no pixel format with name \p name, then looks for a
+ * If there is no pixel format with name name, then looks for a
  * pixel format with the name corresponding to the native endian
- * format of \p name.
+ * format of name.
  * For example in a little-endian system, first looks for "gray16",
  * then for "gray16le".
  *
- * Finally if no pixel format has been found, returns \c PIX_FMT_NONE.
+ * Finally if no pixel format has been found, returns PIX_FMT_NONE.
  */
 enum PixelFormat avcodec_get_pix_fmt(const char* name);
-unsigned int avcodec_pix_fmt_to_codec_tag(enum PixelFormat p);
+
+/**
+ * Returns a value representing the fourCC code associated to the
+ * pixel format pix_fmt, or 0 if no associated fourCC code can be
+ * found.
+ */
+unsigned int avcodec_pix_fmt_to_codec_tag(enum PixelFormat pix_fmt);
 
 #define FF_LOSS_RESOLUTION  0x0001 /**< loss due to resolution change */
 #define FF_LOSS_DEPTH       0x0002 /**< loss due to color depth change */
@@ -2958,7 +3027,7 @@ int avcodec_get_pix_fmt_loss(enum PixelFormat dst_pix_fmt, enum PixelFormat src_
  * some formats to other formats. avcodec_find_best_pix_fmt() searches which of
  * the given pixel formats should be used to suffer the least amount of loss.
  * The pixel formats from which it chooses one, are determined by the
- * \p pix_fmt_mask parameter.
+ * pix_fmt_mask parameter.
  *
  * @code
  * src_pix_fmt = PIX_FMT_YUV420P;
@@ -3018,9 +3087,19 @@ AVCodec *av_codec_next(AVCodec *c);
 unsigned avcodec_version(void);
 
 /**
+ * Returns the libavcodec build-time configuration.
+ */
+const char *avcodec_configuration(void);
+
+/**
+ * Returns the libavcodec license.
+ */
+const char *avcodec_license(void);
+
+/**
  * Initializes libavcodec.
  *
- * @warning This function \e must be called before any other libavcodec
+ * @warning This function must be called before any other libavcodec
  * function.
  */
 void avcodec_init(void);
@@ -3033,7 +3112,7 @@ attribute_deprecated void register_avcodec(AVCodec *codec);
 #endif
 
 /**
- * Register the codec \p codec and initialize libavcodec.
+ * Register the codec codec and initialize libavcodec.
  *
  * @see avcodec_init()
  */
@@ -3132,6 +3211,7 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count);
 void avcodec_thread_free(AVCodecContext *s);
 int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size);
 int avcodec_default_execute(AVCodecContext *c, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size);
+int avcodec_default_execute2(AVCodecContext *c, int (*func)(AVCodecContext *c2, void *arg2, int, int),void *arg, int *ret, int count);
 //FIXME func typedef
 
 /**
@@ -3165,7 +3245,7 @@ int avcodec_open(AVCodecContext *avctx, AVCodec *codec);
 
 #if LIBAVCODEC_VERSION_MAJOR < 53
 /**
- * Decodes an audio frame from \p buf into \p samples.
+ * Decodes an audio frame from buf into samples.
  * Wrapper function which calls avcodec_decode_audio3.
  *
  * @deprecated Use avcodec_decode_audio3 instead.
@@ -3185,36 +3265,41 @@ attribute_deprecated int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *s
 /**
  * Decodes the audio frame of size avpkt->size from avpkt->data into samples.
  * Some decoders may support multiple frames in a single AVPacket, such
- * decoders would then just decode the first frame.
+ * decoders would then just decode the first frame. In this case,
+ * avcodec_decode_audio3 has to be called again with an AVPacket that contains
+ * the remaining data in order to decode the second frame etc.
  * If no frame
- * could be decompressed, \p frame_size_ptr is zero. Otherwise, it is the
- * decompressed frame size in \e bytes.
+ * could be outputted, frame_size_ptr is zero. Otherwise, it is the
+ * decompressed frame size in bytes.
  *
- * @warning You \e must set \p frame_size_ptr to the allocated size of the
+ * @warning You must set frame_size_ptr to the allocated size of the
  * output buffer before calling avcodec_decode_audio3().
  *
- * @warning The input buffer must be \c FF_INPUT_BUFFER_PADDING_SIZE larger than
+ * @warning The input buffer must be FF_INPUT_BUFFER_PADDING_SIZE larger than
  * the actual read bytes because some optimized bitstream readers read 32 or 64
  * bits at once and could read over the end.
  *
- * @warning The end of the input buffer \p avpkt->data should be set to 0 to ensure that
+ * @warning The end of the input buffer avpkt->data should be set to 0 to ensure that
  * no overreading happens for damaged MPEG streams.
  *
- * @note You might have to align the input buffer \p avpkt->data and output buffer \p
+ * @note You might have to align the input buffer avpkt->data and output buffer
  * samples. The alignment requirements depend on the CPU: On some CPUs it isn't
  * necessary at all, on others it won't work at all if not aligned and on others
- * it will work but it will have an impact on performance. In practice, the
- * bitstream should have 4 byte alignment at minimum and all sample data should
- * be 16 byte aligned unless the CPU doesn't need it (AltiVec and SSE do). If
- * the linesize is not a multiple of 16 then there's no sense in aligning the
- * start of the buffer to 16.
+ * it will work but it will have an impact on performance.
+ *
+ * In practice, avpkt->data should have 4 byte alignment at minimum and
+ * samples should be 16 byte aligned unless the CPU doesn't need it
+ * (AltiVec and SSE do).
  *
  * @param avctx the codec context
- * @param[out] samples the output buffer
+ * @param[out] samples the output buffer, sample type in avctx->sample_fmt
  * @param[in,out] frame_size_ptr the output buffer size in bytes
  * @param[in] avpkt The input AVPacket containing the input buffer.
+ *            You can create such packet with av_init_packet() and by then setting
+ *            data and size, some decoders might in addition need other fields.
+ *            All decoders are designed to use the least fields possible though.
  * @return On error a negative value is returned, otherwise the number of bytes
- * used or zero if no frame could be decompressed.
+ * used or zero if no frame data was decompressed (used) from the input AVPacket.
  */
 int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples,
                          int *frame_size_ptr,
@@ -3222,7 +3307,7 @@ int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples,
 
 #if LIBAVCODEC_VERSION_MAJOR < 53
 /**
- * Decodes a video frame from \p buf into \p picture.
+ * Decodes a video frame from buf into picture.
  * Wrapper function which calls avcodec_decode_video2.
  *
  * @deprecated Use avcodec_decode_video2 instead.
@@ -3244,28 +3329,30 @@ attribute_deprecated int avcodec_decode_video(AVCodecContext *avctx, AVFrame *pi
  * Some decoders may support multiple frames in a single AVPacket, such
  * decoders would then just decode the first frame.
  *
- * @warning The input buffer must be \c FF_INPUT_BUFFER_PADDING_SIZE larger than
+ * @warning The input buffer must be FF_INPUT_BUFFER_PADDING_SIZE larger than
  * the actual read bytes because some optimized bitstream readers read 32 or 64
  * bits at once and could read over the end.
  *
- * @warning The end of the input buffer \p buf should be set to 0 to ensure that
+ * @warning The end of the input buffer buf should be set to 0 to ensure that
  * no overreading happens for damaged MPEG streams.
  *
- * @note You might have to align the input buffer \p avpkt->data and output buffer \p
- * samples. The alignment requirements depend on the CPU: on some CPUs it isn't
+ * @note You might have to align the input buffer avpkt->data.
+ * The alignment requirements depend on the CPU: on some CPUs it isn't
  * necessary at all, on others it won't work at all if not aligned and on others
- * it will work but it will have an impact on performance. In practice, the
- * bitstream should have 4 byte alignment at minimum and all sample data should
- * be 16 byte aligned unless the CPU doesn't need it (AltiVec and SSE do). If
- * the linesize is not a multiple of 16 then there's no sense in aligning the
- * start of the buffer to 16.
+ * it will work but it will have an impact on performance.
+ *
+ * In practice, avpkt->data should have 4 byte alignment at minimum.
  *
  * @note Some codecs have a delay between input and output, these need to be
- * feeded with avpkt->data=NULL, avpkt->size=0 at the end to return the remaining frames.
+ * fed with avpkt->data=NULL, avpkt->size=0 at the end to return the remaining frames.
  *
  * @param avctx the codec context
  * @param[out] picture The AVFrame in which the decoded video frame will be stored.
  * @param[in] avpkt The input AVpacket containing the input buffer.
+ *            You can create such packet with av_init_packet() and by then setting
+ *            data and size, some decoders might in addition need other fields like
+ *            flags&PKT_FLAG_KEY. All decoders are designed to use the least
+ *            fields possible.
  * @param[in,out] got_picture_ptr Zero if no frame could be decompressed, otherwise, it is nonzero.
  * @return On error a negative value is returned, otherwise the number of bytes
  * used or zero if no frame could be decompressed.
@@ -3286,8 +3373,8 @@ attribute_deprecated int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtit
 /**
  * Decodes a subtitle message.
  * Returns a negative value on error, otherwise returns the number of bytes used.
- * If no subtitle could be decompressed, \p got_sub_ptr is zero.
- * Otherwise, the subtitle is stored in \p *sub.
+ * If no subtitle could be decompressed, got_sub_ptr is zero.
+ * Otherwise, the subtitle is stored in *sub.
  *
  * @param avctx the codec context
  * @param[out] sub The AVSubtitle in which the decoded subtitle will be stored.
@@ -3302,11 +3389,11 @@ int avcodec_parse_frame(AVCodecContext *avctx, uint8_t **pdata,
                         uint8_t *buf, int buf_size);
 
 /**
- * Encodes an audio frame from \p samples into \p buf.
+ * Encodes an audio frame from samples into buf.
  *
- * @note The output buffer should be at least \c FF_MIN_BUFFER_SIZE bytes large.
+ * @note The output buffer should be at least FF_MIN_BUFFER_SIZE bytes large.
  * However, for PCM audio the user will know how much space is needed
- * because it depends on the value passed in \p buf_size as described
+ * because it depends on the value passed in buf_size as described
  * below. In that case a lower value can be used.
  *
  * @param avctx the codec context
@@ -3314,9 +3401,9 @@ int avcodec_parse_frame(AVCodecContext *avctx, uint8_t **pdata,
  * @param[in] buf_size the output buffer size
  * @param[in] samples the input buffer containing the samples
  * The number of samples read from this buffer is frame_size*channels,
- * both of which are defined in \p avctx.
- * For PCM audio the number of samples read from \p samples is equal to
- * \p buf_size * input_sample_size / output_sample_size.
+ * both of which are defined in avctx.
+ * For PCM audio the number of samples read from samples is equal to
+ * buf_size * input_sample_size / output_sample_size.
  * @return On error a negative value is returned, on success zero or the number
  * of bytes used to encode the data read from the input buffer.
  */
@@ -3324,9 +3411,9 @@ int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size,
                          const short *samples);
 
 /**
- * Encodes a video frame from \p pict into \p buf.
+ * Encodes a video frame from pict into buf.
  * The input picture should be
- * stored using a specific format, namely \c avctx.pix_fmt.
+ * stored using a specific format, namely avctx.pix_fmt.
  *
  * @param avctx the codec context
  * @param[out] buf the output buffer for the bitstream of encoded frame
@@ -3364,7 +3451,7 @@ void avcodec_default_free_buffers(AVCodecContext *s);
 /* misc useful functions */
 
 /**
- * Returns a single letter to describe the given picture type \p pict_type.
+ * Returns a single letter to describe the given picture type pict_type.
  *
  * @param[in] pict_type the picture type
  * @return A single character representing the picture type.
@@ -3654,7 +3741,7 @@ int av_picture_pad(AVPicture *dst, const AVPicture *src, int height, int width, 
 unsigned int av_xiphlacing(unsigned char *s, unsigned int v);
 
 /**
- * Parses \p str and put in \p width_ptr and \p height_ptr the detected values.
+ * Parses str and put in width_ptr and height_ptr the detected values.
  *
  * @return 0 in case of a successful parsing, a negative value otherwise
  * @param[in] str the string to parse: it has to be a string in the format
@@ -3667,7 +3754,7 @@ unsigned int av_xiphlacing(unsigned char *s, unsigned int v);
 int av_parse_video_frame_size(int *width_ptr, int *height_ptr, const char *str);
 
 /**
- * Parses \p str and put in \p frame_rate the detected values.
+ * Parses str and put in frame_rate the detected values.
  *
  * @return 0 in case of a successful parsing, a negative value otherwise
  * @param[in] str the string to parse: it has to be a string in the format
@@ -3698,7 +3785,31 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *str);
 #define AVERROR_PATCHWELCOME    -MKTAG('P','A','W','E') /**< Not yet implemented in FFmpeg. Patches welcome. */
 
 /**
- * Registers the hardware accelerator \p hwaccel.
+ * Logs a generic warning message about a missing feature. This function is
+ * intended to be used internally by FFmpeg (libavcodec, libavformat, etc.)
+ * only, and would normally not be used by applications.
+ * @param[in] avc a pointer to an arbitrary struct of which the first field is
+ * a pointer to an AVClass struct
+ * @param[in] feature string containing the name of the missing feature
+ * @param[in] want_sample indicates if samples are wanted which exhibit this feature.
+ * If want_sample is non-zero, additional verbage will be added to the log
+ * message which tells the user how to report samples to the development
+ * mailing list.
+ */
+void av_log_missing_feature(void *avc, const char *feature, int want_sample);
+
+/**
+ * Logs a generic warning message asking for a sample. This function is
+ * intended to be used internally by FFmpeg (libavcodec, libavformat, etc.)
+ * only, and would normally not be used by applications.
+ * @param[in] avc a pointer to an arbitrary struct of which the first field is
+ * a pointer to an AVClass struct
+ * @param[in] msg string containing an optional message, or NULL if no message
+ */
+void av_log_ask_for_sample(void *avc, const char *msg);
+
+/**
+ * Registers the hardware accelerator hwaccel.
  */
 void av_register_hwaccel(AVHWAccel *hwaccel);
 
@@ -3708,5 +3819,31 @@ void av_register_hwaccel(AVHWAccel *hwaccel);
  * after hwaccel, or NULL if hwaccel is the last one.
  */
 AVHWAccel *av_hwaccel_next(AVHWAccel *hwaccel);
+
+
+/**
+ * Lock operation used by lockmgr
+ */
+enum AVLockOp {
+  AV_LOCK_CREATE,  ///< Create a mutex
+  AV_LOCK_OBTAIN,  ///< Lock the mutex
+  AV_LOCK_RELEASE, ///< Unlock the mutex
+  AV_LOCK_DESTROY, ///< Free mutex resources
+};
+
+/**
+ * Register a user provided lock manager supporting the operations
+ * specified by AVLockOp. mutex points to a (void *) where the
+ * lockmgr should store/get a pointer to a user allocated mutex. It's
+ * NULL upon AV_LOCK_CREATE and != NULL for all other ops.
+ *
+ * @param cb User defined callback. Note: FFmpeg may invoke calls to this
+ *           callback during the call to av_lockmgr_register().
+ *           Thus, the application must be prepared to handle that.
+ *           If cb is set to NULL the lockmgr will be unregistered.
+ *           Also note that during unregistration the previously registered
+ *           lockmgr callback may also be invoked.
+ */
+int av_lockmgr_register(int (*cb)(void **mutex, enum AVLockOp op));
 
 #endif /* AVCODEC_AVCODEC_H */

@@ -69,6 +69,7 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
                        const char *filename, int flags);
 int url_open(URLContext **h, const char *filename, int flags);
 int url_read(URLContext *h, unsigned char *buf, int size);
+int url_read_complete(URLContext *h, unsigned char *buf, int size);
 int url_write(URLContext *h, unsigned char *buf, int size);
 int64_t url_seek(URLContext *h, int64_t pos, int whence);
 int url_close(URLContext *h);
@@ -332,11 +333,13 @@ int url_fdopen(ByteIOContext **s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
+#if LIBAVFORMAT_VERSION_MAJOR < 53
 /** Reset the buffer for reading or writing.
  * @note Will drop any data currently in the buffer without transmitting it.
  * @param flags URL_RDONLY to set up the buffer for reading, or URL_WRONLY
  *        to set up the buffer for writing. */
 int url_resetbuf(ByteIOContext *s, int flags);
+#endif
 
 /** @note when opened as read/write, the buffers are only used for
     writing */

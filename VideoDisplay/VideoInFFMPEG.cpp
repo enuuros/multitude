@@ -129,31 +129,33 @@ namespace VideoDisplay {
 
     Radiant::debug("%s # %s opening new file", fname, filename);
 
-    if(!m_video.open(filename, m_flags))
+    Screenplay::VideoInputFFMPEG video;
+
+    if(!video.open(filename, m_flags))
       return false;
 
-    m_video.getAudioParameters( & m_channels, & m_sample_rate, & m_auformat);
+    video.getAudioParameters( & m_channels, & m_sample_rate, & m_auformat);
 
-    if(!m_video.hasVideoCodec()) {
+    if(!video.hasVideoCodec()) {
       Radiant::error("%s # No video codec", fname);
-      m_video.close();
+      video.close();
       return false;
     }
 
-    if(!m_video.hasAudioCodec()) {
+    if(!video.hasAudioCodec()) {
       Radiant::debug("%s # No audio codec", fname);
-      /* m_video.close();
+      /* video.close();
      return false; */
     }
     pos = TimeStamp::createSecondsD(0.0);
 
     if(pos != 0) {
       debug("%s # Doing a seek", fname);
-      if(!m_video.seekPosition(pos.secondsD()))
-        m_video.seekPosition(0);
+      if(!video.seekPosition(pos.secondsD()))
+        video.seekPosition(0);
     }
 
-    const VideoImage * img = m_video.captureImage();
+    const VideoImage * img = video.captureImage();
 
     if(!img)
       return false;
@@ -165,7 +167,7 @@ namespace VideoDisplay {
 
     float fp = fps();
 
-    m_duration = TimeStamp::createSecondsD(m_video.durationSeconds());
+    m_duration = TimeStamp::createSecondsD(video.durationSeconds());
 
     debug("%s # %f fps", fname, fp);
 
@@ -174,15 +176,15 @@ namespace VideoDisplay {
     int channels, sample_rate;
     AudioSampleFormat fmt;
 
-    m_video.getAudioParameters( & channels, & sample_rate, & fmt);
+    video.getAudioParameters( & channels, & sample_rate, & fmt);
 
-    putFrame(img, FRAME_SNAPSHOT, m_video.frameTime(), m_video.frameTime(), false);
+    putFrame(img, FRAME_SNAPSHOT, video.frameTime(), video.frameTime(), false);
 
     {
       // Cache the first frame for later use.
       Radiant::GuardStatic g(&__mutex);
 
-      m_video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
+      video.getAudioParameters( & m_channels, & m_sampleRate, & m_auformat);
 
       FFVideodebug & vi2 = __ffcache[filename];
 
@@ -193,7 +195,7 @@ namespace VideoDisplay {
 
     }
 
-    m_video.close();
+    video.close();
 
     debug("%s # EXIT OK", fname);
 
@@ -205,26 +207,28 @@ namespace VideoDisplay {
   {
     debug("VideoInFFMPEG::videoGetSnapshot # %lf", pos.secondsD());
 
-    if(!m_video.open(m_name.c_str(), m_flags)) {
+    Screenplay::VideoInputFFMPEG video;
+
+    if(!video.open(m_name.c_str(), m_flags)) {
       endOfFile();
       return;
     }
 
     if(pos)
-      m_video.seekPosition(pos.secondsD());
+      video.seekPosition(pos.secondsD());
 
-    const VideoImage * img = m_video.captureImage();
+    const VideoImage * img = video.captureImage();
 
     if(!img) {
-      m_video.close();
+      video.close();
       return;
     }
 
-    putFrame(img, FRAME_SNAPSHOT, 0, m_video.frameTime(), false);
+    putFrame(img, FRAME_SNAPSHOT, 0, video.frameTime(), false);
 
-    m_frameTime = m_video.frameTime();
+    m_frameTime = video.frameTime();
 
-    m_video.close();
+    video.close();
   }
 
   void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)

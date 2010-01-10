@@ -30,13 +30,19 @@ void opentest(const char * filename)
 {
   for(int i = 0; i < 60; i++) {
 
-    info("Opening %s, memory usage = %lld",
+    info("Decoding %s, memory usage = %lld",
          filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
 
     Screenplay::VideoInputFFMPEG * ffde =
         new Screenplay::VideoInputFFMPEG();
 
+    info("Opening %s, memory usage = %lld",
+         filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
+
     ffde->open(filename);
+
+    info("Opened  %s, memory usage = %lld",
+         filename, (long long) Radiant::PlatformUtils::processMemoryUsage());
 
     for(int j = 0; j < 20; j++) {
       ffde->captureImage();
@@ -76,7 +82,7 @@ int main(int argc, char ** argv)
   for(int i = 1; i < argc; i++) {
     if(strcmp(argv[i], "--verbose") == 0)
       Radiant::enableVerboseOutput(true);
-    if(strcmp(argv[i], "--opentest") == 0 && (i + 1) < argc)
+    else if(strcmp(argv[i], "--opentest") == 0 && (i + 1) < argc)
       opentest(argv[++i]);
     else if(strcmp(argv[i], "--stress") == 0)
       vw->stressTest();

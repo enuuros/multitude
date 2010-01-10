@@ -64,10 +64,13 @@ namespace Screenplay {
     static bool once = false;
 
     if(!once) {
-      // trace2("Initializing AVCODEC");
+      info("Initializing AVCODEC 1");
       avcodec_init();
+      info("Initializing AVCODEC 2");
       avcodec_register_all();
+      info("Initializing AVCODEC 3");
       av_register_all();
+      info("Initializing AVCODEC 4");
       once = true;
     }
 
