@@ -553,7 +553,7 @@ namespace VideoDisplay {
       m_videoFrame = videoFrame;
     }
 
-    info("ShowGL::update # %p f = %p index = %d", this, m_frame, videoFrame);
+    debug("ShowGL::update # %p f = %p index = %d", this, m_frame, videoFrame);
 
     // m_subTitles.update(m_position);
   }

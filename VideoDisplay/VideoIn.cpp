@@ -442,7 +442,7 @@ namespace VideoDisplay {
       debug("VideoIn::putFrame # %p %u %u %lf",
             & f, m_decodedFrames, m_consumedFrames, absolute.secondsD());
 
-    // debug("VideoIn::putFrame # %d", m_decodedFrames);
+    debug("VideoIn::putFrame # %d", m_decodedFrames);
 
     f.m_lastUse = Radiant::TimeStamp::getTime();
 
