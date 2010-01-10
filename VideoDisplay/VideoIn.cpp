@@ -69,8 +69,10 @@ namespace VideoDisplay {
   {
     int n = frames * channels;
 
-    if(m_allocatedAudio < n ||
+    if((m_allocatedAudio < n) ||
        (n < 10000 && m_allocatedAudio > 20000)) {
+      /* If there is not enough space we need to allocate memory.
+         If there is too muuch space we can free some memory. */
       debug("VideoIn::Frame::copyAudio # %d -> %d", m_allocatedAudio, n);
 
       free(m_audio);

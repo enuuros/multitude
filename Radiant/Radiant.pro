@@ -1,6 +1,6 @@
 include(../multitude.pri)
-
-HEADERS += CameraDriver.hpp
+HEADERS += CameraDriver.hpp \
+    CSVDocument.hpp
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -54,8 +54,8 @@ HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
 HEADERS += ClonablePtr.hpp
 HEADERS += VideoCamera.hpp
-
-SOURCES += CameraDriver.cpp
+SOURCES += CameraDriver.cpp \
+    CSVDocument.cpp
 SOURCES += BinaryData.cpp
 SOURCES += VideoCamera.cpp
 SOURCES += Color.cpp
@@ -88,11 +88,11 @@ SOURCES += WatchDog.cpp
 LIBS += $$LIB_NIMBLE \
     $$LIB_PATTERNS
 linux-*:SOURCES += PlatformUtilsLinux.cpp
-macx {
+macx { 
     SOURCES += PlatformUtilsOSX.cpp
     LIBS += -framework,CoreFoundation
 }
-unix {
+unix { 
     HEADERS += VideoCamera1394.hpp
     SOURCES += DirectoryPosix.cpp
     SOURCES += SerialPortPosix.cpp
@@ -105,11 +105,9 @@ unix {
         -ldl
     PKGCONFIG += libdc1394-2
 }
-win32 {
+win32 { 
     DEFINES += RADIANT_EXPORT
-
     HEADERS += VideoCameraCMU.hpp
-
     SOURCES += VideoCameraCMU.cpp
     SOURCES += PlatformUtilsWin32.cpp
     SOURCES += SerialPortWin32.cpp
@@ -117,25 +115,26 @@ win32 {
     SOURCES += TCPServerSocketQt.cpp
     SOURCES += TCPSocketQt.cpp
     SOURCES += UDPSocketQt.cpp
-
-    LIBS += win32x.lib wsock32.lib pthreadVC2.lib ShLwApi.lib shell32.lib 1394camera.lib psapi.lib
-
+    LIBS += win32x.lib \
+        wsock32.lib \
+        pthreadVC2.lib \
+        ShLwApi.lib \
+        shell32.lib \
+        1394camera.lib \
+        psapi.lib
     CONFIG += qt
-    QT = core network
-	
-	PTGREY_PATH="C:\Program Files\Point Grey Research\FlyCapture2"
-
-	exists($$PTGREY_PATH\include) {
-		HEADERS += VideoCameraPTGrey.hpp
-		SOURCES += VideoCameraPTGrey.cpp
-		INCLUDEPATH += $$PTGREY_PATH\include
-		
-		# 64bit libs have a different path
-		exists($$PTGREY_PATH\lib64):LIBPATH += $$PTGREY_PATH\lib64
-		exists($$PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
-		LIBS += FlyCapture2.lib
-	}
-
+    QT = core \
+        network
+    PTGREY_PATH = "C:\Program Files\Point Grey Research\FlyCapture2"
+    exists($$PTGREY_PATH\include) { 
+        HEADERS += VideoCameraPTGrey.hpp
+        SOURCES += VideoCameraPTGrey.cpp
+        INCLUDEPATH += $$PTGREY_PATH\include
+        
+        # 64bit libs have a different path
+        exists($$PTGREY_PATH\lib64):LIBPATH += $$PTGREY_PATH\lib64
+        exists($$PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
+        LIBS += FlyCapture2.lib
+    }
 }
-
 include(../library.pri)
