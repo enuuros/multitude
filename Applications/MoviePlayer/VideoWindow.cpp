@@ -70,7 +70,10 @@ bool VideoWindow::open(const char * filename, const char * audiodev)
 
   item->m_show.loadSubTitles(srtfile.c_str());
 
-  if(!item->m_show.init(filename, & m_dsp, 0, 0))
+  if(!item->m_show.init(filename, & m_dsp, 0, 0,
+                        Radiant::WITH_VIDEO | Radiant::WITH_AUDIO
+                        /*|
+                        Radiant::MONOPHONIZE_AUDIO*/))
     return false;
 
   m_movies.push_back(item);

@@ -226,7 +226,7 @@ namespace Screenplay {
       if (m_pkt->stream_index == m_aindex && (m_flags & Radiant::WITH_AUDIO)
         && m_acodec) {
 
-        int index = m_audioFrames * m_audioChannels;
+        int index = m_audioFrames * actualChannels();
 
         int aframes = (m_audioBuffer.size() - index) * 2;
 
@@ -236,6 +236,19 @@ namespace Screenplay {
 
         aframes /= (2 * m_audioChannels);
         int64_t pts = m_pkt->pts;
+
+        if(m_flags & Radiant::MONOPHONIZE_AUDIO) {
+          // Force to mono sound.
+          for(int a = 0; a < aframes; a++) {
+            int sum = 0;
+            int base = index + a * m_audioChannels;
+            for(int chan = 0; chan < m_audioChannels; chan++) {
+              sum += m_audioBuffer[base + chan];
+            }
+            // Scale down to avoid clipping.
+            m_audioBuffer[index + a] = sum / m_audioChannels;
+          }
+        }
 
         if(pts <= 0)
           pts = m_pkt->dts;
@@ -409,10 +422,12 @@ namespace Screenplay {
       }
     }
     else {
-      * channels = m_acontext->channels;
+      *channels = actualChannels();
+
       int sr = m_acontext->sample_rate;
       * sample_rate = sr;
       * format = Radiant::ASF_INT16;
+
     }
   }
 
@@ -485,6 +500,9 @@ namespace Screenplay {
     m_flags = 0;
     m_lastPts = 0;
     m_fileName = filename;
+
+    if(flags & Radiant::MONOPHONIZE_AUDIO)
+      m_flags |= Radiant::MONOPHONIZE_AUDIO;
 
     const char * fname = "VideoInputFFMPEG::open";
 
@@ -601,7 +619,10 @@ namespace Screenplay {
       // return false;
     }
 
-    debug("%s # Opened file %s,  (%d x %d %s, %s %d Hz) %d (%d, %f)", fname, filename, width(), height(), vcname, acname, m_audioSampleRate, (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
+    info("%s # Opened file %s,  (%d x %d %s, %s %d chans @ %d Hz) %d (%d, %f)",
+          fname, filename, width(), height(), vcname, acname, m_audioChannels,
+          m_audioSampleRate,
+          (int) m_image.m_format, (int) m_vcontext->pix_fmt, ratio);
 
     return true;
   }

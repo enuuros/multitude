@@ -7,10 +7,10 @@
  * See file "Screenplay.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef SCREENPLAY_VIDEO_FFMPEG_HPP
@@ -41,20 +41,20 @@ namespace Screenplay {
 
     VideoInputFFMPEG();
     virtual ~VideoInputFFMPEG();
-    
+
     virtual const Radiant::VideoImage * captureImage();
     /// The time-stamp of the latest video frame
     Radiant::TimeStamp frameTime() { return m_lastTS; }
     /// The time stamp of curren audio buffer
     /** This timestamp is timed to match the beginning of the current
-	audio buffer. This is absolute time within the time-system of
-	the video file.  */
+    audio buffer. This is absolute time within the time-system of
+    the video file.  */
     Radiant::TimeStamp audioTime() const { return m_audioTS; }
 
     virtual const void * captureAudio(int * frameCount);
-    virtual void getAudioParameters(int * channels, 
-				    int * sample_rate,
-				    Radiant::AudioSampleFormat * format);
+    virtual void getAudioParameters(int * channels,
+                    int * sample_rate,
+                    Radiant::AudioSampleFormat * format);
 
     /// The width of the video stream images.
     virtual int width() const;
@@ -67,7 +67,7 @@ namespace Screenplay {
     virtual unsigned int size() const;
 
     bool open(const char * filename,
-	      int flags = Radiant::WITH_VIDEO);
+          int flags = Radiant::WITH_VIDEO);
 
     virtual bool start();
     virtual bool isStarted() const;
@@ -84,22 +84,27 @@ namespace Screenplay {
 
     bool hasAudioCodec() const { return m_acodec != 0; }
     bool hasVideoCodec() const { return m_vcodec != 0; }
-  
+
     int audioSampleRate() const { return m_audioSampleRate; }
 
     /*
     void enableLooping(bool enable)
     {
       if(enable)
-	m_flags |= Radiant::DO_LOOP;
+    m_flags |= Radiant::DO_LOOP;
       else
-	m_flags &= ~Radiant::DO_LOOP;
+    m_flags &= ~Radiant::DO_LOOP;
     }
     */
     /// Turn on/off the printing of debug messages
     static void setDebug(int debug);
 
   private:
+    int actualChannels() const
+    {
+      return (m_flags & Radiant::MONOPHONIZE_AUDIO) ?
+          1 : m_audioChannels;
+    }
 
     std::string      m_fileName;
     std::string      m_codecName;
