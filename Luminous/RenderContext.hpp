@@ -71,6 +71,10 @@ namespace Luminous
       Nimble::Vector2 m_texUV;
     };
 
+    enum {
+      FBO_EXACT_SIZE = 0x1
+    };
+
 #endif
 
     RenderContext(Luminous::GLResources * resources);
@@ -94,7 +98,8 @@ namespace Luminous
     const Nimble::Rect & visibleArea() const;
 
     ///@internal
-    FBOHolder getTemporaryFBO(Nimble::Vector2 basicsize, float scaling);
+    FBOHolder getTemporaryFBO(Nimble::Vector2 basicsize,
+                              float scaling, uint32_t flags = 0);
 
     // Render functions:
 

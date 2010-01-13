@@ -7,15 +7,15 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Luminous/GLSLShaderObject.hpp>
 
-#include <iostream>
+#include <Radiant/Trace.hpp>
 
 #include <string.h>
 
@@ -23,6 +23,7 @@ using namespace std;
 
 namespace Luminous
 {
+  using namespace Radiant;
 
   GLSLShaderObject::GLSLShaderObject(GLenum shaderType, GLResources * resources)
     : GLResource(resources),
@@ -47,8 +48,8 @@ namespace Luminous
 
     if(m_shaderSource == 0)
     {
-      cerr << "GLSLShaderObject::compile # attempt to compile a shader "
-	"with no source." << endl;
+      error("GLSLShaderObject::compile # attempt to compile a shader "
+            "with no source.");
       return false;
     }
 
@@ -57,7 +58,7 @@ namespace Luminous
 
     glCompileShader(m_handle);
 
-    GLint wasCompiled;
+    GLint wasCompiled = 0;
     glGetShaderiv(m_handle, GL_COMPILE_STATUS, &wasCompiled);
 
     if(wasCompiled) m_isCompiled = true;
@@ -69,8 +70,7 @@ namespace Luminous
   {
     if(m_handle == 0)
     {
-      cerr << "GLSLShaderObject::compilerLog # attempt to "
-	"query null object." << endl;
+      error("GLSLShaderObject::compilerLog # attempt to query null object.");
       return 0;
     }
 

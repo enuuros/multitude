@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef NIMBLE_VECTOR4T_HPP
@@ -32,6 +32,7 @@ namespace Nimble {
   class NIMBLE_API Vector4T
   {
   public:
+    typedef T type;
     /// The x-component
     T		x;
     /// The y-component
@@ -44,7 +45,7 @@ namespace Nimble {
     Vector4T	(T cx, T cy, T cz, T cw)                       { x = cx;       y = cy;	     z = cz;      w =  cw; }
     template <class S> Vector4T(const Vector4T<S>& v)	       { x = (T)v.x;   y = (T)v.y;  z = (T)v.z;  w = (T) v.w; }
     template <class S> Vector4T(const S * v)	               { x = (T)v[0];  y = (T)v[1]; z = (T)v[2]; w = (T) v[3]; }
-    template <class S> Vector4T& operator=(const Vector4T<S>& v) { x = (T)v.x; y = (T)v.y; z = (T)v.z; w = (T) v.w; return *this; }	
+    template <class S> Vector4T& operator=(const Vector4T<S>& v) { x = (T)v.x; y = (T)v.y; z = (T)v.z; w = (T) v.w; return *this; }
     Vector4T&	clear(void)                                    { x = (T)(0);  y = (T)(0); z = (T)(0); w = (T)(0); return *this;	}
     bool		operator==  (const Vector4T& src) const        { return (x == src.x && y == src.y && z == src.z && w == src.w);	}
     bool		operator!=  (const Vector4T& src) const        { return !(x == src.x && y == src.y && z == src.z && w == src.w); }
@@ -84,7 +85,7 @@ namespace Nimble {
     /// Cast to Vector3T
     Vector3T<T> & vector3() { return * (Vector3T<T> *) this; }
     const Vector3T<T> & vector3() const { return * (Vector3T<T> *) this; }
-  
+
     /// Copy some data
     template <class S>
     void copy(const S * data) { x = data[0]; y = data[1]; z = data[2]; w = data[3]; }
@@ -100,7 +101,7 @@ namespace Nimble {
   template <class T> inline	Vector4T<T>	operator/	(const Vector4T<T>& v, const double s)		{ double r = 1.0/s; return v*r; }
   template <class T> inline	Vector4T<T>	operator-	(const Vector4T<T>& v)						{ return Vector4T<T>(-v.x, -v.y, -v.z, -v.w); }
 
-  typedef Vector4T<float> Vector4; 
+  typedef Vector4T<float> Vector4;
   typedef Vector4T<float> Vector4f;
   typedef Vector4T<unsigned char> Vector4ub;
   typedef Vector4T<int> Vector4i;

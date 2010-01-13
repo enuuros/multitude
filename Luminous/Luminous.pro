@@ -1,6 +1,9 @@
 include(../multitude.pri)
-
-HEADERS += BGThread.hpp
+HEADERS += BGThread.hpp \
+    ContextVariable.hpp \
+    ContextVariables.hpp \
+    ContextVariableImpl.hpp \
+    Shader.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
@@ -34,8 +37,9 @@ HEADERS += Transformer.hpp
 HEADERS += Utils.hpp
 HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
-
-SOURCES += BGThread.cpp
+SOURCES += BGThread.cpp \
+    ContextVariable.cpp \
+    Shader.cpp
 SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -63,38 +67,32 @@ SOURCES += Texture.cpp
 SOURCES += Transformer.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
-
 LIBS += $$LIB_RADIANT \
     -lGLEW \
     $$LIB_OPENGL \
-	$$LIB_VALUABLE \
+    $$LIB_VALUABLE \
     $$LIB_GLU \
     $$LIB_NIMBLE \
     $$LIB_PATTERNS
-
-	
 unix {
-	LIBS += -ljpeg -lpng
-
-	!contains(HAS_QT_45,YES) {
-		HEADERS += ImageCodecPNG.hpp
-		HEADERS += ImageCodecTGA.hpp
-		SOURCES += ImageCodecJPEG.cpp
-		SOURCES += ImageCodecPNG.cpp
-	}
+    LIBS += -ljpeg \
+        -lpng
+    !contains(HAS_QT_45,YES) {
+        HEADERS += ImageCodecPNG.hpp
+        HEADERS += ImageCodecTGA.hpp
+        SOURCES += ImageCodecJPEG.cpp
+        SOURCES += ImageCodecPNG.cpp
+    }
 }
-
-win32 { 
+win32 {
     DEFINES += LUMINOUS_EXPORT
-	LIBS += -lWin32x
+    LIBS += -lWin32x
 }
-
 contains(HAS_QT_45,YES) {
-  message(Including QT Image codecs)
-  HEADERS += ImageCodecQT.hpp
-  SOURCES += ImageCodecQT.cpp
-  CONFIG += qt
-  QT += gui
+    message(Including QT Image codecs)
+    HEADERS += ImageCodecQT.hpp
+    SOURCES += ImageCodecQT.cpp
+    CONFIG += qt
+    QT += gui
 }
-
 include(../library.pri)

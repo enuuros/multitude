@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef NIMBLE_VECTOR2T_HPP
@@ -24,7 +24,7 @@
 namespace Nimble {
 
   /** Two-dimensional vector class for 2D mathematics.
-      
+
       Like all classed in Nimble Vector2T has been optimized for
       speed. In general, there are no safety checks in any
       functions. */
@@ -33,11 +33,13 @@ namespace Nimble {
   class NIMBLE_API Vector2T
   {
   public:
+    typedef T type;
+
     /// X-component of the vector
     T		x;
     /// Y-component of the vector
     T		y;
-  
+
     /** Default constructor, does \b not initialize the values. */
     Vector2T () {}
     Vector2T (T cx, T cy) { x = (T)cx;	y = (T)cy; }
@@ -53,7 +55,7 @@ namespace Nimble {
     const T *   data() const { return &x; }
     bool	operator==  (const Vector2T& src) const		                { return (x == src.x && y == src.y); }
     bool	operator!=  (const Vector2T& src) const		                { return !(x == src.x && y == src.y); }
-    Vector2T&	operator+=	(const Vector2T& v)				{ x += v.x, y += v.y; return *this; }		
+    Vector2T&	operator+=	(const Vector2T& v)				{ x += v.x, y += v.y; return *this; }
     Vector2T&	operator-=	(const Vector2T& v)				{ x -= v.x, y -= v.y; return *this; }
     Vector2T&	operator*=	(T s)					        { x = (x*s), y = (T)(y*s); return *this; }
     Vector2T&	operator/=	(T s)					        { s = T(1)/s; x = (x*s), y = (y*s); return *this; }
@@ -85,7 +87,7 @@ namespace Nimble {
 
     const	T&			operator[]	(int i) const		{ return ((T*)this)[i]; }
     T&			        operator[]	(int i)				{ return ((T*)this)[i]; }
-  
+
     template <class S>
     void copy(const S * data) { x = data[0]; y = data[1]; }
   };
@@ -102,10 +104,10 @@ namespace Nimble {
 
   template <>
   inline Vector2T<int> & Vector2T<int>::operator /= (int s)
-  { 
+  {
     x = x/s;
     y = y/s;
-    return *this; 
+    return *this;
   }
 
   template <class T>
@@ -119,7 +121,7 @@ namespace Nimble {
   {
     return t1.x * t2.x + t1.y * t2.y;
   }
-  
+
   /* Note that these overload are NOT redundant, integer math is
      different from floating point math. */
   inline Vector2T<short> operator / (const Vector2T<short>& v, const short s)
@@ -136,7 +138,7 @@ namespace Nimble {
   {
     return Vector2T<long>(v.x / s, v.y / s);
   }
-  
+
   inline Vector2T<short> operator * (const Vector2T<short>& v, const short s)
   {
     return Vector2T<short>(v.x * s, v.y * s);

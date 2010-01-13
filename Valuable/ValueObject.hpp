@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_VALUE_OBJECT_HPP
@@ -29,15 +29,15 @@
 #include <string>
 
 namespace Valuable
-{  
+{
   class HasValues;
   class DOMElement;
   class DOMDocument;
 
 
-  /// Base class for values 
+  /// Base class for values
   /** Typical child classes include some POD (plain old data) elements
-      (floats, ints, vector2) etc, that can be accesses through the
+      (floats, ints, vector2) etc, that can be accessed through the
       API.
 
       It is also possible to add listeners to values, so that if a
@@ -56,25 +56,25 @@ namespace Valuable
     ValueObject(const ValueObject & o);
     /// The most usual constructor
     /** This constructor is typically used when attaching the value
-	object to its parent. 
-	
-	@arg parent The parent object. This object is automatically
-	added to the parent.
+    object to its parent.
 
-	@arg name The name (or id) of this value. Names are typically
-	semi human readable. The names should not contain white-spaces
-	as they may be used in XML files etc.
+    @arg parent The parent object. This object is automatically
+    added to the parent.
 
-	@arg transit Should value changes be transmitted forward. This
-	is related to future uses, and can be largely ignored at the
-	moment.
+    @arg name The name (or id) of this value. Names are typically
+    semi human readable. The names should not contain white-spaces
+    as they may be used in XML files etc.
+
+    @arg transit Should value changes be transmitted forward. This
+    is related to future uses, and can be largely ignored at the
+    moment.
     */
     ValueObject(HasValues * parent, const std::string & name, bool transit = false);
     virtual ~ValueObject();
 
     const std::string & name() const { return m_name; }
     void setName(const std::string & s) { m_name = s; }
-  
+
     std::string path() const;
 
     /// Process a message
@@ -98,6 +98,12 @@ namespace Valuable
     void processMessageFloat(const char * id, float v);
     /// Utility function for sending an int message to the object
     void processMessageInt(const char * id, int v);
+    /// Utility function for sending a Vector2 message to the object
+    void processMessageVector2(const char * id, Nimble::Vector2);
+    /// Utility function for sending a Vector3 message to the object
+    void processMessageVector3(const char * id, Nimble::Vector3);
+    /// Utility function for sending a Vector4 message to the object
+    void processMessageVector4(const char * id, Nimble::Vector4);
 
     virtual float       asFloat(bool * const ok = 0) const;
     virtual int         asInt(bool * const ok = 0) const;
@@ -108,9 +114,9 @@ namespace Valuable
     virtual bool set(const std::string & v);
     virtual bool set(const Nimble::Vector2f & v);
     virtual bool set(const Nimble::Vector4f & v);
- 
-    /// Get the type id of the type 
-    virtual const char * type() const = 0;      
+
+    /// Get the type id of the type
+    virtual const char * type() const = 0;
 
     virtual DOMElement serializeXML(DOMDocument * doc);
     virtual bool deserializeXML(DOMElement element) = 0;
@@ -124,7 +130,7 @@ namespace Valuable
     void removeListener(ValueListener * l) { m_listeners.remove(l); }
 
   protected:
-    
+
     /// Invokes the change valueChanged function of all listeners
     virtual void emitChange();
     /// Invokes the change valueDeleted function of all listeners

@@ -1,6 +1,9 @@
 #include <SDL/SDL.h>
 
+
 #include <Luminous/Luminous.hpp>
+
+#include <Luminous/Image.hpp>
 #include <Luminous/Texture.hpp>
 
 int main(int argc, char ** argv)
@@ -19,7 +22,6 @@ int main(int argc, char ** argv)
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16 );
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-  // SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1 );
 
   SDL_SetVideoMode(400 , 400, 0, SDL_OPENGL);
 

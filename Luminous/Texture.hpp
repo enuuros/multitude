@@ -17,8 +17,10 @@
 #define LUMINOUS_TEXTURE_HPP
 
 #include <GL/glew.h>
-#include "Image.hpp"
-#include "GLResource.hpp"
+
+// #include <Luminous/Image.hpp>
+#include <Luminous/GLResource.hpp>
+#include <Luminous/PixelFormat.hpp>
 
 #include <Nimble/Vector2.hpp>
 
@@ -27,8 +29,11 @@
 namespace Luminous
 {
   class PixelFormat;
+  class Image;
 
   /// Base class for different textures
+  /** Texture objects can be create without a valid OpenGL context, but their actual
+      usage requires a valid OpenGL context. */
   template<GLenum TextureType>
   class LUMINOUS_API TextureT : public GLResource, public Patterns::NotCopyable
   {
@@ -73,9 +78,12 @@ namespace Luminous
       glBindTexture(TextureType, m_textureId);
     }
 
+    /// Returns the width of the texture (if known)
     int width() const { return m_width; }
+    /// Returns the height of the texture (if known)
     int height() const { return m_height; }
 
+    /// Returns the size (width x height) of the texture, if known
     Nimble::Vector2i size() const
     { return Nimble::Vector2i(m_width, m_height); }
 
@@ -107,6 +115,7 @@ namespace Luminous
     /// Returns true if the texture is defined
     bool isDefined() const { return id() != 0; }
 
+    /// Returns the pixel format used by the texture
     const PixelFormat & pixelFormat() const { return m_pf; }
 
   protected:
@@ -133,17 +142,24 @@ namespace Luminous
   public:
     Texture2D(GLResources * resources = 0) : TextureT<GL_TEXTURE_2D>(resources) {}
 
+    /// Load the texture from an image file
     bool loadImage(const char * filename, bool buildMipmaps = true);
+    /// Load the texture from an image
     bool loadImage(const Luminous::Image & image, bool buildMipmaps = true);
 
+    /// Load the texture from from raw data, provided by the user
     bool loadBytes(GLenum internalFormat, int w, int h,
-           const void* data,
-           const PixelFormat& srcFormat,
-           bool buildMipmaps = true);
+                   const void* data,
+                   const PixelFormat& srcFormat,
+                   bool buildMipmaps = true);
+    /// Laod a sub-texture.
     void loadSubBytes(int x, int y, int w, int h, const void * subData);
 
+    /// Create a new texture, from an image file
     static Texture2D * fromFile(const char * filename, bool buildMipmaps = true, GLResources * resources = 0);
+    /// Create a new texture, from an image
     static Texture2D * fromImage(Luminous::Image & img, bool buildMipmaps = true, GLResources * resources = 0);
+    /// Create a new texture from raw image data, provided by the user
     static Texture2D * fromBytes(GLenum internalFormat, int w, int h,
                 const void * data,
                 const PixelFormat& srcFormat,
@@ -152,11 +168,19 @@ namespace Luminous
 
   /// A 3D texture
   class LUMINOUS_API Texture3D : public TextureT<GL_TEXTURE_3D>
-  {};
+  {
+  public:
+    Texture3D(GLResources * resources = 0) : TextureT<GL_TEXTURE_3D> (resources) {}
+  };
 
   /// A cubemap texture
   class LUMINOUS_API TextureCube : public TextureT<GL_TEXTURE_CUBE_MAP>
-  {};
+  {
+  public:
+    TextureCube(GLResources * resources = 0)
+        : TextureT<GL_TEXTURE_CUBE_MAP> (resources) {}
+
+  };
 
 }
 

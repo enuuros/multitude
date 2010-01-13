@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_VALUE_FLOAT_HPP
@@ -48,12 +48,15 @@ namespace Valuable
 
       inline operator const T & () const { return Base::m_value; }
 
+      /// Returns the data in its native format
+      const T & native() const { return Base::m_value; }
+
       const char * type() const { return VO_TYPE_FLOAT; }
-      
+
       bool deserializeXML(DOMElement element);
 
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
-    
+
   };
 
   /// Float value object

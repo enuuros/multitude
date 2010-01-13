@@ -7,14 +7,17 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "Texture.hpp"
+
+#include "Image.hpp"
 #include "PixelFormat.hpp"
+
 #include <cassert>
 #include <iostream>
 #include "Error.hpp"
@@ -47,9 +50,9 @@ namespace Luminous
   }
 
   Texture1D* Texture1D::fromBytes(GLenum internalFormat, int h,
-				  const void* data,
-				  const PixelFormat& srcFormat,
-				  bool buildMipmaps, GLResources * resources)
+                  const void* data,
+                  const PixelFormat& srcFormat,
+                  bool buildMipmaps, GLResources * resources)
   {
     // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
@@ -87,38 +90,38 @@ namespace Luminous
 
     if(buildMipmaps) {
       gluBuild1DMipmaps(GL_TEXTURE_1D,
-			srcFormat.numChannels(), h, 
-			srcFormat.layout(), srcFormat.type(), data);
+            srcFormat.numChannels(), h,
+            srcFormat.layout(), srcFormat.type(), data);
     }
 
     return tex;
   }
-  
-  bool Texture2D::loadImage(const char * filename, bool buildMipmaps) {
-	  Luminous::Image img;
 
-	  if(!img.read(filename)) return false;
-	  
-	  return loadImage(img, buildMipmaps);
+  bool Texture2D::loadImage(const char * filename, bool buildMipmaps) {
+      Luminous::Image img;
+
+      if(!img.read(filename)) return false;
+
+      return loadImage(img, buildMipmaps);
   }
 
 /*
   bool Texture2D::loadImage(const char * filename, bool buildMipmaps)
   {
-	  Radiant::trace("Texture2D::LoadImage");
+      Radiant::trace("Texture2D::LoadImage");
     try {
       Magick::Image im;
       Radiant::trace("MUUUUUUUUUUU %s", filename);
-	  im.read(filename);
-	  Radiant::trace("MOOOOOOOOO");
+      im.read(filename);
+      Radiant::trace("MOOOOOOOOO");
       if(im.columns()) {
         loadImage(im, buildMipmaps);
-	return true;
+    return true;
       }
     }
-	catch(Magick::Exception & e) {
-		Radiant::error("Texture2D::loadImage # %s", e.what());      
-	} catch(...) {}
+    catch(Magick::Exception & e) {
+        Radiant::error("Texture2D::loadImage # %s", e.what());
+    } catch(...) {}
     return false;
   }
 */
@@ -126,15 +129,15 @@ namespace Luminous
   bool Texture2D::loadImage(const Luminous::Image & image, bool buildMipmaps)
   {
     return loadBytes(image.pixelFormat().layout(),
-		     image.width(), image.height(),
-		     image.bytes(),
-		     image.pixelFormat(), buildMipmaps);
+             image.width(), image.height(),
+             image.bytes(),
+             image.pixelFormat(), buildMipmaps);
   }
 
   bool Texture2D::loadBytes(GLenum internalFormat, int w, int h,
-			    const void * data, 
-			    const PixelFormat& srcFormat,
-			    bool buildMipmaps)
+                const void * data,
+                const PixelFormat& srcFormat,
+                bool buildMipmaps)
   {
     // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
@@ -165,14 +168,14 @@ namespace Luminous
 
     if(buildMipmaps)
       gluBuild2DMipmaps(GL_TEXTURE_2D, srcFormat.numChannels(),
-			w, h, srcFormat.layout(), srcFormat.type(), data);
+            w, h, srcFormat.layout(), srcFormat.type(), data);
     else {
       /* Radiant::debug("TEXTURE UPLOAD :: INTERNAL %s FORMAT %s [%d %d]",
-		     glInternalFormatToString(internalFormat),
-		     glFormatToString(srcFormat.layout()), w, h);
+             glInternalFormatToString(internalFormat),
+             glFormatToString(srcFormat.layout()), w, h);
       */
       glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0,
-		   srcFormat.layout(), srcFormat.type(), data);
+           srcFormat.layout(), srcFormat.type(), data);
     }
 
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -190,7 +193,7 @@ namespace Luminous
 
     long uses = consumesBytes();
 
-    changeByteConsumption(used, uses); 
+    changeByteConsumption(used, uses);
 
     return true;
   }
@@ -223,9 +226,9 @@ namespace Luminous
   }
 
   Texture2D* Texture2D::fromBytes(GLenum internalFormat, int w, int h,
-				  const void* data,
-				  const PixelFormat& srcFormat,
-				  bool buildMipmaps, GLResources * resources)
+                  const void* data,
+                  const PixelFormat& srcFormat,
+                  bool buildMipmaps, GLResources * resources)
   {
     // Check dimensions
     if(!GL_ARB_texture_non_power_of_two) {
@@ -245,6 +248,6 @@ namespace Luminous
     }
     return tex;
   }
-  
+
 }
 

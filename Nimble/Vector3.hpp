@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef NIMBLE_VECTOR3T_HPP
@@ -29,6 +29,8 @@ namespace Nimble {
   class NIMBLE_API Vector3T
   {
   public:
+    typedef T type;
+
     T		x;										// x-component of the vector
     T		y;										// y-component of the vector
     T		z;										// z-component of the vector
@@ -93,10 +95,10 @@ namespace Nimble {
 
     static Vector3T & cast(T * ptr) { return * (Vector3T *) ptr; }
     static const Vector3T & cast(const T * ptr) { return * (Vector3T *) ptr; }
-    
+
     Vector2T<T> & vector2() { return * (Vector2T<T> *) this; }
     const Vector2T<T> & vector2() const { return * (Vector2T<T> *) this; }
-    
+
     Vector2T<T> xy() const { return Vector2T<T>(x, y); }
   };
 
@@ -116,10 +118,10 @@ namespace Nimble {
 #endif
 #endif
 
-  template <class T> 
+  template <class T>
   Nimble::Vector3T<T> operator* (T s, const Nimble::Vector3T<T>& v)
   { return v * s; }
-  
+
 } // namespace
 
 template <class T>
@@ -151,8 +153,8 @@ template <class T>
 inline Nimble::Vector3T<T> cross(const Nimble::Vector3T<T>& a, const Nimble::Vector3T<T>& b)
 {
   Nimble::Vector3T<T> v((a[1]*b[2])-(a[2]*b[1]),
-		       -(a[0]*b[2])+(a[2]*b[0]),
-		       (a[0]*b[1])-(a[1]*b[0]));
+               -(a[0]*b[2])+(a[2]*b[0]),
+               (a[0]*b[1])-(a[1]*b[0]));
   return v;
 }
 

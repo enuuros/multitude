@@ -258,7 +258,7 @@ namespace Luminous
   }
 
   RenderContext::FBOHolder RenderContext::getTemporaryFBO
-      (Nimble::Vector2f basicsize, float scaling)
+      (Nimble::Vector2f basicsize, float scaling, uint32_t flags)
   {
     Nimble::Vector2i minimumsize = basicsize * scaling;
 
@@ -274,7 +274,14 @@ namespace Luminous
     for(Internal::FBOPackages::iterator it = m_data->m_fbos.begin();
     it != m_data->m_fbos.end(); it++) {
       fbo = (*it).ptr();
-      if(fbo->userCount() ||
+
+      if(flags & FBO_EXACT_SIZE) {
+        if(fbo->userCount() ||
+           fbo->m_tex.width() != minimumsize.x ||
+           fbo->m_tex.height() != minimumsize.y)
+          continue;
+      }
+      else if(fbo->userCount() ||
          fbo->m_tex.width() < minimumsize.x ||
          fbo->m_tex.height() < minimumsize.y ||
          fbo->m_tex.pixelCount() > maxpixels)
@@ -288,7 +295,10 @@ namespace Luminous
       // Nothing available, we need to create a new FBOPackage
       // info("Creating a new FBOPackage");
       fbo = new FBOPackage();
-      fbo->setSize(minimumsize + minimumsize / 4);
+      Vector2i useSize = minimumsize;
+      if(!(flags & FBO_EXACT_SIZE))
+        useSize += minimumsize / 4;
+      fbo->setSize(useSize);
       m_data->m_fbos.push_back(fbo);
 
       ret = FBOHolder(this, fbo);
@@ -374,7 +384,7 @@ namespace Luminous
   }
 
   void RenderContext::drawPolyLine(const Nimble::Vector2f * vertices, int n,
-				   float width, const float * rgba)
+                   float width, const float * rgba)
   {
     if(n < 2)
       return;
@@ -396,7 +406,7 @@ namespace Luminous
     Vector2 p01 = dir0.perpendicular();
 
     float len01 = p01.length();
-    
+
     if(len01 < 1.0e-5f)
       p01.make(1,0);
     else
@@ -423,14 +433,14 @@ namespace Luminous
       float l2 = dir2.length();
 
       if(l1 < 1.0e-5f)
-	dir1.make(1, 0);
+    dir1.make(1, 0);
       else
-	dir1 /= l1;
+    dir1 /= l1;
 
       if(l2 < 1.0e-5f)
-	dir2.make(1, 0);
+    dir2.make(1, 0);
       else
-	dir2 /= l2;
+    dir2 /= l2;
 
       Vector2 q = dir1.perpendicular();
 

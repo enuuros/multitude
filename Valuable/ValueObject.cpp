@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "ValueObject.hpp"
@@ -56,12 +56,12 @@ namespace Valuable
 
   std::string ValueObject::path() const
   {
-    if(m_parent) 
+    if(m_parent)
       return m_parent->path() + "/" + m_name;
-    
+
     return "/" + m_name;
   }
-  
+
   void ValueObject::processMessage(const char *, Radiant::BinaryData & )
   {
     Radiant::error("ValueObject::processMessage # Unimplemented for %s",
@@ -92,8 +92,32 @@ namespace Valuable
     processMessage(id, bd);
   }
 
+  void ValueObject::processMessageVector2(const char * id, Nimble::Vector2 v)
+  {
+    Radiant::BinaryData bd;
+    bd.writeVector2Float32(v);
+    bd.rewind();
+    processMessage(id, bd);
+  }
+
+  void ValueObject::processMessageVector3(const char * id, Nimble::Vector3 v)
+  {
+    Radiant::BinaryData bd;
+    bd.writeVector3Float32(v);
+    bd.rewind();
+    processMessage(id, bd);
+  }
+
+  void ValueObject::processMessageVector4(const char * id, Nimble::Vector4 v)
+  {
+    Radiant::BinaryData bd;
+    bd.writeVector4Float32(v);
+    bd.rewind();
+    processMessage(id, bd);
+  }
+
   float ValueObject::asFloat(bool * ok) const
-  {   
+  {
     if(ok) *ok = false;
     Radiant::error(
 "ValueObject::asFloat # %s : conversion not available", m_name.c_str());
@@ -116,7 +140,7 @@ namespace Valuable
     return "";
   }
 
-  DOMElement ValueObject::serializeXML(DOMDocument * doc) 
+  DOMElement ValueObject::serializeXML(DOMDocument * doc)
   {
     if(m_name.empty()) {
       Radiant::error(
@@ -128,7 +152,7 @@ namespace Valuable
     elem.setAttribute("type", type());
     elem.setTextContent(asString());
 
-    return elem;   
+    return elem;
   }
 
   void ValueObject::emitChange()

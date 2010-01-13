@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_VALUE_INT_HPP
@@ -46,6 +46,8 @@ namespace Valuable
     ValueIntT<T> & operator = (T i) { Base::m_value = i; VALUEMIT_STD_OP }
 
     operator const T & () const { return Base::m_value; }
+    /// Returns the data in its native format
+    const T & native() const { return Base::m_value; }
 
     ValueIntT<T> & operator |= (T i) { Base::m_value |= i; VALUEMIT_STD_OP }
     ValueIntT<T> & operator &= (T i) { Base::m_value &= i; VALUEMIT_STD_OP }
@@ -80,7 +82,7 @@ namespace Valuable
   typedef ValueIntT<uint32_t> ValueUInt32;
   typedef ValueIntT<int64_t> ValueInt64;
   typedef ValueIntT<uint64_t> ValueUInt64;
-  
+
   /// Time-stamp value object.
   typedef ValueIntT<Radiant::TimeStamp> ValueTimeStamp;
   /*

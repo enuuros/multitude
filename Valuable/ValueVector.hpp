@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_VALUE_VECTOR_HPP
@@ -30,7 +30,7 @@
 namespace Valuable
 {
 
-  /** A template class for vevctor values. 
+  /** A template class for vevctor values.
 
       This class is used to implement all the normal vector value
       objects.
@@ -47,17 +47,21 @@ namespace Valuable
       ValueVector<VectorType, ElementType, N> & operator =
       (const VectorType & v) { m_value = v; emitChange(); return *this; }
 
-      ValueVector<VectorType, ElementType, N> & operator += 
+      ValueVector<VectorType, ElementType, N> & operator +=
       (const VectorType & v) { m_value += v; emitChange(); return *this; }
-      ValueVector<VectorType, ElementType, N> & operator -= 
+      ValueVector<VectorType, ElementType, N> & operator -=
       (const VectorType & v) { m_value -= v; emitChange(); return *this; }
 
-    VectorType operator - 
+    VectorType operator -
       (const VectorType & v) const { return m_value - v; }
-    VectorType operator + 
+    VectorType operator +
       (const VectorType & v) const { return m_value + v; }
 
-      ElementType operator [] (int i) const { return m_value[i]; }      
+      ElementType operator [] (int i) const { return m_value[i]; }
+
+    /// Returns the data in its native format
+     const ElementType * native() const
+    { return m_value.data(); }
 
     virtual void processMessage(const char * id, Radiant::BinaryData & data);
     virtual bool deserializeXML(DOMElement element);

@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "BinaryData.hpp"
@@ -28,7 +28,7 @@
 #ifdef WIN32
 # include <WinPort.h>
 #endif
- 
+
 namespace Radiant {
 
   static bool __verbose = true;
@@ -117,14 +117,14 @@ namespace Radiant {
     getRef<int64_t>() = INT64_MARKER;
     getRef<int64_t>() = v;
   }
-  
+
   void BinaryData::writeTimeStamp(int64_t v)
   {
     ensure(12);
     getRef<int32_t>() = TS_MARKER;
     getRef<int64_t>() = v;
   }
-    
+
   void BinaryData::writeString(const char * s)
   {
     int len = strlen(s);
@@ -176,6 +176,15 @@ namespace Radiant {
     getRef<int32_t>() = VECTOR2I_MARKER;
     getRef<int>() = v[0];
     getRef<int>() = v[1];
+  }
+
+  void BinaryData::writeVector3Float32(Nimble::Vector3f v)
+  {
+    ensure(16);
+    getRef<int32_t>() = VECTOR3F_MARKER;
+    getRef<float>() = v[0];
+    getRef<float>() = v[1];
+    getRef<float>() = v[2];
   }
 
   void BinaryData::writeVector3Int32(Nimble::Vector3i v)
@@ -235,18 +244,18 @@ namespace Radiant {
       char * end = (char *) source;
       double d = strtod(m_buf + m_current, & end);
       if(end == (char *) source) {
-	if(ok)
-	  *ok = false;
+    if(ok)
+      *ok = false;
       }
       else {
-	return d;
+    return d;
       }
     }
     else if(ok)
       *ok = false;
 
     skipParameter(marker);
-    
+
     return 0.0f;
   }
 
@@ -284,7 +293,7 @@ namespace Radiant {
       *ok = false;
 
     skipParameter(marker);
-    
+
     return 0.0;
   }
 
@@ -385,7 +394,7 @@ namespace Radiant {
     skipParameter(marker);
     return 0;
   }
-  
+
   bool BinaryData::readString(char * str, int maxbytes)
   {
     int32_t marker = getRef<int32_t>();
@@ -403,7 +412,7 @@ namespace Radiant {
       str[0] = 0;
       return false;
     }
-    
+
     memcpy(str, source, len);
     str[len] = '\0';
 
@@ -465,7 +474,7 @@ namespace Radiant {
     skipParameter(marker);
 
     memcpy( ptr, source, Nimble::Math::Min(n, recv));
-    
+
     return n == recv;
   }
 
@@ -529,11 +538,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector2f(0, 0);
     }
-    
+
   }
 
   Nimble::Vector3f BinaryData::readVector3Float32(bool * ok)
@@ -557,11 +566,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector3f(0, 0, 0);
     }
-    
+
   }
 
   Nimble::Vector2i BinaryData::readVector2Int32(bool * ok)
@@ -582,11 +591,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector2f(0, 0);
     }
-    
+
   }
 
   Nimble::Vector3i BinaryData::readVector3Int32(bool * ok)
@@ -607,11 +616,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector3f(0, 0, 0);
     }
-    
+
   }
 
   Nimble::Vector4i BinaryData::readVector4Int32(bool * ok)
@@ -632,11 +641,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector4i(0, 0, 0, 1);
     }
-    
+
   }
 
 
@@ -661,11 +670,11 @@ namespace Radiant {
     else {
       skipParameter(marker);
       if(ok)
-	*ok = false;
+    *ok = false;
 
       return Nimble::Vector4f(0, 0, 0, 1);
     }
-    
+
   }
 
 
@@ -690,16 +699,16 @@ namespace Radiant {
     if(m_size < s) {
       if(s > 500000000) { // Not more than 500 MB at once, please
         Radiant::error("BinaryData::read # Attempting extraordinary read (%d bytes)", s);
-	return false;
+    return false;
       }
       ensure(s + 8);
       // m_size = s;
     }
-    
+
     int n = stream->read( & m_buf[0], s);
     if(n != (int) s) {
       error("BinaryData::read # buffer read failed (got %d != %d)",
-	    n, s);
+        n, s);
       return false;
     }
 
@@ -713,7 +722,7 @@ namespace Radiant {
   {
     if(!m_shared && m_buf)
       free(m_buf);
-    
+
     m_buf = (char *) data;
     m_size = capacity;
     m_shared = true;
@@ -724,8 +733,8 @@ namespace Radiant {
     unsigned need = m_current + bytes;
     if(need > m_size) {
       if(m_shared)
-	fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
-      
+    fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
+
       m_size = need + 128 + need / 16;
       m_buf = (char *) realloc(m_buf, m_size);
     }
@@ -735,7 +744,7 @@ namespace Radiant {
   void BinaryData::clear()
   {
     rewind();
-    
+
     bzero(data(), m_size);
   }
 
@@ -745,10 +754,10 @@ namespace Radiant {
        marker == FLOAT_MARKER)
       m_current += 4;
     else if(marker == INT64_MARKER ||
-	    marker == DOUBLE_MARKER ||
-	    marker == TS_MARKER ||
-	    marker == VECTOR2F_MARKER ||
-	    marker == VECTOR2I_MARKER)
+        marker == DOUBLE_MARKER ||
+        marker == TS_MARKER ||
+        marker == VECTOR2F_MARKER ||
+        marker == VECTOR2I_MARKER)
       m_current += 8;
     else if(marker == STRING_MARKER) {
       const char * str = & m_buf[m_current];
@@ -763,7 +772,7 @@ namespace Radiant {
       m_current += n;
     }
   }
-  
+
   int BinaryData::stringSpace(const char * str)
   {
     int len = strlen(str) + 1;
@@ -779,7 +788,7 @@ namespace Radiant {
     if(!__verbose)
       return;
     Radiant::error("%s # Not enough data available (at %u/%u)",
-		   func, m_current, m_total);
+           func, m_current, m_total);
   }
 
 }

@@ -23,8 +23,7 @@ using namespace std;
 namespace Luminous
 {
 
-  using Radiant::debug;
-  using Radiant::error;
+  using namespace Radiant;
 
   GLSLProgramObject::GLSLProgramObject(GLResources * resources)
       : GLResource(resources),
@@ -55,7 +54,7 @@ namespace Luminous
         error("GLSLProgramObject::addObject # compilation failed");
         return;
       } else {
-        // cerr << "ok." << endl;
+        debug("Shader compilation ok");
       }
     }
 
@@ -105,6 +104,8 @@ namespace Luminous
     }
 
     m_shaderObjects.clear();
+
+    m_isLinked = false;
   }
 
   const char* GLSLProgramObject::linkerLog()
@@ -306,6 +307,8 @@ namespace Luminous
       return false;
     }
 
+    info("GLSLProgramObject::loadStrings # %p %p", vsString, fsString);
+
     // Load & compile vertex shader
     GLSLShaderObject* vs = 0;
     if(vsString) {
@@ -344,6 +347,7 @@ namespace Luminous
             linkerLog());
       return false;
     }
+
 
     return true;
   }
