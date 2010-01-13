@@ -23,6 +23,7 @@
 #include <Radiant/VideoInput.hpp>
 
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
 
