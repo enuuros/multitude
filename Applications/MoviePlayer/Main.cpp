@@ -20,7 +20,7 @@
 
 #include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Trace.hpp>
-#include <ScreenPlay/VideoFFMPEG.hpp>
+#include <Screenplay/VideoFFMPEG.hpp>
 
 #include <QtGui/QApplication>
 

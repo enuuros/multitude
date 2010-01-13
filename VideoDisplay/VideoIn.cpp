@@ -24,6 +24,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <malloc.h>
 
 #include <map>
 
