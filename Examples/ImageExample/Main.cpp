@@ -1,10 +1,12 @@
-#include <SDL/SDL.h>
-
 
 #include <Luminous/Luminous.hpp>
 
+#include <SDL/SDL.h>
+
+#include <Luminous/GLResources.hpp>
 #include <Luminous/Image.hpp>
 #include <Luminous/Texture.hpp>
+#include <Luminous/Utils.hpp>
 
 int main(int argc, char ** argv)
 {
@@ -27,15 +29,14 @@ int main(int argc, char ** argv)
 
   Luminous::initLuminous();
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, 1, 0, 1, 0, 1);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  glViewport(0, 0, 400, 400);
+
+  Luminous::GLResources rsc(Radiant::ResourceLocator::instance());
+  Luminous::GLResources::setThreadResources( & rsc, 0, 0);
 
   Luminous::ImageInfo info;
   if(Luminous::Image::ping(file, info)) {
-    printf("%s : %d x %d\n", file, info.width, info.height); 
+    printf("%s : %d x %d\n", file, info.width, info.height);
   }
 
   Luminous::Image image;
@@ -44,16 +45,9 @@ int main(int argc, char ** argv)
     return 1;
   }
 
-  Luminous::Texture2D tex;
-  if(!tex.fromImage(image, false)) return 1;
-
-  tex.bind();
-
-  bool running = true;
-
-  while(running) {
+  for(bool running = true; running; ) {
     SDL_Event event;
-    
+
     if(SDL_PollEvent(&event)) {
       switch(event.type) {
       case SDL_QUIT:
@@ -62,28 +56,24 @@ int main(int argc, char ** argv)
       };
     }
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 400, 0, 400, 0, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
     glClearColor(1.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glEnable(GL_TEXTURE_2D);
-			
+    // glDisable(GL_TEXTURE_2D);
     glColor3f(1.f, 1.f, 1.f);
-    glBegin(GL_QUADS);
+    image.bind();
 
-    glTexCoord2f(0.f, 1.f);
-    glVertex2f(0.f, 0.f);
+    Luminous::Utils::glTexRect(50, 350, 350, 50);
 
-    glTexCoord2f(1.f, 1.f);
-    glVertex2f(1.f, 0.f);
+    Luminous::Utils::glCheck("Main.cpp");
 
-    glTexCoord2f(1.f, 0.f);
-    glVertex2f(1.f, 1.f);
-
-    glTexCoord2f(0.f, 0.f);
-    glVertex2f(0.f, 1.f);
-	
-    glEnd();
-	
     SDL_GL_SwapBuffers();
   }
 

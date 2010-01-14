@@ -57,7 +57,6 @@ int main(int argc, char ** argv)
   glLoadIdentity();
 
   Luminous::GLResources rsc(Radiant::ResourceLocator::instance());
-
   Luminous::GLResources::setThreadResources( & rsc, 0, 0);
   Luminous::Utils::glUsualBlend();
 
