@@ -18,6 +18,8 @@
 
 #include <Luminous/Export.hpp>
 
+#include <Radiant/Mutex.hpp>
+
 #include <set>
 
 namespace Luminous
@@ -87,6 +89,7 @@ namespace Luminous
 
     static int size() { return m_items.size(); }
 
+    static Radiant::MutexStatic & mutex();
   private:
 
     GarbageCollector();

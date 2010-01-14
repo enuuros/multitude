@@ -20,7 +20,6 @@
 
 namespace Luminous {
 
-  class GarbageCollector;
 
   /** Shared CPUMipmap storage. This class is used as an access point
       to load CPUMipmap objects from the hard-disk. */

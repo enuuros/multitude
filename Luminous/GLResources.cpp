@@ -255,11 +255,17 @@ namespace Luminous
   
   void GLResources::eraseOnce()
   {
+    GarbageCollector::mutex().lock();
     for(GarbageCollector::iterator it = GarbageCollector::begin();
-        it != GarbageCollector::end(); it++) {
+    it != GarbageCollector::end(); it++) {
+
+      GarbageCollector::mutex().unlock();
       const Collectable * key = GarbageCollector::getObject(it);
       eraseResource(key);
+
+      GarbageCollector::mutex().lock();
     }
+    GarbageCollector::mutex().unlock();
   }
 
 
