@@ -96,7 +96,7 @@ namespace VideoDisplay {
   void VideoIn::Frame::skipAudio(Radiant::TimeStamp amount,
                                  int channels, int samplerate)
   {
-    info("VideoIn::Frame::skipAudio # %lf %d %d", amount.secondsD(), channels,
+    debug("VideoIn::Frame::skipAudio # %lf %d %d", amount.secondsD(), channels,
          samplerate);
 
     if(amount <= 0)
@@ -388,7 +388,7 @@ namespace VideoDisplay {
       m_requestMutex.unlock();
 
       if(req.m_request != NO_REQUEST && req.m_request != FREE_MEMORY)
-        info("VideoIn::childLoop # REQ = %d p = %d",
+        debug("VideoIn::childLoop # REQ = %d p = %d",
               (int) req.m_request, (int) playing());
 
       if(req.m_request == START) {
@@ -523,7 +523,7 @@ namespace VideoDisplay {
   void VideoIn::pushRequest(const Req & r)
   {
     if(r.m_request != NO_REQUEST && r.m_request != FREE_MEMORY)
-      info("VideoIn::pushRequest # %d %lf", r.m_request, r.m_time.secondsD());
+      debug("VideoIn::pushRequest # %d %lf", r.m_request, r.m_time.secondsD());
 
     Radiant::Guard g( & m_requestMutex);
 

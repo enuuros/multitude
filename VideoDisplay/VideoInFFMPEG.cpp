@@ -313,7 +313,7 @@ namespace VideoDisplay {
         audioTS = audioTS2;
       }
 
-      info("ideoInFFMPEG::videoPlay # Forward one frame");
+      debug("ideoInFFMPEG::videoPlay # Forward one frame");
 
       if(m_frameTime >= pos) {
 
@@ -332,6 +332,8 @@ namespace VideoDisplay {
         return;
       }
     }
+
+    endOfFile();
   }
 
   void VideoInFFMPEG::videoGetNextFrame()
