@@ -16,12 +16,15 @@
 #ifndef LUMINOUS_RENDERCONTEXT_HPP
 #define LUMINOUS_RENDERCONTEXT_HPP
 
+#include <Luminous/Luminous.hpp>
 #include <Luminous/Transformer.hpp>
 #include <Luminous/GLResource.hpp>
 #include <Luminous/GLResources.hpp>
 #include <Luminous/Export.hpp>
+#include <Luminous/VertexBuffer.hpp>
 
 #include <Nimble/Rect.hpp>
+#include <Nimble/Vector2.hpp>
 
 namespace Luminous
 {
@@ -137,6 +140,22 @@ namespace Luminous
     void drawTexRect(Nimble::Vector2 size, const float * rgba,
                      Nimble::Vector2 texUV);
 
+    // render function implemented with VBO. Work in progress!!!
+    /// @todo more primitives?
+    void renderVBO();
+    void updateVBO();
+    void drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba);
+    void drawRectVBO(const Nimble::Rectf & rect, const float * rgba);
+    void drawCircleVBO(Nimble::Vector2f center, float radius,
+                    const float * rgba, int segments = -1);
+    void drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
+                      float width, const float * rgba);
+    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba);
+    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
+                     const Nimble::Rect & texUV);
+    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
+                     Nimble::Vector2 texUV);
+
     /// Sets the current blend function, and enables blending
     /** If the function is BLEND_NONE, then blending is disabled. */
     void setBlendFunc(BlendFunc f);
@@ -148,6 +167,14 @@ namespace Luminous
     void clearTemporaryFBO(FBOPackage * fbo);
 
     Luminous::GLResources * m_resources;
+
+    std::vector<Nimble::Vector4f> m_vertices;
+    std::vector<Nimble::Vector4f> m_colors;
+    std::vector<GLuint>           m_indices;
+
+    Luminous::VertexBuffer m_vb;
+    Luminous::IndexBuffer  m_ib;
+    Luminous::VertexBuffer m_cb;
 
     class Internal;
     Internal * m_data;

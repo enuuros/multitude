@@ -28,6 +28,7 @@ namespace Luminous
 
   using namespace Nimble;
   using namespace Radiant;
+  using namespace Luminous;
 
   class RenderContext::FBOPackage : public GLResource
   {
@@ -546,6 +547,130 @@ namespace Luminous
                                   Nimble::Vector2 texUV)
   {
     drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
+  }
+
+  void RenderContext::renderVBO()
+  {
+    updateVBO();
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
+
+    m_cb.bind();
+    glColorPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(0));
+
+    m_ib.bind();
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_cb.unbind();
+    m_vb.unbind();
+
+    // clear previous content
+    m_vertices.clear();
+    m_colors.clear();
+    m_indices.clear();
+  }
+  void RenderContext::updateVBO()
+  {
+    using namespace Luminous;
+
+    Radiant::trace(Radiant::DEBUG, "ALLOCATED VB FOR %u VERTICES & %u INDICES", m_vertices.size(), m_indices.size());
+
+    // Allocate memory
+    size_t vertexBytes = sizeof(float) * 2 * m_vertices.size();
+    m_vb.allocate(vertexBytes, VertexBuffer::DYNAMIC_DRAW);
+    size_t colorBytes = sizeof(GLuint) * 4 * m_colors.size();
+    m_cb.allocate(colorBytes, VertexBuffer::DYNAMIC_DRAW);
+    size_t indexBytes = sizeof(GLuint) * m_indices.size();
+    m_ib.allocate(indexBytes, IndexBuffer::DYNAMIC_DRAW);
+
+    // Compute vertex locations and upload them to GPU
+    float * vp = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
+    float * cp = static_cast<float *> (m_cb.map(VertexBuffer::WRITE_ONLY));
+    GLuint * ip = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
+
+    for(size_t i = 0; i < m_vertices.size(); i++)
+    {
+      *(vp++) = m_vertices[i].x;
+      *(vp++) = m_vertices[i].y;
+    }
+
+    for(size_t i = 0; i < m_colors.size(); i++)
+    {
+      *(cp++) = m_colors[i].x;
+      *(cp++) = m_colors[i].y;
+      *(cp++) = m_colors[i].z;
+      *(cp++) = m_colors[i].w;
+    }
+
+    for(size_t i = 0; i < m_indices.size(); i++)
+    {
+      *(ip++) = m_indices[i];
+    }
+
+    m_vb.unmap();
+    m_cb.unmap();
+    m_ib.unmap();
+  }
+
+  void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
+  {
+  }
+
+  // Testing
+  void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
+  {
+    Vector2f size = rect.size();
+    Matrix3 m = transform() * Matrix3::translate2D(rect.low());
+
+    Vector4f color(rgba);
+
+    const Vector4 v[4] = {
+      Luminous::Utils::project(m, Vector2(0, 0)),
+      Luminous::Utils::project(m, Vector2(size.x, 0)),
+      Luminous::Utils::project(m, Vector2(size.x, size.y)),
+      Luminous::Utils::project(m, Vector2(0,      size.y))
+    };
+
+    int vertexCount = m_vertices.size();
+
+    m_vertices.push_back(v[0]);
+    m_vertices.push_back(v[1]);
+    m_vertices.push_back(v[2]);
+    m_vertices.push_back(v[3]);
+
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+
+    m_indices.push_back(vertexCount);
+    m_indices.push_back(vertexCount + 1);
+    m_indices.push_back(vertexCount + 2);
+    m_indices.push_back(vertexCount);
+    m_indices.push_back(vertexCount + 2);
+    m_indices.push_back(vertexCount + 3);
+  }
+
+  void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,
+                    const float * rgba, int segments)
+  {
+  }
+  void RenderContext::drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
+                      float width, const float * rgba)
+  {
+  }
+  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
+  {
+  }
+  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
+                     const Nimble::Rect & texUV)
+  {
+  }
+  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
+                     Nimble::Vector2 texUV)
+  {
   }
 
   void RenderContext::setBlendFunc(BlendFunc f)
