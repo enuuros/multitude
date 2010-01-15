@@ -78,6 +78,8 @@ namespace VideoDisplay {
       void copyAudio(const void * audio, int channels, int frames,
                      Radiant::AudioSampleFormat format,
                      Radiant::TimeStamp ts);
+      void skipAudio(Radiant::TimeStamp amount,
+                     int channels, int samplerate);
 
       Radiant::VideoImage m_image;
       Radiant::TimeStamp m_time;
@@ -226,6 +228,8 @@ namespace VideoDisplay {
     float          m_fps;
     bool           m_done;
     bool           m_ending;
+    bool           m_decoding;
+    bool           m_atEnd;
 
     std::string    m_name;
 
@@ -244,21 +248,8 @@ namespace VideoDisplay {
   private:
     /// Disabled
     VideoIn(const VideoIn & ) : Radiant::Thread() {}
-    void pushRequest(const Req & r)
-    {
-      Radiant::Guard g( & m_requestMutex);
+    void pushRequest(const Req & r);
 
-      if(m_queuedRequests &&
-         (m_queuedRequests > m_consumedRequests)) {
-        Req & prev = m_requests[(m_queuedRequests-1) % REQUEST_QUEUE_SIZE];
-        if(r.m_request == prev.m_request) {
-          prev.m_time = r.m_time;
-        }
-      }
-
-      m_requests[m_queuedRequests % REQUEST_QUEUE_SIZE] = r;
-      m_queuedRequests++;
-    }
   };
 
 }

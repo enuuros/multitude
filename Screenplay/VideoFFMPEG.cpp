@@ -85,7 +85,7 @@ namespace Screenplay {
       __instancecount++;
       tmp = __instancecount;
     }
-    info("VideoInputFFMPEG::VideoInputFFMPEG # Instance count at %d", tmp);
+    debug("VideoInputFFMPEG::VideoInputFFMPEG # Instance count at %d", tmp);
   }
 
   VideoInputFFMPEG::~VideoInputFFMPEG()
@@ -100,7 +100,7 @@ namespace Screenplay {
       __instancecount--;
       tmp = __instancecount;
     }
-    info("VideoInputFFMPEG::~VideoInputFFMPEG # Instance count at %d", tmp);
+    debug("VideoInputFFMPEG::~VideoInputFFMPEG # Instance count at %d", tmp);
   }
 
   const Radiant::VideoImage * VideoInputFFMPEG::captureImage()

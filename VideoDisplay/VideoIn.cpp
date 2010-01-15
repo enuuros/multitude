@@ -25,7 +25,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
+// #include <malloc.h>
 
 #include <map>
 
@@ -93,6 +93,29 @@ namespace VideoDisplay {
     m_audioTS = ts;
   }
 
+  void VideoIn::Frame::skipAudio(Radiant::TimeStamp amount,
+                                 int channels, int samplerate)
+  {
+    info("VideoIn::Frame::skipAudio # %lf %d %d", amount.secondsD(), channels,
+         samplerate);
+
+    if(amount <= 0)
+      return;
+
+    int takeframes = amount.secondsD() * samplerate;
+
+    if(takeframes >= m_audioFrames) {
+      m_audioFrames = 0;
+      m_audioTS = 0;
+      return;
+    }
+    int takesamples = takeframes * channels;
+    int leftsamples = m_audioFrames * channels - takesamples;
+    memmove(m_audio, m_audio + takesamples, leftsamples * sizeof(float));
+
+    m_audioFrames -= takeframes;
+    m_audioTS += amount;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -122,6 +145,8 @@ namespace VideoDisplay {
       m_fps(30.0),
       m_done(false),
       m_ending(false),
+      m_decoding(true),
+      m_atEnd(false),
       m_consumedRequests(0),
       m_queuedRequests(0),
       m_listener(0),
@@ -215,7 +240,14 @@ namespace VideoDisplay {
   {
     debug("VideoIn::play");
 
-    pushRequest(Req(START, pos < 0 ? m_frameTime : pos));
+    if(pos < 0) {
+      pos = m_frameTime;
+      if(m_atEnd)
+        pos = 0;
+    }
+
+
+    pushRequest(Req(START, pos));
 
     return true;
   }
@@ -228,6 +260,18 @@ namespace VideoDisplay {
       return;
 
     pushRequest(Req(STOP));
+    // m_decoding = false;
+
+    /* Wake up the decoder thread that might be (stuck) in the putFrame.*/
+    if(m_decodedFrames > 10) {
+      while(m_consumedFrames < m_decodedFrames - 10) {
+        m_consumedFrames++;
+      }
+      while(m_consumedAuFrames < m_decodedFrames - 10) {
+        m_consumedAuFrames++;
+      }
+      m_vcond.wakeAll();
+    }
 
   }
 
@@ -343,11 +387,13 @@ namespace VideoDisplay {
       }
       m_requestMutex.unlock();
 
-      if(req.m_request != NO_REQUEST)
-        debug("VideoIn::childLoop # REQ = %d p = %d",
+      if(req.m_request != NO_REQUEST && req.m_request != FREE_MEMORY)
+        info("VideoIn::childLoop # REQ = %d p = %d",
               (int) req.m_request, (int) playing());
 
       if(req.m_request == START) {
+        m_decoding = true;
+        m_atEnd = false;
         videoPlay(req.m_time);
         m_playing = true;
       }
@@ -474,4 +520,25 @@ namespace VideoDisplay {
     }
   }
 
+  void VideoIn::pushRequest(const Req & r)
+  {
+    if(r.m_request != NO_REQUEST && r.m_request != FREE_MEMORY)
+      info("VideoIn::pushRequest # %d %lf", r.m_request, r.m_time.secondsD());
+
+    Radiant::Guard g( & m_requestMutex);
+
+    if(m_queuedRequests &&
+       (m_queuedRequests > m_consumedRequests)) {
+      Req & prev = m_requests[(m_queuedRequests-1) % REQUEST_QUEUE_SIZE];
+
+      if(r.m_request == prev.m_request) {
+        // override the previous request, so we do not spam the decoder.
+        prev.m_time = r.m_time;
+        return;
+      }
+    }
+
+    m_requests[m_queuedRequests % REQUEST_QUEUE_SIZE] = r;
+    m_queuedRequests++;
+  }
 }

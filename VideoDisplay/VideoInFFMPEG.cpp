@@ -15,7 +15,6 @@
 
 #include "VideoInFFMPEG.hpp"
 
-// #include <Radiant/PlatformUtils.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <map>
@@ -31,6 +30,8 @@ namespace VideoDisplay {
     Radiant::VideoImage m_firstFrame;
     int   m_channels;
     float m_duration;
+    /* Can be used later on to drop frames out of memory selectively. */
+    Radiant::TimeStamp m_used;
   };
 
   /* Here we cache the first frames off all viedos. */
@@ -46,6 +47,8 @@ namespace VideoDisplay {
 
     if(it == __ffcache.end())
       return 0;
+
+    (*it).second.m_used = Radiant::TimeStamp::getTime();
 
     return & (*it).second;
   }
@@ -192,7 +195,7 @@ namespace VideoDisplay {
       vi2.m_firstFrame.allocateMemory(*img);
       vi2.m_firstFrame.copyData(*img);
       vi2.m_channels = m_channels;
-
+      vi2.m_used = Radiant::TimeStamp::getTime();
     }
 
     video.close();
@@ -234,7 +237,7 @@ namespace VideoDisplay {
   void VideoInFFMPEG::videoPlay(Radiant::TimeStamp pos)
   {
 
-    debug("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
+    info("VideoInFFMPEG::videoPlay # %lf", pos.secondsD());
 
     if(!m_video.open(m_name.c_str(), m_flags)) {
       endOfFile();
@@ -252,13 +255,21 @@ namespace VideoDisplay {
 
     if(pos > 0) {
 
-      if(pos.secondsD() >= m_video.durationSeconds() - 2.5)
-        pos = 0;
-      else
-        m_video.seekPosition(pos.secondsD());
+      if(pos.secondsD() >= (m_video.durationSeconds() - 2.5)) {
+        ; // pos = 0;
+      }
+      else if(pos.secondsD() > 1.5) {
+        m_video.seekPosition(TimeStamp(pos - Radiant::TimeStamp::createSecondsD(1.2)).
+                             secondsD());
+      }
     }
 
     const VideoImage * img = m_video.captureImage();
+    m_frameTime = m_video.frameTime();
+
+    int aframes = 0;
+    const void * audio = m_video.captureAudio( & aframes);
+    Radiant::TimeStamp audioTS = m_video.audioTime();
 
     if(!img) {
       debug("VideoInFFMPEG::videoPlay # Image capture failed \"%s\"",
@@ -267,21 +278,60 @@ namespace VideoDisplay {
       return;
     }
 
-    m_frameTime = m_video.frameTime();
+    if(pos == 0) {
 
-    Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime(), true);
+      Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime(), true);
 
-    int aframes = 0;
-    const void * audio = m_video.captureAudio( & aframes);
-
-    if(aframes && f) {
-      Radiant::Guard g(mutex());
-      f->copyAudio(audio, m_channels, aframes, m_auformat, m_video.audioTime());
-      m_audioCount = 1;
-      ignorePreviousFrames();
+      if(aframes && f) {
+        Radiant::Guard g(mutex());
+        f->copyAudio(audio, m_channels, aframes, m_auformat, audioTS);
+        m_audioCount = 1;
+        ignorePreviousFrames();
+      }
+      return;
     }
 
-    debug("VideoInFFMPEG::videoPlay # EXIT OK %d %p", aframes, f);
+    for(int tries = 0; tries < 100; tries++) {
+      img = m_video.captureImage();
+      m_frameTime = m_video.frameTime();
+
+      if(!img) {
+        debug("VideoInFFMPEG::videoPlay # Image capture failed in scan \"%s\"",
+              m_name.c_str());
+        endOfFile();
+        return;
+      }
+
+      int aframes2 = 0;
+      const void * audio2 = m_video.captureAudio( & aframes2);
+      Radiant::TimeStamp audioTS2 = m_video.audioTime();
+
+      if(aframes2) {
+        // Take pointers to the latest audio data.
+        aframes = aframes2;
+        audio = audio2;
+        audioTS = audioTS2;
+      }
+
+      info("ideoInFFMPEG::videoPlay # Forward one frame");
+
+      if(m_frameTime >= pos) {
+
+        Frame * f = putFrame(img, FRAME_STREAM, 0, m_video.frameTime(), true);
+
+        if(aframes && f) {
+          Radiant::Guard g(mutex());
+          f->copyAudio(audio, m_channels, aframes, m_auformat, audioTS);
+          f->skipAudio(m_frameTime - audioTS, m_channels, 44100);
+          m_audioCount = 1;
+          ignorePreviousFrames();
+
+          debug("VideoInFFMPEG::videoPlay # EXIT OK %d %p", aframes, f);
+        }
+
+        return;
+      }
+    }
   }
 
   void VideoInFFMPEG::videoGetNextFrame()
@@ -345,5 +395,6 @@ namespace VideoDisplay {
   {
     m_finalFrames = m_decodedFrames;
     m_playing = false;
+    m_atEnd = true;
   }
 }
