@@ -51,17 +51,17 @@ namespace Luminous
   }
 
   Image::Image()
-    : m_width(0),
-    m_height(0),
-    m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
-    m_data(0)
+      : m_width(0),
+      m_height(0),
+      m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
+      m_data(0)
   {}
 
   Image::Image(const Image& img)
-    : m_width(0),
-    m_height(0),
-    m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
-    m_data(0)
+      : m_width(0),
+      m_height(0),
+      m_pixelFormat(PixelFormat::LAYOUT_UNKNOWN, PixelFormat::TYPE_UNKNOWN),
+      m_data(0)
   {
     allocate(img.m_width, img.m_height, img.m_pixelFormat);
 
@@ -145,7 +145,7 @@ namespace Luminous
 
           for(int c = 0; c < 3; c++) {
             float val =
-              (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 + (*v11) * fw11;
+                (*v00) * fw00 +  (*v10) * fw10 +  (*v01) * fw01 + (*v11) * fw11;
 
             *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 
@@ -217,8 +217,8 @@ namespace Luminous
 
           for(int c = 0; c < 3; c++) {
             float val =
-              ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
-               (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
+                ((*v00) * fw00 * a00 +  (*v10) * fw10 * a10 +
+                 (*v01) * fw01 * a01 +  (*v11) * fw11 * a11) * ascale;
 
             *dest = uint8_t(Nimble::Math::Min((int) (val + 0.5f), 255));
 
@@ -269,7 +269,7 @@ namespace Luminous
       h--;
 
     if(source.pixelFormat() == PixelFormat::alphaUByte() ||
-        source.pixelFormat() == PixelFormat::luminanceUByte()) {
+       source.pixelFormat() == PixelFormat::luminanceUByte()) {
 
       allocate(w, h, source.pixelFormat());
 
@@ -435,8 +435,8 @@ namespace Luminous
   bool Image::hasAlpha() const
   {
     return (m_pixelFormat.layout() == PixelFormat::LAYOUT_ALPHA) ||
-      (m_pixelFormat.layout() == PixelFormat::LAYOUT_LUMINANCE_ALPHA) ||
-      (m_pixelFormat.layout() == PixelFormat::LAYOUT_RGBA);
+        (m_pixelFormat.layout() == PixelFormat::LAYOUT_LUMINANCE_ALPHA) ||
+        (m_pixelFormat.layout() == PixelFormat::LAYOUT_RGBA);
   }
 
   void Image::makeValidTexture()
@@ -451,7 +451,7 @@ namespace Luminous
 
 
   Image& Image::operator = (const Image& img)
-  {
+                           {
     allocate(img.m_width, img.m_height, img.m_pixelFormat);
 
     unsigned int bytes = m_width * m_height * m_pixelFormat.numChannels();
@@ -480,7 +480,7 @@ namespace Luminous
         m_data = 0;
     }
   }
-/*
+  /*
   // Guess the filetype from the extension
   static Image::ImageType typeFromFileExt(const std::string & filename)
   {
@@ -547,7 +547,7 @@ namespace Luminous
   }
 
   void Image::fromData(const unsigned char * bytes, int width, int height,
-      PixelFormat format)
+                       PixelFormat format)
   {
 
     allocate(width, height, format);
@@ -567,7 +567,7 @@ namespace Luminous
     m_width = 0;
     m_height = 0;
     m_pixelFormat = PixelFormat(PixelFormat::LAYOUT_UNKNOWN,
-        PixelFormat::TYPE_UNKNOWN);
+                                PixelFormat::TYPE_UNKNOWN);
   }
   /*
      void Image::scale(int reqWidth, int reqHeight, bool keepAspectRatio, Image& dest) const
@@ -624,64 +624,74 @@ dest = *this;
 #endif
 }
 */
-/// @todo currently ignores alpha channel
-void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
-{
-  int begX = (int)x1;
-  int begY = (int)y1;
-  int endX = (int)x2;
-  int endY = (int)y2;
+  /// @todo currently ignores alpha channel
+  void Image::sample(float x1, float y1, float x2, float y2, Image & dest, int destX, int destY) const
+  {
+    int begX = (int)x1;
+    int begY = (int)y1;
+    int endX = (int)x2;
+    int endY = (int)y2;
 
-  int nc = m_pixelFormat.numChannels();
+    int nc = m_pixelFormat.numChannels();
 
-  for(int y = begY; y < endY; y++) {
-    for(int x = begX; x < endX; x++) {
+    for(int y = begY; y < endY; y++) {
+      for(int x = begX; x < endX; x++) {
 
-      float w = computeWeight(x, y, x1, y1, x2, y2);
+        float w = computeWeight(x, y, x1, y1, x2, y2);
 
-      assert(w > 0.0f && w <= 1.0f);
+        assert(w > 0.0f && w <= 1.0f);
 
-      unsigned int dstOffset = destY * dest.width() + destX;
-      unsigned int srcOffset = y * m_width + x;
+        unsigned int dstOffset = destY * dest.width() + destX;
+        unsigned int srcOffset = y * m_width + x;
 
-      for(int c = 0; c < nc; c++)
-        dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
+        for(int c = 0; c < nc; c++)
+          dest.m_data[nc * dstOffset + c] += (unsigned char)(w * m_data[nc * srcOffset + c]);
+      }
     }
   }
-}
 
 
-float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2) const
-{
-  float sx = (x < x1 ? x1 : x);
-  float sy = (y < y1 ? y1 : y);
+  float Image::computeWeight(int x, int y, float x1, float y1, float x2, float y2) const
+  {
+    float sx = (x < x1 ? x1 : x);
+    float sy = (y < y1 ? y1 : y);
 
-  x++; y++;
+    x++; y++;
 
-  float ex = (x < x2 ? x : x2);
-  float ey = (y < y2 ? y : y2);
+    float ex = (x < x2 ? x : x2);
+    float ey = (y < y2 ? y : y2);
 
-  return (ex - sx) * (ey - sy);
-}
+    return (ex - sx) * (ey - sy);
+  }
 
-bool Image::ping(const char * filename, ImageInfo & info)
-{
-  bool result = false;
+  bool Image::ping(const char * filename, ImageInfo & info)
+  {
+    bool result = false;
 
-  FILE * file = fopen(filename, "rb");
-  if(!file) {
-    Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
+    FILE * file = fopen(filename, "rb");
+    if(!file) {
+      Radiant::error("Image::ping # failed to open file '%s' for reading.", filename);
+      return result;
+    }
+
+    ImageCodec * codec = codecs()->getCodec(filename, file);
+    if(codec) {
+      result = codec->ping(info, file);
+    }
+
+    fclose(file);
+
     return result;
   }
 
-  ImageCodec * codec = codecs()->getCodec(filename, file);
-  if(codec) {
-    result = codec->ping(info, file);
+  void Image::bind(GLenum textureUnit, bool withmimaps)
+  {
+    Texture2D & tex = ref();
+    tex.bind(textureUnit);
+
+    if(tex.width() != width() ||
+       tex.height() != height())
+      tex.loadImage(*this, withmimaps);
   }
-
-  fclose(file);
-
-  return result;
-}
 
 }
