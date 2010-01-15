@@ -230,6 +230,7 @@ namespace VideoDisplay {
     /** Returns true if this video has been loaded with subtitles. */
     bool hasSubTitles() { return m_subTitles.size() != 0; }
 
+    /// Returns the currently used filename
     const std::string & filename() const { return m_filename; }
 
     /// Adjusts the contrast

@@ -114,7 +114,6 @@ namespace VideoDisplay {
       m_channels(0),
       m_sample_rate(44100),
       m_auformat(ASF_INT16),
-
       m_auBufferSize(0),
       m_auFrameBytes(0),
       m_continue(true),
@@ -122,7 +121,9 @@ namespace VideoDisplay {
       m_amutex(false, false, false),
       m_fps(30.0),
       m_done(false),
-      m_request(NO_REQUEST),
+      m_ending(false),
+      m_consumedRequests(0),
+      m_queuedRequests(0),
       m_listener(0),
       m_mutex(false, false, false)
   {
@@ -214,13 +215,7 @@ namespace VideoDisplay {
   {
     debug("VideoIn::play");
 
-    Guard g( & m_requestMutex);
-
-    m_request = START;
-    if(pos < 0)
-      m_requestTime = m_frameTime;
-    else
-      m_requestTime = pos;
+    pushRequest(Req(START, pos < 0 ? m_frameTime : pos));
 
     return true;
   }
@@ -232,20 +227,16 @@ namespace VideoDisplay {
     if(!m_continue && !isRunning())
       return;
 
-    Guard g( & m_requestMutex);
+    pushRequest(Req(STOP));
 
-    m_request = STOP;
-    m_requestTime = 0;
   }
 
   bool VideoIn::seek(Radiant::TimeStamp pos)
   {
     debug("VideoIn::seek");
 
-    Guard g( & m_requestMutex);
 
-    m_request = SEEK;
-    m_requestTime = pos;
+    pushRequest(Req(SEEK, pos));
 
     return true;
   }
@@ -254,8 +245,7 @@ namespace VideoDisplay {
   {
     Guard g( & m_requestMutex);
 
-    m_request = FREE_MEMORY;
-    m_requestTime = 0;
+    pushRequest(Req(FREE_MEMORY));
 
   }
 
@@ -342,29 +332,36 @@ namespace VideoDisplay {
     while(m_continue) {
 
       m_requestMutex.lock();
-      Request r = m_request;
-      TimeStamp rt = m_requestTime;
-      m_request = NO_REQUEST;
+      Req req;
+
+      if(m_consumedRequests >= m_queuedRequests) {
+        ;
+      }
+      else {
+        req = m_requests[m_consumedRequests % REQUEST_QUEUE_SIZE];
+        m_consumedRequests++;
+      }
       m_requestMutex.unlock();
 
-      if(r != NO_REQUEST)
-        debug("VideoIn::childLoop # REQ = %d p = %d",(int) r, (int) playing());
+      if(req.m_request != NO_REQUEST)
+        debug("VideoIn::childLoop # REQ = %d p = %d",
+              (int) req.m_request, (int) playing());
 
-      if(r == START) {
-        videoPlay(rt);
+      if(req.m_request == START) {
+        videoPlay(req.m_time);
         m_playing = true;
       }
-      else if(r == STOP) {
+      else if(req.m_request == STOP) {
         videoStop();
         m_playing = false;
       }
-      else if(r == SEEK) {
+      else if(req.m_request == SEEK) {
         if(playing())
-          videoPlay(rt);
+          videoPlay(req.m_time);
         else
-          videoGetSnapshot(rt);
+          videoGetSnapshot(req.m_time);
       }
-      else if(r == FREE_MEMORY) {
+      else if(req.m_request == FREE_MEMORY) {
         freeFreeableMemory();
       }
       else if(playing())

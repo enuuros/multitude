@@ -123,10 +123,12 @@ namespace Screenplay {
 
       if(ret < 0) {
 
+        /* In the following we do not free the packet, since the read failed. Hope
+           this is the correct behavior. */
         debug("VideoInputFFMPEG::captureImage ret < 0 %x", m_flags);
 
         if(! (m_flags & DO_LOOP)) {
-          av_free_packet(m_pkt);
+          // av_free_packet(m_pkt);
           return 0;
         }
         else {
@@ -134,10 +136,10 @@ namespace Screenplay {
           m_offsetTS = m_lastTS;
           av_seek_frame(m_ic, -1, (int64_t) 0, 0);
 
-          av_free_packet(m_pkt);
+          // av_free_packet(m_pkt);
           ret = av_read_packet(m_ic, m_pkt);
           if(ret < 0) {
-            av_free_packet(m_pkt);
+            // av_free_packet(m_pkt);
             return 0;
           }
         }
@@ -265,12 +267,12 @@ namespace Screenplay {
         double rate = av_q2d(time_base);
         double secs = pts * rate;
 
-        /*
-    debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf tb = %ld/%ld",
-          aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts,
+
+        debug("VideoInputFFMPEG::captureImage # af = %d ab = %d ppts = %d, pdts = %d afr = %d secs = %lf tb = %ld/%ld",
+              aframes, m_audioFrames, (int) m_pkt->pts, (int) m_pkt->dts,
               (int) m_acontext->frame_number, secs,
-          (long) time_base.num, (long) time_base.den);
-    */
+              (long) time_base.num, (long) time_base.den);
+
         if(aframes > 10000)
           pts = m_capturedAudio;
 
@@ -500,6 +502,8 @@ namespace Screenplay {
     m_flags = 0;
     m_lastPts = 0;
     m_fileName = filename;
+    m_audioTS = 0;
+    m_audioFrames = 0;
 
     if(flags & Radiant::MONOPHONIZE_AUDIO)
       m_flags |= Radiant::MONOPHONIZE_AUDIO;

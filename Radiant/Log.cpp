@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "Log.hpp"
@@ -37,7 +37,7 @@ namespace Radiant {
     void add(const char * msg)
     {
       if(!m_file)
-	return;
+        return;
       Guard g( & m_mutex);
       m_messages.push_back(msg);
     }
@@ -47,38 +47,38 @@ namespace Radiant {
       FILE * old = (FILE *) m_file;
       m_file = f;
       if(old)
-	fclose(old);
+        fclose(old);
     }
-    
+
   protected:
 
     virtual void childLoop()
     {
       while(true) {
-	m_ready = true;
-	Sleep::sleepS(1);
-	Guard g( & m_mutex);
-	
-	for(container::iterator it = m_messages.begin();
-	    it != m_messages.end(); it++) {
-	 
-	  if(m_file) {
-	    DateTime dt((*it).m_time);
-	    
-	    sprintf(m_buf, "%.2d/%.2d/%.4d,%.2d:%.2d:%.2d.%.3d",
-		    dt.monthDay() + 1, dt.month() + 1, dt.year(),
-		    dt.hour(), dt.minute(), dt.second(), dt.milliSecond());
+        m_ready = true;
+        Sleep::sleepS(1);
+        Guard g( & m_mutex);
 
-	    fprintf((FILE *) m_file, "%s,%s\n", m_buf, (*it).m_str.c_str());
-	    
-	    // info("LOG: %s", m_buf);
-	  }
-	}
-	
-	m_messages.clear();
+        for(container::iterator it = m_messages.begin();
+        it != m_messages.end(); it++) {
+
+          if(m_file) {
+            DateTime dt((*it).m_time);
+
+            sprintf(m_buf, "%.2d/%.2d/%.4d,%.2d:%.2d:%.2d.%.3d",
+                    dt.monthDay() + 1, dt.month() + 1, dt.year(),
+                    dt.hour(), dt.minute(), dt.second(), dt.milliSecond());
+
+            fprintf((FILE *) m_file, "%s,%s\n", m_buf, (*it).m_str.c_str());
+
+            // info("LOG: %s", m_buf);
+          }
+        }
+
+        m_messages.clear();
       }
     }
-    
+
   private:
 
     class Item
@@ -90,9 +90,9 @@ namespace Radiant {
     };
     typedef std::list<Item> container;
     container m_messages;
-    
+
     MutexAuto m_mutex;
-    
+
     volatile FILE * m_file;
     volatile bool   m_ready;
     char m_buf[4096];
@@ -107,9 +107,9 @@ namespace Radiant {
       __logthread = new LogThread();
       __logthread->run();
     }
-    
+
   }
-  
+
   bool Log::setLogFile(const char * logfile)
   {
     makeThread();

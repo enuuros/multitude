@@ -163,7 +163,7 @@ namespace VideoDisplay {
       m_availAudio = f->m_audioFrames;
       Radiant::debug("AudioTransfer::process # taking audio %d %d",
                      m_availAudio, m_videoFrame);
-      m_baseTS = f->m_audioTS - Radiant::TimeStamp::createSecondsD(f->m_audioFrames / 44100.0f);
+      m_baseTS = f->m_audioTS; // - Radiant::TimeStamp::createSecondsD(f->m_audioFrames / 44100.0f);
     }
 
     int take  = Nimble::Math::Min(n, m_availAudio);
@@ -209,7 +209,7 @@ namespace VideoDisplay {
       m_availAudio = f->m_audioFrames;
 
       if(m_availAudio) {
-        m_baseTS = f->m_audioTS - Radiant::TimeStamp::createSecondsD(f->m_audioFrames / 44100.0f);
+        m_baseTS = f->m_audioTS; // - Radiant::TimeStamp::createSecondsD(f->m_audioFrames / 44100.0f);
         m_sinceBase = 0;
       }
 

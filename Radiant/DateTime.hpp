@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_DATETIME_HPP
@@ -22,7 +22,7 @@
 namespace Radiant {
 
   /** Combination of date and time information. */
-  
+
   class RADIANT_API DateTime
   {
   public:
@@ -69,22 +69,23 @@ namespace Radiant {
     void toNextMonth();
     void toNextMonthDay();
     bool fromString(const std::string & s, DateFormat format = DATE_ISO);
-    
+
     /** Returns the number of days in the month. This function does
-	take the leap years into account, so the length of Febuary changes
-	between 28 and 29 days, depending on the year. 
-	
-	@todo Make the leap-year calculations take the loonger cycles
-	into account.
+    take the leap years into account, so the length of Febuary changes
+    between 28 and 29 days, depending on the year.
+
+    @todo Make the leap-year calculations take the loonger cycles
+    into account.
     */
     static int daysInMonth(int month, int year);
 
     /** Returns the number of days in the current month. This method
-	takes the leap-years into account. */
+    takes the leap-years into account. */
     int daysInMonth();
 
     TimeStamp asTimeStamp() const;
 
+    /** Prints the date-time information to a string. */
     void print(char * buf, bool isotime = false);
 
   private:

@@ -182,6 +182,19 @@ namespace VideoDisplay {
     VIDEODISPLAY_API void ignorePreviousFrames();
     VIDEODISPLAY_API void freeFreeableMemory();
 
+    class Req
+    {
+    public:
+      Req(Request r = NO_REQUEST, Radiant::TimeStamp time = 0)
+          : m_request(r), m_time(time) {}
+      volatile Request   m_request;
+      Radiant::TimeStamp m_time;
+    };
+
+    enum {
+      REQUEST_QUEUE_SIZE = 32
+    };
+
     std::vector<Radiant::RefPtr<Frame> > m_frames;
 
     VideoInfo m_info;
@@ -210,7 +223,6 @@ namespace VideoDisplay {
     Radiant::Condition m_acond;
     Radiant::MutexAuto m_amutex;
 
-
     float          m_fps;
     bool           m_done;
     bool           m_ending;
@@ -219,8 +231,9 @@ namespace VideoDisplay {
 
     static int     m_debug;
 
-    volatile Request   m_request;
-    Radiant::TimeStamp m_requestTime;
+    volatile unsigned m_consumedRequests;
+    volatile unsigned m_queuedRequests;
+    Req               m_requests[REQUEST_QUEUE_SIZE];
     Radiant::MutexAuto m_requestMutex;
 
     Radiant::TimeStamp m_frameTime;
@@ -231,6 +244,21 @@ namespace VideoDisplay {
   private:
     /// Disabled
     VideoIn(const VideoIn & ) : Radiant::Thread() {}
+    void pushRequest(const Req & r)
+    {
+      Radiant::Guard g( & m_requestMutex);
+
+      if(m_queuedRequests &&
+         (m_queuedRequests > m_consumedRequests)) {
+        Req & prev = m_requests[(m_queuedRequests-1) % REQUEST_QUEUE_SIZE];
+        if(r.m_request == prev.m_request) {
+          prev.m_time = r.m_time;
+        }
+      }
+
+      m_requests[m_queuedRequests % REQUEST_QUEUE_SIZE] = r;
+      m_queuedRequests++;
+    }
   };
 
 }
