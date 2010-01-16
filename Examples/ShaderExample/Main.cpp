@@ -97,7 +97,9 @@ int main(int argc, char ** argv)
     Luminous::Utils::glCheck("After rendering");
 
     SDL_GL_SwapBuffers();
+#ifndef WIN32
     Radiant::Sleep::sleepMs(20);
+#endif
   }
 
   return 0;

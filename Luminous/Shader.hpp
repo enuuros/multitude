@@ -37,10 +37,10 @@ namespace Luminous {
   public Valuable::HasValues
   {
   public:
-    Shader();
-    Shader(Valuable::HasValues * parent, const char * name);
+    LUMINOUS_API Shader();
+    LUMINOUS_API Shader(Valuable::HasValues * parent, const char * name);
 
-    virtual ~Shader();
+    LUMINOUS_API virtual ~Shader();
 
     /** Sets the source code for the fragment (aka pixel) shader.
 
@@ -49,20 +49,20 @@ namespace Luminous {
 
         It is safe to call this method without a valid OpenGL context.
     */
-    void setFragmentShader(const char * shadercode);
+    LUMINOUS_API void setFragmentShader(const char * shadercode);
     /** Sets the source code for the vertex shader. */
-    void setVertexShader(const char * shadercode);
+    LUMINOUS_API void setVertexShader(const char * shadercode);
     /** Returns a compiled OpenGL shader program. */
-    GLSLProgramObject * bind();
+    LUMINOUS_API GLSLProgramObject * bind();
 
-    void addShaderVarying(const Valuable::ValueObject *);
-    void addShaderUniform(const Valuable::ValueObject *);
+    LUMINOUS_API void addShaderVarying(const Valuable::ValueObject *);
+    LUMINOUS_API void addShaderUniform(const Valuable::ValueObject *);
 
     /** Returns true if the shader code is defined.
         Note that the shader might not be compiled, as this function only
         tests for the presence of shader strings.
     */
-    bool isDefined() const;
+    LUMINOUS_API bool isDefined() const;
   private:
 
     class Params;

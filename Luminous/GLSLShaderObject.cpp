@@ -19,7 +19,7 @@
 
 #include <string.h>
 
-using namespace std;
+
 
 namespace Luminous
 {
