@@ -188,7 +188,8 @@ namespace VideoDisplay {
     /* Radiant::debug("VideoIn::nextFrame # dec = %u cons = %u",
           m_decodedFrames, m_consumedFrames);
     */
-    assert((int) m_decodedFrames > index);
+    if((int) m_decodedFrames <= index)
+      index = m_decodedFrames - 1;
 
     if(!m_continue && m_decodedFrames <= m_consumedFrames)
       return 0;
