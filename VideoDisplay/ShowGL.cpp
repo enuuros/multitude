@@ -325,6 +325,7 @@ namespace VideoDisplay {
       m_count(0),
       m_state(PAUSE),
       m_updates(0),
+      m_seeking(false),
       m_contrast(this, "contrast", 1.0f)
   {
     debug("ShowGL::ShowGL # %p", this);
@@ -387,6 +388,7 @@ namespace VideoDisplay {
 
     m_position = 0;
     m_duration = Radiant::TimeStamp::createSecondsD(m_video->durationSeconds());
+    m_seeking = true;
 
     debug("ShowGL::init # Opened %s (%lf secs)",
           filename, m_duration.secondsD());
@@ -452,7 +454,7 @@ namespace VideoDisplay {
     m_video->setAudioListener(0);
     m_video->stop();
 
-
+    m_seeking = false;
     m_state = PAUSE;
 
     return true;
@@ -520,8 +522,11 @@ namespace VideoDisplay {
     }
     else {
       m_video->freeUnusedMemory();
-      videoFrame = m_video->latestFrame();
-
+      // videoFrame = m_videoFrame;
+      if(m_seeking)
+        videoFrame = m_video->latestFrame();
+      else
+        videoFrame = m_videoFrame;
       // info("Video has frame %d", videoFrame);
     }
 
@@ -716,6 +721,7 @@ namespace VideoDisplay {
     debug("ShowGL::seekTo # %lf", time.secondsD());
 
     m_video->seek(time);
+    m_seeking = true;
   }
 
   void ShowGL::seekToRelative(double relative)

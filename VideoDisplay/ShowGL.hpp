@@ -262,6 +262,7 @@ namespace VideoDisplay {
     State                   m_state;
     int                     m_histogram[HISTOGRAM_POINTS];
     uint                    m_updates;
+    bool                    m_seeking;
 
     Radiant::TimeStamp      m_duration;
     Radiant::TimeStamp      m_position;

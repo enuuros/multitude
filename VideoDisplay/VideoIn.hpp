@@ -241,6 +241,7 @@ namespace VideoDisplay {
     Radiant::MutexAuto m_requestMutex;
 
     Radiant::TimeStamp m_frameTime;
+    Radiant::TimeStamp m_displayFrameTime;
 
     AudioTransfer     *m_listener;
 

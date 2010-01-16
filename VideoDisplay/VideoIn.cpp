@@ -209,6 +209,7 @@ namespace VideoDisplay {
     }
 
     im->m_lastUse = Radiant::TimeStamp::getTime();
+    m_displayFrameTime = im->m_absolute;
 
     return im;
   }
@@ -218,6 +219,7 @@ namespace VideoDisplay {
     assert(!isRunning());
 
     m_finalFrames   = (uint) -1;
+    m_displayFrameTime = 0;
 
     m_continue = true;
 
@@ -241,11 +243,10 @@ namespace VideoDisplay {
     debug("VideoIn::play");
 
     if(pos < 0) {
-      pos = m_frameTime;
+      pos = m_displayFrameTime;
       if(m_atEnd)
         pos = 0;
     }
-
 
     pushRequest(Req(START, pos));
 
@@ -263,13 +264,16 @@ namespace VideoDisplay {
     // m_decoding = false;
 
     /* Wake up the decoder thread that might be (stuck) in the putFrame.*/
-    if(m_decodedFrames > 10) {
-      while(m_consumedFrames < m_decodedFrames - 10) {
-        m_consumedFrames++;
+    if(m_decodedFrames > 4) {
+      m_breakBack = true;
+      m_vmutex.lock();
+
+      while(m_consumedFrames < m_decodedFrames - 2
+            /* &&m_consumedAuFrames < m_decodedFrames - 2*/) {
+        // info("Walkback the decoding process");
+        m_decodedFrames--;
       }
-      while(m_consumedAuFrames < m_decodedFrames - 10) {
-        m_consumedAuFrames++;
-      }
+      m_vmutex.unlock();
       m_vcond.wakeAll();
     }
 
@@ -446,8 +450,9 @@ namespace VideoDisplay {
       m_vcond.wait(m_vmutex, 500);
     m_vmutex.unlock();
 
-    if(!m_continue)
+    if(!m_continue) {
       return 0;
+    }
 
     Radiant::Guard g(mutex());
 
