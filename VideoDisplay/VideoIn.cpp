@@ -292,7 +292,6 @@ namespace VideoDisplay {
 
   void VideoIn::freeUnusedMemory()
   {
-    Guard g( & m_requestMutex);
 
     pushRequest(Req(FREE_MEMORY));
 
