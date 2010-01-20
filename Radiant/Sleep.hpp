@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_SLEEP_HPP
@@ -18,14 +18,18 @@
 
 #include <Radiant/Export.hpp>
 #include <Radiant/Types.hpp>
+#include <Radiant/TimeStamp.hpp>
 
-#include <unistd.h>
-#include <sys/time.h>
+#include <stdint.h>
 #include <time.h>
 
-#ifdef WIN32
-#include <WinPort.h>		// for sleep() and nanosleep()
-#include <pthread.h>		// for struct timespec
+#ifndef WIN32
+#include <unistd.h>
+#include <sys/time.h>
+#else
+
+//#include <WinPort.h>		// for sleep() and nanosleep()
+//#include <pthread.h>		// for struct timespec
 #endif
 
 #define RADIANT_BILLION 1000000000
@@ -43,7 +47,7 @@ namespace Radiant {
   };
 
   // POSIX-specific functions:
-
+#ifndef WIN32
   inline void addTimeNs(struct timespec *tspec, long ns)
   {
     tspec->tv_nsec += ns;
@@ -76,18 +80,20 @@ namespace Radiant {
   }
 
   inline long timeDiffNs(const struct timespec *tspecOld,
-			 const struct timespec *tspecNew)
+             const struct timespec *tspecNew)
   {
     return long((tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_BILLION +
       tspecNew->tv_nsec - tspecOld->tv_nsec);
   }
 
   inline long timeDiffUs(const struct timeval *tspecOld,
-			 const struct timeval *tspecNew)
+             const struct timeval *tspecNew)
   {
     return long((tspecNew->tv_sec - tspecOld->tv_sec) * RADIANT_MILLION +
       tspecNew->tv_usec - tspecOld->tv_usec);
   }
+
+#endif // !WIN32
 
   /** Sleeping services. This class contains only static member
       functions. The constructor and destructor are included to prevent
@@ -101,27 +107,15 @@ namespace Radiant {
     ~Sleep() {}
 
     /// Sleep for n seconds.
-    static bool sleepS(uint secs) { return ! sleep(secs); }
+    static bool sleepS(uint32_t secs);
 
     /** Sleep for n milliseconds. You cannot sleep more than one second
-	with this function. */
-    static bool sleepMs(uint msecs) 
-    { 
-      struct timespec tspec;
-      tspec.tv_sec = 0;
-      tspec.tv_nsec = (long) msecs * RADIANT_MILLION;
-      return nanosleep(&tspec, 0) != -1;
-    }
+    with this function. */
+    static bool sleepMs(uint32_t msecs);
 
     /** Sleep for n microseconds. You cannot sleep more than one second
-	with this function. */
-    static bool sleepUs(uint usecs)
-    { 
-      struct timespec tspec;
-      tspec.tv_sec = 0;
-      tspec.tv_nsec = (long) usecs * 1000;
-      return nanosleep(&tspec, 0) != -1;
-    }
+    with this function. This function has millisecond precision on Windows.*/
+    static bool sleepUs(uint32_t usecs);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -137,18 +131,22 @@ namespace Radiant {
     SleepSync() { resetTiming(); }
 
     /// Resets the reference time to current time.
-    void resetTiming() 
-    { gettimeofday(& m_timing, 0); m_initial = m_timing; }
-  
+    void resetTiming()
+    {
+      m_initial = TimeStamp::getTime();
+    }
+
     /// Sleep for n microseconds
     /** This function calculates how much time has passed since the
-	last sleep and sleeps to fulfill the required time period. */
+    last sleep and sleeps to fulfill the required time period. */
     long sleepSynchroUs(long us);
 
     long sleepTo(const TimeStamp *stamp, Mutex *mutex = 0);
 
-  private:  
-    struct timeval m_initial, m_timing;
+  private:
+
+    TimeStamp m_initial;
+
   };
 
 }

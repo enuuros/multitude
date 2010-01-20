@@ -50,6 +50,8 @@ namespace Radiant
     /// Returns the memory usage of the process, in bytes
     /** This function is not implemented for all platforms. */
     RADIANT_API uint64_t processMemoryUsage();
+
+    RADIANT_API void setEnv(const char * name, const char * value);
   }
 
 }

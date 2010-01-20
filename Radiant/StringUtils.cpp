@@ -19,11 +19,12 @@
 #include <cassert>
 
 #include <string.h>
+#include <strings.h>
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <WinPort.h>
+// #include <WinPort.h>
 #endif
 
 namespace Radiant
@@ -96,9 +97,9 @@ namespace Radiant
     {
       wstring  wstr;
 
-      const int   l = str.length();
+      const size_t l = str.length();
       wstr.resize(l);
-      for(int i = 0; i < l; i++)
+      for(size_t i = 0; i < l; i++)
       {
         wstr[i] = wchar_t(str[i]);
       }
@@ -110,9 +111,9 @@ namespace Radiant
     {
       string   str;
 
-      const int   l = wstr.length();
+      const size_t l = wstr.length();
       str.resize(l);
-      for(int i = 0; i < l; i++)
+      for(size_t i = 0; i < l; i++)
       {
         str[i] = char(wstr[i]);
       }
@@ -369,7 +370,7 @@ namespace Radiant
     {
       int bytes = 0;
 
-      unsigned n = src.size();
+      size_t n = src.size();
 
       for(unsigned i = 0; i < n; i++) {
         unsigned c = src[0];

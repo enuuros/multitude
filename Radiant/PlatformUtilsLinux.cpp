@@ -93,6 +93,14 @@ namespace Radiant
       getrusage(RUSAGE_SELF, &r_usage);
       return r_usage.ru_idrss;
     }
+
+    void setEnv(const char * name, const char * value)
+    {
+      if(value)
+        setenv(name, value, 1);
+      else
+        unsetenv(name);
+    }
   }
 
 }

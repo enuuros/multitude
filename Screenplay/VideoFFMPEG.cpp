@@ -24,9 +24,6 @@
 #include <strings.h>
 #include <cassert>
 
-#ifdef WIN32
-# include <WinPort.h>
-#endif
 
 extern "C" {
 # include <libavformat/avformat.h>

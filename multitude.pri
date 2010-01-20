@@ -3,8 +3,8 @@
 CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
-# CONFIG += release
-CONFIG += debug
+CONFIG += release
+#CONFIG += debug
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
@@ -13,6 +13,12 @@ MULTI_FFMPEG_LIBS = -lavcodec -lavutil -lavformat
 
 withbundles = $$(MULTI_BUNDLES)
 
+# Try to guess Win64
+win32 {
+    BITS=$$(PROCESSOR_ARCHITECTURE)
+    contains(BITS,AMD64):CONFIG+=win64
+}
+
 LIB_POETIC = -lPoetic
 LIB_FLUFFY = -lFluffy
 LIB_LUMINOUS = -lLuminous
@@ -20,7 +26,7 @@ LIB_NIMBLE = -lNimble
 LIB_OPENGL = -lGL -lGLU
 LIB_GLU = -lGLU
 LIB_RADIANT = -lRadiant -lPatterns
-LIB_RESONANT = -lResonant 
+LIB_RESONANT = -lResonant
 LIB_SCREENPLAY = -lScreenplay
 LIB_VIDEODISPLAY = -lVideoDisplay
 LIB_VALUABLE = -lValuable
@@ -41,7 +47,9 @@ macx {
   withbundles = YES
 
   LIB_OPENGL = -framework,OpenGL
-  LIB_GLU = 
+  LIB_GLU =
+
+  # DEFINES += __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__=1050
 
   contains(withbundles,YES) {
 
@@ -62,13 +70,19 @@ macx {
 }
 
 win32 {
-	WINPORT_INCLUDE = $$PWD\Win32x\include
-	INCLUDEPATH += $$PWD\Win32x\include
-	LIBPATH += $$PWD\Win32x\lib
-	LIB_OPENGL = -lopengl32
-	LIB_GLU = -lglu32
+    win64:WINPORT_INCLUDE = $$PWD\Win64x\include
+    else:WINPORT_INCLUDE = $$PWD\Win32x\include
+
+    win64:INCLUDEPATH += $$PWD\Win64x\include
+    else:INCLUDEPATH += $$PWD\Win32x\include
+
+    win64:LIBPATH += $$PWD\Win64x\lib64
+    else:LIBPATH += $$PWD\Win32x\lib32
+
+    LIB_OPENGL = -lopengl32
+    LIB_GLU = -lglu32
     QMAKE_CXXFLAGS += -D_CRT_SECURE_NO_WARNINGS -wd4244 -wd4251 -wd4355
-	DEFINES += WIN32
+    DEFINES += WIN32
 }
 
 MULTI_VIDEO_LIBS = $$LIB_SCREENPLAY $$LIB_RESONANT $$LIB_VIDEODISPLAY

@@ -18,16 +18,12 @@
 
 #include <Radiant/Export.hpp>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
 
 namespace Radiant {
- 
+
   /** A high-resolution time-stamp object. A time-stamp has 40 bits
      for the seconds and 24 bits for fractions of a second. The
      seconds are as they come from the UNIX clock: 1.1.1970 the
@@ -132,6 +128,7 @@ namespace Radiant {
   };
 
 }
+
 
 #endif
 

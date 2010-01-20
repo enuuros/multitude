@@ -145,7 +145,7 @@ namespace Radiant
       if(fd <= 0)
     return false;
 
-      int len = strlen(contents);
+      uint32_t len = uint32_t(strlen(contents));
 
       bool ok = write(fd, contents, len) == len;
 
@@ -156,20 +156,20 @@ namespace Radiant
 
     string path(const string & filepath)
     {
-      int cut = filepath.rfind("/") + 1;
+      size_t cut = filepath.rfind("/") + 1;
       return filepath.substr(0, cut);
     }
 
     string filename(const string & filepath)
     {
-      int cut = filepath.rfind("/") + 1;
+      size_t cut = filepath.rfind("/") + 1;
       return filepath.substr(cut);
     }
 
     string baseFilename(const string & filepath)
     {
-      int cut1 = filepath.rfind("/") + 1;
-      int cut2 = filepath.rfind(".");
+      size_t cut1 = filepath.rfind("/") + 1;
+      size_t cut2 = filepath.rfind(".");
 
       // info("baseFilename %s %d %d", filepath.c_str(), cut1, cut2);
       return (cut1 > 0) ?
@@ -178,7 +178,7 @@ namespace Radiant
 
     std::string withoutSuffix(const std::string & filepath)
     {
-      int cut = filepath.rfind(".");
+      size_t cut = filepath.rfind(".");
       if(cut > 0)
     return filepath.substr(0, cut);
 
@@ -188,13 +188,13 @@ namespace Radiant
 
     string suffix(const string & filepath)
     {
-      int cut = filepath.rfind(".") + 1;
+      size_t cut = filepath.rfind(".") + 1;
       return filepath.substr(cut);
     }
 
     string suffixLowerCase(const string & filepath)
     {
-      int cut = filepath.rfind(".") + 1;
+      size_t cut = filepath.rfind(".") + 1;
       return StringUtils::lowerCase(filepath.substr(cut));
     }
 

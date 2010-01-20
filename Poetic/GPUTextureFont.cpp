@@ -20,10 +20,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 #define DEFAULT_PADDING 3
 
 namespace Poetic

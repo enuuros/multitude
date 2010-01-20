@@ -17,17 +17,10 @@
 #define NIMBLE_GRID_HPP
 
 #include <Nimble/Export.hpp>
-
 #include <Nimble/Vector2.hpp>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 #include <cassert>
-
 #include <string.h>
-
 #include <stdint.h>
 
 namespace Nimble {
@@ -198,8 +191,8 @@ namespace Nimble {
     inline const T * line(int y) const 
     { return & this->m_data[this->m_width * y]; }
     
-    /// Writes zeroes over the memory buffer (using bzero)
-    inline void zero() { bzero(this->data(), size() * sizeof(T)); }
+    /// Writes zeroes over the memory buffer
+    inline void zero() { memset(this->data(), 0, size() * sizeof(T)); }
 
     inline void fill(const T & val, int xlow, int ylow, int width, int height);
 

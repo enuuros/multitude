@@ -72,7 +72,7 @@ namespace Valuable
     void remove(ValueListener * listener);
 
     /// Returns the number of listeners
-    unsigned size() const { return m_list ? m_list->size(): 0; }
+    unsigned size() const { return m_list ? (unsigned) m_list->size(): 0; }
 
     /// Returns an iterator to the first listener
     iterator begin() { return m_list->begin(); }

@@ -106,7 +106,7 @@ namespace Valuable
     return true;
   }
 
-  bool DOMDocument::readFromFile(const char * filename, bool validate)
+  bool DOMDocument::readFromFile(const char * filename, bool /*validate*/)
   {
     QFile file(filename);
 

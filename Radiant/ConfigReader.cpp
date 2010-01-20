@@ -350,7 +350,7 @@ namespace Radiant {
 
     std::vector<char> buf;
     buf.resize(size);
-    int n = fread(&buf[0], 1, size, in);
+    size_t n = fread(&buf[0], 1, size, in);
     fclose(in);
 
     if(!n)

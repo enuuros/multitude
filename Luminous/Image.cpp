@@ -27,6 +27,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string>
 #include <string.h>
@@ -34,7 +35,6 @@
 
 #ifdef WIN32
 #include <strings.h>	// strcasecmp()
-#include <WinPort.h>	// uint8_t
 #endif
 
 using namespace std;

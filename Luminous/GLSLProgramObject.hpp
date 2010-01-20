@@ -92,7 +92,7 @@ namespace Luminous
 
     bool loadStrings(const char* vsString, const char* fsString);
 
-    int shaderObjectCount() const { return m_shaderObjects.size(); }
+    int shaderObjectCount() const { return (int) m_shaderObjects.size(); } 
 
     GLuint handle() const { return m_handle; }
 

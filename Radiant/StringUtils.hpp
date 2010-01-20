@@ -19,6 +19,8 @@
 #include <sstream>
 #include <string>
 
+#include <strings.h> // atoll on windows
+
 #include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
 
@@ -26,7 +28,7 @@
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <WinPort.h>
+// #include <WinPort.h>
 #endif
 
 namespace Radiant

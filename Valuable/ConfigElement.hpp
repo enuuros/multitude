@@ -50,12 +50,12 @@ namespace Valuable
     void addValue(const ConfigValue & v)
     { m_values.push_back(v); }
 
-    unsigned valueCount() const { return m_values.size(); }
+    unsigned valueCount() const { return (unsigned) m_values.size(); }
 
     const ConfigValue & value(unsigned n) const
     { return m_values[n]; }
 
-    unsigned childCount() const { return m_nodes.size(); }
+    unsigned childCount() const { return (unsigned) m_nodes.size(); }
 
     const ConfigElement & child(unsigned n) const
     { return m_nodes[n]; }

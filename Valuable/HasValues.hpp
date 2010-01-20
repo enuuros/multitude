@@ -112,8 +112,8 @@ namespace Valuable
     void eventAddSource(Valuable::HasValues * source);
     void eventRemoveSource(Valuable::HasValues * source);
 
-    unsigned eventSourceCount() const { return m_eventSources.size(); }
-    unsigned eventListenerCount() const { return m_elisteners.size(); }
+    unsigned eventSourceCount() const {  return (unsigned) m_eventSources.size(); }
+    unsigned eventListenerCount() const { return (unsigned) m_elisteners.size(); }
 
     /** Experimental event passing framework. */
     void eventPassingEnable(bool enable) { m_eventsEnabled = enable; }

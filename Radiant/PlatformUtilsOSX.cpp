@@ -103,6 +103,14 @@ namespace Radiant
       // t_info.virtual_size;
 
     }
+
+    void setEnv(const char * name, const char * value)
+    {
+      if(value)
+        setenv(name, value, 1);
+      else
+        unsetenv(name);
+    }
   }
 
 }

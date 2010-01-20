@@ -21,13 +21,10 @@
 
 #include <Nimble/Vector2.hpp>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 #include <cassert>
 
 #include <string.h>
+#include <strings.h>
 
 namespace Radiant {
 

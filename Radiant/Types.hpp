@@ -30,7 +30,7 @@ typedef unsigned long ulong;
 
 //#include <windows.h>
 
-#include <unixstuff.h>
+// #include <unixstuff.h>
 typedef signed __int64 llong;
 typedef unsigned __int64 ullong;
 typedef unsigned int uint;

@@ -1,6 +1,7 @@
 include(../multitude.pri)
-HEADERS += CameraDriver.hpp \
-    CSVDocument.hpp
+
+HEADERS += CameraDriver.hpp
+HEADERS += CSVDocument.hpp
 HEADERS += UDPSocket.hpp
 HEADERS += BinaryData.hpp
 HEADERS += BinaryStream.hpp
@@ -38,7 +39,7 @@ HEADERS += Size2D.hpp
 HEADERS += Sleep.hpp
 !win32:HEADERS += SHMDuplexPipe.hpp
 !win32:HEADERS += SHMPipe.hpp
-HEADERS += SMRingBuffer.hpp
+!win32:HEADERS += SMRingBuffer.hpp
 HEADERS += StringUtils.hpp
 HEADERS += TCPServerSocket.hpp
 HEADERS += TCPSocket.hpp
@@ -60,7 +61,7 @@ SOURCES += BinaryData.cpp
 SOURCES += VideoCamera.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
-SOURCES += Condition.cpp
+
 SOURCES += ConfigReader.cpp
 SOURCES += DateTime.cpp
 SOURCES += DirectoryCommon.cpp
@@ -69,30 +70,32 @@ SOURCES += FixedStr.cpp
 SOURCES += Grid.cpp
 SOURCES += ImageConversion.cpp
 SOURCES += Log.cpp
-SOURCES += Mutex.cpp
+
 SOURCES += ResourceLocator.cpp
 SOURCES += Size2D.cpp
-SOURCES += Sleep.cpp
+# unix:SOURCES += Sleep.cpp
+SOURCES += SleepQT.cpp
+
 !win32:SOURCES += SHMDuplexPipe.cpp
 !win32:SOURCES += SHMPipe.cpp
-SOURCES += SMRingBuffer.cpp
+!win32:SOURCES += SMRingBuffer.cpp
 SOURCES += StringUtils.cpp
-SOURCES += TCPSocket.cpp
-SOURCES += Thread.cpp
+
+
 SOURCES += Timer.cpp
 SOURCES += TimeStamp.cpp
 SOURCES += Trace.cpp
 SOURCES += VideoImage.cpp
 SOURCES += VideoInput.cpp
 SOURCES += WatchDog.cpp
-LIBS += $$LIB_NIMBLE \
-    $$LIB_PATTERNS
+LIBS += $$LIB_NIMBLE $$LIB_PATTERNS
+
 linux-*:SOURCES += PlatformUtilsLinux.cpp
-macx { 
+macx {
     SOURCES += PlatformUtilsOSX.cpp
     LIBS += -framework,CoreFoundation
 }
-unix { 
+unix {
     HEADERS += VideoCamera1394.hpp
     SOURCES += DirectoryPosix.cpp
     SOURCES += SerialPortPosix.cpp
@@ -100,40 +103,52 @@ unix {
     SOURCES += TCPSocketPosix.cpp
     SOURCES += UDPSocketPosix.cpp
     SOURCES += VideoCamera1394.cpp
-    LIBS += -lpthread \
-        $$LIB_RT \
-        -ldl
+    SOURCES += ConditionPT.cpp
+    SOURCES += MutexPT.cpp
+    SOURCES += ThreadPT.cpp
+
+    LIBS += -lpthread $$LIB_RT -ldl
+
     PKGCONFIG += libdc1394-2
+    DEFINES += CAMERA_DRIVER_1394
 }
-win32 { 
+win32 {
     DEFINES += RADIANT_EXPORT
-    HEADERS += VideoCameraCMU.hpp
-    SOURCES += VideoCameraCMU.cpp
+    !win64 {
+        DEFINES += CAMERA_DRIVER_CMU
+        HEADERS += VideoCameraCMU.hpp
+        SOURCES += VideoCameraCMU.cpp
+        LIBS += 1394camera.lib
+    }
+
     SOURCES += PlatformUtilsWin32.cpp
     SOURCES += SerialPortWin32.cpp
     SOURCES += DirectoryQt.cpp
     SOURCES += TCPServerSocketQt.cpp
     SOURCES += TCPSocketQt.cpp
     SOURCES += UDPSocketQt.cpp
-    LIBS += win32x.lib \
-        wsock32.lib \
-        pthreadVC2.lib \
-        ShLwApi.lib \
-        shell32.lib \
-        1394camera.lib \
-        psapi.lib
+    SOURCES += ConditionQT.cpp
+    SOURCES += MutexQT.cpp
+    SOURCES += ThreadQT.cpp
+
+    LIBS +=  wsock32.lib ShLwApi.lib shell32.lib psapi.lib
+
     CONFIG += qt
     QT = core \
         network
     PTGREY_PATH = "C:\Program Files\Point Grey Research\FlyCapture2"
-    exists($$PTGREY_PATH\include) { 
+    exists($$PTGREY_PATH/include) {
+        DEFINES += CAMERA_DRIVER_PGR
+
         HEADERS += VideoCameraPTGrey.hpp
         SOURCES += VideoCameraPTGrey.cpp
-        INCLUDEPATH += $$PTGREY_PATH\include
-        
-        # 64bit libs have a different path
-        exists($$PTGREY_PATH\lib64):LIBPATH += $$PTGREY_PATH\lib64
-        exists($$PTGREY_PATH\lib):LIBPATH += $$PTGREY_PATH\lib
+
+        INCLUDEPATH += $$PTGREY_PATH/include
+
+        # 64bit libs have different path
+        win64:LIBPATH += $$PTGREY_PATH/lib64
+        else:LIBPATH += $$PTGREY_PATH/lib
+
         LIBS += FlyCapture2.lib
     }
 }

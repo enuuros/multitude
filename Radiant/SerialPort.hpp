@@ -18,10 +18,12 @@
 
 #include <Radiant/Export.hpp>
 
+#include <stdint.h>
+
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <WinPort.h>
+//#include <WinPort.h>
 #else
 #include <stdint.h>
 #include <unistd.h>

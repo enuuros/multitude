@@ -98,7 +98,7 @@ namespace Radiant
   { return m_buf; }
 
   template<int N>
-  int FixedStrT<N>::length() 
+  size_t FixedStrT<N>::length() 
   { return strlen(m_buf); }
 
   template<int N>

@@ -18,10 +18,6 @@
 
 #include <Nimble/Export.hpp>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 #include <string>
 
 namespace Nimble {
@@ -39,7 +35,7 @@ namespace Nimble {
         ~Histogram() {}
 
         /// Sets all histogram bins to zero
-        void clear() { bzero(m_data, sizeof(m_data)); m_count = 0; }
+        void clear() { memset(m_data, 0, sizeof(m_data)); m_count = 0; }
 
         /// Adds the histogram bin "index" by one
         void put(int index) { m_data[index]++; m_count++; }

@@ -207,7 +207,7 @@ namespace Luminous {
       LUMINOUS_API void resizeEvent(Vector2i size);
 
       /// Number of areas that this window holds
-      unsigned areaCount() const { return m_areas.size(); }
+      unsigned areaCount() const { return (unsigned) m_areas.size(); }
       /// Get one of the areas
       Area & area(unsigned i) { return * m_areas[i].ptr(); }
       /// Get one of the areas
@@ -280,7 +280,7 @@ namespace Luminous {
     LUMINOUS_API void makeQuadSideways(int x, int y, int w, int h, float seam);
 
     /// The number of windows
-    unsigned windowCount() const { return m_windows.size(); }
+    unsigned windowCount() const { return (unsigned) m_windows.size(); }
     /// Access one of the windows
     LUMINOUS_API Window & window(unsigned i);
     LUMINOUS_API const Window & window(unsigned i) const;

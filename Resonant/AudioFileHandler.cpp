@@ -20,7 +20,10 @@
 
 #include <sndfile.h>
 
+#ifndef WIN32
 #include <sched.h>
+#endif
+
 #include <string.h>
 #include <strings.h>
 

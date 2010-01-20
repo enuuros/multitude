@@ -24,9 +24,7 @@
 
 #include <algorithm>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
+#include <strings.h>
 
 namespace Resonant {
 

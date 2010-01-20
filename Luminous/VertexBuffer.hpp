@@ -106,7 +106,7 @@ namespace Luminous
 
   typedef BufferObject<GL_ARRAY_BUFFER> VertexBuffer;
   typedef BufferObject<GL_ELEMENT_ARRAY_BUFFER> IndexBuffer;
-
+  /*
 #ifdef WIN32
 #ifdef LUMINOUS_EXPORT
   // In WIN32 template classes must be instantiated to be exported
@@ -114,7 +114,7 @@ namespace Luminous
   template class BufferObject<GL_ELEMENT_ARRAY_BUFFER>;
 #endif
 #endif
-
+*/
 }
 
 #endif

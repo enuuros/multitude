@@ -128,15 +128,19 @@ namespace Radiant
 
   bool VideoCameraPTGrey::open(uint64_t euid, int , int , ImageFormat , FrameRate framerate)
   {
+
     GuardStatic g(__cmutex);
+
+	debug("VideoCameraPTGrey::open # %llx", (long long) euid);
 
     FlyCapture2::PGRGuid guid;
 
     // If the euid is zero, take the first camera
     if(euid == 0) {
-      if(g_guidMap.empty())
+		if(g_guidMap.empty()) {
+				error("VideoCameraPTGrey::open # No Cameras found");
         return false;
-
+		}
       guid = g_guidMap.begin()->second;
     } else {
       GuidMap::iterator it = g_guidMap.find(euid);
@@ -231,6 +235,8 @@ namespace Radiant
   bool VideoCameraPTGrey::openFormat7(uint64_t euid, Nimble::Recti roi, float fps, int mode)
   {
     GuardStatic g(__cmutex);
+
+	debug("VideoCameraPTGrey::openFormat7 # %llx", (long long) euid);
 
     // Look up PGRGuid from our map (updated in queryCameras())
     GuidMap::iterator it = g_guidMap.find(euid);
@@ -466,7 +472,7 @@ namespace Radiant
   {
     return width() * height() * sizeof(uint8_t);
   }
-
+  
   void VideoCameraPTGrey::setFeature(FeatureType id, float value)
   {
     // Radiant::debug("VideoCameraPTGrey::setFeature # %d %f", id, value);

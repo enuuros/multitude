@@ -31,7 +31,7 @@ namespace Radiant
 
   Color::Color(const char * color)
   {
-    int clen = strlen(color);
+    size_t clen = strlen(color);
 
     make(0, 0, 0, 1);
 
@@ -39,7 +39,7 @@ namespace Radiant
       char tmp[3];
       tmp[2] = 0;
 
-      for(int i = 0; i < 4 && (i * 2 + 2) < clen; i++) {
+      for(size_t i = 0; i < 4 && (i * 2 + 2) < clen; i++) {
 	tmp[0] = color[i * 2 + 1];
 	tmp[1] = color[i * 2 + 2];
 

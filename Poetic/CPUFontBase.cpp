@@ -18,15 +18,12 @@
 
 #include <Radiant/Trace.hpp>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 namespace Poetic
 {
 
   CPUFontBase::CPUFontBase()
     : m_face(0),
+	  m_mutex(false, false, true),
       m_glyphList(0)
   {
   }

@@ -18,8 +18,12 @@
 #include <cassert>
 
 #include <string.h>
+#include <strings.h>
 
+#ifndef WIN32
 #include <sys/time.h>
+#endif
+
 #include <time.h>
 #include <stdlib.h>
 
@@ -98,7 +102,7 @@ namespace Radiant {
     }
   }
 
-  bool DateTime::fromString(const std::string & s, DateFormat format)
+  bool DateTime::fromString(const std::string & s, DateFormat )
   { 
     if(s.length() < 8)
       return false;

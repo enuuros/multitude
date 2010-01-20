@@ -1,12 +1,16 @@
 #include "CameraDriver.hpp"
 #include "Trace.hpp"
 
+#ifdef CAMERA_DRIVER_CMU
+#	include <Radiant/VideoCameraCMU.hpp>
+#endif
 
-#ifdef WIN32
-# include <Radiant/VideoCameraCMU.hpp>
-# include <Radiant/VideoCameraPTGrey.hpp>
-#else
-# include <Radiant/VideoCamera1394.hpp>
+#ifdef CAMERA_DRIVER_PGR
+#	include <Radiant/VideoCameraPTGrey.hpp>
+#endif
+
+#ifdef CAMERA_DRIVER_1394
+#	include <Radiant/VideoCamera1394.hpp>
 #endif
 
 namespace Radiant
@@ -49,10 +53,15 @@ namespace Radiant
     // If the user has not registered any drivers, we register the defaults here once
     static bool once = true;
     if(once && m_drivers.empty()) {
-#ifdef WIN32
+#ifdef CAMERA_DRIVER_CMU
       registerDriver(new CameraDriverCMU());
-      registerDriver(new CameraDriverPTGrey());
-#else
+#endif
+
+#ifdef CAMERA_DRIVER_PGR
+	  registerDriver(new CameraDriverPTGrey());
+#endif
+
+#ifdef CAMERA_DRIVER_1394
       registerDriver(new CameraDriver1394());
 #endif
       once = false;

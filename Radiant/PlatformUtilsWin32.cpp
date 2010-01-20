@@ -18,6 +18,8 @@
 
 #include <assert.h>
 
+// #include <windows.h>
+// #include <winbase.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 
@@ -155,6 +157,13 @@ namespace Radiant
 
       return pmc.WorkingSetSize;
     }
+
+    void setEnv(const char * name, const char * value)
+    {
+      SetEnvironmentVariableA((char *) name, (char *) value);
+    }
+
   }
+
 
 }

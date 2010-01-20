@@ -25,6 +25,7 @@ namespace Poetic
 {
 
   CPUBitmapFont::CPUBitmapFont()
+	  
   {
   }
 

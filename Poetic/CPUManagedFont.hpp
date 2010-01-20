@@ -21,10 +21,6 @@
 
 #include <vector>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 namespace Poetic
 {
   

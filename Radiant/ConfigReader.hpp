@@ -154,7 +154,7 @@ namespace Radiant {
     void               clear() { m_variants.clear(); }
 
     /// Number of elements
-    unsigned           size() const { return m_variants.size(); }
+    size_t size() const { return m_variants.size(); }
 
     /// Check if the chunk is empty
     bool               isEmpty() const { return m_variants.size() == 0; }

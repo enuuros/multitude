@@ -52,7 +52,7 @@ namespace Radiant {
     operator const char * () const;
     operator char * ();
 
-    int length();
+    size_t length();
     /// The capacity (maximum size) of the string.
     static inline int capacity();
 

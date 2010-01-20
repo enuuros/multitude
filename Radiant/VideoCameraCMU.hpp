@@ -22,8 +22,6 @@
 
 #include <string>
 
-#include <WinPort.h>
-
 class C1394Camera;
 #define _WINSOCKAPI_		// timeval redefinition
 #include <windows.h>

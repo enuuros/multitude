@@ -16,13 +16,10 @@
 #ifndef RADIANT_THREAD_HPP
 #define RADIANT_THREAD_HPP
 
-#define PTHREAD
-
+#include <Radiant/Export.hpp>
 #include <Patterns/NotCopyable.hpp>
 
-#include <Radiant/Export.hpp>
-
-#include <pthread.h>
+#include <cstring>
 
 namespace Radiant {
 
@@ -38,12 +35,13 @@ namespace Radiant {
   class RADIANT_API Thread : public Patterns::NotCopyable
   {
   public:
+
     /// Thread id type.
     /** On most systems this is some kind of integer value. */
-    typedef pthread_t id_t;
+    typedef size_t id_t;
 
     /// The id of the calling thread
-    static id_t myThreadId() { return pthread_self(); }
+    static id_t myThreadId();
 
     /** Construct a thread structure. The thread is NOT activated by this
 	method. */
@@ -110,63 +108,13 @@ namespace Radiant {
   private:
     static void *entry(void *);
 
-    pthread_t       m_thread;
+    class D;
+	D * m_d;
 
     int             m_state;
 
     static bool m_threadDebug;
     static bool m_threadWarnings;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-
-  /** Status of available thread types. 
-    
-      This class can be used that certain thread types do work.
-
-      Only static methods.
-  */
-  class ThreadAvailable
-  {
-  public:
-    ThreadAvailable() {}
-    ~ThreadAvailable() {}
-
-    /// Returns true if system-level threads seem to work.
-    static bool systemLevelWorks();
-    /// Returns true if process-level threads seem to work.
-    static bool processLevelWorks();
-    /** Performs checks for different thread models. You do not need to
-	call this method explicitly. If this method has not been called
-	prior to "systemLevelWorks" etc it will be called to check the
-	values. */
-    static void check();
-  private:
-    static bool m_systemLevel, m_processLevel, m_defined;
-
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-
-  /// A simple thread test that does nothing important.
-  class RADIANT_API ThreadTest : public Thread
-  {
-  public:
-    ThreadTest();
-    ~ThreadTest() {}
-
-    int count();
-    void requestEnd();
-  
-  private:
-    void childLoop();
-
-    Mutex *m_mutex;
-
-    bool m_continue;
-    int  m_counter;
   };
 
 }

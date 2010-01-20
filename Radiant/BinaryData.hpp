@@ -133,7 +133,7 @@ namespace Radiant {
     /// Reads a 64-bit time-stamp from the data buffer
     int64_t readTimeStamp(bool * ok = 0);
     /// Read a null-terminated string from the buffer
-    bool readString(char * str, int maxbytes);
+    bool readString(char * str, size_t maxbytes);
     bool readString(std::string & str);
     /// Reads a wide string from the buffer
     bool readWString(std::wstring & str);
@@ -174,7 +174,7 @@ namespace Radiant {
     void linkTo(void * data, int capacity);
 
     /// Ensure that at least required amount of bytes is available
-    void ensure(unsigned bytes);
+    void ensure(size_t bytes);
     /// Rewind the buffer and fill it with zeroes
     void clear();
 
@@ -193,7 +193,7 @@ namespace Radiant {
     inline bool available(unsigned bytes)
     { return (m_current + bytes) <= m_total; }
     void skipParameter(int marker);
-    int stringSpace(const char * str);
+    size_t stringSpace(const char * str);
 
     void unavailable(const char * func);
     

@@ -31,5 +31,4 @@ include(../library.pri)
 
 win32 {
     DEFINES += VIDEODISPLAY_EXPORT
-    LIBS += -lWin32x
 }

@@ -86,7 +86,6 @@ unix {
 }
 win32 {
     DEFINES += LUMINOUS_EXPORT
-    LIBS += -lWin32x
 }
 contains(HAS_QT_45,YES) {
     message(Including QT Image codecs)

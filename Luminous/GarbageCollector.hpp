@@ -87,7 +87,7 @@ namespace Luminous
       changed. */
     static Collectable * getObject(iterator & it) { return (*it); }
 
-    static int size() { return m_items.size(); }
+    static int size() { return (int) m_items.size(); }
 
     static Radiant::MutexStatic & mutex();
   private:

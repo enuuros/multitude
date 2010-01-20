@@ -23,10 +23,11 @@
 #include <Nimble/Math.hpp>
 
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 
 #ifdef WIN32
-# include <WinPort.h>
+//# include <WinPort.h>
 #endif
 
 namespace Radiant {
@@ -127,8 +128,8 @@ namespace Radiant {
 
   void BinaryData::writeString(const char * s)
   {
-    int len = strlen(s);
-    int space = stringSpace(s);
+    size_t len = strlen(s);
+    size_t space = stringSpace(s);
     ensure(4 + space);
 
     getRef<int32_t>() = STRING_MARKER;
@@ -395,7 +396,7 @@ namespace Radiant {
     return 0;
   }
 
-  bool BinaryData::readString(char * str, int maxbytes)
+  bool BinaryData::readString(char * str, size_t maxbytes)
   {
     int32_t marker = getRef<int32_t>();
 
@@ -404,7 +405,7 @@ namespace Radiant {
       return false;
     }
     const char * source = & m_buf[m_current];
-    int len = strlen(source);
+    size_t len = strlen(source);
 
     skipParameter(marker);
 
@@ -428,7 +429,7 @@ namespace Radiant {
       return false;
     }
     const char * source = & m_buf[m_current];
-    int len = strlen(source);
+    size_t len = strlen(source);
 
     skipParameter(marker);
 
@@ -728,9 +729,9 @@ namespace Radiant {
     m_shared = true;
   }
 
-  void BinaryData::ensure(unsigned bytes)
+  void BinaryData::ensure(size_t bytes)
   {
-    unsigned need = m_current + bytes;
+    size_t need = m_current + bytes;
     if(need > m_size) {
       if(m_shared)
     fatal("BinaryData::ensure # Sharing data, cannot ensure required space");
@@ -773,9 +774,9 @@ namespace Radiant {
     }
   }
 
-  int BinaryData::stringSpace(const char * str)
+  size_t BinaryData::stringSpace(const char * str)
   {
-    int len = strlen(str) + 1;
+    size_t len = strlen(str) + 1;
 
     int rem = len & 0x3;
 

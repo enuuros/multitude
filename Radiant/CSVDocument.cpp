@@ -85,7 +85,7 @@ namespace Radiant {
       m_rows.push_back(r);
     }
 
-    return m_rows.size();
+    return (int) m_rows.size();
   }
 
 

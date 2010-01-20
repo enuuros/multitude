@@ -17,14 +17,12 @@
 
 #include <Nimble/Math.hpp>
 
+#include <Radiant/Sleep.hpp>
 #include <Radiant/Trace.hpp>
 
 #include <typeinfo>
 #include <cassert>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
 
 namespace Luminous
 {
@@ -217,7 +215,7 @@ namespace Luminous
     }
 
     // Down use all the cpu
-    sleep(1);
+    Radiant::Sleep::sleepS(1);
   }
 
   Task * BGThread::pickNextTask(Radiant::TimeStamp & wait)

@@ -27,9 +27,6 @@
 
 #include <portaudio.h>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
 
 namespace Resonant {
 
