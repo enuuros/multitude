@@ -73,8 +73,8 @@ SOURCES += Log.cpp
 
 SOURCES += ResourceLocator.cpp
 SOURCES += Size2D.cpp
-# unix:SOURCES += Sleep.cpp
-SOURCES += SleepQT.cpp
+SOURCES += Sleep.cpp
+# SOURCES += SleepQT.cpp
 
 !win32:SOURCES += SHMDuplexPipe.cpp
 !win32:SOURCES += SHMPipe.cpp

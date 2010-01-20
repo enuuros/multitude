@@ -15,48 +15,48 @@
 
 #include "Sleep.hpp"
 
-#ifdef WIN32
-#include "GetTimeOfDay.hpp"
-#endif
-
 #include "Mutex.hpp"
 #include "TimeStamp.hpp"
 
-
+// #include <QThread>
 
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
+extern "C" {
 #include <windows.h>
+#include <winbase.h>
+}
 #endif
+
+#include <time.h>
 
 namespace Radiant {
 
-    bool Sleep::sleepMs(uint32_t msecs)
-    {
-#ifdef WIN32
-        ::Sleep(msecs);
-        return true;
-#else
-      struct timespec tspec;
-      tspec.tv_sec = 0;
-      tspec.tv_nsec = (long) msecs * RADIANT_MILLION;
-      return nanosleep(&tspec, 0) != -1;
-#endif
+  bool Sleep::sleepS(uint32_t secs)
+  {
+    for(uint32_t i = 0; i < secs; i++) {
+      sleepMs(500);
+      sleepMs(500);
     }
 
-    bool Sleep::sleepUs(uint32_t usecs)
-    {
-#ifdef WIN32
-        ::Sleep(usecs / 1000);
-        return true;
-#else
-      struct timespec tspec;
-      tspec.tv_sec = 0;
-      tspec.tv_nsec = (long) usecs * 1000;
-      return nanosleep(&tspec, 0) != -1;
-#endif
-    }
+    return secs;
+  }
 
+  bool Sleep::sleepMs(uint32_t msecs)
+  {
+    sleepUs(msecs * 1000);
+    return true;
+  }
+
+  bool Sleep::sleepUs(uint32_t usecs)
+  {
+#ifdef WIN32
+    ::Sleep(usecs / 1000);
+#else
+    usleep(usecs);
+#endif
+
+    return true;
+  }
 
   /** Sleep until time indicated in the stamp object is passed.  The
       initialization time of this object is added to the stamp, before
@@ -67,23 +67,20 @@ namespace Radiant {
       locked again.  */
   long SleepSync::sleepTo(const TimeStamp *stamp, Mutex *mutex)
   {
-    struct timeval tmp;
+    TimeStamp now = TimeStamp::getTime();
 
-    gettimeofday(&tmp, 0);
-    m_timing.tv_sec = (long) stamp->seconds();
-    m_timing.tv_usec = (long) stamp->subSecondsUS();
+    TimeStamp left = *stamp - now;
 
-    addTime(& m_timing, & m_initial);
+    if(left < 0)
+      return left;
 
-    long diffUs = timeDiffUs(&tmp, &m_timing);
-    if(diffUs < 0) return diffUs;
+    mutex->unlock();
 
-    if(mutex) mutex->unlock();
-    Sleep::sleepUs(diffUs);
-    if(mutex) mutex->lock();
+    Sleep::sleepUs(left.secondsD() * 1000000.0);
 
-    gettimeofday(&tmp, 0);
-    return timeDiffUs(&tmp, &m_timing);
+    mutex->lock();
+
+    return 0;
   }
 
   /** Sleep in synchronous mode. The argument value is added to
@@ -93,17 +90,17 @@ namespace Radiant {
       values indicate the call returned too late. */
   long SleepSync::sleepSynchroUs(long us)
   {
-    struct timeval tmp;
+    TimeStamp target = m_initial + TimeStamp::createSecondsD(us * 0.000001);
+    TimeStamp now = TimeStamp::getTime();
 
-    addTimeUs(&m_timing, us);
-    gettimeofday(&tmp, 0);
+    if(now < target) {
+      double secs = TimeStamp(target - now).secondsD();
+      Sleep::sleepUs(secs * 1000000.0);
+    }
 
-    long diffUs = timeDiffUs(&tmp, &m_timing);
-    if(diffUs < 0) return diffUs;
+    m_initial = target;
 
-    Sleep::sleepUs(diffUs);
-    gettimeofday(&tmp, 0);
-    return timeDiffUs(&tmp, &m_timing);
+    return 0;
   }
 
 }
