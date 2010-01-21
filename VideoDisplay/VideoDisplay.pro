@@ -1,6 +1,6 @@
 include(../multitude.pri)
 
-unix:CONFIG += debug
+# unix:CONFIG += debug
 
 HEADERS += AudioTransfer.hpp
 HEADERS += Export.hpp
