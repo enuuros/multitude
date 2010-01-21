@@ -113,8 +113,12 @@ namespace Radiant {
     with this function. */
     static bool sleepMs(uint32_t msecs);
 
-    /** Sleep for n microseconds. You cannot sleep more than one second
-    with this function. This function has millisecond precision on Windows.*/
+    /** Sleep for n microseconds. You cannot sleep more than one
+        second with this function. The resolution of this function is
+        unlikely to be better than one millisecond on any platform,
+        even if the underlying APIs might imply this.
+
+    */
     static bool sleepUs(uint32_t usecs);
   };
 

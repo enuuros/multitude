@@ -38,7 +38,7 @@ namespace Radiant {
       sleepMs(500);
     }
 
-    return secs;
+    return true;
   }
 
   bool Sleep::sleepMs(uint32_t msecs)
