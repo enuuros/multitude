@@ -554,21 +554,17 @@ namespace Luminous
     updateVBO();
 
     m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
-
-    m_cb.bind();
-    glColorPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(0));
-
+    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
     m_ib.bind();
     glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
-    m_cb.unbind();
     m_vb.unbind();
 
     // clear previous content
     m_vertices.clear();
-    m_colors.clear();
     m_indices.clear();
   }
   void RenderContext::updateVBO()
@@ -578,31 +574,17 @@ namespace Luminous
     Radiant::trace(Radiant::DEBUG, "ALLOCATED VB FOR %u VERTICES & %u INDICES", m_vertices.size(), m_indices.size());
 
     // Allocate memory
-    size_t vertexBytes = sizeof(float) * 2 * m_vertices.size();
+    size_t vertexBytes = sizeof(float) * m_vertices.size();
     m_vb.allocate(vertexBytes, VertexBuffer::DYNAMIC_DRAW);
-    size_t colorBytes = sizeof(GLuint) * 4 * m_colors.size();
-    m_cb.allocate(colorBytes, VertexBuffer::DYNAMIC_DRAW);
     size_t indexBytes = sizeof(GLuint) * m_indices.size();
     m_ib.allocate(indexBytes, IndexBuffer::DYNAMIC_DRAW);
 
     // Compute vertex locations and upload them to GPU
     float * vp = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
-    float * cp = static_cast<float *> (m_cb.map(VertexBuffer::WRITE_ONLY));
     GLuint * ip = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
     for(size_t i = 0; i < m_vertices.size(); i++)
-    {
-      *(vp++) = m_vertices[i].x;
-      *(vp++) = m_vertices[i].y;
-    }
-
-    for(size_t i = 0; i < m_colors.size(); i++)
-    {
-      *(cp++) = m_colors[i].x;
-      *(cp++) = m_colors[i].y;
-      *(cp++) = m_colors[i].z;
-      *(cp++) = m_colors[i].w;
-    }
+      *(vp++) = m_vertices[i];
 
     for(size_t i = 0; i < m_indices.size(); i++)
     {
@@ -610,7 +592,6 @@ namespace Luminous
     }
 
     m_vb.unmap();
-    m_cb.unmap();
     m_ib.unmap();
   }
 
@@ -633,17 +614,16 @@ namespace Luminous
       Luminous::Utils::project(m, Vector2(0,      size.y))
     };
 
-    int vertexCount = m_vertices.size();
+    int vertexCount = m_vertices.size() / 6;
 
-    m_vertices.push_back(v[0]);
-    m_vertices.push_back(v[1]);
-    m_vertices.push_back(v[2]);
-    m_vertices.push_back(v[3]);
-
-    m_colors.push_back(color);
-    m_colors.push_back(color);
-    m_colors.push_back(color);
-    m_colors.push_back(color);
+    for(int i = 0; i < 4; i++) {
+      m_vertices.push_back(v[i].x);
+      m_vertices.push_back(v[i].y);
+      m_vertices.push_back(color.x);
+      m_vertices.push_back(color.y);
+      m_vertices.push_back(color.z);
+      m_vertices.push_back(color.w);
+    }
 
     m_indices.push_back(vertexCount);
     m_indices.push_back(vertexCount + 1);

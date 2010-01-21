@@ -168,13 +168,11 @@ namespace Luminous
 
     Luminous::GLResources * m_resources;
 
-    std::vector<Nimble::Vector4f> m_vertices;
-    std::vector<Nimble::Vector4f> m_colors;
+    std::vector<float>            m_vertices;
     std::vector<GLuint>           m_indices;
 
     Luminous::VertexBuffer m_vb;
     Luminous::IndexBuffer  m_ib;
-    Luminous::VertexBuffer m_cb;
 
     class Internal;
     Internal * m_data;
