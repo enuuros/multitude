@@ -23,10 +23,6 @@
 
 #include <set>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
-
 class QMdiArea;
 
 namespace FireView {
@@ -47,7 +43,7 @@ namespace FireView {
 
   protected:
     QMdiArea * m_mdi;
-    std::set<u_int64_t> m_cameras;
+    std::set<uint64_t> m_cameras;
     Radiant::FrameRate m_rate;
     float m_customFps;
     Radiant::VideoCamera::TriggerSource m_triggerSource;

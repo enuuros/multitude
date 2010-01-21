@@ -8,6 +8,10 @@
 #include <Luminous/Texture.hpp>
 #include <Luminous/Utils.hpp>
 
+#include <Radiant/Trace.hpp>
+
+using namespace Radiant;
+
 int main(int argc, char ** argv)
 {
   if(argc != 2) {
@@ -52,6 +56,7 @@ int main(int argc, char ** argv)
       switch(event.type) {
       case SDL_QUIT:
         running = false;
+	Radiant::info("Quit called, stopping now");
         break;
       };
     }

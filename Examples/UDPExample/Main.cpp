@@ -22,10 +22,8 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
-#ifdef WIN32
-#include <WinPort.h>
-#endif
 
 #ifndef WIN32
 
@@ -173,7 +171,7 @@ int main(int argc, char ** argv)
   }
 
 #ifdef WIN32
-  WinPort::initSockets();
+  // WinPort::initSockets();
 #endif
   
   if(islistener)
@@ -182,7 +180,7 @@ int main(int argc, char ** argv)
     sendTest(host, port, message);
 
 #ifdef WIN32
-  WinPort::exitSockets();
+  // WinPort::exitSockets();
 #endif
 
   printf("%s took %.2lf seconds\n", appname, startTime.since().secondsD());

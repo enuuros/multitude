@@ -16,11 +16,6 @@
 #ifndef FIREVIEW_CAMVIEW_HPP
 #define FIREVIEW_CAMVIEW_HPP
 
-#ifdef WIN32
-#include <WinPort.h>
-#define _WINSOCKAPI_	// timeval struct redefinition
-#endif
-
 #include <Luminous/Texture.hpp>
 
 #include <Nimble/Rect.hpp>
@@ -46,7 +41,7 @@ namespace FireView {
     CamView(QWidget * parent);
     virtual ~CamView();
 
-    bool start(u_int64_t euid64, Radiant::FrameRate fps, float customFps = 0.0f,
+    bool start(uint64_t euid64, Radiant::FrameRate fps, float customFps = 0.0f,
          Radiant::VideoCamera::TriggerSource triggerSource = Radiant::VideoCamera::TriggerSource(-1), Radiant::VideoCamera::TriggerMode triggerMode = Radiant::VideoCamera::TriggerMode(-1),
 	       bool format7 = false);
 
@@ -126,7 +121,7 @@ namespace FireView {
       InputThread();
       virtual ~InputThread();
 
-      bool start(u_int64_t euid64, Radiant::FrameRate fps, 
+      bool start(uint64_t euid64, Radiant::FrameRate fps, 
      float customFps, Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode,
 		 bool format7);
       void stop();

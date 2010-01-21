@@ -52,7 +52,7 @@ namespace FireView {
   CamView::InputThread::~InputThread()
   {}
 
-  bool CamView::InputThread::start(u_int64_t euid64, Radiant::FrameRate fps,
+  bool CamView::InputThread::start(uint64_t euid64, Radiant::FrameRate fps,
                                    float customFps,
                                    Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode,
                                    bool format7)
@@ -387,7 +387,7 @@ namespace FireView {
     m_thread.stop();
   }
 
-  bool CamView::start(u_int64_t euid64, Radiant::FrameRate fps,
+  bool CamView::start(uint64_t euid64, Radiant::FrameRate fps,
                       float customFps,
                       Radiant::VideoCamera::TriggerSource triggerSource, Radiant::VideoCamera::TriggerMode triggerMode, bool format7)
   {
