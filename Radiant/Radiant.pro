@@ -113,12 +113,23 @@ unix {
     DEFINES += CAMERA_DRIVER_1394
 }
 win32 {
+    message(Radiant on Windows)
+
     DEFINES += RADIANT_EXPORT
     !win64 {
         DEFINES += CAMERA_DRIVER_CMU
         HEADERS += VideoCameraCMU.hpp
         SOURCES += VideoCameraCMU.cpp
         LIBS += 1394camera.lib
+    }
+
+    win64 {
+      message(64-bit Windows)
+    }
+    else {
+      message(32-bit windows)
+      HEADERS += VideoCameraCMU.hpp
+      SOURCES += VideoCameraCMU.cpp
     }
 
     SOURCES += PlatformUtilsWin32.cpp
@@ -139,6 +150,7 @@ win32 {
     PTGREY_PATH = "C:\Program Files\Point Grey Research\FlyCapture2"
     exists($$PTGREY_PATH/include) {
         DEFINES += CAMERA_DRIVER_PGR
+	message(Using PTGrey camera drivers)
 
         HEADERS += VideoCameraPTGrey.hpp
         SOURCES += VideoCameraPTGrey.cpp
