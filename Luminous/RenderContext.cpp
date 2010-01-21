@@ -210,10 +210,21 @@ namespace Luminous
     // Make sure the clip stack is empty
     while(!m_data->m_clipStack.empty())
       m_data->m_clipStack.pop();
+
+
+    static bool once = true;
+    if(once) {
+      m_vb.allocate(VBO_VERBUF_SIZE, VertexBuffer::DYNAMIC_DRAW);
+      if (glGetError() == GL_OUT_OF_MEMORY)
+        error("GPU dosen't have enough memory!");
+      m_ib.allocate(VBO_INDBUF_SIZE, IndexBuffer::DYNAMIC_DRAW);
+      once = false;
+    }
   }
 
   void RenderContext::finish()
-  {}
+  {
+  }
 
   void RenderContext::setRecursionLimit(size_t limit)
   {
@@ -549,50 +560,21 @@ namespace Luminous
     drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
   }
 
-  void RenderContext::renderVBO()
-  {
-    updateVBO();
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
-    m_ib.bind();
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    // clear previous content
-    m_vertices.clear();
-    m_indices.clear();
-  }
+//  void RenderContext::renderVBO()
+//  {
+//
+//    m_vb.bind();
+//    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+//    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+//    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
+//    m_ib.bind();
+//    glDrawElements(GL_TRIANGLES, m_iCounter, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+//
+//    m_ib.unbind();
+//    m_vb.unbind();
+//  }
   void RenderContext::updateVBO()
   {
-    using namespace Luminous;
-
-    Radiant::trace(Radiant::DEBUG, "ALLOCATED VB FOR %u VERTICES & %u INDICES", m_vertices.size(), m_indices.size());
-
-    // Allocate memory
-    size_t vertexBytes = sizeof(float) * m_vertices.size();
-    m_vb.allocate(vertexBytes, VertexBuffer::DYNAMIC_DRAW);
-    size_t indexBytes = sizeof(GLuint) * m_indices.size();
-    m_ib.allocate(indexBytes, IndexBuffer::DYNAMIC_DRAW);
-
-    // Compute vertex locations and upload them to GPU
-    float * vp = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
-    GLuint * ip = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
-
-    for(size_t i = 0; i < m_vertices.size(); i++)
-      *(vp++) = m_vertices[i];
-
-    for(size_t i = 0; i < m_indices.size(); i++)
-    {
-      *(ip++) = m_indices[i];
-    }
-
-    m_vb.unmap();
-    m_ib.unmap();
   }
 
   void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
@@ -614,23 +596,41 @@ namespace Luminous
       Luminous::Utils::project(m, Vector2(0,      size.y))
     };
 
-    int vertexCount = m_vertices.size() / 6;
+
+      float * m_pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
+      GLuint * m_pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
     for(int i = 0; i < 4; i++) {
-      m_vertices.push_back(v[i].x);
-      m_vertices.push_back(v[i].y);
-      m_vertices.push_back(color.x);
-      m_vertices.push_back(color.y);
-      m_vertices.push_back(color.z);
-      m_vertices.push_back(color.w);
+      *(m_pVB++) = v[i].x;
+      *(m_pVB++) = v[i].y;
+      *(m_pVB++) = color.x;
+      *(m_pVB++) = color.y;
+      *(m_pVB++) = color.z;
+      *(m_pVB++) = color.w;
     }
 
-    m_indices.push_back(vertexCount);
-    m_indices.push_back(vertexCount + 1);
-    m_indices.push_back(vertexCount + 2);
-    m_indices.push_back(vertexCount);
-    m_indices.push_back(vertexCount + 2);
-    m_indices.push_back(vertexCount + 3);
+    int m_vCounter=0;
+    *(m_pIB++) = m_vCounter;
+    *(m_pIB++) = m_vCounter + 1;
+    *(m_pIB++) = m_vCounter + 2;
+    *(m_pIB++) = m_vCounter;
+    *(m_pIB++) = m_vCounter + 2;
+    *(m_pIB++) = m_vCounter + 3;
+
+    m_vb.unmap();
+    m_ib.unmap();
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
+
+    m_ib.bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
   }
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,

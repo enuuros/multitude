@@ -75,7 +75,9 @@ namespace Luminous
     };
 
     enum {
-      FBO_EXACT_SIZE = 0x1
+      FBO_EXACT_SIZE = 0x1,
+      VBO_VERBUF_SIZE = 8294400 * 6 * sizeof(GL_FLOAT),
+      VBO_INDBUF_SIZE = 12441600
     };
 
 #endif
@@ -168,11 +170,13 @@ namespace Luminous
 
     Luminous::GLResources * m_resources;
 
-    std::vector<float>            m_vertices;
-    std::vector<GLuint>           m_indices;
-
     Luminous::VertexBuffer m_vb;
     Luminous::IndexBuffer  m_ib;
+
+    //float*                 m_pVB;
+    //GLuint*                m_pIB;
+    //GLuint                 m_vCounter;
+    //GLuint                 m_iCounter;
 
     class Internal;
     Internal * m_data;
