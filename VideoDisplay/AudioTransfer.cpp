@@ -42,7 +42,8 @@ namespace VideoDisplay {
       m_showFrame(-1),
       m_ending(false),
       m_end(false),
-      m_audioLatency(0.0f)
+      m_audioLatency(0.0f),
+      m_mutex(false, false, true)
   {
     const char * lat = getenv("RESONANT_LATENCY");
     if(lat) {

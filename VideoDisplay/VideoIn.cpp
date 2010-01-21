@@ -196,6 +196,9 @@ namespace VideoDisplay {
 
     Frame * im = m_frames[index % m_frames.size()].ptr();
 
+    if(!im)
+      return 0;
+
     if(updateCount) {
       m_consumedFrames = index;
 
@@ -363,6 +366,8 @@ namespace VideoDisplay {
 
   void VideoIn::setAudioListener(AudioTransfer * listener)
   {
+    Radiant::Guard g(mutex());
+
     if(listener)
       assert(m_listener == 0);
 

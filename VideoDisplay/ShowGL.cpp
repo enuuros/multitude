@@ -446,9 +446,11 @@ namespace VideoDisplay {
       i++;
     }
 
+    /* The order is important. The DSP network is supposed to delete the item,
+       which may well happen before we hit the forgetVideo call. */
+    m_audio->forgetVideo();
     m_dsp->markDone(m_dspItem);
 
-    m_audio->forgetVideo();
     m_audio = 0;
 
     m_video->setAudioListener(0);
