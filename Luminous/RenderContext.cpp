@@ -619,35 +619,24 @@ namespace Luminous
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
     Vector2f size = rect.size();
-    //Matrix3 m = transform() * Matrix3::translate2D(rect.low());
-
-    //Matrix3 m = transform() * Matrix3::translate2D(rect.low()) * Matrix3::scale2D(rect.width(), rect.height());
-
-    Nimble::Vector3 t(transform().row(0).z, transform().row(1).z, 0.f);
-
-    Matrix4 s = Matrix4::scale3D(Nimble::Vector3(rect.width(), rect.height(), 1.f));
-    Matrix4 t0 = Nimble::Matrix4::translate3D(t);
-    Matrix4 t1 = Nimble::Matrix4::translate3D(Vector3(rect.low().x, rect.low().y, 0.f));
-
-    Nimble::Matrix4 m =  t0 * t1 * s;
-
-    Radiant::info("MATRIX DEBUG T(%f,%f,%f)", m.getTranslation().x, m.getTranslation().y, m.getTranslation().z);
-
-    Radiant::info("MATRIX DEBUG S(%f,%f,%f)", m.row(0).x, m.row(1).y, m.row(2).z);
-
-    glPushMatrix();
-
-    glMultMatrixf(m.data());
 
     glColor4fv(rgba);
 
+
+    glPushMatrix();
+
+    glTranslatef(transform().row(0).z, transform().row(1).z, 0.f);
+    info("%f %f %f", transform().row(0).x, transform().row(0).y, transform().row(0).z);
+    info("%f %f %f", transform().row(1).x, transform().row(1).y, transform().row(1).z);
+    info("%f %f %f", transform().row(2).x, transform().row(2).y, transform().row(2).z);
+
+    glTranslatef(rect.low().x, rect.low().y, 0.f);
+    glScalef(rect.width(),rect.height(),1.0f);
+
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
-    //glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
 
     m_ib.bind();
-
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
