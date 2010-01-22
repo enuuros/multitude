@@ -76,8 +76,8 @@ namespace Luminous
 
     enum {
       FBO_EXACT_SIZE = 0x1,
-      VBO_VERBUF_SIZE = 8294400 * 6 * sizeof(GL_FLOAT),
-      VBO_INDBUF_SIZE = 12441600
+      VBO_VERBUF_SIZE = 10 * 2 * sizeof(GL_FLOAT),
+      VBO_INDBUF_SIZE = 10
     };
 
 #endif

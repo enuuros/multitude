@@ -215,9 +215,43 @@ namespace Luminous
     static bool once = true;
     if(once) {
       m_vb.allocate(VBO_VERBUF_SIZE, VertexBuffer::DYNAMIC_DRAW);
-      if (glGetError() == GL_OUT_OF_MEMORY)
-        error("GPU dosen't have enough memory!");
       m_ib.allocate(VBO_INDBUF_SIZE, IndexBuffer::DYNAMIC_DRAW);
+
+      Nimble::Matrix3 m;
+      m.identity();
+
+      const Vector4 v[4] = {
+        Luminous::Utils::project(m, Vector2(0, 0)),
+        Luminous::Utils::project(m, Vector2(1, 0)),
+        Luminous::Utils::project(m, Vector2(1, 1)),
+        Luminous::Utils::project(m, Vector2(0, 1))
+      };
+
+      float * m_pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
+      GLuint * m_pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
+
+      for(int i = 0; i < 4; i++) {
+        *(m_pVB++) = v[i].x;
+        *(m_pVB++) = v[i].y;
+        /*
+      *(m_pVB++) = color.x;
+      *(m_pVB++) = color.y;
+      *(m_pVB++) = color.z;
+      *(m_pVB++) = color.w;
+*/
+      }
+
+      int m_vCounter=0;
+      *(m_pIB++) = m_vCounter;
+      *(m_pIB++) = m_vCounter + 1;
+      *(m_pIB++) = m_vCounter + 2;
+      *(m_pIB++) = m_vCounter;
+      *(m_pIB++) = m_vCounter + 2;
+      *(m_pIB++) = m_vCounter + 3;
+
+      m_vb.unmap();
+      m_ib.unmap();
+
       once = false;
     }
   }
@@ -585,52 +619,41 @@ namespace Luminous
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
     Vector2f size = rect.size();
-    Matrix3 m = transform() * Matrix3::translate2D(rect.low());
+    //Matrix3 m = transform() * Matrix3::translate2D(rect.low());
 
-    Vector4f color(rgba);
+    //Matrix3 m = transform() * Matrix3::translate2D(rect.low()) * Matrix3::scale2D(rect.width(), rect.height());
 
-    const Vector4 v[4] = {
-      Luminous::Utils::project(m, Vector2(0, 0)),
-      Luminous::Utils::project(m, Vector2(size.x, 0)),
-      Luminous::Utils::project(m, Vector2(size.x, size.y)),
-      Luminous::Utils::project(m, Vector2(0,      size.y))
-    };
+    Nimble::Vector3 t(transform().row(0).z, transform().row(1).z, 0.f);
 
+    Matrix4 s = Matrix4::scale3D(Nimble::Vector3(rect.width(), rect.height(), 1.f));
+    Matrix4 t0 = Nimble::Matrix4::translate3D(t);
+    Matrix4 t1 = Nimble::Matrix4::translate3D(Vector3(rect.low().x, rect.low().y, 0.f));
 
-      float * m_pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
-      GLuint * m_pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
+    Nimble::Matrix4 m =  t0 * t1 * s;
 
-    for(int i = 0; i < 4; i++) {
-      *(m_pVB++) = v[i].x;
-      *(m_pVB++) = v[i].y;
-      *(m_pVB++) = color.x;
-      *(m_pVB++) = color.y;
-      *(m_pVB++) = color.z;
-      *(m_pVB++) = color.w;
-    }
+    Radiant::info("MATRIX DEBUG T(%f,%f,%f)", m.getTranslation().x, m.getTranslation().y, m.getTranslation().z);
 
-    int m_vCounter=0;
-    *(m_pIB++) = m_vCounter;
-    *(m_pIB++) = m_vCounter + 1;
-    *(m_pIB++) = m_vCounter + 2;
-    *(m_pIB++) = m_vCounter;
-    *(m_pIB++) = m_vCounter + 2;
-    *(m_pIB++) = m_vCounter + 3;
+    Radiant::info("MATRIX DEBUG S(%f,%f,%f)", m.row(0).x, m.row(1).y, m.row(2).z);
 
-    m_vb.unmap();
-    m_ib.unmap();
+    glPushMatrix();
+
+    glMultMatrixf(m.data());
+
+    glColor4fv(rgba);
 
     m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
+    //glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
     //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
 
     m_ib.bind();
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
     m_vb.unbind();
 
+    glPopMatrix();
   }
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,
@@ -710,6 +733,7 @@ namespace Luminous
 
     popTransform();
   }
+  
 
 }
 
