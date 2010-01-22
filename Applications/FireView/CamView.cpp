@@ -235,7 +235,8 @@ namespace FireView {
 
     if(!m_format7) {
       ok = m_camera->open(m_euid64, 640, 480, Radiant::IMAGE_UNKNOWN, m_fps);
-    } else {
+    }
+    else {
 
       if(m_customFps <= 3) {
         m_customFps = 15;
