@@ -148,7 +148,7 @@ namespace Valuable
         return e;
     }
 
-    return DOMElement(0);
+    return DOMElement();
   }
 
   static void addSpace(FILE * f, int n)
