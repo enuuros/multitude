@@ -244,15 +244,22 @@ namespace Valuable
                         Valuable::HasValues * obj,
                         const Radiant::BinaryData & defaultData );
   
-  void HasValues::eventRemoveListener(Valuable::HasValues * obj)
+  int HasValues::eventRemoveListener(Valuable::HasValues * obj, const char * from, const char * to)
   {
+    int removed = 0;
     for(Listeners::iterator it = m_elisteners.begin(); it != m_elisteners.end();){
       if((*it).m_listener == obj) {
-        it = m_elisteners.erase(it);
+        // match from & to if specified
+        if ( (!from || it->m_from == from) &&
+             (!to || it->m_to == to) ) {
+          it = m_elisteners.erase(it);
+          ++removed;
+        }
       }
       else
         it++;
     }
+    return removed;
   }
 
   void HasValues::eventAddSource(Valuable::HasValues * source)

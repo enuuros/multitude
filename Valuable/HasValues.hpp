@@ -106,8 +106,11 @@ namespace Valuable
                           const char * to,
                           Valuable::HasValues * obj,
                           const Radiant::BinaryData * defaultData = 0);
-    /** Experimental event passing framework. */
-    void eventRemoveListener(Valuable::HasValues * obj);
+    /** Experimental event passing framework.
+
+      @return number of listeners removed
+      */
+    int eventRemoveListener(Valuable::HasValues * obj, const char * from = 0, const char * to = 0);
 
     void eventAddSource(Valuable::HasValues * source);
     void eventRemoveSource(Valuable::HasValues * source);
