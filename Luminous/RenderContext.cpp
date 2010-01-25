@@ -30,6 +30,21 @@ namespace Luminous
   using namespace Radiant;
   using namespace Luminous;
 
+  static const char * __transformersource =
+      "uniform vec2 traGlb;\n"
+      "uniform vec2 traLcl;\n"
+      "uniform vec2 scale;\n"
+      "void main (void) {\n"
+      "  vec2 pos = gl_Vertex.xy * scale + traLcl;\n"
+      "  //pos.x *= 1000.0;\n"
+      "  //pos.y *= 1000.0;\n"
+      "  gl_Position = gl_ModelViewProjectionMatrix * vec4(pos.x, pos.y, 0.0, 1.0);\n"
+      "}\n";
+  static const char *__transformersource2 =
+      "void main() {\n"
+      "gl_FragColor = vec4(0.2,0.5,0.1,1.0);\n"
+      "}\n";
+
   class RenderContext::FBOPackage : public GLResource
   {
   public:
@@ -253,6 +268,20 @@ namespace Luminous
       m_ib.unmap();
 
       once = false;
+
+      Luminous::GLSLShaderObject * vs = new Luminous::GLSLShaderObject(GL_VERTEX_SHADER);
+      vs->setSource(__transformersource);
+
+      Luminous::GLSLShaderObject * fs = new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER);
+      fs->setSource(__transformersource2);
+
+      m_transformer = new Luminous::GLSLProgramObject();
+      m_transformer->addObject(vs);
+      m_transformer->addObject(fs);
+
+      if(!m_transformer->link()) {
+        std::cerr << "GLSL shader failed to link: " << m_transformer->linkerLog();
+      }
     }
   }
 
@@ -619,20 +648,23 @@ namespace Luminous
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
     Vector2f size = rect.size();
-
     glColor4fv(rgba);
 
 
-    glPushMatrix();
+//    glPushMatrix();
 
-    glTranslatef(transform().row(0).z, transform().row(1).z, 0.f);
-    info("%f %f %f", transform().row(0).x, transform().row(0).y, transform().row(0).z);
-    info("%f %f %f", transform().row(1).x, transform().row(1).y, transform().row(1).z);
-    info("%f %f %f", transform().row(2).x, transform().row(2).y, transform().row(2).z);
+//    glTranslatef(transform().row(0).z, transform().row(1).z, 0.f);
+//    info("%f %f %f", transform().row(0).x, transform().row(0).y, transform().row(0).z);
+//    info("%f %f %f", transform().row(1).x, transform().row(1).y, transform().row(1).z);
+//    info("%f %f %f", transform().row(2).x, transform().row(2).y, transform().row(2).z);
 
-    glTranslatef(rect.low().x, rect.low().y, 0.f);
-    glScalef(rect.width(),rect.height(),1.0f);
+//    glTranslatef(rect.low().x, rect.low().y, 0.f);
+//    glScalef(rect.width(),rect.height(),1.0f);
 
+    m_transformer->bind();
+    m_transformer->setUniformVector2("traGlb", Vector2f(transform().row(0).z, transform().row(1).z));
+    m_transformer->setUniformVector2("traLcl", Vector2f(rect.low().x, rect.low().y));
+    m_transformer->setUniformVector2("scale", Vector2f(rect.width(),rect.height()));
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
@@ -640,9 +672,10 @@ namespace Luminous
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
-    m_vb.unbind();
 
-    glPopMatrix();
+    m_vb.unbind();
+    m_transformer->unbind();
+//    glPopMatrix();
   }
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,

@@ -20,6 +20,7 @@
 #include <Luminous/Transformer.hpp>
 #include <Luminous/GLResource.hpp>
 #include <Luminous/GLResources.hpp>
+#include <Luminous/GLSLProgramObject.hpp>
 #include <Luminous/Export.hpp>
 #include <Luminous/VertexBuffer.hpp>
 
@@ -172,6 +173,7 @@ namespace Luminous
 
     Luminous::VertexBuffer m_vb;
     Luminous::IndexBuffer  m_ib;
+    Luminous::GLSLProgramObject* m_transformer;
 
     //float*                 m_pVB;
     //GLuint*                m_pIB;
