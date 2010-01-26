@@ -20,7 +20,6 @@
 #include <Luminous/Transformer.hpp>
 #include <Luminous/GLResource.hpp>
 #include <Luminous/GLResources.hpp>
-#include <Luminous/GLSLProgramObject.hpp>
 #include <Luminous/Export.hpp>
 #include <Luminous/VertexBuffer.hpp>
 
@@ -77,8 +76,8 @@ namespace Luminous
 
     enum {
       FBO_EXACT_SIZE = 0x1,
-      VBO_VERBUF_SIZE = 10 * 2 * sizeof(GL_FLOAT),
-      VBO_INDBUF_SIZE = 10
+      VBO_VERBUF_SIZE = 4 * 4 * sizeof(GL_FLOAT),
+      VBO_INDBUF_SIZE = 6
     };
 
 #endif
@@ -145,8 +144,8 @@ namespace Luminous
 
     // render function implemented with VBO. Work in progress!!!
     /// @todo more primitives?
-    void renderVBO();
-    void updateVBO();
+//    void renderVBO();
+//    void updateVBO();
     void drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba);
     void drawRectVBO(const Nimble::Rectf & rect, const float * rgba);
     void drawCircleVBO(Nimble::Vector2f center, float radius,
@@ -173,12 +172,6 @@ namespace Luminous
 
     Luminous::VertexBuffer m_vb;
     Luminous::IndexBuffer  m_ib;
-    Luminous::GLSLProgramObject* m_transformer;
-
-    //float*                 m_pVB;
-    //GLuint*                m_pIB;
-    //GLuint                 m_vCounter;
-    //GLuint                 m_iCounter;
 
     class Internal;
     Internal * m_data;

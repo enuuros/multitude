@@ -30,21 +30,6 @@ namespace Luminous
   using namespace Radiant;
   using namespace Luminous;
 
-  static const char * __transformersource =
-      "uniform vec2 traGlb;\n"
-      "uniform vec2 traLcl;\n"
-      "uniform vec2 scale;\n"
-      "void main (void) {\n"
-      "  vec2 pos = gl_Vertex.xy * scale + traLcl;\n"
-      "  //pos.x *= 1000.0;\n"
-      "  //pos.y *= 1000.0;\n"
-      "  gl_Position = gl_ModelViewProjectionMatrix * vec4(pos.x, pos.y, 0.0, 1.0);\n"
-      "}\n";
-  static const char *__transformersource2 =
-      "void main() {\n"
-      "gl_FragColor = vec4(0.2,0.5,0.1,1.0);\n"
-      "}\n";
-
   class RenderContext::FBOPackage : public GLResource
   {
   public:
@@ -246,42 +231,31 @@ namespace Luminous
       GLuint * m_pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
       for(int i = 0; i < 4; i++) {
+        // position
         *(m_pVB++) = v[i].x;
         *(m_pVB++) = v[i].y;
-        /*
-      *(m_pVB++) = color.x;
-      *(m_pVB++) = color.y;
-      *(m_pVB++) = color.z;
-      *(m_pVB++) = color.w;
-*/
+        // color
+//        *(m_pVB++) = color.x;
+//        *(m_pVB++) = color.y;
+//        *(m_pVB++) = color.z;
+//        *(m_pVB++) = color.w;
+//        // texCoord
+        *(m_pVB++) = v[i].x;
+        *(m_pVB++) = v[i].y;
       }
 
-      int m_vCounter=0;
-      *(m_pIB++) = m_vCounter;
-      *(m_pIB++) = m_vCounter + 1;
-      *(m_pIB++) = m_vCounter + 2;
-      *(m_pIB++) = m_vCounter;
-      *(m_pIB++) = m_vCounter + 2;
-      *(m_pIB++) = m_vCounter + 3;
+      // two triangles
+      *(m_pIB++) = 0;
+      *(m_pIB++) = 1;
+      *(m_pIB++) = 2;
+      *(m_pIB++) = 0;
+      *(m_pIB++) = 2;
+      *(m_pIB++) = 3;
 
       m_vb.unmap();
       m_ib.unmap();
 
       once = false;
-
-      Luminous::GLSLShaderObject * vs = new Luminous::GLSLShaderObject(GL_VERTEX_SHADER);
-      vs->setSource(__transformersource);
-
-      Luminous::GLSLShaderObject * fs = new Luminous::GLSLShaderObject(GL_FRAGMENT_SHADER);
-      fs->setSource(__transformersource2);
-
-      m_transformer = new Luminous::GLSLProgramObject();
-      m_transformer->addObject(vs);
-      m_transformer->addObject(fs);
-
-      if(!m_transformer->link()) {
-        std::cerr << "GLSL shader failed to link: " << m_transformer->linkerLog();
-      }
     }
   }
 
@@ -636,9 +610,9 @@ namespace Luminous
 //    m_ib.unbind();
 //    m_vb.unbind();
 //  }
-  void RenderContext::updateVBO()
-  {
-  }
+//  void RenderContext::updateVBO()
+//  {
+//  }
 
   void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
   {
@@ -647,35 +621,31 @@ namespace Luminous
   // Testing
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
-    Vector2f size = rect.size();
+    Matrix3f m = transform();
+
+    float scale = m.extractScale();
+    Vector3f axis;
+    float angle;
+    m.getRotateAroundAxis(axis, angle);
+
     glColor4fv(rgba);
+    glPushMatrix();
 
+    glTranslatef(rect.low().x + m.row(0).z, rect.low().y + m.row(1).z, 0.f);
+    glRotatef(angle, axis.x, axis.y, axis.z);
+    glScalef(rect.width() * scale, rect.height() * scale, 1.0f);
 
-//    glPushMatrix();
-
-//    glTranslatef(transform().row(0).z, transform().row(1).z, 0.f);
-//    info("%f %f %f", transform().row(0).x, transform().row(0).y, transform().row(0).z);
-//    info("%f %f %f", transform().row(1).x, transform().row(1).y, transform().row(1).z);
-//    info("%f %f %f", transform().row(2).x, transform().row(2).y, transform().row(2).z);
-
-//    glTranslatef(rect.low().x, rect.low().y, 0.f);
-//    glScalef(rect.width(),rect.height(),1.0f);
-
-    m_transformer->bind();
-    m_transformer->setUniformVector2("traGlb", Vector2f(transform().row(0).z, transform().row(1).z));
-    m_transformer->setUniformVector2("traLcl", Vector2f(rect.low().x, rect.low().y));
-    m_transformer->setUniformVector2("scale", Vector2f(rect.width(),rect.height()));
     m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
+    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+//    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
 
     m_ib.bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
-
     m_vb.unbind();
-    m_transformer->unbind();
-//    glPopMatrix();
+
+    glPopMatrix();
   }
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,
@@ -688,6 +658,31 @@ namespace Luminous
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
   {
+    Matrix3f m = transform();
+
+    float scale = m.extractScale();
+    Vector3f axis;
+    float angle;
+    m.getRotateAroundAxis(axis, angle);
+
+    glColor4fv(rgba);
+    glPushMatrix();
+
+    glTranslatef(m.row(0).z, m.row(1).z, 0.f);
+    glRotatef(angle, axis.x, axis.y, axis.z);
+    glScalef(size.x * scale, size.y * scale, 1.0f);
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+
+    m_ib.bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
+    glPopMatrix();
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
                      const Nimble::Rect & texUV)
