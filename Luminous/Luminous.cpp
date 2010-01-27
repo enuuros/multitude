@@ -88,7 +88,7 @@ namespace Luminous
     if(done)
       return;
 
-    done = true;
+	done = true;
 
 #ifdef USE_QT45
     QList<QByteArray> formats =

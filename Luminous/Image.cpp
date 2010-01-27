@@ -677,7 +677,9 @@ dest = *this;
     ImageCodec * codec = codecs()->getCodec(filename, file);
     if(codec) {
       result = codec->ping(info, file);
-    }
+    } else {
+		Radiant::error("No suitable image codec found for '%s'", filename);
+	}
 
     fclose(file);
 

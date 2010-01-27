@@ -42,12 +42,17 @@ namespace Luminous
   bool ImageCodecQT::ping(ImageInfo & info, FILE * file)
   {
     QFile f;
-    if(!f.open(file, QIODevice::ReadOnly))
+    if(!f.open(file, QIODevice::ReadOnly)) {	
+		Radiant::error("ImageCodecQT::ping # failed to open file");
       return false;
+	}
+	
     QImageReader r(&f);
 
-    if(!r.canRead())
+    if(!r.canRead()) {
+		Radiant::error("ImageCodecQT::ping # no valid data or the file format is not supported");
       return false;
+	}
 
     QImage::Format fmt = r.imageFormat();
 
@@ -55,8 +60,10 @@ namespace Luminous
       info.pf = PixelFormat::rgbUByte();
     else if(fmt == QImage::Format_ARGB32)
       info.pf = PixelFormat::rgbaUByte();
-    else
+    else {
+		Radiant::error("ImageCodecQT::ping # image has unsupported pixel format");
       return false;
+	}
 
     QSize s = r.size();
     info.width = s.width();
