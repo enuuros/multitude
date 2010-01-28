@@ -190,9 +190,9 @@ namespace Luminous
   ///////////////////////////////////////////////////////////////////
 
   RenderContext::RenderContext(Luminous::GLResources * resources)
-  : Transformer(),
-    m_resources(resources),
-    m_data(new Internal)
+      : Transformer(),
+      m_resources(resources),
+      m_data(new Internal)
   {
     prepare();
   }
@@ -235,11 +235,11 @@ namespace Luminous
         *(m_pVB++) = v[i].x;
         *(m_pVB++) = v[i].y;
         // color
-//        *(m_pVB++) = color.x;
-//        *(m_pVB++) = color.y;
-//        *(m_pVB++) = color.z;
-//        *(m_pVB++) = color.w;
-//        // texCoord
+        //        *(m_pVB++) = color.x;
+        //        *(m_pVB++) = color.y;
+        //        *(m_pVB++) = color.z;
+        //        *(m_pVB++) = color.w;
+        //        // texCoord
         *(m_pVB++) = v[i].x;
         *(m_pVB++) = v[i].y;
       }
@@ -331,9 +331,9 @@ namespace Luminous
           continue;
       }
       else if(fbo->userCount() ||
-         fbo->m_tex.width() < minimumsize.x ||
-         fbo->m_tex.height() < minimumsize.y ||
-         fbo->m_tex.pixelCount() > maxpixels)
+              fbo->m_tex.width() < minimumsize.x ||
+              fbo->m_tex.height() < minimumsize.y ||
+              fbo->m_tex.pixelCount() > maxpixels)
         continue;
 
       ret = FBOHolder(this, fbo);
@@ -415,7 +415,7 @@ namespace Luminous
   void RenderContext::drawRect(const Nimble::Rectf & rect, const float * rgba)
   {
     Utils::glTexRectAA(rect.size(),
-               transform() * Matrix3::translate2D(rect.low()), rgba);
+                       transform() * Matrix3::translate2D(rect.low()), rgba);
   }
 
 
@@ -433,7 +433,7 @@ namespace Luminous
   }
 
   void RenderContext::drawPolyLine(const Nimble::Vector2f * vertices, int n,
-                   float width, const float * rgba)
+                                   float width, const float * rgba)
   {
     if(n < 2)
       return;
@@ -482,14 +482,14 @@ namespace Luminous
       float l2 = dir2.length();
 
       if(l1 < 1.0e-5f)
-    dir1.make(1, 0);
+        dir1.make(1, 0);
       else
-    dir1 /= l1;
+        dir1 /= l1;
 
       if(l2 < 1.0e-5f)
-    dir2.make(1, 0);
+        dir2.make(1, 0);
       else
-    dir2 /= l2;
+        dir2 /= l2;
 
       Vector2 q = dir1.perpendicular();
 
@@ -597,47 +597,29 @@ namespace Luminous
     drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
   }
 
-//  void RenderContext::renderVBO()
-//  {
-//
-//    m_vb.bind();
-//    glVertexPointer(2, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-//    glColorPointer(4, GL_FLOAT, 6*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-//    //glTexCoordPointer(4, GL_FLOAT, 0, BUFFER_OFFSET(2*4 + 4*4));
-//    m_ib.bind();
-//    glDrawElements(GL_TRIANGLES, m_iCounter, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-//
-//    m_ib.unbind();
-//    m_vb.unbind();
-//  }
-//  void RenderContext::updateVBO()
-//  {
-//  }
-
   void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
   {
   }
 
-  // Testing
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
     Matrix3f m = transform();
-
-    float scale = m.extractScale();
-    Vector3f axis;
-    float angle;
-    m.getRotateAroundAxis(axis, angle);
+    Matrix4f r(m[0][0], -m[0][1], 0, 0,
+               -m[1][0], m[1][1], 0, 0,
+               0, 0, 1, 0,
+               0, 0, 0, 1);
 
     glColor4fv(rgba);
     glPushMatrix();
 
     glTranslatef(rect.low().x + m.row(0).z, rect.low().y + m.row(1).z, 0.f);
-    glRotatef(angle, axis.x, axis.y, axis.z);
-    glScalef(rect.width() * scale, rect.height() * scale, 1.0f);
+    glMultMatrixf(r.data());
+    glScalef(rect.width(), rect.height(), 1.0f);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
 
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-//    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
 
     m_ib.bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
@@ -645,32 +627,36 @@ namespace Luminous
     m_ib.unbind();
     m_vb.unbind();
 
+    glDisableClientState(GL_VERTEX_ARRAY);
+
     glPopMatrix();
   }
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,
-                    const float * rgba, int segments)
+                                    const float * rgba, int segments)
   {
   }
   void RenderContext::drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
-                      float width, const float * rgba)
+                                      float width, const float * rgba)
   {
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
   {
     Matrix3f m = transform();
-
-    float scale = m.extractScale();
-    Vector3f axis;
-    float angle;
-    m.getRotateAroundAxis(axis, angle);
+    Matrix4f r(m[0][0], -m[0][1], 0, 0,
+               -m[1][0], m[1][1], 0, 0,
+               0, 0, 1, 0,
+               0, 0, 0, 1);
 
     glColor4fv(rgba);
     glPushMatrix();
 
     glTranslatef(m.row(0).z, m.row(1).z, 0.f);
-    glRotatef(angle, axis.x, axis.y, axis.z);
-    glScalef(size.x * scale, size.y * scale, 1.0f);
+    glMultMatrixf(r.data());
+    glScalef(size.x, size.y, 1.0f);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
@@ -682,14 +668,17 @@ namespace Luminous
     m_ib.unbind();
     m_vb.unbind();
 
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
     glPopMatrix();
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                     const Nimble::Rect & texUV)
+                                     const Nimble::Rect & texUV)
   {
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                     Nimble::Vector2 texUV)
+                                     Nimble::Vector2 texUV)
   {
   }
 
