@@ -604,16 +604,16 @@ namespace Luminous
   void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
   {
     Matrix3f m = transform();
-    Matrix4f r(m[0][0], -m[0][1], 0, 0,
-               -m[1][0], m[1][1], 0, 0,
+    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
+               m[1][0], m[1][1], 0, m[1][2],
                0, 0, 1, 0,
                0, 0, 0, 1);
 
     glColor4fv(rgba);
     glPushMatrix();
 
-    glTranslatef(rect.low().x + m.row(0).z, rect.low().y + m.row(1).z, 0.f);
-    glMultMatrixf(r.data());
+    glTranslatef(rect.low().x, rect.low().y, 0.f);
+    glMultTransposeMatrixf(t.data());
     glScalef(rect.width(), rect.height(), 1.0f);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -643,16 +643,15 @@ namespace Luminous
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
   {
     Matrix3f m = transform();
-    Matrix4f r(m[0][0], -m[0][1], 0, 0,
-               -m[1][0], m[1][1], 0, 0,
+    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
+               m[1][0], m[1][1], 0, m[1][2],
                0, 0, 1, 0,
                0, 0, 0, 1);
 
     glColor4fv(rgba);
     glPushMatrix();
 
-    glTranslatef(m.row(0).z, m.row(1).z, 0.f);
-    glMultMatrixf(r.data());
+    glMultTransposeMatrixf(t.data());
     glScalef(size.x, size.y, 1.0f);
 
     glEnableClientState(GL_VERTEX_ARRAY);
