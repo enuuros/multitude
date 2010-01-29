@@ -510,6 +510,9 @@ namespace Radiant {
     // Only one thread at a time, just to make things sure.
     GuardStatic guard(&g_mutex);
 
+    /* On some systems, sleep is needed for proper multi-camera operation. Sigh.*/
+    Radiant::Sleep::sleepMs(850);
+
     std::string videodevice("/dev/video1394");
 
     uint32_t i;
@@ -646,6 +649,8 @@ namespace Radiant {
                                     int mode)
   {
     GuardStatic guard(&g_mutex);
+
+    Radiant::Sleep::sleepMs(850);
 
     const char * fname = "VideoCamera1394::openFormat7";
 
