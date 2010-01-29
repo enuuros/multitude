@@ -153,6 +153,7 @@ namespace Luminous
     void drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
                       float width, const float * rgba);
     void drawTexRectVBO(Nimble::Vector2 size, const float * rgba);
+    void drawTexRectAAVBO(Nimble::Vector2 size, const float * rgba);
     void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
                      const Nimble::Rect & texUV);
     void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
