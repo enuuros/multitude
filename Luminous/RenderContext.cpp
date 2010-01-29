@@ -606,8 +606,8 @@ namespace Luminous
     Matrix3f m = transform();
     Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
                m[1][0], m[1][1], 0, m[1][2],
-               0, 0, 1, 0,
-               0, 0, 0, 1);
+                     0,       0, 1,       0,
+               m[2][0], m[2][1], 0, m[2][2]);
 
     glColor4fv(rgba);
     glPushMatrix();
@@ -645,8 +645,8 @@ namespace Luminous
     Matrix3f m = transform();
     Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
                m[1][0], m[1][1], 0, m[1][2],
-               0, 0, 1, 0,
-               0, 0, 0, 1);
+                     0,       0, 1,       0,
+               m[2][0], m[2][1], 0, m[2][2]);
 
     glColor4fv(rgba);
     glPushMatrix();
@@ -671,6 +671,10 @@ namespace Luminous
     glDisableClientState(GL_VERTEX_ARRAY);
 
     glPopMatrix();
+  }
+
+  void RenderContext::drawTexRectAAVBO(Nimble::Vector2 size, const float * rgba)
+  {
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
                                      const Nimble::Rect & texUV)
