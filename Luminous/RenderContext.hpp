@@ -146,6 +146,7 @@ namespace Luminous
     /// @todo more primitives?
 //    void renderVBO();
 //    void updateVBO();
+    void drawLineVBO(Nimble::Vector2f start, Nimble::Vector2f end);
     void drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba);
     void drawRectVBO(const Nimble::Rectf & rect, const float * rgba);
     void drawCircleVBO(Nimble::Vector2f center, float radius,

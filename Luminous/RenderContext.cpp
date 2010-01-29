@@ -597,6 +597,41 @@ namespace Luminous
     drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
   }
 
+  void RenderContext::drawLineVBO(Nimble::Vector2f start, Nimble::Vector2f end)
+  {
+    Matrix3f m = transform();
+    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
+               m[1][0], m[1][1], 0, m[1][2],
+                     0,       0, 1,       0,
+               m[2][0], m[2][1], 0, m[2][2]);
+
+    Vector2f v = end - start;
+    float angle = Math::radToDeg(Math::ATan2(v.x, v.y));
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glPushMatrix();
+
+    glTranslatef(start.x, start.y, 0.f);
+    glMultTransposeMatrixf(t.data());
+    glRotatef(angle, 0, 0, 1);
+    glScalef(v.x, v.y, 1.0f);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+
+    m_ib.bind();
+    glDrawRangeElements(GL_LINES, 0, 1, 2, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glPopMatrix();
+
+  }
   void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
   {
   }
