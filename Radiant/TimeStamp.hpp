@@ -105,9 +105,9 @@ namespace Radiant {
     { return m_val & 0xFFFFFF; }
     double subSecondsUS() const { return 1000000.0 * subSecondsD(); }
 
-    double secsTo(const TimeStamp & that)
+    double secsTo(const TimeStamp & that) const
     { return (that.m_val - m_val) / (double) FRACTIONS_PER_SECOND; }
-    double usecsTo(const TimeStamp & that)
+    double usecsTo(const TimeStamp & that) const
     { return (that.m_val - m_val) * 1000000.0/(double) FRACTIONS_PER_SECOND; }
 
     /** Returns the amount of time passed since this timestamp. */ 
