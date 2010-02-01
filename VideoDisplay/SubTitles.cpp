@@ -24,6 +24,7 @@
 
 namespace VideoDisplay {
 
+  using namespace Radiant;
 
   SubTitles::SubTitles()
     : m_current(0),
@@ -190,6 +191,10 @@ namespace VideoDisplay {
       if(errors > 10)
         return false;
     }
+
+    if(!m_texts.empty())
+      info("Loaded subtitles with %d items", (int) m_texts.size());
+
     return m_texts.size() != 0 && errors < 10;
   }
 
