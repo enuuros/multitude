@@ -51,7 +51,7 @@ namespace Radiant
     /// This function is useful if you want to overwrite a file,
     /// and want to check beforehand that it is possible.
     /// @return true if the file exists and can be written.
-	  /// to. Otherwise false.
+    /// to. Otherwise false.
     RADIANT_API bool fileAppendable(const char* filename);
 
     /// Rename a file.
@@ -77,6 +77,7 @@ namespace Radiant
     /// Find a file given a list of paths to search. The directory names are
     /// separated by colon or semicolon in typical Windows or UNIX fashion
     /// (/usr/foo:/home/user/foo etc.).
+    /// If the file is not found, returns an empty string.
     RADIANT_API std::string findFile(const std::string & filename, const std::string & paths);
 
     /// Try to find a file that could be over-written. If such
