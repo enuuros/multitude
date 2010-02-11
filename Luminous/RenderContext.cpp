@@ -217,40 +217,57 @@ namespace Luminous
       m_vb.allocate(VBO_VERBUF_SIZE, VertexBuffer::DYNAMIC_DRAW);
       m_ib.allocate(VBO_INDBUF_SIZE, IndexBuffer::DYNAMIC_DRAW);
 
-      Nimble::Matrix3 m;
-      m.identity();
+      float * pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
+      GLuint * pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
-      const Vector4 v[4] = {
-        Luminous::Utils::project(m, Vector2(0, 0)),
-        Luminous::Utils::project(m, Vector2(1, 0)),
-        Luminous::Utils::project(m, Vector2(1, 1)),
-        Luminous::Utils::project(m, Vector2(0, 1))
+
+      // rectangle
+      const Vector4 vr[4] = {
+        Vector4(0, 0, 0, 1),
+        Vector4(1, 0, 0, 1),
+        Vector4(1, 1, 0, 1),
+        Vector4(0, 1, 0, 1)
       };
-
-      float * m_pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
-      GLuint * m_pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
       for(int i = 0; i < 4; i++) {
         // position
-        *(m_pVB++) = v[i].x;
-        *(m_pVB++) = v[i].y;
+        *(pVB++) = vr[i].x;
+        *(pVB++) = vr[i].y;
         // color
-        //        *(m_pVB++) = color.x;
-        //        *(m_pVB++) = color.y;
-        //        *(m_pVB++) = color.z;
-        //        *(m_pVB++) = color.w;
-        //        // texCoord
-        *(m_pVB++) = v[i].x;
-        *(m_pVB++) = v[i].y;
+        //        *(pVB++) = color.x;
+        //        *(pVB++) = color.y;
+        //        *(pVB++) = color.z;
+        //        *(pVB++) = color.w;
+        // texCoord
+        *(pVB++) = vr[i].x;
+        *(pVB++) = vr[i].y;
       }
 
       // two triangles
-      *(m_pIB++) = 0;
-      *(m_pIB++) = 1;
-      *(m_pIB++) = 2;
-      *(m_pIB++) = 0;
-      *(m_pIB++) = 2;
-      *(m_pIB++) = 3;
+      *(pIB++) = 0;
+      *(pIB++) = 1;
+      *(pIB++) = 2;
+      *(pIB++) = 0;
+      *(pIB++) = 2;
+      *(pIB++) = 3;
+
+      // circle
+      int segments = 30;
+      GLuint ind = 8;
+      float delta = Math::TWO_PI / segments;
+
+      *(pVB++) = 0.0f;
+      *(pVB++) = 0.0f;
+      *(pIB++) = ind++;
+
+      for(int i = 0; i <= segments; i++) {
+        float a = i * delta;
+        float sa = sinf(a);
+        float ca = -cosf(a);
+        *(pVB++) = sa;
+        *(pVB++) = ca;
+        *(pIB++) = ind++;
+      }
 
       m_vb.unmap();
       m_ib.unmap();
@@ -622,7 +639,7 @@ namespace Luminous
     glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
 
     m_ib.bind();
-    glDrawRangeElements(GL_LINES, 0, 1, 2, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
     m_vb.unbind();
@@ -667,10 +684,70 @@ namespace Luminous
     glPopMatrix();
   }
 
-  void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius,
-                                    const float * rgba, int segments)
+  void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius, const float * rgba)
   {
+    Matrix3f m = transform();
+    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
+               m[1][0], m[1][1], 0, m[1][2],
+                     0,       0, 1,       0,
+               m[2][0], m[2][1], 0, m[2][2]);
+
+    glColor4fv(rgba);
+    glPushMatrix();
+
+    glTranslatef(center.x, center.y, 0.f);
+    glMultTransposeMatrixf(t.data());
+    glScalef(radius, radius, 1.0f);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
+
+    m_ib.bind();
+    glDrawRangeElements(GL_TRIANGLE_FAN, 6, 57, 52, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    //glDrawElements(GL_TRIANGLE_FAN, 52, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glPopMatrix();
   }
+
+  void RenderContext::drawArcVBO(Nimble::Vector2f center, float radius, float fromRadians, float toRadians, const float * rgba)
+  {
+    Matrix3f m = transform();
+    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
+               m[1][0], m[1][1], 0, m[1][2],
+                     0,       0, 1,       0,
+               m[2][0], m[2][1], 0, m[2][2]);
+
+    glColor4fv(rgba);
+    glPushMatrix();
+
+    glTranslatef(center.x, center.y, 0.f);
+    glMultTransposeMatrixf(t.data());
+    glScalef(radius, radius, 1.0f);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
+
+    m_ib.bind();
+    glDrawRangeElements(GL_TRIANGLE_FAN, 6, 36, 31, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    //glDrawElements(GL_TRIANGLE_FAN, 52, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glPopMatrix();
+  }
+
   void RenderContext::drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
                                       float width, const float * rgba)
   {

@@ -76,8 +76,8 @@ namespace Luminous
 
     enum {
       FBO_EXACT_SIZE = 0x1,
-      VBO_VERBUF_SIZE = 4 * 4 * sizeof(GL_FLOAT),
-      VBO_INDBUF_SIZE = 6
+      VBO_VERBUF_SIZE = 2 * (8 + 102) * sizeof(GL_FLOAT),
+      VBO_INDBUF_SIZE = 108
     };
 
 #endif
@@ -149,8 +149,8 @@ namespace Luminous
     void drawLineVBO(Nimble::Vector2f start, Nimble::Vector2f end);
     void drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba);
     void drawRectVBO(const Nimble::Rectf & rect, const float * rgba);
-    void drawCircleVBO(Nimble::Vector2f center, float radius,
-                    const float * rgba, int segments = -1);
+    void drawCircleVBO(Nimble::Vector2f center, float radius, const float * rgba);
+    void drawArcVBO(Nimble::Vector2f center, float radius, float fromRadians, float toRadians, const float * rgba);
     void drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
                       float width, const float * rgba);
     void drawTexRectVBO(Nimble::Vector2 size, const float * rgba);
