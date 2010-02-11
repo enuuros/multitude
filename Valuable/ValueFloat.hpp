@@ -33,6 +33,7 @@ namespace Valuable
       etc.
 
       @see ValueFloat. */
+  ///@todo rename "native" to "data"
   template<class T>
   class VALUABLE_API ValueFloatT : public ValueNumeric<T>
   {

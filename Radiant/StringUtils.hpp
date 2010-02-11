@@ -26,15 +26,13 @@
 
 #include <stdlib.h>
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-// #include <WinPort.h>
-#endif
 
 namespace Radiant
 {
 
   /// StringUtils is a collection of string manipulation functions.
+
+  /// @todo Documentation
   namespace StringUtils
   {
 
@@ -50,9 +48,11 @@ namespace Radiant
     RADIANT_API void eraseNonVisibles(std::wstring & s);
 
     /// Convert std::string to double.
+    /// @todo Is duplicate to the stuff at the bottom?
     RADIANT_API double stdStringToDouble(const std::string & str, const int precision = 12);
 
     /// Convert double to std::string.
+    /// @todo Is duplicate to the stuff at the bottom?
     RADIANT_API std::string doubleToStdString(const double value, const int precision = 12);
 
     /// Convert std::string to std::wstring.
@@ -107,6 +107,7 @@ namespace Radiant
     not found in the strings, then -1 is returned. */
     RADIANT_API int which(const StringList & strings, const std::string & str);
 
+    /// @todo Rename to toString
     template<class T>
     inline std::string stringify(T x) {
         std::ostringstream os;

@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_TIMESTAMP_HPP
@@ -29,12 +29,12 @@ namespace Radiant {
      seconds are as they come from the UNIX clock: 1.1.1970 the
      counter was zero. */
 
-  /// @todo remove suffix from create* functions
+  /// @todo remove suffix from create* functions, Documentation
   class RADIANT_API TimeStamp
   {
   public:
     typedef int64_t type;
-    
+
     enum {
       FRACTIONS_PER_SECOND = 0x1000000
     };
@@ -73,7 +73,7 @@ namespace Radiant {
     { return (type) (days * ticksPerDay()); }
 
     static TimeStamp createDHMS(int days, int hours, int minutes, int seconds)
-    { 
+    {
       type tmp = ((type) seconds) << 24;
       tmp += ticksPerMinute() * (type) minutes;
       tmp += ticksPerHour() * (type) hours;
@@ -81,17 +81,17 @@ namespace Radiant {
     }
 
     static TimeStamp createDate(const char * date,
-				const char * delim = "-",
-				bool yearfirst = true);
+                const char * delim = "-",
+                bool yearfirst = true);
 
     static TimeStamp createTime(const char * time,
-				const char * delim = ":");
+                const char * delim = ":");
 
     static TimeStamp createDateTime(const char * date,
-				    const char * delim,
-				    bool yearfirst,
-				    const char * time,
-				    const char * timedelim);
+                    const char * delim,
+                    bool yearfirst,
+                    const char * time,
+                    const char * timedelim);
 
 
     int64_t days() const { return m_val / ticksPerDay(); }
@@ -99,9 +99,9 @@ namespace Radiant {
     int64_t seconds() const { return m_val >> 24; }
     int64_t fractions() const { return m_val & 0xFFFFFF; }
     double secondsD()  const { return m_val / (double) FRACTIONS_PER_SECOND; }
-    double subSecondsD() const 
+    double subSecondsD() const
     { return (m_val & 0xFFFFFF) / (double) FRACTIONS_PER_SECOND; }
-    int64_t subSecondsI() const 
+    int64_t subSecondsI() const
     { return m_val & 0xFFFFFF; }
     double subSecondsUS() const { return 1000000.0 * subSecondsD(); }
 
@@ -110,10 +110,10 @@ namespace Radiant {
     double usecsTo(const TimeStamp & that) const
     { return (that.m_val - m_val) * 1000000.0/(double) FRACTIONS_PER_SECOND; }
 
-    /** Returns the amount of time passed since this timestamp. */ 
+    /** Returns the amount of time passed since this timestamp. */
     TimeStamp since() const { return getTime() - *this; }
 
-    /** Returns the amount of time passed since this timestamp. */ 
+    /** Returns the amount of time passed since this timestamp. */
     double sinceSecondsD() const { return since().secondsD(); }
 
     inline operator type & () { return m_val; }

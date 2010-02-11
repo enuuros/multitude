@@ -28,6 +28,7 @@ namespace Valuable
   class DOMElement;
 
   /// Wrapper for QDomDocument or xercesc::DOMDocument
+  ///@todo Doc
   class VALUABLE_API DOMDocument
   {
   public:

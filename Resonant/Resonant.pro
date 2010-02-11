@@ -1,16 +1,16 @@
 include(../multitude.pri)
 
-HEADERS += Application.hpp 
+HEADERS += Application.hpp
 HEADERS += AudioFileHandler.hpp
-HEADERS += AudioLoop.hpp 
-HEADERS += DSPNetwork.hpp 
+HEADERS += AudioLoop.hpp
+HEADERS += DSPNetwork.hpp
 HEADERS += Export.hpp
-HEADERS += Module.hpp 
-HEADERS += ModuleFilePlay.hpp 
-HEADERS += ModuleGain.hpp 
-HEADERS += ModuleOutCollect.hpp 
-HEADERS += ModuleSamplePlayer.hpp 
-HEADERS += ModulePanner.hpp 
+HEADERS += Module.hpp
+HEADERS += ModuleFilePlay.hpp
+HEADERS += ModuleGain.hpp
+HEADERS += ModuleOutCollect.hpp
+HEADERS += ModuleSamplePlayer.hpp
+HEADERS += ModulePanner.hpp
 
 SOURCES += Application.cpp
 SOURCES += AudioFileHandler.cpp
@@ -33,8 +33,8 @@ include(../library.pri)
 win32 {
   DEFINES += RESONANT_EXPORT
   win64 {
-    INCLUDEPATH += ..\Win64x\include\portaudio 
-    LIBS += -llibsndfile-1 -lportaudio -lWin32x -lOle32 -lUser32
+    INCLUDEPATH += ..\Win64x\include\portaudio
+    LIBS += -llibsndfile-1 -lportaudio -lOle32 -lUser32
   }
   else {
     INCLUDEPATH += ..\Win32x\include\portaudio ..\Win32x\include\libsndfile

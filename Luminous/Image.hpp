@@ -45,6 +45,7 @@ namespace Luminous
 
       The image data is stored in a single, straightforward buffer.
   */
+  /// @todo Split this into two classes, so that "Image" does not inherit ContextVariableT
   class LUMINOUS_API Image :
       public Luminous::ContextVariableT<Luminous::Texture2D>
   {

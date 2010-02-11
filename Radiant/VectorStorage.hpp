@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_VECTOR_STORAGE_HPP
@@ -44,20 +44,20 @@ namespace Radiant {
 
       while(keepGoing()) {
         items.reset();
-	
-	while(fillingTheBuffer())  {
-	  Item item;
-	  items.append(item);
+
+    while(fillingTheBuffer())  {
+      Item item;
+      items.append(item);
         }
 
-	doSomeThingWithTheItems(items);
+    doSomeThingWithTheItems(items);
       }
 
       </PRE>
-      
+
   */
 
-
+  /// @todo Check if the std::vector actually is almost the same
   template <typename T> class VectorStorage
   {
   public:
@@ -70,7 +70,7 @@ namespace Radiant {
     /** This function does not erase any objects. */
     void reset() { m_count = 0; }
 
-	bool empty() const { return m_points.empty(); }
+    bool empty() const { return m_points.empty(); }
 
     /// Resets the internal object counter to n.
     void truncate(unsigned n) { m_count = n; }
@@ -83,7 +83,7 @@ namespace Radiant {
 
     /// Expand the size of the storage buffer to desired size
     /** This function can be run in software initialization phase, to
-	avoid the need to resize the buffer later on. */
+    avoid the need to resize the buffer later on. */
     void expand(unsigned size)
     { if(size > m_points.size()) m_points.resize(size); }
     void resize(unsigned size)
@@ -96,11 +96,11 @@ namespace Radiant {
     { assert(index < m_count); return m_points[index]; }
 
     T & getExpand(unsigned index)
-    { 
-      if(index >= m_count) { 
-	expand(index + 10);
-	m_count = index + 1;
-      } 
+    {
+      if(index >= m_count) {
+    expand(index + 10);
+    m_count = index + 1;
+      }
       return m_points[index];
     }
 
@@ -119,14 +119,14 @@ namespace Radiant {
     void append(const T & x)
     {
       if(m_count >= m_points.size())
-	m_points.resize(m_count + 100);
-      
+    m_points.resize(m_count + 100);
+
       m_points[m_count++] = x;
     }
-    
+
     /** Appends an object to the vector, equals append(x). This method
-	has been implemented so that this class looks and feels more
-	like a typical STL container. */
+    has been implemented so that this class looks and feels more
+    like a typical STL container. */
     void push_back(const T & x) { append(x); }
 
     /// Increase the size of the storage by one, and return the last object
@@ -134,55 +134,55 @@ namespace Radiant {
     T & append()
     {
       if(m_count >= m_points.size())
-	m_points.resize(m_count + 100);
-      
+    m_points.resize(m_count + 100);
+
       return m_points[m_count++];
     }
 
     /// Push an objec to the beginning of the array
     /** This function call takes some time on larger arrays, so it
-	should be used with care. */
+    should be used with care. */
     void prepend(const T & x)
     {
       if(m_count >= m_points.size())
-	m_points.resize(m_count + 100);
+    m_points.resize(m_count + 100);
 
       for(unsigned i = m_count; i >= 1; i--) {
-	m_points[i] = m_points[i - 1];
+    m_points[i] = m_points[i - 1];
       }
 
       m_points[0] = x;
       m_count++;
     }
-    
+
     /** Remove n elements from the end of the storage. */
     void putBack(unsigned n) { m_count -= n; }
 
     /** Erase an element. The size of the storage is shrunk by one. */
-    void erase(unsigned index) 
+    void erase(unsigned index)
     {
       for(unsigned i = index + 1; i < m_count; i++)
-	m_points[i - 1] = m_points[i];
+    m_points[i - 1] = m_points[i];
 
       m_count--;
     }
 
     /** Merge elements to this from that. */
-    void merge(VectorStorage & that) 
+    void merge(VectorStorage & that)
     {
       if(!that.size()) return;
 
       if((size() + that.size()) > m_points.size())
-	m_points.resize(size() + that.size() + 100);
+    m_points.resize(size() + that.size() + 100);
 
       for(unsigned i = 0; i < that.size(); i++)
-	m_points[m_count++] = that.get(i);
+    m_points[m_count++] = that.get(i);
     }
 
     void setAll(const T & value)
     {
       for(unsigned i = 0; i < size(); i++)
-	m_points[i] = value;
+    m_points[i] = value;
 
     }
 
@@ -194,7 +194,7 @@ namespace Radiant {
     /// Returns an iterator to the end of the vector
     iterator end()
     { iterator tmp = m_points.begin(); tmp += m_count; return tmp;}
-    
+
     inline T & operator [] (unsigned i) { return m_points[i]; }
     inline const T & operator [] (unsigned i) const { return m_points[i]; }
 
@@ -206,11 +206,11 @@ namespace Radiant {
       T * sentinel = dest + m_count;
       const T * src = & that.m_points[0];
       while(dest < sentinel) {
-	*dest++ = *src++;
+    *dest++ = *src++;
       }
       return * this;
     }
-    
+
   private:
     unsigned m_count;
     std::vector<T> m_points;

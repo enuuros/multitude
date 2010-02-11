@@ -80,6 +80,8 @@ namespace Radiant {
       An image is composed of planes that contain the actual image
       data.
   */
+
+  /// @todo Make data members private
   class RADIANT_API VideoImage
   {
   public:

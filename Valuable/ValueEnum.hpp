@@ -21,7 +21,7 @@
 namespace Valuable
 {
 
-
+  ///@todo document, use properly
   class VALUABLE_API ValueEnum : public ValueIntT<int32_t>
   {
   public:

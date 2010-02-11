@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef TCB_SPLINE_HPP
@@ -26,15 +26,16 @@
 namespace Luminous {
 
 /// A 2D TCB-spline class
-class LUMINOUS_API TCBSpline2 
+  /// @todo Doc, use template to allow different types, difficult to edit
+class LUMINOUS_API TCBSpline2
 {
   public:
     TCBSpline2() {}
     TCBSpline2(int segments,
-        const std::vector<float> & time, 
-        const std::vector<Nimble::Vector2f> & points, 
+        const std::vector<float> & time,
+        const std::vector<Nimble::Vector2f> & points,
         const std::vector<float> & tension,
-        const std::vector<float> & continuity, 
+        const std::vector<float> & continuity,
         const std::vector<float> & bias);
 
     virtual ~TCBSpline2();
@@ -55,8 +56,8 @@ class LUMINOUS_API TCBSpline2
     void getKeyInfo(float t, int & key, float & dt) const;
 
     void rebuildPolys();
-   
-    size_t m_segments; 
+
+    size_t m_segments;
     std::vector<float> m_time;
 
     std::vector<Nimble::Vector2f> m_points;

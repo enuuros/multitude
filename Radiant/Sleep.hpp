@@ -130,7 +130,7 @@ namespace Radiant {
   /** This class can be used to time the execution of a thread. For
       example if you want a thread not to execute too often.*/
 
-  /// @todo Document
+  /// @todo Add example(s)
   class RADIANT_API SleepSync
   {
   public:
@@ -148,6 +148,7 @@ namespace Radiant {
     last sleep and sleeps to fulfill the required time period. */
     long sleepSynchroUs(long us);
 
+    // @todo Unused(?), remove
     long sleepTo(const TimeStamp *stamp, Mutex *mutex = 0);
 
   private:

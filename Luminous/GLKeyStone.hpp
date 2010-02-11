@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 
@@ -39,6 +39,7 @@ namespace Luminous {
       projector-based systems where aligning the projectors physically
       is either impossible or very difficult.
   */
+  /// @todo the "rotations" is stupid, and should be removed.
   class LUMINOUS_API GLKeyStone : public Valuable::HasValues
   {
   public:
@@ -55,15 +56,15 @@ namespace Luminous {
     /// Returns the index to the closest keystone vertex
     int closestVertex(Nimble::Vector2 loc);
     /// Sets the location of the given keystone vertex
-    void setVertex(int index, float x, float y) 
+    void setVertex(int index, float x, float y)
     { m_vertices[index] = Nimble::Vector2f(x, y); }
 
     /// Moves the vertex that is closest to the the "loc", to "loc"
     bool moveVertex(Nimble::Vector2 loc);
     /// Selects the closest vertex
     /** This function is used to select the vertex, so that it can be
-	moved later on with moveLastVertex. This function is typically
-	used by keystone calibration GUI. */
+    moved later on with moveLastVertex. This function is typically
+    used by keystone calibration GUI. */
     void selectVertex(Nimble::Vector2 loc);
     /// Moves the index of the selected vertex by one.
     void selectNextVertex()
@@ -79,38 +80,37 @@ namespace Luminous {
     { return m_vertices[m_selected].asVector(); }
 
     /** Rotate the vertices. This function changes the indices of the
-	vertices. */
+    vertices. */
     void rotateVertices();
     /** Reports the number of times this keystone has been
-	rotated. This function is typically used by some GUI code to
-	determine in what orientation the whole key-stone thing is. */
+    rotated. This function is typically used by some GUI code to
+    determine in what orientation the whole key-stone thing is. */
     int rotations() const { return m_rotations.asInt(); }
 
     /** Calculates the OpenGL keystone matrix. */
     void calculateMatrix();
-    
+
     /** Returns the OpenGL keystone matrix. */
     const Nimble::Matrix4 & matrix() const { return m_matrix; }
     /** Projects the vector v using internal matrix, WITHOUT applying
-	perspective correction. */
+    perspective correction. */
     Nimble::Vector4 project(Nimble::Vector2 v);
     /** Projects the vector v using matrix m, applying perspective
-	correction. */
+    correction. */
     static Nimble::Vector4 projectCorrected(const Nimble::Matrix4 & m,
-					    Nimble::Vector2 v);
+                        Nimble::Vector2 v);
     /// Applies the keystone matrix to the current OpenGL context
     /** This method is typically used as the first step in rendering,
-	before drawing anything on the screen. */
+    before drawing anything on the screen. */
     void applyGlState() const;
 
-    /// Cleans up the exterior after the 
+    /// Cleans up the exterior after the
     void cleanExterior() const;
     /// Returns the location of the vertex that is closest to the argument v.
     Nimble::Vector2 closest(Nimble::Vector2 v) const;
 
   protected:
-//    Valuable::ValueVector2f m_vertices[4];
-    Valuable::ValueVector2f m_vertices[4];    
+    Valuable::ValueVector2f m_vertices[4];
     Nimble::Matrix4 m_matrix;
     int     m_selected;
     Valuable::ValueInt m_rotations;

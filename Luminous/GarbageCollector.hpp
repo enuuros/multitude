@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef LUMINOUS_GARBAGE_COLLECTOR_HPP
@@ -26,13 +26,13 @@ namespace Luminous
 {
 
   class Collectable;
-  
+
   /// This class is used to keep track of objects that have been deleted.
 
   /** The general usage pattern is as follows:
-      
+
       <pre>
-      
+
       // Application main loop:
       while(true) {
 
@@ -42,27 +42,28 @@ namespace Luminous
         // When Collectable objects are deleted, they store their pointers here
         updateLogic();
 
-	// Go set the OpenGL context
-	setOpenGLContext1();
-        
-	// Remove the deleted resources:
-	GLResources * rsc1 = getResources1();
-	rsc1->eraseResources();
-	renderOpenGL();
+    // Go set the OpenGL context
+    setOpenGLContext1();
 
-	// Then another OpenGL context:
-	setOpenGLContext2();
-        
-	// Remove the deleted resources:
-	GLResources * rsc2 = getResources2();
-	rsc2->eraseResources();
-	renderOpenGL();
+    // Remove the deleted resources:
+    GLResources * rsc1 = getResources1();
+    rsc1->eraseResources();
+    renderOpenGL();
+
+    // Then another OpenGL context:
+    setOpenGLContext2();
+
+    // Remove the deleted resources:
+    GLResources * rsc2 = getResources2();
+    rsc2->eraseResources();
+    renderOpenGL();
       }
       </pre>
 
       This code snippet is for the single-threaded case, with two
       OpenGL contexts.
    */
+  /// @todo Rename??
   class LUMINOUS_API GarbageCollector
   {
   public:

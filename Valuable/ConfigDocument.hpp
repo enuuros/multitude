@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_CONFIG_DOCUMENT_HPP
@@ -23,6 +23,7 @@
 
 namespace Valuable
 {
+  ///@todo Doc, rename getXyz to xyz
   class VALUABLE_API ConfigDocument
   {
   public:
@@ -57,7 +58,7 @@ namespace Valuable
 
     ParseFlags parseLine(std::string line);
 
-    ConfigElement m_doc;		
+    ConfigElement m_doc;
   };
 
   void VALUABLE_API convert(DOMDocument  & doc, DOMElement & to, const ConfigElement & from);

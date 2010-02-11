@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_SM_DUPLEX_PIPE_HPP
@@ -20,14 +20,15 @@
 
 namespace Radiant
 {
-  
+
   /** Ful-duplex shared memory data pipe. This utility class packs two
       #Radiant::SHMPipe objects into one object. */
+  /// @todo Document
   class SHMDuplexPipe
   {
   public:
     RADIANT_API SHMDuplexPipe(const key_t writeKey, const uint32_t writeSize,
-		 const key_t readKey,  const uint32_t readSize);
+         const key_t readKey,  const uint32_t readSize);
     RADIANT_API virtual ~SHMDuplexPipe();
 
     RADIANT_API int read(void * ptr, int n) { return m_in.read(ptr, n); }
@@ -46,7 +47,7 @@ namespace Radiant
     SHMPipe m_out;
     SHMPipe m_in;
   };
-  
+
 }
 
 #endif

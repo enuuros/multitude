@@ -32,7 +32,7 @@
 namespace Luminous {
 
   /// Path provides some utility functions to manipulate series of points
-  /// @todo: rewrite
+  /// @todo: rewrite and/or document
   class LUMINOUS_API Path : public Valuable::HasValues
   {
     public:

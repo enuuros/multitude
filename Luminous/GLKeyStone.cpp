@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Luminous/Luminous.hpp>
@@ -117,10 +117,10 @@ namespace Luminous {
     float dy1 = m_vertices[1][1] - m_vertices[2][1];
     float dy2 = m_vertices[3][1] - m_vertices[2][1];
 
-    float sx = m_vertices[0][0] - m_vertices[1][0] + 
+    float sx = m_vertices[0][0] - m_vertices[1][0] +
       m_vertices[2][0] - m_vertices[3][0];
 
-    float sy = m_vertices[0][1] - m_vertices[1][1] + 
+    float sy = m_vertices[0][1] - m_vertices[1][1] +
       m_vertices[2][1] - m_vertices[3][1];
 
     float del = Nimble::Math::Det(dx1, dx2, dy1, dy2);
@@ -137,9 +137,9 @@ namespace Luminous {
     float f = m_vertices[0][1];
 
     m_matrix.make(a, b, 0, c,
-		  d, e, 0, f,
-		  0, 0, 1, 0,
-		  g, h, 0, 1);
+                  d, e, 0, f,
+                  0, 0, 1, 0,
+                  g, h, 0, 1);
   }
 
   Vector4 GLKeyStone::project(Vector2 v)

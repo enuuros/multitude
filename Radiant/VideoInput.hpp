@@ -80,6 +80,7 @@ namespace Radiant {
     virtual void doneImage();
 
     /// Get audio data
+    /// @todo Document
     virtual const void * captureAudio(int * frameCount);
     /// Get audio parameters
     /** @param channels The number of channels in the video sound-track.

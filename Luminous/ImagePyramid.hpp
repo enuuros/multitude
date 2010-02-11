@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 #ifndef LUMINOUS_IMAGE_PYRAMID_HPP
 #define LUMINOUS_IMAGE_PYRAMID_HPP
@@ -25,11 +25,12 @@ namespace Luminous
 {
 
   /// A simple image pyramid used for storing mipmaps.
+  /// @todo remove
   class ImagePyramid
   {
     public:
       /// A single level in the mipmap pyramid
-      struct MipmapLevel 
+      struct MipmapLevel
       {
         Luminous::Image * image;
         bool ready;

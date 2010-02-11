@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_TCP_SERVER_SOCKET_HPP
@@ -23,9 +23,9 @@
 namespace Radiant {
 
   class TCPSocket;
-  
+
   /// A server TCP socket for accepting incoming connections
-  /** A serer socket */
+  /// @todo Example code
 
   class RADIANT_API TCPServerSocket
   {
@@ -50,7 +50,7 @@ namespace Radiant {
 
     /// Accept new connections
     TCPSocket * accept();
-    
+
   private:
     TCPServerSocket(const TCPServerSocket & ) {}
     TCPServerSocket & operator = (const TCPServerSocket & ) { return * this; }

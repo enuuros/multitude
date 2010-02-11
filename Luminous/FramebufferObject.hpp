@@ -18,9 +18,12 @@
 
 #include <Luminous/Texture.hpp>
 
+/// @todo Rename file to FrameBuffer.hpp & RenderBuffer.hpp
+
 namespace Luminous
 {
 
+  /// @todo remove, and use the GL constants directly
   enum FramebufferAttachment
   {
     COLOR0  = GL_COLOR_ATTACHMENT0_EXT,
@@ -44,6 +47,7 @@ namespace Luminous
   };
 
   /// An abstraction of an off-screen render target.
+  /// @todo Doc
   class LUMINOUS_API Renderbuffer
   {
   public:
@@ -64,6 +68,7 @@ namespace Luminous
   };
 
   /// Abstraction of an off-screen render target that can be used as a texture.
+  /// @todo Doc
   class LUMINOUS_API Framebuffer
   {
   public:

@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 
@@ -53,8 +53,9 @@ namespace Luminous {
 
     /// One OpenGL area
     /** Areas are roughly equivalent to OpenGL viewports. Multiple
-	areas can share the same OpenGL context, as one window can
-	have may areas inside it.*/
+    areas can share the same OpenGL context, as one window can
+    have may areas inside it.*/
+    /// @todo rename to ViewPort?
     class Area : public Valuable::HasValues,
                  public Collectable
     {
@@ -66,29 +67,29 @@ namespace Luminous {
 
       void setGeometry(int x, int y, int w, int h, bool copyToGraphics = true)
       {
-	m_location = Nimble::Vector2i(x, y);
-	m_size = Nimble::Vector2i(w, h);
+    m_location = Nimble::Vector2i(x, y);
+    m_size = Nimble::Vector2i(w, h);
 
-	if(copyToGraphics)
-	  setGraphicsGeometry(x, y, w, h);
+    if(copyToGraphics)
+      setGraphicsGeometry(x, y, w, h);
       }
 
       void setSize(Vector2i size)
       {
-	m_size = size;
+    m_size = size;
       }
 
       void setGraphicsGeometry(int x, int y, int w, int h)
       {
-	m_graphicsLocation = Nimble::Vector2i(x, y);
-	m_graphicsSize = Nimble::Vector2i(w, h);
-	updateBBox();
+    m_graphicsLocation = Nimble::Vector2i(x, y);
+    m_graphicsSize = Nimble::Vector2i(w, h);
+    updateBBox();
       }
 
       void setSeams(float left, float right, float bottom, float top)
-      { 
-	m_seams = Nimble::Vector4f(left, right, bottom, top); 
-	updateBBox(); 
+      {
+    m_seams = Nimble::Vector4f(left, right, bottom, top);
+    updateBBox();
       }
 
       float maxSeam() { return m_seams.asVector().maximum(); }
@@ -112,18 +113,18 @@ namespace Luminous {
 
       /// The offset of the graphics inside the area (virtual pixels)
       const Vector2f graphicsLocation(bool withseams = true) const
-      { 
-	return withseams ? 
-	  m_graphicsLocation.asVector() - Nimble::Vector2f(m_seams[0], m_seams[3]) :
-	  m_graphicsLocation.asVector();
+      {
+    return withseams ?
+      m_graphicsLocation.asVector() - Nimble::Vector2f(m_seams[0], m_seams[3]) :
+      m_graphicsLocation.asVector();
       }
       /// The size of the graphics inside this area (virtual pixels)
       const Vector2f graphicsSize(bool withseams = true) const
       {
-	return withseams ? 
-	  m_graphicsSize.asVector() + Nimble::Vector2f(m_seams[0] + m_seams[1],
-						       m_seams[2] + m_seams[3]) :
-	  m_graphicsSize.asVector();
+    return withseams ?
+      m_graphicsSize.asVector() + Nimble::Vector2f(m_seams[0] + m_seams[1],
+                               m_seams[2] + m_seams[3]) :
+      m_graphicsSize.asVector();
       }
 
       /// The bounds of the graphics
@@ -132,14 +133,14 @@ namespace Luminous {
           how-ever that information is not exactly correct as the
           bounds also need to include the small extra areas, if one is
           using edge-blending. */
-      LUMINOUS_API const Rect & graphicsBounds() const 
+      LUMINOUS_API const Rect & graphicsBounds() const
       { return m_graphicsBounds; }
 
       /** Converts a screen-space coordinate to image-space coordinate.
           @param loc The location vector to convert.
           @param windowheight height of the window
-          @param insideArea set to true if the location is inside this 
-	  area. Otherwise convOk is set to
+          @param insideArea set to true if the location is inside this
+      area. Otherwise convOk is set to
           false.
           @return The vector in graphics coordinates.
       */
@@ -153,16 +154,16 @@ namespace Luminous {
 
       Nimble::Matrix3 viewTransform();
     private:
-	
+
       enum {
-	/* Render to the screen, using straight coordinates. Then
-	   read-back and re-render, with skewed coordinates. */
-	METHOD_TEXTURE_READBACK,
-	/* Render directly with skewed coordinates. Nice for
-	   performance, but a bit tricky for ripple effects etc. */
-	METHOD_MATRIX_TRICK
+    /* Render to the screen, using straight coordinates. Then
+       read-back and re-render, with skewed coordinates. */
+    METHOD_TEXTURE_READBACK,
+    /* Render directly with skewed coordinates. Nice for
+       performance, but a bit tricky for ripple effects etc. */
+    METHOD_MATRIX_TRICK
       };
-	
+
       void updateBBox();
 
       Window * m_window;
@@ -195,8 +196,8 @@ namespace Luminous {
       /// Set the location and size of this window
       void setGeometry(int x, int y, int w, int h)
       {
-	m_location = Nimble::Vector2i(x, y);
-	m_size = Nimble::Vector2i(w, h);
+    m_location = Nimble::Vector2i(x, y);
+    m_size = Nimble::Vector2i(w, h);
       }
 
       /// Resize the window, and automatically one child area
@@ -214,7 +215,7 @@ namespace Luminous {
       const Area & area(unsigned i) const { return * m_areas[i].ptr(); }
 
       LUMINOUS_API Nimble::Rect graphicsBounds() const;
-	
+
       LUMINOUS_API void setSeam(float seam);
 
       void addArea(Area * a) { m_areas.push_back(a); }
@@ -232,7 +233,7 @@ namespace Luminous {
 
           @param loc The location in screen coordinates.
 
-          @param convOk set to true or false depending on whether the 
+          @param convOk set to true or false depending on whether the
           conversion could be carried out.
       */
       LUMINOUS_API Nimble::Vector2f windowToGraphics(Nimble::Vector2f loc, bool & convOk) const;
@@ -268,12 +269,12 @@ namespace Luminous {
     LUMINOUS_API unsigned areaCount();
     /// Access the areas
     /** This method traverses all the windows to find the area with
-	given index. */
+    given index. */
     LUMINOUS_API Area & area(unsigned i, Window ** winptr = 0);
     /// Create 1 window with 1 area.
     LUMINOUS_API void makeSingle(int x, int y, int w, int h);
     /// Create 1 window with 2 areas horizontally side by side.
-    LUMINOUS_API void makeDouble(int x, int y, int w, int h, float seam);    
+    LUMINOUS_API void makeDouble(int x, int y, int w, int h, float seam);
     /// Create 1 window with 4 rotated areas
     /** This is useful for making a setup with four
         projectors/displays that are aligned in portrait mode. */
@@ -287,7 +288,7 @@ namespace Luminous {
 
     /// Total size of all the windows
     LUMINOUS_API Nimble::Vector2i totalSize();
-    
+
     LUMINOUS_API Rect graphicsBounds() const;
 
 
@@ -302,7 +303,7 @@ namespace Luminous {
     LUMINOUS_API int height();
 
     LUMINOUS_API bool deserializeXML(Valuable::DOMElement element);
-      
+
     void addWindow(Window * w) { m_windows.push_back(w); }
 
     void setEdited(bool edited) { m_edited = edited; }

@@ -7,10 +7,10 @@
  * See file "Luminous.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef LUMINOUS_GLRESOURCE_HPP
@@ -24,7 +24,7 @@ namespace Luminous
 
   /// Abstract base class for OpenGL resource objects
   /** This class is used to represent arbitrary OpenGL resources per
-      OpenGL context. 
+      OpenGL context.
 
       GLResource is used for two purposes:
 
@@ -46,7 +46,7 @@ namespace Luminous
       this one. The derived class can include more than one OpenGL
       resource, depending on how you need to use them.
 
-      
+
 
       <PRE>
 
@@ -60,53 +60,52 @@ namespace Luminous
         the actual MyWidget object has been deleted.
 
         class MyResource : GLResource
-	{
-	public:
-	  bool load();
-	
+    {
+    public:
+      bool load();
+
           The three resources below are used for tracking OpenGL
           memory usage.
 
-	  Texture2D m_tex1;
-	  Texture2D m_tex2;
-	  GPUTextureFont m_font;
-	};
+      Texture2D m_tex1;
+      Texture2D m_tex2;
+      GPUTextureFont m_font;
+    };
 
-	
-	MyWidget(GarbageCollector * collector)
-          : Widget(collector)
-	{}
 
-	virtual void update()
-	{
-	  Needs to access style sheet
-	  Needs to access font layout information
-	}
+    MyWidget()
+    {}
 
-	virtual void render(GLResources * resources)
-	{
-	  This function probably needs to access style sheet
+    virtual void update()
+    {
+      Needs to access style sheet
+      Needs to access font layout information
+    }
 
-	  MyResource * rs = dynamic_cast<MyResource *>
-	    (resources->getResource(this));
-	  if(!rs) {
-	    rs = new MyResource;
-	    rs->load();
+    virtual void render(GLResources * resources)
+    {
+      This function probably needs to access style sheet
+
+      MyResource * rs = dynamic_cast<MyResource *>
+        (resources->getResource(this));
+      if(!rs) {
+        rs = new MyResource;
+        rs->load();
 
             These three are needed for GPU memory tracking
 
-	    rs->m_tex1.setResources(resources);
-	    rs->m_tex2.setResources(resources);
-	    rs->m_font.setResources(resources);
-	    resources->addResource(this, rs);
-	  }
-	  
-	  Do stuff using "rs"
-	}
-	
+        rs->m_tex1.setResources(resources);
+        rs->m_tex2.setResources(resources);
+        rs->m_font.setResources(resources);
+        resources->addResource(this, rs);
+      }
+
+      Do stuff using "rs"
+    }
+
       protected:
 
-	CPUTextureFont m_font;
+    CPUTextureFont m_font;
       };
      </PRE>
   */
@@ -119,16 +118,16 @@ namespace Luminous
     virtual ~GLResource();
 
     GLResources * resources() { return m_resources; }
-    
+
     /** Change the current resource host. This function can only be
       called once. */
     virtual void setResources(GLResources * resources);
-    
+
     /// Returns the number of bytes this object consumes at the moment
     virtual long consumesBytes();
 
   protected:
-    
+
     /// To be called when changing memory consumption
     void changeByteConsumption(long deallocated, long allocated);
 
