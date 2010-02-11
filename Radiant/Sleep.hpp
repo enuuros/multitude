@@ -48,6 +48,7 @@ namespace Radiant {
 
   // POSIX-specific functions:
 #ifndef WIN32
+  /// @todo Check if these functions are needed.
   inline void addTimeNs(struct timespec *tspec, long ns)
   {
     tspec->tv_nsec += ns;
@@ -128,6 +129,8 @@ namespace Radiant {
   /// Synchronized sleeping.
   /** This class can be used to time the execution of a thread. For
       example if you want a thread not to execute too often.*/
+
+  /// @todo Document
   class RADIANT_API SleepSync
   {
   public:

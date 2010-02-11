@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef VALUABLE_VALUE_LISTENER_HPP
@@ -21,15 +21,16 @@
 #include <list>
 
 namespace Valuable
-{  
+{
   class ValueObject;
   class ValueListeners;
 
   /// Base class for classes that need to listen on the changes on ValueObjects
+  /// @todo Options: Document, deprecate, remove.
   class VALUABLE_API ValueListener
   {
   public:
-    
+
     friend class ValueListeners;
 
     ValueListener() {}
@@ -41,7 +42,7 @@ namespace Valuable
     virtual void valueDeleted(ValueObject *) = 0;
 
   private:
-    
+
     void removeObject(ValueListeners *);
 
 
@@ -92,7 +93,7 @@ namespace Valuable
     void makeList()
     {
       if(!m_list)
-	m_list = new container;
+    m_list = new container;
     }
     /* The container list. This member is pointer rather than an
        object so that in most cases is uses as little memory as
