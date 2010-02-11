@@ -39,6 +39,8 @@ namespace Radiant {
 		box does not know anything about inheriting priorities. 
 
 		Recursion should work on all platforms. */
+
+                /// @todo useless parameters (except recursive), get rid of them
 		bool init(bool shared = false, 
 			bool prio_inherit = true,
 			bool recursive = false);

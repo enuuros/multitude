@@ -16,6 +16,8 @@
 #ifndef RADIANT_IODEFS_HPP
 #define RADIANT_IODEFS_HPP
 
+/// @todo move to Resonant (if needed)
+
 namespace Radiant {
 
   /** Input/output modes. */

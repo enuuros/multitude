@@ -31,6 +31,8 @@ namespace Radiant {
 
   */
 
+    /// @todo make delimeter configurable, row access, document
+
   class RADIANT_API CSVDocument
   {
   public:

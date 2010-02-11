@@ -131,13 +131,14 @@ namespace Nimble {
       return (m_val >> 8) % range;
     }
 
-    // Random 2d unit vector
+    /// Random 2d unit vector
+    /// @todo remove
     inline Nimble::Vector2f randVec2() 
     {
       return Nimble::Vector2f(rand11(), rand11()).normalize();
     }
 
-    // Random 2d vector on a unit circle
+    /// Random 2d vector on a unit circle
     inline Nimble::Vector2f randVecOnCircle() 
     {
       float a = rand0X(Math::TWO_PI);
@@ -145,6 +146,8 @@ namespace Nimble {
     }
 
     static RandomUniform & instance() { return m_instance; }
+
+    /// @todo add static members inside Nimble::Math ?
 
   private:
     uint32_t m_val;

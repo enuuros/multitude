@@ -25,6 +25,8 @@ namespace Radiant
 {
   /** Small utility functions to help handle platform-specific functions. */
 
+    /// @todo check that these actually work
+
   namespace PlatformUtils
   {
 
@@ -51,6 +53,7 @@ namespace Radiant
     /** This function is not implemented for all platforms. */
     RADIANT_API uint64_t processMemoryUsage();
 
+    /// Setup an environment variable
     RADIANT_API void setEnv(const char * name, const char * value);
   }
 

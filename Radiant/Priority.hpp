@@ -20,6 +20,8 @@
 
 #include <errno.h>
 
+/// @todo not used? remove
+
 namespace Radiant {
 
   /** Priority level definitions. This levels are meant to be

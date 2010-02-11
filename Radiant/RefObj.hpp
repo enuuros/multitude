@@ -18,6 +18,8 @@
 
 #include <Radiant/Export.hpp>
 
+/// @todo document
+
 namespace Radiant {
   
   /* Note: these are all inline classes so do not dllexport them on win32 */

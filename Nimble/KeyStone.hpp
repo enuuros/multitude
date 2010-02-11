@@ -223,7 +223,7 @@ namespace Nimble {
   keystone information is modified, the version number is
   incremented. This information can be used by other objects to
   check is they need to update some of their data structures.*/
-    int version() { return m_version; }
+    int version() const { return m_version; }
 
     void setUseCenterShift(bool use) { m_useCenterShift = use; }
 

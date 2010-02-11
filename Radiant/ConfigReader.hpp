@@ -38,6 +38,8 @@ namespace Radiant {
       Kontkanen)
   */
 
+    /// @todo add global chunk support, document, examples, remove this and
+    /// use Valuable::ConfigReader
   class RADIANT_API Variant
   {
   public:

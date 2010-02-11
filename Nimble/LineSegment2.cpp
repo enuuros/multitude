@@ -18,6 +18,7 @@
 namespace Nimble {
 
   // In WIN32 template classes must be instantiated to be exported
+  /// @todo this is not really needed?
   template class LineSegment2T<float>;
   template class LineSegment2T<double>;
 

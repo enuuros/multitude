@@ -185,6 +185,7 @@ namespace Nimble {
   typedef Vector2T<int> Vector2i;
   typedef Vector2T<double> Vector2d;
 
+  /// @todo not needed anymore?
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported

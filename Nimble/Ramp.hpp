@@ -85,6 +85,7 @@ namespace Nimble {
   typedef RampT<float> Rampf;
   typedef RampT<double> Rampd;
 
+  /// @todo not needed anymore?
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported

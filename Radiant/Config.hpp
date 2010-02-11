@@ -18,6 +18,8 @@
 
 #include <Radiant/Endian.hpp>
 
+/// @todo remove this file
+
 // Version number:
 #define RADIANT_VERSION_MAJOR 0
 #define RADIANT_VERSION_MINOR 2

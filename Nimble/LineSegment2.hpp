@@ -23,7 +23,9 @@ namespace Nimble {
   /// 2D line segment
   /** Where lines are of infinite length, line segments have a finite
       length. */
-  template <typename T>
+
+    /// @todo does not really work for floating point values
+template <typename T>
   class NIMBLE_API LineSegment2T
   {
   public:
@@ -41,7 +43,6 @@ namespace Nimble {
         (m_points[1] == that.m_points[1]);
     }
 
-    
     inline bool pointMatch(const LineSegment2T & that) const
     {
       for(int i = 0; i < 2; i++)

@@ -113,7 +113,4 @@ namespace Radiant
     closedir(dir);
   }
 
-
-
-
 }

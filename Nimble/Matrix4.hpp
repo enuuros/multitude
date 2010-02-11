@@ -98,10 +98,13 @@ namespace Nimble {
     template <class S>
     void copyTranspose (const S * x) { for(int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) m[j][i] = (T) x[i*4+j]; }
 
+    /// @todo duplicates (makeTranslation vs. translate3D)
     static Matrix4T<T> makeRotation(T radians, const Vector3T<T> & axis);
     static Matrix4T<T> makeTranslation(const Vector3T<T> & v);
     NIMBLE_API static Matrix4T<T> translate3D(const Vector3T<T> & v);
     NIMBLE_API static Matrix4T<T> scale3D(const Vector3T<T> & v);
+
+
 
     /** Identity matrix. */
     NIMBLE_API static const Matrix4T<T> IDENTITY;

@@ -20,6 +20,8 @@
 
 #include <stdint.h>
 
+/// @todo combine with Radiant::Color (template data type)
+
 namespace Radiant {
 
   /// A minimal RGBA template class.

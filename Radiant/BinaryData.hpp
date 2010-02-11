@@ -68,6 +68,8 @@ namespace Radiant {
       so you must do that in our own code.
       
   */
+
+    /// @todo the ok parameter should be set always (or document the current behaviour)
   class RADIANT_API BinaryData
   {
   public:

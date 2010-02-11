@@ -83,7 +83,7 @@ namespace Radiant {
 	m_records[i] /= sum;
     }
 
-    /// Print a CPU cycle repor to the screen.
+    /// Print a CPU cycle report to the screen.
     void finalReport()
     {
       normalize();

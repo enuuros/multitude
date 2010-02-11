@@ -15,6 +15,7 @@
 
 #include "Plane.hpp"
 
+/// @todo use Nimble::TOLERANCE
 static const float EPSILON = 1e-5f;
 
 namespace Nimble

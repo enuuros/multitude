@@ -30,6 +30,7 @@ namespace Radiant {
 
   /** Template class for fixed-capacity strings. */
 
+    /// @todo remove/move into cv
   template <int N>
   class RADIANT_API FixedStrT
   {

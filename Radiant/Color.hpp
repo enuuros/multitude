@@ -30,7 +30,10 @@ namespace Radiant
       integer versions of the functions. For integers the valid range
       is 0-255, while for floating point values it is 0.0-1.0.
    */
-  class RADIANT_API Color : public Nimble::Vector4f
+
+    /// @todo not really the correct place for this (Luminous would be
+    /// better place, but dependency with Valuable), add HSV support
+    class RADIANT_API Color : public Nimble::Vector4f
   {
     public:
       Color();

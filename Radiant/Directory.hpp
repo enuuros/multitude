@@ -115,6 +115,7 @@ namespace Radiant
 
   private:
 
+    /// @todo make use of NotCopyable
     Directory(const Directory &) {}
     Directory & operator = (const Directory &) { return * this;}
 

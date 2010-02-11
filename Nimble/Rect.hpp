@@ -33,6 +33,8 @@ namespace Nimble {
       (which way is up and so on). Some rare functions assume that one
       is using normal GUI coordinates (Y increases from top to
       bottom). */
+
+    /// @todo rename to AARect/RectAA
   template <class T>
   class NIMBLE_API RectT
   {
@@ -149,6 +151,7 @@ namespace Nimble {
 
     inline void transform(const Matrix3T<T>& m);
     inline void shrinkRelative(float xs, float ys);
+    /// @todo duplicate with smaller() mostly (make a single function that works with negative values)
     inline void increaseSize(T add)
     { m_low.x -= add; m_low.y -= add; m_high.x += add; m_high.y += add; }
 
@@ -166,11 +169,16 @@ namespace Nimble {
   template <class T> 
   inline void RectT<T>::expand(const Vector2T<T> &v)
   {
-    if(v[0] < m_low[0]) m_low[0] = v[0];
-    if(v[1] < m_low[1]) m_low[1] = v[1];
+      if(isEmpty()) {
+          *this = RectT<T>(v);
+      } else {
 
-    if(v[0] > m_high[0]) m_high[0] = v[0];
-    if(v[1] > m_high[1]) m_high[1] = v[1];
+          if(v[0] < m_low[0]) m_low[0] = v[0];
+          if(v[1] < m_low[1]) m_low[1] = v[1];
+
+          if(v[0] > m_high[0]) m_high[0] = v[0];
+          if(v[1] > m_high[1]) m_high[1] = v[1];
+      }
   }
 
   template <class T> 

@@ -109,7 +109,7 @@ namespace Nimble {
     inline TElem *data() { return m_line; }
 
     /// Get const pointer to data
-    inline const TElem *dataConst() const { return m_line; }
+    inline const TElem *data() const { return m_line; }
 
     /// Return "sizeof(TElem)"
     inline int elemSize() const { return sizeof(TElem); } 
@@ -256,6 +256,7 @@ namespace Nimble {
       @author Tommi Ilmonen
   */
 
+  /// @todo rename or remove
   template <class TElem>
   class RingBuffer2 : public RingBufferDelay<TElem>
   {

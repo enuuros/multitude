@@ -31,6 +31,8 @@
    is needed to to bypass VR Juggler (or Performer ?) bugs.
 */
 
+/// @todo cleanup, leave defines
+
 #if defined(__sgi)
 // All SGI is currently big-endian
 #define WORDS_BIGENDIAN 1

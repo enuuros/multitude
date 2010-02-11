@@ -27,6 +27,8 @@ namespace Nimble {
     values. 
 
     @author Tommi Ilmonen */
+
+    /// @todo documentation missing
   template <class T, int N> 
     class NIMBLE_API Histogram
     {
@@ -157,6 +159,7 @@ namespace Nimble {
   typedef Histogram<unsigned int,256> Histogramu256;
   typedef Histogram<int,256> Histogrami256;
 
+  /// @todo remove this
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported

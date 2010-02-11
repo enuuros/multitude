@@ -36,6 +36,8 @@ namespace Nimble {
 
       @author Tommi Ilmonen
   */
+  /// @todo implement better lens correction (grid maybe)
+
   class NIMBLE_API LensCorrection
   {
   public:

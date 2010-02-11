@@ -31,11 +31,11 @@ namespace Nimble {
   public:
     typedef T type;
 
-    T		x;										// x-component of the vector
-    T		y;										// y-component of the vector
-    T		z;										// z-component of the vector
+    T		x;										///< x-component of the vector
+    T		y;										///< y-component of the vector
+    T		z;										///< z-component of the vector
     Vector3T()							   {}
-    Vector3T(T xyz)		           { x = y = z = xyz; }
+    explicit Vector3T(T xyz)		           { x = y = z = xyz; }
     Vector3T(T cx, T cy, T cz)		           { x = cx;	y = cy;		z = cz; }
     template <class S> Vector3T(const S * v) { x = (T)v[0]; y = (T)v[1]; z = (T)v[2]; }
     template <class S> Vector3T(const Vector3T<S>& v)		   { x = (T)v.x;	y = (T)v.y; z = (T)v.z; }
@@ -108,6 +108,7 @@ namespace Nimble {
   typedef Vector3T<int> Vector3i;
   typedef Vector3T<double> Vector3d;
 
+  /// @todo not needed anymore?
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported
@@ -148,7 +149,6 @@ inline T dot3(const Nimble::Vector3T<S>& a, const Nimble::Vector2T<T>& b)
   return a[0]*b[0] + a[1]*b[1] + a[2];
 }
 
-
 template <class T>
 inline Nimble::Vector3T<T> cross(const Nimble::Vector3T<T>& a, const Nimble::Vector3T<T>& b)
 {
@@ -174,6 +174,7 @@ inline std::istream &operator>>(std::istream &is, Nimble::Vector3T<T> &t)
   return is;
 }
 
+/// @todo never use 'using' in a header file!
 using Nimble::operator *;
 
 #endif

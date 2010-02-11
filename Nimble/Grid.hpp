@@ -25,6 +25,8 @@
 
 namespace Nimble {
 
+    /// @todo remove in favour of Radiant::Grid
+
   /// Grid (aka 2D array) base class with memory management
   template <class T>
   class NIMBLE_API GridMemT
@@ -184,10 +186,10 @@ namespace Nimble {
       return this->m_data[this->m_width * y + x];
     }
     
-    // Return a pointer to one line (aka row)
+    /// Return a pointer to one line (aka row)
     inline T * line(int y)
     { return & this->m_data[this->m_width * y]; }
-    // Return a clonst pointer to one line (aka row)
+    /// Return a clonst pointer to one line (aka row)
     inline const T * line(int y) const 
     { return & this->m_data[this->m_width * y]; }
     

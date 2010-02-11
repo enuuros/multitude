@@ -44,6 +44,7 @@ namespace Nimble {
     Vector4T	()					       {}
     Vector4T	(T cx, T cy, T cz, T cw)                       { x = cx;       y = cy;	     z = cz;      w =  cw; }
     template <class S> Vector4T(const Vector4T<S>& v)	       { x = (T)v.x;   y = (T)v.y;  z = (T)v.z;  w = (T) v.w; }
+    /// @todo remove the conversion (make static functions)
     template <class S> Vector4T(const S * v)	               { x = (T)v[0];  y = (T)v[1]; z = (T)v[2]; w = (T) v[3]; }
     template <class S> Vector4T& operator=(const Vector4T<S>& v) { x = (T)v.x; y = (T)v.y; z = (T)v.z; w = (T) v.w; return *this; }
     Vector4T&	clear(void)                                    { x = (T)(0);  y = (T)(0); z = (T)(0); w = (T)(0); return *this;	}
@@ -107,6 +108,7 @@ namespace Nimble {
   typedef Vector4T<int> Vector4i;
   typedef Vector4T<double> Vector4d;
 
+  /// @todo not needed anymore?
 #ifdef WIN32
 #ifdef NIMBLE_EXPORT
   // In WIN32 template classes must be instantiated to be exported
