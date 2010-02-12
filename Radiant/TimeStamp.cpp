@@ -25,8 +25,8 @@
 #ifndef WIN32
 #include <sys/time.h>
 #else
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <winbase.h>
 #include <winsock2.h>
 #endif
 
