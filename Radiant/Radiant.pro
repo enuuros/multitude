@@ -123,15 +123,6 @@ win32 {
         LIBS += 1394camera.lib
     }
 
-    win64 {
-      message(64-bit Windows)
-    }
-    else {
-      message(32-bit windows)
-      HEADERS += VideoCameraCMU.hpp
-      SOURCES += VideoCameraCMU.cpp
-    }
-
     SOURCES += PlatformUtilsWin32.cpp
     SOURCES += SerialPortWin32.cpp
     SOURCES += DirectoryQt.cpp
