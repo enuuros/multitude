@@ -1,5 +1,7 @@
 #include "Splines.hpp"
 
+#include <strings.h>
+
 namespace Nimble
 {
     namespace Splines
@@ -9,8 +11,11 @@ namespace Nimble
         T evalCatmullRom(float t, const std::vector<T> & cp, size_t index)
         {
             // We need at least four control points to interpolate
-            if(cp.size() < 4)
-               return Vector3(0, 0, 0);
+          if(cp.size() < 4) {
+            T zero;
+            bzero(&zero, sizeof(zero));
+            return zero;
+          }
 
             float b1 = 0.5 * (-    t * t * t + 2 * t * t - t);
             float b2 = 0.5 * ( 3 * t * t * t - 5 * t * t + 2);
