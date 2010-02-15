@@ -289,6 +289,8 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix4T<T>& m1,const Nimble:
   return res;
 }
 
+/// @todo Vector4 * Matrix4 is not defined. This implicitly transposes the vector. This should not 
+/// operator should not be defined. Also check other Matrix classes.
 template <class T>
 inline Nimble::Vector4T<T> operator*(const Nimble::Vector4T<T>& m2, const Nimble::Matrix4T<T>& m1)
 {
