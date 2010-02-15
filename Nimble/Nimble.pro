@@ -24,6 +24,8 @@ HEADERS += Vector2.hpp
 HEADERS += Vector3.hpp 
 HEADERS += Vector4.hpp 
 HEADERS += Plane.hpp
+HEADERS += Splines.hpp
+HEADERS += SplinesImpl.hpp
 
 SOURCES += Grid.cpp
 SOURCES += Histogram.cpp
@@ -36,6 +38,7 @@ SOURCES += Random.cpp
 SOURCES += Rect.cpp
 SOURCES += RingBuffer.cpp
 SOURCES += Vector2.cpp
+SOURCES += Splines.cpp
 
 win32:DEFINES += NIMBLE_EXPORT
 
