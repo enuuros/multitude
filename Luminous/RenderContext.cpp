@@ -220,42 +220,41 @@ namespace Luminous
       float * pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
       GLuint * pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
+      // rectangle
+      const Vector4 vr[4] = {
+        Vector4(0, 0, 0, 1),
+        Vector4(1, 0, 0, 1),
+        Vector4(1, 1, 0, 1),
+        Vector4(0, 1, 0, 1)
+      };
 
-//      // rectangle
-//      const Vector4 vr[4] = {
-//        Vector4(0, 0, 0, 1),
-//        Vector4(1, 0, 0, 1),
-//        Vector4(1, 1, 0, 1),
-//        Vector4(0, 1, 0, 1)
-//      };
-//
-//      for(int i = 0; i < 4; i++) {
-//        // position
-//        *(pVB++) = vr[i].x;
-//        *(pVB++) = vr[i].y;
-//        // color
-//        //        *(pVB++) = color.x;
-//        //        *(pVB++) = color.y;
-//        //        *(pVB++) = color.z;
-//        //        *(pVB++) = color.w;
-//        // texCoord
-//        *(pVB++) = vr[i].x;
-//        *(pVB++) = vr[i].y;
-//      }
-//
-//      *(pIB++) = 0;
-//      *(pIB++) = 1;
-//      *(pIB++) = 2;
-//      *(pIB++) = 0;
-//      *(pIB++) = 2;
-//      *(pIB++) = 3;
+      for(int i = 0; i < 4; i++) {
+        // position
+        *(pVB++) = vr[i].x;
+        *(pVB++) = vr[i].y;
+        // color
+        //        *(pVB++) = color.x;
+        //        *(pVB++) = color.y;
+        //        *(pVB++) = color.z;
+        //        *(pVB++) = color.w;
+        // texCoord
+        *(pVB++) = vr[i].x;
+        *(pVB++) = vr[i].y;
+      }
+
+      *(pIB++) = 0;
+      *(pIB++) = 1;
+      *(pIB++) = 2;
+      *(pIB++) = 0;
+      *(pIB++) = 2;
+      *(pIB++) = 3;
 
       // circle
       int level = 8;  // level of details
       int segments = Math::Floor(Math::Pow(2.0f,level));
       float delta = Math::TWO_PI / segments;
-      GLuint offset = 0; // 16 floats already in vbo
-      info("SEGMENTS:%d DELTA:%f", segments, delta);
+      GLuint offset = 8; // 16 floats already in vbo
+      //info("SEGMENTS:%d DELTA:%f", segments, delta);
 
       *(pVB++) = 0.0f;
       *(pVB++) = 0.0f;
@@ -275,7 +274,7 @@ namespace Luminous
         std::cout << offset <<" ";
         for(int ind = offset + 1; ind <= segments + offset + 1; ind += step) {
           *(pIB++) = ind;
-          std::cout << ind <<" ";
+          //std::cout << ind <<" ";
         }
       }
       m_vb.unmap();
@@ -715,9 +714,12 @@ namespace Luminous
 
     m_ib.bind();
     // LOD
-    int level = 8;
+    //int level = 2;
+    int w = 1024;
+    int level = LOD_MAXIMUM + log2(radius*m.extractScale()/w);
+    if (level < LOD_MINIMUM) level = LOD_MINIMUM;
     int pow2 = Math::Floor(Math::Pow(2.0f,level));
-    int offset = 4*(pow2-4 + 2*(level-2));  // 4 * (Sigma i ^ n - 2)
+    int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
     int count = pow2 + 2;
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
 
@@ -744,6 +746,7 @@ namespace Luminous
     glTranslatef(center.x, center.y, 0.f);
     glMultTransposeMatrixf(t.data());
     glScalef(radius, radius, 1.0f);
+    glRotatef(Math::radToDeg(fromRadians), 0.f, 0.f, 1.f);
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -751,8 +754,16 @@ namespace Luminous
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
     m_ib.bind();
-    glDrawRangeElements(GL_TRIANGLE_FAN, 6, 36, 31, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-    //glDrawElements(GL_TRIANGLE_FAN, 52, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    // LOD
+    int level = 8;
+    // int level = LOD_MAXIMUM + log2(radius*m.extractScale()/w);
+    // if (level < LOD_MINIMUM) level = LOD_MINIMUM;
+    int pow2 = Math::Floor(Math::Pow(2.0f,level));
+    int count = pow2 + 2;
+    int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
+    count =int(count*(toRadians-fromRadians)/Math::TWO_PI);
+
+    glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
 
     m_ib.unbind();
     m_vb.unbind();
