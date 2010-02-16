@@ -716,7 +716,7 @@ namespace Luminous
     // LOD
     //int level = 2;
     int w = 1024;
-    int level = LOD_MAXIMUM + log2(radius*m.extractScale()/w);
+    int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/w);
     if (level < LOD_MINIMUM) level = LOD_MINIMUM;
     int pow2 = Math::Floor(Math::Pow(2.0f,level));
     int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
