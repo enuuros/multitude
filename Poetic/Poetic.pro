@@ -58,11 +58,12 @@ include(../library.pri)
 
 win32 {
 	DEFINES += POETIC_EXPORT
-	INCLUDEPATH += ..\Win32x\include\freetype2
-        win64 {
-  	 LIBS += -lfreetype2
-        }
-        else {
-         LIBS += -lfreetype
-        }
+
+	win64 {
+		INCLUDEPATH += ..\Win64x\include\freetype2
+		LIBS += -lfreetype2
+	} else {
+		INCLUDEPATH += ..\Win32x\include\freetype2
+		LIBS += -lfreetype
+	}
 }

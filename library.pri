@@ -34,6 +34,8 @@ INSTALLS += target includes src_code extra_inc
 
 # On Windows, put DLLs into /bin with the exes
 win32 {
+	DLLDESTDIR = $$PWD/bin
+
 	# For some reason DESTDIR_TARGET doesn't work here
 	tt = $$join(TARGET, "", "$(DESTDIR)", ".dll")
 	dlls.path = /bin
