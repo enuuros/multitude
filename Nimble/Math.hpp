@@ -53,6 +53,7 @@ namespace Nimble {
     inline float InvSqrt(float v) { return 1.0f / sqrtf(v); }
     inline float Exp(float v)  { return expf(v); }
     inline float Log(float v)  { return logf(v); }
+	inline float Log2(float v) { return Log(v) / Log(2.f); }
     inline float Pow(float x, float y)    { return powf(x, y); }
 
     inline float ACos(float v)  { return acosf(v); }
@@ -67,6 +68,7 @@ namespace Nimble {
     inline double InvSqrt(double v) { return 1.0 / sqrt(v); }
     inline double Exp(double v)  { return exp(v); }
     inline double Log(double v)  { return log(v); }
+	inline double Log2(double v)  { return Log(v) / Log(2.0); }
     inline double Pow(double x, double y)    { return pow(x, y); }
 
     inline double ACos(double v)  { return acos(v); }
