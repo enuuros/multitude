@@ -10,9 +10,12 @@ unix:PKGCONFIG += libavutil libavformat libavcodec
 LIBS += $$LIB_RADIANT $$LIB_PATTERNS
 
 win32 {
-	DEFINES += SCREENPLAY_EXPORT
-	INCLUDEPATH += ../Win32x/include/ffmpeg
+	DEFINES += SCREENPLAY_EXPORT	
+	
 	LIBS += -lavcodec -lavutil -lavformat
+	
+	win64:INCLUDEPATH += ../Win64x/include/ffmpeg
+	else:INCLUDEPATH += ../Win32x/include/ffmpeg
 }
 
 include(../library.pri)
