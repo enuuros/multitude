@@ -23,10 +23,10 @@
 #ifndef _SDL_thread_h
 #define _SDL_thread_h
 
-/**
- *  \file SDL_thread.h
- *  
- *  Header for the SDL thread management routines.
+/** @file SDL_thread.h
+ *  Header for the SDL thread management routines 
+ *
+ *  @note These are independent of the other SDL routines.
  */
 
 #include "SDL_stdinc.h"
@@ -38,133 +38,83 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
-/* The SDL thread structure, defined in SDL_thread.c */
+/** The SDL thread structure, defined in SDL_thread.c */
 struct SDL_Thread;
 typedef struct SDL_Thread SDL_Thread;
 
-#if defined(__WIN32__) && !defined(HAVE_LIBC)
+/** Create a thread */
+#if ((defined(__WIN32__) && !defined(HAVE_LIBC)) || defined(__OS2__)) &&  !defined(__SYMBIAN32__)
 /**
- *  \file SDL_thread.h
- *  
- *  We compile SDL into a DLL. This means, that it's the DLL which
+ *  We compile SDL into a DLL on OS/2. This means, that it's the DLL which
  *  creates a new thread for the calling process with the SDL_CreateThread()
  *  API. There is a problem with this, that only the RTL of the SDL.DLL will
- *  be initialized for those threads, and not the RTL of the calling 
- *  application!
- *  
+ *  be initialized for those threads, and not the RTL of the calling application!
  *  To solve this, we make a little hack here.
- *  
  *  We'll always use the caller's _beginthread() and _endthread() APIs to
  *  start a new thread. This way, if it's the SDL.DLL which uses this API,
  *  then the RTL of SDL.DLL will be used to create the new thread, and if it's
  *  the application, then the RTL of the application will be used.
- *  
  *  So, in short:
- *  Always use the _beginthread() and _endthread() of the calling runtime 
- *  library!
+ *  Always use the _beginthread() and _endthread() of the calling runtime library!
  */
 #define SDL_PASSED_BEGINTHREAD_ENDTHREAD
 #ifndef _WIN32_WCE
-#include <process.h>            /* This has _beginthread() and _endthread() defined! */
+#include <process.h> /* This has _beginthread() and _endthread() defined! */
 #endif
 
-#ifdef __GNUC__
-typedef unsigned long (__cdecl * pfnSDL_CurrentBeginThread) (void *, unsigned,
-                                                             unsigned
-                                                             (__stdcall *
-                                                              func) (void *),
-                                                             void *arg,
-                                                             unsigned,
-                                                             unsigned
-                                                             *threadID);
-typedef void (__cdecl * pfnSDL_CurrentEndThread) (unsigned code);
+#ifdef __OS2__
+typedef int (*pfnSDL_CurrentBeginThread)(void (*func)(void *), void *, unsigned, void *arg); 
+typedef void (*pfnSDL_CurrentEndThread)(void);
+#elif __GNUC__
+typedef unsigned long (__cdecl *pfnSDL_CurrentBeginThread) (void *, unsigned,
+        unsigned (__stdcall *func)(void *), void *arg, 
+        unsigned, unsigned *threadID);
+typedef void (__cdecl *pfnSDL_CurrentEndThread)(unsigned code);
 #else
-typedef uintptr_t(__cdecl * pfnSDL_CurrentBeginThread) (void *, unsigned,
-                                                        unsigned (__stdcall *
-                                                                  func) (void
-                                                                         *),
-                                                        void *arg, unsigned,
-                                                        unsigned *threadID);
-typedef void (__cdecl * pfnSDL_CurrentEndThread) (unsigned code);
+typedef uintptr_t (__cdecl *pfnSDL_CurrentBeginThread) (void *, unsigned,
+        unsigned (__stdcall *func)(void *), void *arg, 
+        unsigned, unsigned *threadID);
+typedef void (__cdecl *pfnSDL_CurrentEndThread)(unsigned code);
 #endif
 
-/**
- *  Create a thread.
- */
-extern DECLSPEC SDL_Thread *SDLCALL
-SDL_CreateThread(int (SDLCALL * f) (void *), void *data,
-                 pfnSDL_CurrentBeginThread pfnBeginThread,
-                 pfnSDL_CurrentEndThread pfnEndThread);
+extern DECLSPEC SDL_Thread * SDLCALL SDL_CreateThread(int (SDLCALL *fn)(void *), void *data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
 
-#if defined(_WIN32_WCE)
-
-/**
- *  Create a thread.
- */
+#ifdef __OS2__
+#define SDL_CreateThread(fn, data) SDL_CreateThread(fn, data, _beginthread, _endthread)
+#elif defined(_WIN32_WCE)
 #define SDL_CreateThread(fn, data) SDL_CreateThread(fn, data, NULL, NULL)
-
 #else
-
-/**
- *  Create a thread.
- */
 #define SDL_CreateThread(fn, data) SDL_CreateThread(fn, data, _beginthreadex, _endthreadex)
-
 #endif
 #else
-
-/**
- *  Create a thread.
- */
-extern DECLSPEC SDL_Thread *SDLCALL
-SDL_CreateThread(int (SDLCALL * fn) (void *), void *data);
-
+extern DECLSPEC SDL_Thread * SDLCALL SDL_CreateThread(int (SDLCALL *fn)(void *), void *data);
 #endif
 
-/**
- *  Get the 32-bit thread identifier for the current thread.
- */
+/** Get the 32-bit thread identifier for the current thread */
 extern DECLSPEC Uint32 SDLCALL SDL_ThreadID(void);
 
-/**
- *  Get the 32-bit thread identifier for the specified thread.
- *  
- *  Equivalent to SDL_ThreadID() if the specified thread is NULL.
+/** Get the 32-bit thread identifier for the specified thread,
+ *  equivalent to SDL_ThreadID() if the specified thread is NULL.
  */
-extern DECLSPEC Uint32 SDLCALL SDL_GetThreadID(SDL_Thread * thread);
+extern DECLSPEC Uint32 SDLCALL SDL_GetThreadID(SDL_Thread *thread);
 
-/**
- *  Wait for a thread to finish.
- *  
+/** Wait for a thread to finish.
  *  The return code for the thread function is placed in the area
- *  pointed to by \c status, if \c status is not NULL.
+ *  pointed to by 'status', if 'status' is not NULL.
  */
-extern DECLSPEC void SDLCALL SDL_WaitThread(SDL_Thread * thread, int *status);
+extern DECLSPEC void SDLCALL SDL_WaitThread(SDL_Thread *thread, int *status);
 
-/**
- *  \deprecated This function is here for binary compatibility with legacy apps,
- *              but in SDL 1.3 and later, it's a no-op.
- *  
- *  You cannot forcibly kill a thread in a safe manner on many platforms. You 
- *  should instead find a way to alert your thread that it is time to terminate,
- *  and then have it gracefully exit on its own. Do not ever call this function!
- */
-extern DECLSPEC void SDLCALL SDL_KillThread(SDL_Thread * thread);
+/** Forcefully kill a thread without worrying about its state */
+extern DECLSPEC void SDLCALL SDL_KillThread(SDL_Thread *thread);
 
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
 #endif /* _SDL_thread_h */
-
-/* vi: set ts=4 sw=4 expandtab: */

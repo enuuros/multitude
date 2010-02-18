@@ -20,17 +20,23 @@
     slouken@libsdl.org
 */
 
-#ifndef _SDL_config_h
-#define _SDL_config_h
+#ifndef _SDL_config_nds_h
+#define _SDL_config_nds_h
+
+#include "SDL_platform.h"
 
 /* This is a set of defines to configure the SDL features */
 
 /* General platform specific identifiers */
 #include "SDL_platform.h"
 
+/* C datatypes */
 #define SDL_HAS_64BIT_TYPE 1
+
+/* Endianness */
 #define SDL_BYTEORDER 1234
 
+/* Useful headers */
 #define HAVE_ALLOCA_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_STDIO_H 1
@@ -38,15 +44,15 @@
 #define HAVE_STDLIB_H 1
 #define HAVE_STDARG_H 1
 #define HAVE_MALLOC_H 1
-#define HAVE_MEMORY_H 1
 #define HAVE_STRING_H 1
-#define HAVE_STRINGS_H 1
 #define HAVE_INTTYPES_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_CTYPE_H 1
 #define HAVE_MATH_H 1
 #define HAVE_ICONV_H 1
 #define HAVE_SIGNAL_H 1
+
+/* C library functions */
 #define HAVE_MALLOC 1
 #define HAVE_CALLOC 1
 #define HAVE_REALLOC 1
@@ -62,6 +68,8 @@
 #define HAVE_MEMCPY 1
 #define HAVE_MEMMOVE 1
 #define HAVE_STRLEN 1
+#define HAVE_STRLCPY 1
+#define HAVE_STRLCAT 1
 #define HAVE_STRDUP 1
 #define HAVE_STRCHR 1
 #define HAVE_STRRCHR 1
@@ -79,42 +87,29 @@
 #define HAVE_SSCANF 1
 #define HAVE_SNPRINTF 1
 #define HAVE_VSNPRINTF 1
-#define HAVE_M_PI 1
-#define HAVE_CEIL 1
-#define HAVE_COPYSIGN 1
-#define HAVE_COS 1
-#define HAVE_COSF 1
-#define HAVE_FABS 1
-#define HAVE_FLOOR 1
-#define HAVE_LOG 1
-#define HAVE_SCALBN 1
-#define HAVE_SIN 1
-#define HAVE_SINF 1
-#define HAVE_SQRT 1
-#define HAVE_SIGACTION 1
 #define HAVE_SETJMP 1
-#define HAVE_NANOSLEEP 1
 
-#define SDL_AUDIO_DRIVER_DUMMY 1
-#define SDL_AUDIO_DRIVER_OSS 1
+/* Enable various audio drivers */
+#define SDL_AUDIO_DRIVER_NDS	1
+#define SDL_AUDIO_DRIVER_DUMMY	1
 
-#define SDL_INPUT_LINUXEV 1
-#define SDL_INPUT_TSLIB 1
-#define SDL_JOYSTICK_LINUX 1
-#define SDL_HAPTIC_LINUX 1
+/* Enable the stub cdrom driver (src/cdrom/dummy/\*.c) */
+#define SDL_CDROM_DISABLED	1
 
-#define SDL_LOADSO_DLOPEN 1
+/* Enable various input drivers */
+#define SDL_JOYSTICK_NDS	1
 
-#define SDL_THREAD_PTHREAD 1
-#define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP 1
+/* Enable the stub shared object loader (src/loadso/dummy/\*.c) */
+#define SDL_LOADSO_DISABLED	1
 
-#define SDL_TIMER_UNIX 1
+/* Enable the stub thread support (src/thread/generic/\*.c) */
+#define SDL_THREADS_DISABLED	1
 
-#define SDL_VIDEO_DRIVER_DUMMY 1
-#define SDL_VIDEO_DRIVER_X11 1
-#define SDL_VIDEO_DRIVER_X11_XINPUT 1
-#define SDL_VIDEO_DRIVER_PANDORA 1
-#define SDL_VIDEO_RENDER_OGL_ES 1
-#define SDL_VIDEO_OPENGL_ES 1
+/* Enable various timer systems */
+#define SDL_TIMER_NDS	1
 
-#endif /* _SDL_config_h */
+/* Enable various video drivers */
+#define SDL_VIDEO_DRIVER_NDS	1
+#define SDL_VIDEO_DRIVER_DUMMY	1
+
+#endif /* _SDL_config_nds_h */

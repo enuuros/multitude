@@ -21,18 +21,26 @@
 */
 
 /**
- *  \file close_code.h
- *  
+ *  @file close_code.h
  *  This file reverses the effects of begin_code.h and should be included
  *  after you finish any function and structure declarations in your headers
  */
 
 #undef _begin_code_h
 
-/* Reset structure packing at previous byte alignment */
+/**
+ *  @file close_code.h
+ *  Reset structure packing at previous byte alignment
+ */
 #if defined(_MSC_VER) || defined(__MWERKS__) || defined(__WATCOMC__)  || defined(__BORLANDC__)
 #ifdef __BORLANDC__
 #pragma nopackwarning
 #endif
+#if (defined(__MWERKS__) && defined(__MACOS__))
+#pragma options align=reset
+#pragma enumsalwaysint reset
+#else
 #pragma pack(pop)
+#endif
 #endif /* Compiler needs structure packing set */
+

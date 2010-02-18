@@ -25,15 +25,10 @@
 
 #include "SDL_platform.h"
 
-/**
- *  \file SDL_config_minimal.h
- *  
- *  This is the minimal configuration that can be used to build SDL.
- */
+/* This is the minimal configuration that can be used to build SDL */
 
 #include <stdarg.h>
 
-#if !defined(_STDINT_H_) && (!defined(HAVE_STDINT_H) || !_HAVE_STDINT_H)
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
 typedef signed short int16_t;
@@ -42,16 +37,15 @@ typedef signed int int32_t;
 typedef unsigned int uint32_t;
 typedef unsigned int size_t;
 typedef unsigned long uintptr_t;
-#endif /* !_STDINT_H_ && !HAVE_STDINT_H */
 
 /* Enable the dummy audio driver (src/audio/dummy/\*.c) */
 #define SDL_AUDIO_DRIVER_DUMMY	1
 
+/* Enable the stub cdrom driver (src/cdrom/dummy/\*.c) */
+#define SDL_CDROM_DISABLED	1
+
 /* Enable the stub joystick driver (src/joystick/dummy/\*.c) */
 #define SDL_JOYSTICK_DISABLED	1
-
-/* Enable the stub haptic driver (src/haptic/dummy/\*.c) */
-#define SDL_HAPTIC_DISABLED	1
 
 /* Enable the stub shared object loader (src/loadso/dummy/\*.c) */
 #define SDL_LOADSO_DISABLED	1
