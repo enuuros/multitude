@@ -102,24 +102,47 @@ namespace Radiant {
     }
   }
 
-  bool DateTime::fromString(const std::string & s, DateFormat )
+  bool DateTime::fromString(const std::string & s, DateFormat df)
   { 
-    if(s.length() < 8)
-      return false;
+    if (df == DATE_ISO) {
+      if(s.length() < 8)
+        return false;
 
-    std::string yearstr(s, 0, 4);
-    std::string monthstr(s, 5, 2);
-    std::string daystr(s, 8, 4);
+      std::string yearstr(s, 0, 4);
+      std::string monthstr(s, 5, 2);
+      std::string daystr(s, 8, 4);
 
-    m_year  = atoi(yearstr.c_str());
-    m_month = atoi(monthstr.c_str()) - 1;
-    m_monthDay = atoi(daystr.c_str()) - 1;
+      m_year  = atoi(yearstr.c_str());
+      m_month = atoi(monthstr.c_str()) - 1;
+      m_monthDay = atoi(daystr.c_str()) - 1;
 
-    m_hour = 0;
-    m_minute = 0;
-    m_second = 0;
-    m_microsecond = 0;
-    m_summerTime = false;
+      m_hour = 0;
+      m_minute = 0;
+      m_second = 0;
+      m_microsecond = 0;
+      m_summerTime = false;
+    } else {
+      if(s.length() < 19)
+        return false;
+
+      std::string daystr(s, 0, 2);
+      std::string monthstr(s, 3, 2);
+      std::string yearstr(s, 6, 4);
+
+      std::string hourstr(s, 11, 2);
+      std::string minstr(s, 14, 2);
+      std::string secstr(s, 17, 2);
+
+      m_year  = atoi(yearstr.c_str());
+      m_month = atoi(monthstr.c_str()) - 1;
+      m_monthDay = atoi(daystr.c_str()) - 1;
+
+      m_hour = atoi(hourstr.c_str());
+      m_minute = atoi(minstr.c_str());
+      m_second = atoi(secstr.c_str());
+      m_microsecond = 0;
+      m_summerTime = false;
+    }
 
     return true;
   }
