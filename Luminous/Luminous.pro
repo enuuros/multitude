@@ -93,5 +93,10 @@ contains(HAS_QT_45,YES) {
     SOURCES += ImageCodecQT.cpp
     CONFIG += qt
     QT += gui
+	
+	qt_plugin_install.path += /bin
+	qt_plugin_install.files = $$[QT_INSTALL_PLUGINS]
+	
+	INSTALLS += qt_plugin_install
 }
 include(../library.pri)

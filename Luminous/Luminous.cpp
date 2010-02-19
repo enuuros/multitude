@@ -22,6 +22,7 @@
 #ifdef USE_QT45
 #include <Luminous/ImageCodecQT.hpp>
 #include <QImageWriter>
+#include <QImageReader>
 #else
 #include <Luminous/ImageCodecPNG.hpp>
 #include <Luminous/ImageCodecJPEG.hpp>
@@ -91,10 +92,27 @@ namespace Luminous
 	done = true;
 
 #ifdef USE_QT45
-    QList<QByteArray> formats =
-        QImageWriter::supportedImageFormats ();
-    for(QList<QByteArray>::iterator it = formats.begin();
-    it != formats.end(); it++){
+	// Debug output supported image formats
+	{
+	Radiant::debug("Qt image support (read):");
+	QList<QByteArray> formats = QImageReader::supportedImageFormats ();
+    for(QList<QByteArray>::iterator it = formats.begin(); it != formats.end(); it++) {
+      QString format(*it);
+      Radiant::debug("%s", format.toStdString().c_str());
+    }
+	}
+	
+	{
+	Radiant::debug("Qt image support (write):");
+	QList<QByteArray> formats = QImageWriter::supportedImageFormats ();
+    for(QList<QByteArray>::iterator it = formats.begin(); it != formats.end(); it++) {
+      QString format(*it);
+      Radiant::debug("%s", format.toStdString().c_str());
+    }
+	}
+	
+    QList<QByteArray> formats = QImageWriter::supportedImageFormats ();
+    for(QList<QByteArray>::iterator it = formats.begin(); it != formats.end(); it++) {
       QByteArray & format = (*it);
       Image::codecs()->registerCodec(new ImageCodecQT(format.data()));
     }
