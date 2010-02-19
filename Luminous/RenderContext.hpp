@@ -104,6 +104,8 @@ namespace Luminous
     bool isVisible(const Nimble::Rect & area);
     const Nimble::Rect & visibleArea() const;
 
+    void setScreenSize(Nimble::Vector2i size);
+
     ///@internal
     FBOHolder getTemporaryFBO(Nimble::Vector2 basicsize,
                               float scaling, uint32_t flags = 0);

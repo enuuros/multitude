@@ -184,6 +184,8 @@ namespace Luminous
 
     FBOPackage * m_fboStack[FBO_STACK_SIZE];
     int m_fboStackIndex;
+    // temporarilly having screen size to make it work for lod and AA.
+    Vector2i m_screenSize;
   };
 
   ///////////////////////////////////////////////////////////////////
@@ -194,7 +196,12 @@ namespace Luminous
       m_resources(resources),
       m_data(new Internal)
   {
-    prepare();
+    resetTransform();
+    m_data->m_recursionDepth = 0;
+
+    // Make sure the clip stack is empty
+    while(!m_data->m_clipStack.empty())
+      m_data->m_clipStack.pop();
   }
 
   RenderContext::~RenderContext()
@@ -232,28 +239,58 @@ namespace Luminous
         // position
         *(pVB++) = vr[i].x;
         *(pVB++) = vr[i].y;
-        // color
-        //        *(pVB++) = color.x;
-        //        *(pVB++) = color.y;
-        //        *(pVB++) = color.z;
-        //        *(pVB++) = color.w;
         // texCoord
         *(pVB++) = vr[i].x;
         *(pVB++) = vr[i].y;
       }
 
+      Nimble::Vector4f up(0,1,0,1);
+      Nimble::Vector4f right(1,0,0,1);
+      up *= (10.0f/m_data->m_screenSize.x);
+      right *= (10.0f/m_data->m_screenSize.x);
+
+      *(pVB++) = vr[0].x - up.x - right.x;
+      *(pVB++) = vr[0].y - up.y - right.y;
+      *(pVB++) = vr[0].x;
+      *(pVB++) = vr[0].y;
+
+      *(pVB++) = vr[1].x - up.x + right.x;
+      *(pVB++) = vr[1].y - up.y + right.y;
+      *(pVB++) = vr[1].x;
+      *(pVB++) = vr[1].y;
+
+      *(pVB++) = vr[2].x + up.x + right.x;
+      *(pVB++) = vr[2].y + up.y + right.y;
+      *(pVB++) = vr[2].x;
+      *(pVB++) = vr[2].y;
+
+      *(pVB++) = vr[3].x + up.x - right.x;
+      *(pVB++) = vr[3].y + up.y - right.y;
+      *(pVB++) = vr[3].x;
+      *(pVB++) = vr[3].y;
+
+
       *(pIB++) = 0;
       *(pIB++) = 1;
-      *(pIB++) = 2;
-      *(pIB++) = 0;
-      *(pIB++) = 2;
       *(pIB++) = 3;
+      *(pIB++) = 2;
+
+      *(pIB++) = 3;
+      *(pIB++) = 2;
+      *(pIB++) = 6;
+      *(pIB++) = 1;
+      *(pIB++) = 5;
+      *(pIB++) = 0;
+      *(pIB++) = 4;
+      *(pIB++) = 3;
+      *(pIB++) = 7;
+      *(pIB++) = 6;
 
       // circle
-      int level = 8;  // level of details
+      int level = LOD_MAXIMUM;  // level of details
       int segments = Math::Floor(Math::Pow(2.0f,level));
       float delta = Math::TWO_PI / segments;
-      GLuint offset = 8; // 16 floats already in vbo
+      GLuint offset = 16; // 32 floats already in vbo
       //info("SEGMENTS:%d DELTA:%f", segments, delta);
 
       *(pVB++) = 0.0f;
@@ -271,7 +308,7 @@ namespace Luminous
       for(int i = 2; i <= level; i++) {
         step = Math::Floor(Math::Pow(2.0f,level-i));
         *(pIB++) = offset; // for each level, push index for center first
-        std::cout << offset <<" ";
+        //std::cout << offset <<" ";
         for(int ind = offset + 1; ind <= segments + offset + 1; ind += step) {
           *(pIB++) = ind;
           //std::cout << ind <<" ";
@@ -329,6 +366,11 @@ namespace Luminous
   const Nimble::Rect & RenderContext::visibleArea() const
   {
     return m_data->m_clipStack.top();
+  }
+
+  void RenderContext::setScreenSize(Nimble::Vector2i size)
+  {
+    m_data->m_screenSize = size;
   }
 
   RenderContext::FBOHolder RenderContext::getTemporaryFBO
@@ -669,7 +711,6 @@ namespace Luminous
                      0,       0, 1,       0,
                m[2][0], m[2][1], 0, m[2][2]);
 
-    glColor4fv(rgba);
     glPushMatrix();
 
     glTranslatef(rect.low().x, rect.low().y, 0.f);
@@ -682,7 +723,12 @@ namespace Luminous
     glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
 
     m_ib.bind();
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    if(rgba)
+      glColor4f(rgba[0], rgba[1], rgba[2], 0.1f);
+    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
+    if(rgba)
+      glColor4fv(rgba);
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
     m_ib.unbind();
     m_vb.unbind();
@@ -700,7 +746,8 @@ namespace Luminous
                      0,       0, 1,       0,
                m[2][0], m[2][1], 0, m[2][2]);
 
-    glColor4fv(rgba);
+    if(rgba)
+      glColor4fv(rgba);
     glPushMatrix();
 
     glTranslatef(center.x, center.y, 0.f);
@@ -712,15 +759,14 @@ namespace Luminous
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
-    m_ib.bind();
     // LOD
-    //int level = 2;
-    int w = 1024;
-    int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/w);
+    int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/m_data->m_screenSize.x);
     if (level < LOD_MINIMUM) level = LOD_MINIMUM;
     int pow2 = Math::Floor(Math::Pow(2.0f,level));
     int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
     int count = pow2 + 2;
+
+    m_ib.bind();
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
 
 
@@ -740,7 +786,8 @@ namespace Luminous
                      0,       0, 1,       0,
                m[2][0], m[2][1], 0, m[2][2]);
 
-    glColor4fv(rgba);
+    if(rgba)
+      glColor4fv(rgba);
     glPushMatrix();
 
     glTranslatef(center.x, center.y, 0.f);
@@ -753,16 +800,15 @@ namespace Luminous
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
-    m_ib.bind();
     // LOD
-    int level = 8;
-    // int level = LOD_MAXIMUM + log2(radius*m.extractScale()/w);
-    // if (level < LOD_MINIMUM) level = LOD_MINIMUM;
+    int level = LOD_MAXIMUM + log2(radius*m.extractScale()*2/m_data->m_screenSize.x);
+    if (level < LOD_MINIMUM) level = LOD_MINIMUM;
     int pow2 = Math::Floor(Math::Pow(2.0f,level));
     int count = pow2 + 2;
     int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
     count =int(count*(toRadians-fromRadians)/Math::TWO_PI);
 
+    m_ib.bind();
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
 
     m_ib.unbind();
@@ -785,7 +831,8 @@ namespace Luminous
                      0,       0, 1,       0,
                m[2][0], m[2][1], 0, m[2][2]);
 
-    glColor4fv(rgba);
+    if(rgba)
+      glColor4fv(rgba);
     glPushMatrix();
 
     glMultTransposeMatrixf(t.data());
@@ -799,7 +846,9 @@ namespace Luminous
     glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
 
     m_ib.bind();
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    glColor4f(rgba[0], rgba[1], rgba[2], 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
 
     m_ib.unbind();
     m_vb.unbind();
