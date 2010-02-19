@@ -41,11 +41,11 @@ namespace Radiant {
       return -1;
     }
 
-
+    /*
     for(int i = 0; i < 200; i++) {
       info("Got %d %x %c", (int) contents[i], (int) contents[i], (char) contents[i]);
     }
-
+    */
     std::wstring delim1; //(Radiant::StringUtils::utf8AsStdWstring("\n"));
     delim1 += (wchar_t) 8203;
     std::wstring delim2(Radiant::StringUtils::utf8AsStdWstring(":"));
