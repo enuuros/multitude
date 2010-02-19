@@ -801,7 +801,7 @@ namespace Luminous
     glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
     // LOD
-    int level = LOD_MAXIMUM + log2(radius*m.extractScale()*2/m_data->m_screenSize.x);
+    int level = LOD_MAXIMUM + Math::Log2(radius*m.extractScale()*2/m_data->m_screenSize.x);
     if (level < LOD_MINIMUM) level = LOD_MINIMUM;
     int pow2 = Math::Floor(Math::Pow(2.0f,level));
     int count = pow2 + 2;
