@@ -34,8 +34,6 @@ LIB_PATTERNS = -lPatterns
 
 MULTI_LIB_FLAG = -L
 
-# DEFINES += GLEW_MX
-
 macx {
   exists(/opt/local/include/xercesc) {
 
@@ -78,6 +76,9 @@ win32 {
 
     win64:LIBPATH += $$PWD\Win64x\lib64
     else:LIBPATH += $$PWD\Win32x\lib32
+	
+	win64:LIB_GLEW = -lglew64
+	else:LIB_GLEW = -lglew32
 
     LIB_OPENGL = -lopengl32
     LIB_GLU = -lglu32
