@@ -38,7 +38,8 @@ namespace Valuable
   /// Base class for values
   /** Typical child classes include some POD (plain old data) elements
       (floats, ints, vector2) etc, that can be accessed through the
-      API.
+      API. The ValueObjects have names (std::string), that can be used to access
+      ValueObjects that are stored inside HasValues objects.
 
       It is also possible to add listeners to values, so that if a
       value is changed, then a call-back to soem other object is
@@ -48,9 +49,9 @@ namespace Valuable
       @see HasValues
   */
 
-  ///@todo the "set" functions are duplicating the processMessage functionality
-  ///@todo processMessage should be renamed to eventProcess (can be tricky to do)
-  ///@todo Doc
+  /// @todo the "set" functions are duplicating the processMessage functionality
+  /// @todo processMessage should be renamed to eventProcess (can be tricky to do)
+  /// @todo Doc
   class VALUABLE_API ValueObject
   {
   public:
@@ -76,8 +77,9 @@ namespace Valuable
     ValueObject(HasValues * parent, const std::string & name, bool transit = false);
     virtual ~ValueObject();
 
+    /// Returns the name of the object.
     const std::string & name() const { return m_name; }
-    void setName(const std::string & s) { m_name = s; }
+    void setName(const std::string & s);
 
     std::string path() const;
 
@@ -109,8 +111,17 @@ namespace Valuable
     /// Utility function for sending a Vector4 message to the object
     void processMessageVector4(const char * id, Nimble::Vector4);
 
+    /// Converts the value object in a floating point number
+    /** The default implementation returns zero, and sets the
+        ok pointer to false (if it is non-null). */
     virtual float       asFloat(bool * const ok = 0) const;
+    /// Converts the value object in an integer
+    /** The default implementation returns zero, and sets the
+        ok pointer to false (if it is non-null). */
     virtual int         asInt(bool * const ok = 0) const;
+    /// Converts the value object to a string
+    /** The default implementation returns an empty string, and sets the
+        ok pointer to false (if it is non-null). */
     virtual std::string asString(bool * const ok = 0) const;
 
     virtual bool set(float v);
@@ -122,10 +133,15 @@ namespace Valuable
     /// Get the type id of the type
     virtual const char * type() const = 0;
 
+    /// Serializes (writes) this ValueObject to an XML element, and returns the new element.
     virtual DOMElement serializeXML(DOMDocument * doc);
+    /// Deserializes (reads) this object from an XML element.
+    /** @return Returns true if the read process worked correctly, and false otherwise. */
     virtual bool deserializeXML(DOMElement element) = 0;
 
+    /** The parent object of the value object (is any). */
     HasValues * parent() { return m_parent; }
+    /** Sets the parent pointer to zero and removes this object from the parent. */
     void removeParent();
 
     /// Adds a listener that is invoked whenever the value is changed

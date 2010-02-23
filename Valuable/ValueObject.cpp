@@ -54,6 +54,14 @@ namespace Valuable
     emitDelete();
   }
 
+  void ValueObject::setName(const std::string & s)
+  {
+    if(parent())
+      parent()->childRenamed(m_name, s);
+
+    m_name = s;
+  }
+
   std::string ValueObject::path() const
   {
     if(m_parent)

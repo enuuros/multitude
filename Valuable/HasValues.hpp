@@ -112,7 +112,7 @@ namespace Valuable
       @return number of listeners removed
       */
     int eventRemoveListener(Valuable::HasValues * obj, const char * from = 0, const char * to = 0);
-
+    /** Adds */
     void eventAddSource(Valuable::HasValues * source);
     void eventRemoveSource(Valuable::HasValues * source);
 
@@ -122,7 +122,32 @@ namespace Valuable
 
     void eventPassingEnable(bool enable) { m_eventsEnabled = enable; }
 
+    /// The main event processing function
+    /** To capture and process events, you need to override this function. The default implemendation
+        tries to find a child object with the name found in the "type" argument,
+        and passes the arguments to that object.
+
+        Typical implementation of a custom processMessage function could look like:
+
+        \code
+        void MyClass::processMessage(const char * type, Radiant::BinaryData & data)
+        {
+          if(strcmp(type, "jump") == 0)
+            doJump();
+          else if(strcmp(type, "crawl") == 0) {
+            bool ok;
+            int speed = data.readInt32(&ok);
+            if(ok)
+              doCrawl(speed);
+          }
+          else
+            HasValues::processMessage(type, data);
+        }
+        \endcode
+
+    */
     virtual void processMessage(const char * type, Radiant::BinaryData & data);
+
   protected:
 
     void eventSend(const std::string & id, Radiant::BinaryData &);
@@ -130,8 +155,12 @@ namespace Valuable
     void eventSend(const char *);
 
   private:
+    friend class ValueObject; // So that ValueObject can call the function below.
+
+    void childRenamed(const std::string & was, const std::string & now);
+
     container m_children;
-  private:
+
     class ValuePass {
     public:
       ValuePass() : m_listener(0) {}

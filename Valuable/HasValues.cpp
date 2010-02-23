@@ -7,10 +7,10 @@
  * See file "Valuable.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include <Valuable/HasValuesImpl.hpp>
@@ -81,7 +81,7 @@ namespace Valuable
           "HasValues::addValue # '%s' already has a parent '%s'. "
           "Unlinking it to set new parent.",
           cname.c_str(), parent->name().c_str());
-      value->removeParent();  
+      value->removeParent();
     }
 
     // Change the value name
@@ -130,13 +130,13 @@ namespace Valuable
     doc->appendChild(serializeXML(doc.ptr()));
 
     return doc->writeToMem(buffer);
-  }  
+  }
 
   bool HasValues::loadFromFileXML(const char * filename)
   {
     Radiant::RefPtr<DOMDocument> doc = DOMDocument::createDocument();
-    
-    if(!doc->readFromFile(filename)) 
+
+    if(!doc->readFromFile(filename))
       return false;
 
     DOMElement e = doc->getDocumentElement();
@@ -159,12 +159,12 @@ namespace Valuable
     }
 
     elem.setAttribute("type", type());
-    
+
     for(container::iterator it = m_children.begin(); it != m_children.end(); it++) {
       ValueObject * vo = it->second;
 
       DOMElement child = vo->serializeXML(doc);
-      if(!child.isNull()) 
+      if(!child.isNull())
         elem.appendChild(child);
     }
 
@@ -185,7 +185,7 @@ namespace Valuable
       std::string name = elem.getTagName();
 
       ValueObject * vo = getValue(name);
-      
+
       // If the value exists, just deserialize it. Otherwise, pass the element
       // to readElement()
       if(vo)
@@ -230,7 +230,7 @@ namespace Valuable
     if(defaultData)
       vp.m_defaultData = *defaultData;
 
-    if(std::find(m_elisteners.begin(), m_elisteners.end(), vp) != 
+    if(std::find(m_elisteners.begin(), m_elisteners.end(), vp) !=
        m_elisteners.end())
       debug("Widget::eventAddListener # Already got item %s -> %s (%p)",
             from, to, obj);
@@ -243,7 +243,7 @@ namespace Valuable
                         const char * to,
                         Valuable::HasValues * obj,
                         const Radiant::BinaryData & defaultData );
-  
+
   int HasValues::eventRemoveListener(Valuable::HasValues * obj, const char * from, const char * to)
   {
     int removed = 0;
@@ -283,7 +283,7 @@ namespace Valuable
       return;
 
     const char * delim = strchr(id, '/');
-    
+
     std::string key(id);
     int skip;
 
@@ -326,7 +326,7 @@ namespace Valuable
         bdsend.rewind();
 
         vp.m_listener->processMessage(vp.m_to.c_str(), bdsend);
-        
+
       }
     }
   }
@@ -335,6 +335,18 @@ namespace Valuable
   {
     Radiant::BinaryData tmp;
     eventSend(id, tmp);
+  }
+
+  void HasValues::childRenamed(const std::string & was, const std::string & now)
+  {
+    iterator it = m_children.find(was);
+    if(it == m_children.end()) {
+      error("HasValues::childRenamed # No such child: %s", was.c_str());
+      return;
+    }
+    ValueObject * vo = (*it).second;
+    m_children.erase(it);
+    m_children[now] = vo;
   }
 
 
