@@ -225,6 +225,9 @@ namespace Radiant {
 
   float BinaryData::readFloat32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(8)) {
       if(ok) * ok = false;
       return 0.0f;
@@ -262,6 +265,9 @@ namespace Radiant {
 
   double BinaryData::readFloat64(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(8)) {
       if(ok) * ok = false;
       return 0.0f;
@@ -300,6 +306,9 @@ namespace Radiant {
 
   int32_t BinaryData::readInt32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(4)) {
       if(ok) * ok = false;
       unavailable("BinaryData::readInt32");
@@ -339,6 +348,9 @@ namespace Radiant {
 
   int64_t BinaryData::readInt64(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(8)) {
       if(ok) * ok = false;
       unavailable("BinaryData::readInt64");
@@ -366,6 +378,9 @@ namespace Radiant {
 
   int64_t BinaryData::readTimeStamp(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(4)) {
       if(ok) * ok = false;
       return 0;
@@ -398,6 +413,7 @@ namespace Radiant {
 
   bool BinaryData::readString(char * str, size_t maxbytes)
   {
+
     int32_t marker = getRef<int32_t>();
 
     if(marker != STRING_MARKER) {
@@ -496,6 +512,9 @@ namespace Radiant {
 
   Nimble::Vector2f BinaryData::readVector2Float32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(4)) {
       if(ok) * ok = false;
       return Nimble::Vector2f(0, 0);
@@ -548,6 +567,9 @@ namespace Radiant {
 
   Nimble::Vector3f BinaryData::readVector3Float32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(16)) {
       if(ok) * ok = false;
       return Nimble::Vector3f(0, 0, 0);
@@ -576,6 +598,9 @@ namespace Radiant {
 
   Nimble::Vector2i BinaryData::readVector2Int32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(12)) {
       if(ok) * ok = false;
       return Nimble::Vector2f(0, 0);
@@ -601,6 +626,9 @@ namespace Radiant {
 
   Nimble::Vector3i BinaryData::readVector3Int32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(16)) {
       if(ok) * ok = false;
       return Nimble::Vector3f(0, 0, 0);
@@ -626,6 +654,9 @@ namespace Radiant {
 
   Nimble::Vector4i BinaryData::readVector4Int32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(12)) {
       if(ok) * ok = false;
       return Nimble::Vector4i(0, 0, 0, 1);
@@ -652,6 +683,9 @@ namespace Radiant {
 
   Nimble::Vector4f BinaryData::readVector4Float32(bool * ok)
   {
+    if(ok)
+      *ok = true;
+
     if(!available(12)) {
       if(ok) * ok = false;
       return Nimble::Vector4f(0, 0, 0, 1);

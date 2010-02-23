@@ -34,12 +34,16 @@ LIB_PATTERNS = -lPatterns
 
 MULTI_LIB_FLAG = -L
 
-macx {
-  exists(/opt/local/include/xercesc) {
+linux-*:LIB_GLEW = -lglew
 
-    INCLUDEPATH += /opt/local/include/
-    LIBS += -L/opt/local/lib/
-  }
+macx {
+
+  LIB_GLEW = -lglew
+#  exists(/opt/local/include/xercesc) {
+#
+#    INCLUDEPATH += /opt/local/include/
+ #   LIBS += -L/opt/local/lib/
+ # }
 
   # withbundles = $$(MULTI_BUNDLES)
   withbundles = YES
@@ -77,9 +81,9 @@ win32 {
 
     win64:LIBPATH += $$PWD\Win64x\lib64
     else:LIBPATH += $$PWD\Win32x\lib32
-	
-	win64:LIB_GLEW = -lglew64
-	else:LIB_GLEW = -lglew32
+
+    win64:LIB_GLEW = -lglew64
+    else:LIB_GLEW = -lglew32
 
     LIB_OPENGL = -lopengl32
     LIB_GLU = -lglu32

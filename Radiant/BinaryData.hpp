@@ -7,10 +7,10 @@
  * See file "Radiant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #ifndef RADIANT_BINARY_DATA_HPP
@@ -25,7 +25,7 @@
 #include <vector>
 
 namespace Radiant {
-  class BinaryStream;  
+  class BinaryStream;
 }
 
 namespace Radiant {
@@ -35,9 +35,9 @@ namespace Radiant {
       data is stored in pretty much the same way as in Open Sound
       Control (OSC). This is done to ensure easy control data
       conversion between Radiant and OSC-compliant applications.
-      
+
       \b Differences between Radiant and OSC:
-      
+
       <UL>
 
       <LI>In ControlData the byte order is machine native byte
@@ -66,10 +66,9 @@ namespace Radiant {
       \b Reading functions set the optional bool argument "ok" to
       false if the operation fails. The boolean is never set to true,
       so you must do that in our own code.
-      
+
   */
 
-    /// @todo the ok parameter should be set always (or document the current behaviour)
   class RADIANT_API BinaryData
   {
   public:
@@ -89,17 +88,17 @@ namespace Radiant {
     void writePointer(void * ptr) { writeInt64((int64_t) ptr); }
     /// Writes a 64-bit time-stamp to the data buffer
     /** The timestamp uses Radiant::TimeStamp internal structure (40+24
-	bit fixed-point value).*/
+    bit fixed-point value).*/
     void writeTimeStamp(int64_t v);
 
     /// Write a null-terminated string to the buffer
     void writeString(const char *);
     void writeString(const std::string & str) { writeString(str.c_str()); }
     /** Writes a wide-string to the buffer. The string is internally
-	stored as 32-bit integers, since that is the typical
-	wchar_t.*/
+    stored as 32-bit integers, since that is the typical
+    wchar_t.*/
     void writeWString(const std::wstring & str);
-    
+
     /// Writes binary blob to the buffer.
     void writeBlob(const void * ptr, int n);
 
@@ -141,7 +140,7 @@ namespace Radiant {
     bool readWString(std::wstring & str);
     /// Reads a blob of expected size
     bool readBlob(void * ptr, int n);
-    
+
     /// Reads a 2D 32-bit floating point vector from the buffer
     Nimble::Vector2f readVector2Float32(bool * ok = 0);
     /// Reads a 2D 32-bit integer vector from the buffer
@@ -158,7 +157,7 @@ namespace Radiant {
     Nimble::Vector4f readVector4Float32(bool * ok = 0);
 
     /// Tells the current position of the read/write pointer
-    inline int pos() const { return m_current; } 
+    inline int pos() const { return m_current; }
     /// Sets the position of the read/write pointer
     inline void setPos(int index) { m_current = index; }
     /// Rewind the index pointer to the beginning
@@ -185,7 +184,7 @@ namespace Radiant {
 
   private:
 
-    template <class T> 
+    template <class T>
     inline T * getPtr(int advance = sizeof(T))
     { T * tmp = (T*) & m_buf[m_current]; m_current += advance; return tmp; }
     template <class T>
@@ -198,7 +197,7 @@ namespace Radiant {
     size_t stringSpace(const char * str);
 
     void unavailable(const char * func);
-    
+
     unsigned m_current;
     unsigned m_total;
     unsigned m_size;

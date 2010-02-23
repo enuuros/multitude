@@ -53,6 +53,13 @@ namespace Resonant {
       added in run-time, and the engine will re-wire the connetions as
       necessary.
 
+      DSPNetwork follows a semi-singleton approach: It is possible to create multiple
+      DSPNetwork objects, that use different audio devices. In reality this is seldom practical
+      and thus there is usually exactly one DSPNetwork per application. When the first
+      DSPNetwork is created it becomes the default network, and calls to #instance() will
+      return pointer to the network. It is strongly recommended that you do not delete the
+      defualt DSPNetwork before application is ready exit, as doing so may invalidate
+      pointers that are held to it.
    */
   class RESONANT_API DSPNetwork : public AudioLoop
   {
@@ -69,6 +76,7 @@ namespace Resonant {
       Buf() : m_data(0), m_size(0)
       {}
 
+      /// Allocates n samples to the storage buffer
       void allocate(int n)
       {
         if(n != m_size) {
@@ -78,8 +86,10 @@ namespace Resonant {
         }
       }
 
+      /// Allocates #Module::MAX_CYCLE samples for buffer space
       void init() { allocate(Module::MAX_CYCLE); }
 
+      /// Frees the buffer data
       void clear() { delete [] m_data; m_data = 0; m_size = 0; }
 
       float * m_data;
@@ -128,10 +138,13 @@ namespace Resonant {
     {
     public:
       NewConnection() : m_sourceChannel(0), m_targetChannel(0) {}
-
+      /** The id of the audio source module. */
       char        m_sourceId[Module::MAX_ID_LENGTH];
+      /** The id of the audio destination module. */
       char        m_targetId[Module::MAX_ID_LENGTH];
+      /** The channel index in the source module (where the signal is coming from). */
       int         m_sourceChannel;
+      /** The channel index in the target module (where the signal is going to). */
       int         m_targetChannel;
     };
 
@@ -143,15 +156,18 @@ namespace Resonant {
     public:
       Item();
       ~Item();
-
+      /// Sets the DSP #Module that this Item contains.
       void setModule(Module *m) { m_module = m; }
+      /// Returns a pointer to the DSP module
       Module * module() { return m_module; }
 
+      /// Sets the defualt target channel of the module
       void setTargetChannel(int channel)
       {
         m_targetChannel = channel;
       }
 
+      /// Deletes the module.
       void deleteModule()
       {
         delete m_module;
@@ -160,6 +176,7 @@ namespace Resonant {
 
     private:
 
+      // Process n samples
       inline void process(int n)
       {
         assert(m_compiled != false);
@@ -191,18 +208,44 @@ namespace Resonant {
     typedef std::list<Item> container;
     typedef container::iterator iterator;
 
+    /// Creates an empty DSPNetwork object.
     DSPNetwork();
     virtual ~DSPNetwork();
 
+    /** Starts the DSPNetwork, using given audio device.
+
+        To get a list of possible sound device names we recommend you use utility application
+        ListPortAudioDevices.
+    */
     bool start(const char * device = 0);
 
+    /// Adds a DSP #Module to the signal processing graph
+    /** This function does not perform the actual addition, but puts the module into a FIFO,
+        for the signal processing thread. */
     void addModule(Item &);
+    /** Marks a given DSP module as finished. Once this function has been called the
+        DSP thread will remove the module from the graph, and delete it. */
     void markDone(Item &);
 
+    /** Send binary control data to the DSP network.
+        When sending messages, the BinaryData object should contain an identifier string
+        in the beginning. The DSPNetwork will read this string, and pass the command to the
+        corresponding #Module. Typical example of use could be:
+
+        \code
+Radiant::BinaryData control;
+control.writeString("moviegain/gain");
+control.writeFloat32(0.3);
+DSPNetwork::instance().send(control);
+        \endcode
+    */
     void send(Radiant::BinaryData & control);
 
+    /// Returns the default sample player object.
+    /** If the object does not exis yet, it is created on the fly. */
     ModuleSamplePlayer * samplePlayer();
-
+    /// Returns the DSPNetwork instance.
+    /**  */
     static DSPNetwork * instance();
 
   private:

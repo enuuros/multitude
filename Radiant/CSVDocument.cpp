@@ -29,8 +29,7 @@ namespace Radiant {
   {
   }
 
-  /** Load a file, and return the number of lines read. */
-  int CSVDocument::load(const char * filename)
+  int CSVDocument::load(const char * filename, const char * delimiter)
   {
     m_rows.clear();
 
@@ -48,7 +47,7 @@ namespace Radiant {
     */
     std::wstring delim1; //(Radiant::StringUtils::utf8AsStdWstring("\n"));
     delim1 += (wchar_t) 8203;
-    std::wstring delim2(Radiant::StringUtils::utf8AsStdWstring(":"));
+    std::wstring delim2(Radiant::StringUtils::utf8AsStdWstring(delimiter));
 
     Radiant::StringUtils::WStringList strs;
     Radiant::StringUtils::split(contents, delim1, strs);
@@ -101,6 +100,20 @@ namespace Radiant {
     }
 
     return 0;
+  }
+
+  CSVDocument::Row * CSVDocument::row(unsigned index)
+  {
+    if(index >= rowCount())
+      return 0;
+
+    unsigned n = 0;
+    for(Rows::iterator it = begin(); it != end(); it++, n++) {
+      if(n == index)
+        return & (*it);
+    }
+
+    return 0; // Should be unreachable
   }
 
 }

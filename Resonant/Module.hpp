@@ -31,6 +31,8 @@ namespace Resonant {
   class Application;
 
   /** Base class for #Resonant signal processing blocks. */
+  /// @todo Check if the id could be dropped in favor of
+  /// ValueObject::name
   class RESONANT_API Module : public Valuable::HasValues
   {
   public:
@@ -81,7 +83,9 @@ namespace Resonant {
     /** Stops the signal processing, freeing any resources necessary. */
     virtual bool stop();
 
+    /** Sets the id of the module. */
     void setId(const char *);
+    /** Returns the id of the module. */
     const char * id() { return m_id; }
 
   private:

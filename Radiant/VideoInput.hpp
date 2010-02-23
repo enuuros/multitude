@@ -26,6 +26,7 @@
 namespace Radiant {
 
 
+  /// Different video frame-rates
   enum FrameRate {
     FPS_IGNORE,
     FPS_5,
@@ -37,11 +38,15 @@ namespace Radiant {
     FPS_COUNT
   };
 
-  enum {
+  enum VideoInputFlags {
     DONT_CARE = -1,
+    /// Try to decode the video data from the data stream
     WITH_VIDEO = 0x1,
+    /// Try to decode the PCM audio from the data stream
     WITH_AUDIO = 0x2,
+    /// Loop the video source, when it reaches the end
     DO_LOOP = 0x4,
+    /// If the audio has multiple channels, force the audio to mono
     MONOPHONIZE_AUDIO = 0x8
   };
 
@@ -80,7 +85,24 @@ namespace Radiant {
     virtual void doneImage();
 
     /// Get audio data
-    /// @todo Document
+    /** This function returns a pointer to the internal audio PCM buffer. The audio PCM buffer
+        is filled in the #captureFrame function, and this function only returns a pointer to the
+        captured data.
+
+        This function should be called frequently, typically after each video frame.
+        For many video sources (movie files in particular) this function will return null
+        most of the time, as the audio is encoded in chunks so that audio frames cover
+        multiple video frames. Thus you may have this function return the audio for one
+        full second of the movie.
+
+        @param frameCount The number of frames available is stored inside this pointer.
+        @return Pointer to the raw PCM audio data. Usually the data is in int16_t format,
+        but this is not mandatory. Use the #getAudioParameters function to determine
+        the audio sample format, and other paramters. The returned memory is usable until
+        the next call to captureVideo.
+
+
+   */
     virtual const void * captureAudio(int * frameCount);
     /// Get audio parameters
     /** @param channels The number of channels in the video sound-track.
@@ -88,10 +110,12 @@ namespace Radiant {
     @param format The audio sample format
      */
     virtual void getAudioParameters(int * channels,
-                    int * sample_rate,
-                    AudioSampleFormat * format);
+                                    int * sample_rate,
+                                    AudioSampleFormat * format);
 
     /// Returns the current width of a frame in the video stream images.
+    /** Note that it is quite common for video devices to not report the correct frame
+        size before at least one frame has been captured. */
     virtual int width() const = 0;
     /// Returns the current height of a frame in the video stream images.
     virtual int height() const = 0;

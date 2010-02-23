@@ -164,6 +164,8 @@ namespace Luminous {
 
   GLSLProgramObject * Shader::bind()
   {
+    Luminous::Utils::glCheck("Shader::bind # Before entry");
+
     GLSLProgramObject & prog = ref();
 
     if(m_self->m_dirty) {
@@ -183,7 +185,7 @@ namespace Luminous {
       m_self->m_dirty = false;
     }
 
-    Luminous::Utils::glCheck("Shader::program # Before bind");
+    Luminous::Utils::glCheck("Shader::bind # Before bind");
 
     prog.bind();
 
