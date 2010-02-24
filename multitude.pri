@@ -38,13 +38,6 @@ linux-*:LIB_GLEW = -lGLEW
 
 macx {
 
-  LIB_GLEW = -lglew
-#  exists(/opt/local/include/xercesc) {
-#
-#    INCLUDEPATH += /opt/local/include/
- #   LIBS += -L/opt/local/lib/
- # }
-
   # withbundles = $$(MULTI_BUNDLES)
   withbundles = YES
 
