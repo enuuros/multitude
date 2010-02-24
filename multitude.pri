@@ -34,7 +34,7 @@ LIB_PATTERNS = -lPatterns
 
 MULTI_LIB_FLAG = -L
 
-linux-*:LIB_GLEW = -lglew
+linux-*:LIB_GLEW = -lGLEW
 
 macx {
 
