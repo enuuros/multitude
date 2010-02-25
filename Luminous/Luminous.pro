@@ -1,7 +1,5 @@
 include(../multitude.pri)
 
-unix:CONFIG += debug
-
 HEADERS += BGThread.hpp \
     ContextVariable.hpp \
     ContextVariables.hpp \
