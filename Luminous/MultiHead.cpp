@@ -260,7 +260,7 @@ namespace Luminous {
 
     Rect r = m_areas[0].ptr()->graphicsBounds();
 
-    for(unsigned i = 1; i < m_areas.size(); i++) {
+    for(size_t i = 1; i < m_areas.size(); i++) {
       r.expand(m_areas[i].ptr()->graphicsBounds());
     }
   
@@ -269,7 +269,7 @@ namespace Luminous {
 
   void MultiHead::Window::setSeam(float seam)
   {
-    for(unsigned i = 0; i < m_areas.size(); i++) {
+    for(size_t i = 0; i < m_areas.size(); i++) {
       m_areas[i].ptr()->setSeams(i == 0 ? 0 : seam,
           i + 1 >= m_areas.size() ? 0 : seam,
           0, 0);
@@ -280,7 +280,7 @@ namespace Luminous {
     {
 //      Radiant::trace("MultiHead::Window::windowToGraphics # loc(%f,%f), m_size[1] = %d", loc.x, loc.y, m_size[1]);
 
-      for(unsigned i = 0; i < m_areas.size(); i++) {
+      for(size_t i = 0; i < m_areas.size(); i++) {
         bool ok = false;
         Nimble::Vector2f res = m_areas[i].ptr()->windowToGraphics(loc, m_size[1], ok);
 
@@ -301,7 +301,7 @@ namespace Luminous {
 
     m_pixelSizeCm = sizeCm;
 
-    for(unsigned i = 0; i < m_areas.size(); i++)
+    for(size_t i = 0; i < m_areas.size(); i++)
       m_areas[i].ptr()->setPixelSizeCm(sizeCm);
   }
 
@@ -339,7 +339,8 @@ namespace Luminous {
     m_widthcm(this, "widthcm", 100, true),
     m_gamma(this, "gamma", 1.1f, true),
     m_edited(false)
-  {}
+  {
+  }
 
   MultiHead::~MultiHead()
   {}
@@ -412,41 +413,41 @@ namespace Luminous {
     m_windows.push_back(wi);    
   }
 
-  MultiHead::Window & MultiHead::window(unsigned i)
+  MultiHead::Window & MultiHead::window(size_t i)
   {
     if(i >= m_windows.size()) {
-      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
-		     i, (unsigned) m_windows.size());
+      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %ld",
+                     i, m_windows.size());
     }
 
     return * m_windows[i].ptr();
   }
 
-  const MultiHead::Window & MultiHead::window(unsigned i) const
+  const MultiHead::Window & MultiHead::window(size_t i) const
   {
     if(i >= m_windows.size()) {
-      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %u",
-		     i, (unsigned) m_windows.size());
+      Radiant::fatal("MultiHead::window # Array index %u exceeds array size %ld",
+                     i, m_windows.size());
     }
 
     return * m_windows[i].ptr();
   }
 
-  unsigned MultiHead::areaCount()
+  size_t MultiHead::areaCount()
   {
-    unsigned n = 0;
+    size_t n = 0;
 
-    for(unsigned i = 0; i < m_windows.size(); i++)
+    for(size_t i = 0; i < m_windows.size(); i++)
       n += m_windows[i].ptr()->areaCount();
 
     return n;
   }
 
-  MultiHead::Area & MultiHead::area(unsigned index, MultiHead::Window ** winptr)
+  MultiHead::Area & MultiHead::area(size_t index, MultiHead::Window ** winptr)
   {
-    unsigned used = 0;
+    size_t used = 0;
 
-    for(unsigned i = 0; i < m_windows.size(); i++) {
+    for(size_t i = 0; i < m_windows.size(); i++) {
       int n = m_windows[i].ptr()->areaCount();
       if(used + n > index) {
         if(winptr)
@@ -471,7 +472,7 @@ namespace Luminous {
     Nimble::Vector2i low = w->location();
     Nimble::Vector2i high = w->location() + w->size();
     
-    for(unsigned i = 0; i < windowCount(); i++) {
+    for(size_t i = 0; i < windowCount(); i++) {
 
       w = & window(i);
 
@@ -495,7 +496,7 @@ namespace Luminous {
 
     Rect r = window(0).graphicsBounds();
 
-    for(unsigned i = 1; i < windowCount(); i++) {
+    for(size_t i = 1; i < windowCount(); i++) {
       r.expand(window(i).graphicsBounds());
     }
 
@@ -513,7 +514,7 @@ namespace Luminous {
   {
     assert(areaCount() > 0);
 
-    for(unsigned i = 0; i < m_windows.size(); i++)
+    for(size_t i = 0; i < m_windows.size(); i++)
       m_windows[i].ptr()->setSeam(seam);    
   }
 
@@ -572,7 +573,7 @@ namespace Luminous {
 
     const float pixelSizeCm = m_widthcm.asFloat() / width();
 
-    for(unsigned i = 0; i < windowCount(); i++) {
+    for(size_t i = 0; i < windowCount(); i++) {
       window(i).setPixelSizeCm(pixelSizeCm);      
     }
 

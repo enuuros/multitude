@@ -309,7 +309,7 @@ namespace Luminous
         step = Math::Floor(Math::Pow(2.0f,level-i));
         *(pIB++) = offset; // for each level, push index for center first
         //std::cout << offset <<" ";
-        for(int ind = offset + 1; ind <= segments + offset + 1; ind += step) {
+        for(GLuint ind = offset + 1; ind <= segments + offset + 1; ind += step) {
           *(pIB++) = ind;
           //std::cout << ind <<" ";
         }

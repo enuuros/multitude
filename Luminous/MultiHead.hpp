@@ -208,11 +208,11 @@ namespace Luminous {
       LUMINOUS_API void resizeEvent(Vector2i size);
 
       /// Number of areas that this window holds
-      unsigned areaCount() const { return (unsigned) m_areas.size(); }
+      size_t areaCount() const { return m_areas.size(); }
       /// Get one of the areas
-      Area & area(unsigned i) { return * m_areas[i].ptr(); }
+      Area & area(size_t i) { return * m_areas[i].ptr(); }
       /// Get one of the areas
-      const Area & area(unsigned i) const { return * m_areas[i].ptr(); }
+      const Area & area(size_t i) const { return * m_areas[i].ptr(); }
 
       LUMINOUS_API Nimble::Rect graphicsBounds() const;
 
@@ -248,7 +248,7 @@ namespace Luminous {
       LUMINOUS_API void setPixelSizeCm(float sizeCm);
 
     protected:
-      virtual bool readElement(Valuable::DOMElement ce);
+      LUMINOUS_API virtual bool readElement(Valuable::DOMElement ce);
 
       MultiHead                *m_screen;
       Valuable::ValueVector2i   m_location;
@@ -266,11 +266,11 @@ namespace Luminous {
     LUMINOUS_API virtual ~MultiHead();
 
     /// The number of areas
-    LUMINOUS_API unsigned areaCount();
+    LUMINOUS_API size_t areaCount();
     /// Access the areas
     /** This method traverses all the windows to find the area with
     given index. */
-    LUMINOUS_API Area & area(unsigned i, Window ** winptr = 0);
+    LUMINOUS_API Area & area(size_t i, Window ** winptr = 0);
     /// Create 1 window with 1 area.
     LUMINOUS_API void makeSingle(int x, int y, int w, int h);
     /// Create 1 window with 2 areas horizontally side by side.
@@ -281,10 +281,10 @@ namespace Luminous {
     LUMINOUS_API void makeQuadSideways(int x, int y, int w, int h, float seam);
 
     /// The number of windows
-    unsigned windowCount() const { return (unsigned) m_windows.size(); }
+    size_t windowCount() const { return m_windows.size(); }
     /// Access one of the windows
-    LUMINOUS_API Window & window(unsigned i);
-    LUMINOUS_API const Window & window(unsigned i) const;
+    LUMINOUS_API Window & window(size_t i);
+    LUMINOUS_API const Window & window(size_t i) const;
 
     /// Total size of all the windows
     LUMINOUS_API Nimble::Vector2i totalSize();
@@ -312,7 +312,7 @@ namespace Luminous {
     float gamma() const { return m_gamma; }
 
   protected:
-    virtual bool readElement(Valuable::DOMElement ce);
+    LUMINOUS_API virtual bool readElement(Valuable::DOMElement ce);
 
     std::vector<Radiant::RefPtr<Window> > m_windows;
     Valuable::ValueFloat m_widthcm;
