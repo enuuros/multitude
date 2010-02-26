@@ -57,7 +57,7 @@ namespace Luminous {
     have may areas inside it.*/
     /// @todo rename to ViewPort?
     class Area : public Valuable::HasValues,
-                 public Collectable
+    public Collectable
     {
     public:
       LUMINOUS_API Area(Window * window = 0);
@@ -67,29 +67,29 @@ namespace Luminous {
 
       void setGeometry(int x, int y, int w, int h, bool copyToGraphics = true)
       {
-    m_location = Nimble::Vector2i(x, y);
-    m_size = Nimble::Vector2i(w, h);
+        m_location = Nimble::Vector2i(x, y);
+        m_size = Nimble::Vector2i(w, h);
 
-    if(copyToGraphics)
-      setGraphicsGeometry(x, y, w, h);
+        if(copyToGraphics)
+          setGraphicsGeometry(x, y, w, h);
       }
 
       void setSize(Vector2i size)
       {
-    m_size = size;
+        m_size = size;
       }
 
       void setGraphicsGeometry(int x, int y, int w, int h)
       {
-    m_graphicsLocation = Nimble::Vector2i(x, y);
-    m_graphicsSize = Nimble::Vector2i(w, h);
-    updateBBox();
+        m_graphicsLocation = Nimble::Vector2i(x, y);
+        m_graphicsSize = Nimble::Vector2i(w, h);
+        updateBBox();
       }
 
       void setSeams(float left, float right, float bottom, float top)
       {
-    m_seams = Nimble::Vector4f(left, right, bottom, top);
-    updateBBox();
+        m_seams = Nimble::Vector4f(left, right, bottom, top);
+        updateBBox();
       }
 
       float maxSeam() { return m_seams.asVector().maximum(); }
@@ -114,17 +114,17 @@ namespace Luminous {
       /// The offset of the graphics inside the area (virtual pixels)
       const Vector2f graphicsLocation(bool withseams = true) const
       {
-    return withseams ?
-      m_graphicsLocation.asVector() - Nimble::Vector2f(m_seams[0], m_seams[3]) :
-      m_graphicsLocation.asVector();
+        return withseams ?
+            m_graphicsLocation.asVector() - Nimble::Vector2f(m_seams[0], m_seams[3]) :
+            m_graphicsLocation.asVector();
       }
       /// The size of the graphics inside this area (virtual pixels)
       const Vector2f graphicsSize(bool withseams = true) const
       {
-    return withseams ?
-      m_graphicsSize.asVector() + Nimble::Vector2f(m_seams[0] + m_seams[1],
-                               m_seams[2] + m_seams[3]) :
-      m_graphicsSize.asVector();
+        return withseams ?
+            m_graphicsSize.asVector() + Nimble::Vector2f(m_seams[0] + m_seams[1],
+                                                         m_seams[2] + m_seams[3]) :
+            m_graphicsSize.asVector();
       }
 
       /// The bounds of the graphics
@@ -162,12 +162,12 @@ namespace Luminous {
     private:
 
       enum {
-    /* Render to the screen, using straight coordinates. Then
+        /* Render to the screen, using straight coordinates. Then
        read-back and re-render, with skewed coordinates. */
-    METHOD_TEXTURE_READBACK,
-    /* Render directly with skewed coordinates. Nice for
+        METHOD_TEXTURE_READBACK,
+        /* Render directly with skewed coordinates. Nice for
        performance, but a bit tricky for ripple effects etc. */
-    METHOD_MATRIX_TRICK
+        METHOD_MATRIX_TRICK
       };
 
       void updateBBox();
@@ -202,8 +202,8 @@ namespace Luminous {
       /// Set the location and size of this window
       void setGeometry(int x, int y, int w, int h)
       {
-    m_location = Nimble::Vector2i(x, y);
-    m_size = Nimble::Vector2i(w, h);
+        m_location = Nimble::Vector2i(x, y);
+        m_size = Nimble::Vector2i(w, h);
       }
 
       /// Resize the window, and automatically one child area
