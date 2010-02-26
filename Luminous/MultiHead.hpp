@@ -153,6 +153,12 @@ namespace Luminous {
       float cmToPixels(float cm) { return cm / m_pixelSizeCm; }
 
       Nimble::Matrix3 viewTransform();
+
+      void swapGraphicsWidthHeight()
+      {
+        m_graphicsSize = m_graphicsSize.asVector().shuffle();
+      }
+
     private:
 
       enum {

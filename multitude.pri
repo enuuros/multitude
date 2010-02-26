@@ -3,6 +3,7 @@
 CONFIG -= qt
 CONFIG += link_pkgconfig
 CONFIG += thread
+CONFIG += release
 
 CONFIG += embed_manifest_exe
 

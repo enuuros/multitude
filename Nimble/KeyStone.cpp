@@ -7,10 +7,10 @@
  * See file "Nimble.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "KeyStone.hpp"
@@ -44,7 +44,7 @@ namespace Nimble {
     m_matrixExtension.identity();
 
     setVertices("0 0  640 0  640 480  0 480", 640, 480, 1920, 1080, 0, 0);
-    
+
     //calculateMatrix();
     //updateLimits();
   }
@@ -59,17 +59,17 @@ namespace Nimble {
     char * ptr = (char *) str;
 
     Vector2 vertices[4];
-    
+
     float * corners = vertices[0].data();
     int i;
-    
+
     for(i = 0; i < 8; i++)
       corners[i] = float(strtod(ptr, & ptr));
-    
+
     setVertices(vertices, w, h, dpyw, dpyh, dpyx, dpyy);
   }
 
-  void KeyStone::setVertices(const Nimble::Vector2 * vertices, 
+  void KeyStone::setVertices(const Nimble::Vector2 * vertices,
                              int w, int h,
                              int dpyw, int dpyh,
                              int dpyx, int dpyy)
@@ -97,8 +97,8 @@ namespace Nimble {
 
       Vector2 vtmp1(vertices[i]);
       Vector2 vtmp2 = project(vtmp1);
-      
-      printf("[%.6f %.6f] => [%.6f %.6f]\n", 
+
+      printf("[%.6f %.6f] => [%.6f %.6f]\n",
        vtmp1.x, vtmp1.y, vtmp2.x, vtmp2.y);
     }
     */
@@ -116,7 +116,7 @@ namespace Nimble {
 
     m_dpyCenter.make(m_dpyX + m_dpyWidth * 0.5f,
                      m_dpyY + m_dpyHeight * 0.5f);
-    
+
     calculateMatrix();
     updateLimits();
   }
@@ -132,7 +132,7 @@ namespace Nimble {
     }
 
     m_matrix = projectionMatrix(m_vertices);
-    
+
     bool ok = true;
     m_matrix = m_matrix.inverse(&ok);
 
@@ -140,7 +140,7 @@ namespace Nimble {
     tmp.identity();
     tmp[0][0] = 1.0f / m_width;
     tmp[1][1] = 1.0f / m_height;
-    
+
     m_matrix = m_matrix * tmp;
 
     tmp.identity();
@@ -150,7 +150,7 @@ namespace Nimble {
 
     tmp[0][2] = (float)m_dpyX;
     tmp[1][2] = (float)m_dpyY;
-    
+
     m_matrixOut = tmp * m_matrixExtension * m_matrix;
 
     updated();
@@ -187,14 +187,14 @@ namespace Nimble {
     Matrix3 m = m_matrixOut.inverse();
     return project(m, v);
   }
-  
+
   void  KeyStone::moveCorner(Nimble::Vector2 loc)
   {
     int index = closestCorner(loc);
     m_originals[index] = loc;
 
     calculateMatrix();
-    updateLimits();    
+    updateLimits();
   }
 
   int KeyStone::closestCorner(Nimble::Vector2 loc) const
@@ -223,7 +223,7 @@ namespace Nimble {
     tmp = m_originals[3];
     m_originals[3] = m_originals[2];
     m_originals[2] = tmp;
-    
+
     calculateMatrix();
     updateLimits();
   }
@@ -237,7 +237,7 @@ namespace Nimble {
     tmp = m_originals[3];
     m_originals[3] = m_originals[0];
     m_originals[0] = tmp;
-    
+
     calculateMatrix();
     updateLimits();
   }
@@ -252,6 +252,11 @@ namespace Nimble {
 
       m_originals[3] = v;
 
+      // Swap output width & height
+      int tmp = m_dpyWidth;
+      m_dpyWidth = m_dpyHeight;
+      m_dpyHeight = tmp;
+
       calculateMatrix();
     }
   }
@@ -265,7 +270,7 @@ namespace Nimble {
 
     if(m_extra[index] >= 100.0f)
       m_extra[index] = 100.0f;
-  }  
+  }
 
   Nimble::Rect KeyStone::outputBounds()
   {
@@ -287,7 +292,7 @@ namespace Nimble {
 
 
     // Do the real matrix calculation
-    
+
     Nimble::Vector2 tnorm[4]; // Target points in [0-1] space
     Nimble::Vector2 rnorm[4]; // Real points in [0-1] space
     Nimble::Vector2 rcnorm(0, 0); // Real center point in [0-1] space
@@ -300,9 +305,9 @@ namespace Nimble {
 
     tmp[0][2] = (float) m_dpyX;
     tmp[1][2] = (float) m_dpyY;
-    
+
     Nimble::Matrix3 backToNorm = (tmp * m_matrixExtension).inverse();
-    
+
     for(i = 0; i < 4; i++) {
       tnorm[i] = project(backToNorm, targets[i]);
       rnorm[i] = project(backToNorm, real[i]);
@@ -312,12 +317,12 @@ namespace Nimble {
        tnorm[i].x, tnorm[i].y, rnorm[i].x, rnorm[i].y);
       */
     }
-    
+
     // Reverse engineer the center location:
-    
+
     if(center) {
       float dist = (*center - m_dpyCenter).length();
-      
+
       float weight = 0.5f + 0.5f * cosf(Math::PI * dist / m_centerShiftSpan);
       rcnorm = project(backToNorm, *center - weight * m_centerShift);
 
@@ -337,7 +342,7 @@ namespace Nimble {
 
       // rcnorm.x *= m_width;
       // rcnorm.y *= m_height;
-      
+
       rcnorm = project(m_matrix.inverse(), rcnorm);
 
       Vector2 projcenter = project(m_matrixOut, rcnorm);
@@ -371,7 +376,7 @@ namespace Nimble {
 
     /*
     std::cout << tl << " # " << tr << " # " << bl << " # " << br << std::endl;
-    
+
     printf("tl = [%.1f %.1f] ksw = %f, ksh = %f\n", tl.x, tl.y, ksw, ksh);
     */
     Vector4 scaledExtra(m_extra[0] / ksw, m_extra[1] / ksw,
@@ -391,10 +396,10 @@ namespace Nimble {
     float dy1 = vertices[1].y - vertices[2].y;
     float dy2 = vertices[3].y - vertices[2].y;
 
-    float sx = vertices[0].x - vertices[1].x + 
+    float sx = vertices[0].x - vertices[1].x +
                vertices[2].x - vertices[3].x;
 
-    float sy = vertices[0].y - vertices[1].y + 
+    float sy = vertices[0].y - vertices[1].y +
                vertices[2].y - vertices[3].y;
 
     float del = Math::Det(dx1, dx2, dy1, dy2);
@@ -416,15 +421,15 @@ namespace Nimble {
   }
 
 
-  void KeyStone::updateLimits(std::vector<Nimble::Vector2i> & limits, 
+  void KeyStone::updateLimits(std::vector<Nimble::Vector2i> & limits,
                               const Vector4 * offsets)  {
     limits.resize(m_height);
 
     Rect bounds(0, 0, 1, 1);
 
     if(offsets) {
-      
-      Vector2 tests[4] = { 
+
+      Vector2 tests[4] = {
         project(m_matrix, Vector2(float(m_width), float(m_height / 2))),
         project(m_matrix, Vector2(float(0), float(m_height / 2))),
         project(m_matrix, Vector2(float(m_width / 2), float(0))),
@@ -433,7 +438,7 @@ namespace Nimble {
 
       int i;
       Rect b2(tests[0]);
-      
+
       for(i = 1; i < 4; i++)
         b2.expand(tests[i]);
 
@@ -464,17 +469,17 @@ namespace Nimble {
     int count = 0;
 
     for(int y = 0; y < m_height; y++) {
-      
+
       int first = 0;
       int last = 0;
 
       bool inside = false;
 
       for(int x = 0; x < m_width; x++) {
-        
+
         Vector2 v1 = m_lensCorrection.correct(Vector2(float(x), float(y)));
         v1 = project(m_matrix, v1);
-        
+
         bool in = bounds.contains(v1);
 
         if(!in) {
@@ -498,12 +503,12 @@ namespace Nimble {
 
       int wid = last - first;
       /* Vector2 v = project(Vector2(640, y));
-      printf("Projection limits[%d] = %d - %d (%d %.3f %.3f)\n", y, 
+      printf("Projection limits[%d] = %d - %d (%d %.3f %.3f)\n", y,
              first, last, wid, v.x, v.y);
       */
       limits[y].make(first, wid);
     }
-    
+
     if(!offsets)
       m_containedPixelCount = count;
 
