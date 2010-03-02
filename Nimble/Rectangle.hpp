@@ -3,6 +3,7 @@
 
 #include <Nimble/Export.hpp>
 #include <Nimble/Vector2.hpp>
+#include <Nimble/Matrix3.hpp>
 
 namespace Nimble {
 
@@ -21,6 +22,11 @@ namespace Nimble {
       /// @param a1 unit-length axis vector
       /// @param e1 non-negative extent along a1
       Rectangle(Nimble::Vector2f origin, Nimble::Vector2f a0, float e0, Nimble::Vector2f a1, float e1);
+
+      /// Construct a new rectangle
+      /// @param size size of the rectangle
+      /// @param m transformation matrix for the rectangle
+      Rectangle(Nimble::Vector2f size, const Nimble::Matrix3 & m);
 
       /// Test if a point is inside the rectangle
       /// @param p point to test
