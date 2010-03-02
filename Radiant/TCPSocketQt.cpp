@@ -14,7 +14,11 @@
  */
 
 // Yes, this has to be on the top.
+#ifdef WIN32
 #include <winsock.h>
+#else
+#include <sys/socket.h>
+#endif
 
 #define IGNORE_MULTITUDE_TIMEVAL 1
 
