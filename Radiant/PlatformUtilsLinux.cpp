@@ -89,9 +89,28 @@ namespace Radiant
 
     uint64_t processMemoryUsage()
     {
-      struct rusage r_usage;
-      getrusage(RUSAGE_SELF, &r_usage);
-      return r_usage.ru_idrss;
+      /* Contents of the statm files (as of 2.6.8-rc3)
+         size     total program size (pages)      (same as VmSize in status)
+         resident size of memory portions (pages) (same as VmRSS in status)
+         shared   number of pages that are shared (i.e. backed by a file)
+         trs      number of pages that are 'code' (not including libs; broken,
+                                                   includes data segment)
+         lrs      number of pages of library      (always 0 on 2.6)
+         drs      number of pages of data/stack   (including libs; broken,
+                                                   includes library text)
+         dt       number of dirty pages           (always 0 on 2.6) */
+      static uint64_t pagesize = 0;
+      if(pagesize == 0) {
+        pagesize = (uint64_t)sysconf(_SC_PAGESIZE);
+      }
+
+      FILE * f = fopen("/proc/self/statm", "r");
+      uint64_t vmrss = 0u;
+      if(f) {
+        if(fscanf(f, "%*u %lu", &vmrss) != 1) vmrss = 0u;
+        fclose(f);
+      }
+      return vmrss * pagesize;
     }
 
     void setEnv(const char * name, const char * value)
