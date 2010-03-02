@@ -33,6 +33,11 @@ namespace Nimble {
       /// @return true if p is inside or on the rectangle
       bool inside(Nimble::Vector2f p) const;
 
+      /// Test if two rectangles intersect
+      /// @param r rectangle to test
+      /// @return true if the rectangles intersect
+      bool intersects(const Rectangle & r) const;
+
     private:
       Nimble::Vector2f m_origin;
       Nimble::Vector2f m_axis0;
