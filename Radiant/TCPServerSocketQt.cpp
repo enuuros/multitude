@@ -56,6 +56,7 @@ namespace Radiant
     m_d = new D();
   }
 
+
   TCPServerSocket::~TCPServerSocket()
   {
     delete m_d;
@@ -63,14 +64,21 @@ namespace Radiant
 
   int TCPServerSocket::open(const char * host, int port, int maxconnections)
   {
-    //  Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
+    //Radiant::info("TCPServerSocket::open # open(%s, %d, %d)", host, port, maxconnections);
 
-    bool r = m_d->listen(QHostAddress(host), port);
-    m_d->setMaxPendingConnections(maxconnections);
+    char h[130];
+    if(strcmp(host, "localhost") != 0)
+      strcpy(h, host);
+    else
+      strcpy(h, "127.0.0.1");
+
+    bool r = m_d->listen(QHostAddress(h), port);
 
     if(!r)
-      error("TCPServerSocket::open # %s:%d (%s)", host, port, 
+      error("TCPServerSocket::open # %s:%d (%s)", h, port,
 	    m_d->errorString().toStdString().c_str());
+
+    m_d->setMaxPendingConnections(maxconnections);
 
     return r ? 0 : EINVAL;
   }

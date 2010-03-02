@@ -99,9 +99,9 @@ unix {
     HEADERS += VideoCamera1394.hpp
     SOURCES += DirectoryPosix.cpp
     SOURCES += SerialPortPosix.cpp
-    SOURCES += TCPServerSocketPosix.cpp
-    SOURCES += TCPSocketPosix.cpp
-    SOURCES += UDPSocketPosix.cpp
+    SOURCES += TCPServerSocketQt.cpp
+    SOURCES += TCPSocketQt.cpp
+    SOURCES += UDPSocketQt.cpp
     SOURCES += VideoCamera1394.cpp
     SOURCES += ConditionPT.cpp
     SOURCES += MutexPT.cpp
@@ -111,6 +111,10 @@ unix {
 
     PKGCONFIG += libdc1394-2
     DEFINES += CAMERA_DRIVER_1394
+
+    CONFIG += qt
+    QT = core \
+        network
 }
 win32 {
     message(Radiant on Windows)

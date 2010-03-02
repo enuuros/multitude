@@ -27,7 +27,7 @@
 #include <sys/types.h>
 #include <strings.h>
 #include <string.h>
-
+#include <iostream>
 namespace Radiant
 {
 
@@ -128,7 +128,7 @@ namespace Radiant
 
     while(got < bytes && (!waitfordata || isPendingInput(500000))) {
       int n = ::read(m_d->m_fd, ptr + got, bytes - got);
-
+std::cout << "LL ";
       if(n < 0) {
     error("TCPSocket::read # n < 0");
     break;
