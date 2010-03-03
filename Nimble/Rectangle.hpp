@@ -13,9 +13,10 @@ namespace Nimble {
   class NIMBLE_API Rectangle
   {
     public:
-    /// Default constructor (does not initialize values)
+    /// Constructs a new rectangle. Does not initialize values.
     Rectangle();
-      /// Construct a new rectangle
+
+      /// Constructs a new rectangle.
       /// @param origin center of the box
       /// @param a0 unit-length axis vector
       /// @param e0 non-negative extent along a0
@@ -23,9 +24,9 @@ namespace Nimble {
       /// @param e1 non-negative extent along a1
       Rectangle(Nimble::Vector2f origin, Nimble::Vector2f a0, float e0, Nimble::Vector2f a1, float e1);
 
-      /// Construct a new rectangle
-      /// @param size size of the rectangle
-      /// @param m transformation matrix for the rectangle
+      /// Constructs a new rectangle
+      /// @param size size (width & height) of the rectangle
+      /// @param m transformation matrix defining the center of the rectangle
       Rectangle(Nimble::Vector2f size, const Nimble::Matrix3 & m);
 
       /// Test if a point is inside the rectangle

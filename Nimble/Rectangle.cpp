@@ -17,8 +17,8 @@ namespace Nimble
   {
     // Transform the points
     m_origin = (m * Vector2f(0, 0)).xy();
-    Vector2f c0 = (m * Vector2f(size.x, 0.f)).xy();
-    Vector2f c1 = (m * Vector2f(0.f, size.y)).xy();
+    Vector2f c0 = (m * Vector2f(0.5f * size.x, 0.f)).xy();
+    Vector2f c1 = (m * Vector2f(0.f, 0.5f * size.y)).xy();
 
     // Compute the axii and extents
     m_axis0 = c0 - m_origin;
@@ -30,7 +30,7 @@ namespace Nimble
     m_axis0.normalize();
     m_axis1.normalize();
   }
-
+  
   bool Rectangle::inside(Nimble::Vector2f p) const
   {
     p -= m_origin;
