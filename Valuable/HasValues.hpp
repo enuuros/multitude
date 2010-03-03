@@ -17,6 +17,7 @@
 #define VALUABLE_HASVALUES_HPP
 
 #include <Valuable/Export.hpp>
+#include <Valuable/ValueInt.hpp>
 #include <Valuable/ValueObject.hpp>
 
 #include <Patterns/NotCopyable.hpp>
@@ -42,6 +43,8 @@ namespace Valuable
   class VALUABLE_API HasValues : public ValueObject
   {
   public:
+    typedef int64_t Uuid;
+
     HasValues();
     HasValues(HasValues * parent, const std::string & name, bool transit = false);
     virtual ~HasValues();
@@ -148,6 +151,9 @@ namespace Valuable
     */
     virtual void processMessage(const char * type, Radiant::BinaryData & data);
 
+    static Uuid generateId();
+    Uuid id() const;
+
   protected:
 
     void eventSend(const std::string & id, Radiant::BinaryData &);
@@ -182,6 +188,7 @@ namespace Valuable
     Sources m_eventSources;
     bool m_eventsEnabled;
 
+    Valuable::ValueIntT<Uuid> m_id;
   };
 
 }

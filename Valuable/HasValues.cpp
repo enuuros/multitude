@@ -19,6 +19,7 @@
 
 #include <Valuable/HasValues.hpp>
 
+#include <Radiant/TimeStamp.hpp>
 #include <Radiant/Trace.hpp>
 #include <Radiant/RefPtr.hpp>
 
@@ -32,12 +33,14 @@ namespace Valuable
 
   HasValues::HasValues()
       : ValueObject(),
-      m_eventsEnabled(true)
+      m_eventsEnabled(true),
+      m_id(this, "id", generateId())
   {}
 
   HasValues::HasValues(HasValues * parent, const std::string & name, bool transit)
       : ValueObject(parent, name, transit),
-      m_eventsEnabled(true)
+      m_eventsEnabled(true),
+      m_id(this, "id", generateId())
   {
   }
 
@@ -306,6 +309,16 @@ namespace Valuable
     }
   }
 
+  HasValues::Uuid HasValues::generateId()
+  {
+    static Uuid id = static_cast<Uuid>(Radiant::TimeStamp::getTime());
+    return id++;
+  }
+
+  HasValues::Uuid HasValues::id() const
+  {
+    return m_id;
+  }
 
   void HasValues::eventSend(const std::string & id, Radiant::BinaryData & bd)
   {
