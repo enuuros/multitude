@@ -24,7 +24,7 @@ namespace Valuable
 {
 
   /// A value object for boolean.
-  class VALUABLE_API ValueBool : ValueObject
+  class VALUABLE_API ValueBool : public ValueObject
   {
   public:
     ValueBool(HasValues * parent, const std::string & name, bool value, bool transit = false);
@@ -45,5 +45,7 @@ namespace Valuable
   };
 
 }
+
+#undef VALUEMIT_STD_OP
 
 #endif // VALUABLE_VALUE_BOOL_HPP

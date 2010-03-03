@@ -105,12 +105,12 @@ namespace Radiant
       }
 
       FILE * f = fopen("/proc/self/statm", "r");
-      uint64_t vmrss = 0u;
+      unsigned long vmrss = 0u;
       if(f) {
         if(fscanf(f, "%*u %lu", &vmrss) != 1) vmrss = 0u;
         fclose(f);
       }
-      return vmrss * pagesize;
+      return uint64_t(vmrss) * pagesize;
     }
 
     void setEnv(const char * name, const char * value)
