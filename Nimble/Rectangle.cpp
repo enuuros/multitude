@@ -1,5 +1,5 @@
 #include "Rectangle.hpp"
-#include <Radiant/Trace.hpp>
+//#include <Radiant/Trace.hpp>
 
 namespace Nimble
 {
@@ -81,7 +81,7 @@ namespace Nimble
     Vector2f a = m_origin - m_extent0 * m_axis0 - m_extent1 * m_axis1;
     Vector2f b = m_origin + m_extent0 * m_axis0 + m_extent1 * m_axis1;
 
-    Radiant::info("RECTANGLE (%.2f,%.2f)-(%.2f,%.2f)", a.x, a.y, b.x, b.y);
+    //Radiant::info("RECTANGLE (%.2f,%.2f)-(%.2f,%.2f)", a.x, a.y, b.x, b.y);
   }
 
 }
