@@ -23,7 +23,7 @@
 #include <Luminous/Export.hpp>
 #include <Luminous/VertexBuffer.hpp>
 
-#include <Nimble/Rect.hpp>
+#include <Nimble/Rectangle.hpp>
 #include <Nimble/Vector2.hpp>
 
 namespace Luminous
@@ -98,11 +98,11 @@ namespace Luminous
     void setRecursionDepth(size_t rd);
     size_t recursionDepth() const;
 
-    void pushClipRect(const Nimble::Rect & area);
+    void pushClipRect(const Nimble::Rectangle & r);
     void popClipRect();
 
-    bool isVisible(const Nimble::Rect & area);
-    const Nimble::Rect & visibleArea() const;
+    bool isVisible(const Nimble::Rectangle & area);
+    const Nimble::Rectangle & visibleArea() const;
 
     void setScreenSize(Nimble::Vector2i size);
 

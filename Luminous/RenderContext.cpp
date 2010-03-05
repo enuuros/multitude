@@ -175,7 +175,7 @@ namespace Luminous
     size_t m_recursionLimit;
     size_t m_recursionDepth;
 
-    std::stack<Nimble::Rect> m_clipStack;
+    std::stack<Nimble::Rectangle> m_clipStack;
 
     typedef std::list<Radiant::RefPtr<FBOPackage> > FBOPackages;
 
@@ -345,9 +345,9 @@ namespace Luminous
     return m_data->m_recursionDepth;
   }
 
-  void RenderContext::pushClipRect(const Nimble::Rect & area)
+  void RenderContext::pushClipRect(const Nimble::Rectangle & r)
   {
-    m_data->m_clipStack.push(area);
+    m_data->m_clipStack.push(r);
   }
 
   void RenderContext::popClipRect()
@@ -355,7 +355,7 @@ namespace Luminous
     m_data->m_clipStack.pop();
   }
 
-  bool RenderContext::isVisible(const Nimble::Rect & area)
+  bool RenderContext::isVisible(const Nimble::Rectangle & area)
   {
     if(m_data->m_clipStack.empty())
       return true;
@@ -363,7 +363,7 @@ namespace Luminous
       return m_data->m_clipStack.top().intersects(area);
   }
 
-  const Nimble::Rect & RenderContext::visibleArea() const
+  const Nimble::Rectangle & RenderContext::visibleArea() const
   {
     return m_data->m_clipStack.top();
   }
