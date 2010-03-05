@@ -1,4 +1,5 @@
 #include "Rectangle.hpp"
+#include <Radiant/Trace.hpp>
 
 namespace Nimble
 {
@@ -35,8 +36,8 @@ namespace Nimble
   {
     p -= m_origin;
 
-    float u = dot(p, m_axis0);
-    float v = dot(p, m_axis1);
+    float u = Math::Abs(dot(p, m_axis0));
+    float v = Math::Abs(dot(p, m_axis1));
 
     return (0 <= u && u <= m_extent0) && (0 <= v && v <= m_extent1);
   }
@@ -73,6 +74,14 @@ namespace Nimble
       return false;  
 
     return true;
+  }
+
+  void Rectangle::debug() const
+  {
+    Vector2f a = m_origin - m_extent0 * m_axis0 - m_extent1 * m_axis1;
+    Vector2f b = m_origin + m_extent0 * m_axis0 + m_extent1 * m_axis1;
+
+    Radiant::info("RECTANGLE (%.2f,%.2f)-(%.2f,%.2f)", a.x, a.y, b.x, b.y);
   }
 
 }

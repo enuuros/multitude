@@ -39,6 +39,8 @@ namespace Nimble {
       /// @return true if the rectangles intersect
       bool intersects(const Rectangle & r) const;
 
+      void debug() const;
+
     private:
       Nimble::Vector2f m_origin;
       Nimble::Vector2f m_axis0;
