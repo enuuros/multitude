@@ -27,11 +27,10 @@ namespace Luminous
 
   Nimble::Vector2 Transformer::project(Nimble::Vector2 v) const
   {
-    Nimble::Vector3 p = transform() * v;
-
-    return Nimble::Vector2(p.x / p.z, p.y / p.z);
+    return transform().project(v);
   }
 
+  /// @todo what? rename
   Nimble::Vector2 Transformer::unproject(Nimble::Vector2 v) const
   {
     Nimble::Matrix3 m = transform().inverse();
