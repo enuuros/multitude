@@ -43,6 +43,9 @@ namespace Radiant
     RADIANT_API bool beginsWith(const std::wstring & a,
                                 const std::wstring & b);
 
+    RADIANT_API bool beginsWith(const std::string & a,
+                                const std::string & b);
+
     /// Remove non-visible characters from std::string.
     RADIANT_API void eraseNonVisibles(std::string & s);
     RADIANT_API void eraseNonVisibles(std::wstring & s);

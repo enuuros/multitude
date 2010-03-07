@@ -48,6 +48,19 @@ namespace Radiant
       return true;
     }
 
+    bool beginsWith(const std::string & a,
+                    const std::string & b)
+    {
+      if(a.size() < b.size())
+        return false;
+
+      for(unsigned i = 0; i < b.size(); i++)
+        if(a[i] != b[i])
+          return false;
+
+      return true;
+    }
+
 
     void eraseNonVisibles(string & s)
     {
