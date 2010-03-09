@@ -132,11 +132,10 @@ namespace Poetic
     BBox bb;
 
     cpuFont()->bbox(str, bb);
+    // usually bb.low() != (0,0)
+    Nimble::Vector2 offset = bb.center();
 
-    float w = bb.width();
-    float h = bb.height();
-
-    render(str, x - w * 0.5f, y + h * 0.5f);
+    render(str, x - offset.x, y + offset.y);
   }
 
   void GPUFont::renderCentered(const char * str,
@@ -145,11 +144,8 @@ namespace Poetic
     BBox bb;
 
     cpuFont()->bbox(str, bb);
-    Nimble::Vector2 span = bb.span();
     Nimble::Vector2 center = bb.center();
-    // center += span * 0.5f;
-    center *= 0.5f;
-    
+
     render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
   }
 
@@ -159,10 +155,8 @@ namespace Poetic
     BBox bb;
 
     cpuFont()->bbox(str, bb);
-    Nimble::Vector2 span = bb.span();
-    Nimble::Vector2 center(0,0);// = bb.center();
-    center += span * 0.5f;
-    // center.x += span.x * 0.5f;
+    Nimble::Vector2 center = bb.center();
+
     render(str, transform * Nimble::Matrix3::translate2D(-center.x, center.y));
   }
 

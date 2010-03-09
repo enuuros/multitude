@@ -16,6 +16,7 @@
 
 #include <ft2build.h>
 #include FT_OUTLINE_H
+//#include FT_BBOX_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -30,6 +31,10 @@ namespace Poetic
   {
     FT_BBox bbox;
 
+
+    // this can be larger than the bounding box,
+    // but is faster, if problems arise use:
+    //   FT_Outline_Get_BBox(&glyph->outline, &bbox);
     FT_Outline_Get_CBox(&glyph->outline, &bbox);
      
     low().x  = static_cast<float> (bbox.xMin) / 64.f;
