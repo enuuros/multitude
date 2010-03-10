@@ -23,6 +23,7 @@
 #define IGNORE_MULTITUDE_TIMEVAL 1
 
 #include "TCPSocket.hpp"
+#include "Thread.hpp"
 
 #include "Sleep.hpp"
 #include "Trace.hpp"
@@ -177,8 +178,9 @@ namespace Radiant
     Radiant::info("\tERROR %d", m_d->error());
   }
 
-  void TCPSocket::moveToThread(QThread * t) {
-        m_d->moveToThread(t);
+  void TCPSocket::moveToThread(Thread * t) {
+    QThread * qt = t->qtThread();
+    if(qt) m_d->moveToThread(qt);
   }
 
 }

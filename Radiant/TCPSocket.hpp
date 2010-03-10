@@ -22,9 +22,9 @@
 
 struct in_addr;
 
-class QThread;
-
 namespace Radiant {
+
+  class Thread;
 
   /// A client TCP socket for connecting to remote hosts
   /** @author Tommi Ilmonen*/
@@ -74,7 +74,7 @@ namespace Radiant {
 
     void debug();
 
-    void moveToThread(QThread * t);
+    void moveToThread(Thread * t);
     
   private:
     friend class TCPServerSocket;

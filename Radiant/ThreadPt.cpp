@@ -193,4 +193,9 @@ namespace Radiant {
     return 0;
   }
 
+  QThread * Thread::qtThread()
+  {
+    return 0;
+  }
+
 }
