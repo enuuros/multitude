@@ -21,6 +21,8 @@
 
 #include <cstring>
 
+class QThread;
+
 namespace Radiant {
 
   class Mutex;
@@ -95,6 +97,8 @@ namespace Radiant {
     /** Drive some self tests. */
     static void test();
 
+    /// Access the internal QThread
+    QThread * qtThread();
 
   protected:
     /// Exits the the calling thread.

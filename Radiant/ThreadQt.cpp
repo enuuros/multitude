@@ -96,4 +96,9 @@ namespace Radiant {
 	  return false;
   }
 
+  QThread * Thread::qtThread()
+  {
+      return m_d;
+  }
+
 }

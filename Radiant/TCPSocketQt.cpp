@@ -177,4 +177,8 @@ namespace Radiant
     Radiant::info("\tERROR %d", m_d->error());
   }
 
+  void TCPSocket::moveToThread(QThread * t) {
+        m_d->moveToThread(t);
+  }
+
 }
