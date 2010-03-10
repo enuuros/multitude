@@ -28,6 +28,8 @@
 #include <Luminous/ImageCodecJPEG.hpp>
 #endif // USE_QT45
 
+#include <Luminous/ImageCodecSVG.hpp>
+
 #include <Radiant/Trace.hpp>
 
 #include <string>
@@ -123,6 +125,7 @@ namespace Luminous
     Image::codecs()->registerCodec(new ImageCodecPNG());
 #endif
 
+    Image::codecs()->registerCodec(new ImageCodecSVG());
     /* TGA has to be last, because its ping may return true even if
        the file has other type. */
     Image::codecs()->registerCodec(new ImageCodecTGA());

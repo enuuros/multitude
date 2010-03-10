@@ -1,10 +1,10 @@
 include(../multitude.pri)
-
 HEADERS += BGThread.hpp \
     ContextVariable.hpp \
     ContextVariables.hpp \
     ContextVariableImpl.hpp \
-    Shader.hpp
+    Shader.hpp \
+    ImageCodecSVG.hpp
 HEADERS += CodecRegistry.hpp
 HEADERS += Collectable.hpp
 HEADERS += CPUMipmaps.hpp
@@ -40,7 +40,8 @@ HEADERS += VertexBuffer.hpp
 HEADERS += VertexBufferImpl.hpp
 SOURCES += BGThread.cpp \
     ContextVariable.cpp \
-    Shader.cpp
+    Shader.cpp \
+    ImageCodecSVG.cpp
 SOURCES += CodecRegistry.cpp
 SOURCES += Collectable.cpp
 SOURCES += CPUMipmaps.cpp
@@ -75,29 +76,26 @@ LIBS += $$LIB_RADIANT \
     $$LIB_GLU \
     $$LIB_NIMBLE \
     $$LIB_PATTERNS
-unix {
+unix { 
     LIBS += -ljpeg \
         -lpng
-    !contains(HAS_QT_45,YES) {
+    !contains(HAS_QT_45,YES) { 
         HEADERS += ImageCodecPNG.hpp
         HEADERS += ImageCodecTGA.hpp
         SOURCES += ImageCodecJPEG.cpp
         SOURCES += ImageCodecPNG.cpp
     }
 }
-win32 {
-    DEFINES += LUMINOUS_EXPORT
-}
-contains(HAS_QT_45,YES) {
+win32:DEFINES += LUMINOUS_EXPORT
+contains(HAS_QT_45,YES) { 
     message(Including QT Image codecs)
     HEADERS += ImageCodecQT.hpp
     SOURCES += ImageCodecQT.cpp
     CONFIG += qt
     QT += gui
-	
-	qt_plugin_install.path += /bin
-	qt_plugin_install.files = $$[QT_INSTALL_PLUGINS]
-	
-	INSTALLS += qt_plugin_install
+    QT += svg
+    qt_plugin_install.path += /bin
+    qt_plugin_install.files = $$[QT_INSTALL_PLUGINS]
+    INSTALLS += qt_plugin_install
 }
 include(../library.pri)
