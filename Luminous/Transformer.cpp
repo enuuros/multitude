@@ -59,9 +59,25 @@ namespace Luminous
     m_stack.push(m_stack.top());
   }
 
+  void Transformer::pushTransform(const Nimble::Matrix3 & m)
+  {
+    m_stack.push(m);
+  }
+
   void Transformer::setTransform(const Nimble::Matrix3 & m)
   {
     m_stack.top() = m;
+  }
+
+  void Transformer::leftMul(const Nimble::Matrix3 &m)
+  {
+    Nimble::Matrix3 & top = m_stack.top();
+    top = top * m;
+  }
+
+  void Transformer::rightMul(const Nimble::Matrix3 &m)
+  {
+    m_stack.top() *= m;
   }
 
   void Transformer::resetTransform()

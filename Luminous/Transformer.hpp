@@ -53,11 +53,29 @@ namespace Luminous
     void pushTransformRightMul(const Nimble::Matrix3 & m);
     /// Push a new matrix to the stack, just copying the current top
     void pushTransform();
+    /// Push the given matrix to the stack
+    /// pushTransform(m) has the same effect as:
+    /// @code
+    ///  renderContext.pushTransform();
+    ///  renderContext.setTransform(m);
+    /// @endcode
+    void pushTransform(const Nimble::Matrix3 & m);
     /// Sets the current transformation
     void setTransform(const Nimble::Matrix3 & m);
 
+    /// Multiply the top matrix from the left with the given matrix
+    /// The end result is equivalent to:
+    ///  @codeline renderContext.setTransform(m * renderContext.transform());
+    void leftMul(const Nimble::Matrix3 & m);
+
+    /// Multiply the top matrix from the right with the given matrix
+    /// The end result is equivalent to:
+    ///  @codeline renderContext.setTransform(renderContext.transform() * m);
+    void rightMul(const Nimble::Matrix3 & m);
+
     /// Clears the stack so it only contains an identity matrix
     void resetTransform();
+
 
   protected:
     std::stack<Nimble::Matrix3> m_stack;
