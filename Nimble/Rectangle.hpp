@@ -38,8 +38,12 @@ namespace Nimble {
       /// @param r rectangle to test
       /// @return true if the rectangles intersect
       bool intersects(const Rectangle & r) const;
+      
+      /// Return the center point of the rectangle
+      Nimble::Vector2f center() const;
 
-      void debug() const;
+      /// Return the size of the rectangle
+      Nimble::Vector2 size() const;
 
     private:
       Nimble::Vector2f m_origin;

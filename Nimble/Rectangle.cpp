@@ -1,5 +1,4 @@
 #include "Rectangle.hpp"
-//#include <Radiant/Trace.hpp>
 
 namespace Nimble
 {
@@ -76,12 +75,13 @@ namespace Nimble
     return true;
   }
 
-  void Rectangle::debug() const
+  Nimble::Vector2f Rectangle::center() const
   {
-    Vector2f a = m_origin - m_extent0 * m_axis0 - m_extent1 * m_axis1;
-    Vector2f b = m_origin + m_extent0 * m_axis0 + m_extent1 * m_axis1;
-
-    //Radiant::info("RECTANGLE (%.2f,%.2f)-(%.2f,%.2f)", a.x, a.y, b.x, b.y);
+    return m_origin;
   }
 
+  Nimble::Vector2 Rectangle::size() const
+  {
+    return Nimble::Vector2(2 * m_extent0, 2 * m_extent1);
+  }
 }
