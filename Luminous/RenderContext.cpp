@@ -228,11 +228,11 @@ namespace Luminous
       GLuint * pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
 
       // rectangle
-      const Vector4 vr[4] = {
-        Vector4(0, 0, 0, 1),
-        Vector4(1, 0, 0, 1),
-        Vector4(1, 1, 0, 1),
-        Vector4(0, 1, 0, 1)
+      const Vector4d vr[4] = {
+        Vector4d(0, 0, 0, 1),
+        Vector4d(1, 0, 0, 1),
+        Vector4d(1, 1, 0, 1),
+        Vector4d(0, 1, 0, 1)
       };
 
       for(int i = 0; i < 4; i++) {
@@ -244,10 +244,10 @@ namespace Luminous
         *(pVB++) = vr[i].y;
       }
 
-      Nimble::Vector4f up(0,1,0,1);
-      Nimble::Vector4f right(1,0,0,1);
-      up *= (10.0f/m_data->m_screenSize.x);
-      right *= (10.0f/m_data->m_screenSize.x);
+      Nimble::Vector4d up(0,1,0,1);
+      Nimble::Vector4d right(1,0,0,1);
+      up *= (10.0/m_data->m_screenSize.y);
+      right *= (10.0/m_data->m_screenSize.x);
 
       *(pVB++) = vr[0].x - up.x - right.x;
       *(pVB++) = vr[0].y - up.y - right.y;
@@ -269,7 +269,7 @@ namespace Luminous
       *(pVB++) = vr[3].x;
       *(pVB++) = vr[3].y;
 
-
+      // use indices 0-15 for rectangle
       *(pIB++) = 0;
       *(pIB++) = 1;
       *(pIB++) = 3;
@@ -286,9 +286,13 @@ namespace Luminous
       *(pIB++) = 7;
       *(pIB++) = 6;
 
+
+
       // circle
-      int level = LOD_MAXIMUM;  // level of details
-      int segments = Math::Floor(Math::Pow(2.0f,level));
+      // vertex count in level n = 2^n + 2
+      int level = LOD_MAXIMUM;  // level of detail
+      int segments = 1 << LOD_MAXIMUM;
+
       float delta = Math::TWO_PI / segments;
       GLuint offset = 16; // 32 floats already in vbo
       //info("SEGMENTS:%d DELTA:%f", segments, delta);
@@ -306,12 +310,11 @@ namespace Luminous
 
       int step;
       for(int i = 2; i <= level; i++) {
-        step = Math::Floor(Math::Pow(2.0f,level-i));
+        // every 2^(level-i):th vertex
+        step = 1 << (level-i);
         *(pIB++) = offset; // for each level, push index for center first
-        //std::cout << offset <<" ";
         for(GLuint ind = offset + 1; ind <= segments + offset + 1; ind += step) {
           *(pIB++) = ind;
-          //std::cout << ind <<" ";
         }
       }
       m_vb.unmap();
@@ -452,8 +455,7 @@ namespace Luminous
 
     // Lets adjust the matrix stack to take into account the new
     // reality:
-    pushTransform();
-    setTransform(Nimble::Matrix3::scale2D(
+    pushTransform(Nimble::Matrix3::scale2D(
         minimumsize.x / basicsize.x,
         minimumsize.y / basicsize.y));
 
@@ -740,19 +742,21 @@ namespace Luminous
 
   void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius, const float * rgba)
   {
-    Matrix3f m = transform();
-    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
-               m[1][0], m[1][1], 0, m[1][2],
-                     0,       0, 1,       0,
-               m[2][0], m[2][1], 0, m[2][2]);
+    const Matrix3f& m = transform();
+    const float tx = center.x;
+    const float ty = center.y;
+
+    // translate(tx, ty) & scale(radius)
+    Matrix4f t(m[0][0]*radius, m[0][1]*radius, 0, m[0][2] + m[0][1]*ty+m[0][0]*tx,
+               m[1][0]*radius, m[1][1]*radius, 0, m[1][2] + m[1][1]*ty+m[1][0]*tx,
+               0         , 0         , 1, 0,
+               m[2][0]*radius, m[2][1]*radius, 0, m[2][2] + m[2][1]*ty+m[2][0]*tx);
 
     if(rgba)
       glColor4fv(rgba);
     glPushMatrix();
 
-    glTranslatef(center.x, center.y, 0.f);
     glMultTransposeMatrixf(t.data());
-    glScalef(radius, radius, 1.0f);
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -761,14 +765,20 @@ namespace Luminous
 
     // LOD
     int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/m_data->m_screenSize.x);
-    if (level < LOD_MINIMUM) level = LOD_MINIMUM;
-    int pow2 = Math::Floor(Math::Pow(2.0f,level));
-    int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
-    int count = pow2 + 2;
+    level = Nimble::Math::Clamp(level, (int)LOD_MINIMUMw, (int)LOD_MAXIMUM);
+
+    //int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
+    const int circle_begin_offset = 16;
+    // offset o(n) of level n:
+    //  o(LOD_MINIMUM) = circle_begin_offset
+    //  o(n+1) = o(n) + 2^n + 2
+    // => o(n) = 2^n + 2n - (2*LOD_MINIMUM+2^LOD_MINIMUM) + circle_begin_offset
+    const int offset = sizeof(GLuint) * ((1 << level) + 2*level
+                                         - ((1<<LOD_MINIMUM) + 2*LOD_MINIMUM) + circle_begin_offset);
+    int count = (1 << level) + 2;
 
     m_ib.bind();
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
-
 
     m_ib.unbind();
     m_vb.unbind();
@@ -825,18 +835,20 @@ namespace Luminous
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
   {
-    Matrix3f m = transform();
-    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
-               m[1][0], m[1][1], 0, m[1][2],
-                     0,       0, 1,       0,
-               m[2][0], m[2][1], 0, m[2][2]);
+    const Matrix3f& m = transform();
+    const float sx = size.x;
+    const float sy = size.y;
+
+    Matrix4f t(m[0][0]*sx, m[0][1]*sy, 0, m[0][2],
+               m[1][0]*sx, m[1][1]*sy, 0, m[1][2],
+               0         , 0         , 1, 0,
+               m[2][0]*sx, m[2][1]*sy, 0, m[2][2]);
 
     if(rgba)
       glColor4fv(rgba);
-    glPushMatrix();
 
+    glPushMatrix();
     glMultTransposeMatrixf(t.data());
-    glScalef(size.x, size.y, 1.0f);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -844,13 +856,7 @@ namespace Luminous
     m_vb.bind();
     glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
     glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-
-    m_ib.bind();
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-    glColor4f(rgba[0], rgba[1], rgba[2], 0);
-    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
-
-    m_ib.unbind();
     m_vb.unbind();
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -861,6 +867,47 @@ namespace Luminous
 
   void RenderContext::drawTexRectAAVBO(Nimble::Vector2 size, const float * rgba)
   {
+    const Matrix3f& m = transform();
+    const float sx = size.x;
+    const float sy = size.y;
+
+    Matrix4f t(m[0][0]*sx, m[0][1]*sy, 0, m[0][2],
+               m[1][0]*sx, m[1][1]*sy, 0, m[1][2],
+               0         , 0         , 1, 0,
+               m[2][0]*sx, m[2][1]*sy, 0, m[2][2]);
+
+    if(rgba)
+      glColor4fv(rgba);
+
+    glPushMatrix();
+
+    glMultTransposeMatrixf(t.data());
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    m_vb.bind();
+    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
+
+    m_ib.bind();
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    if (rgba) {
+      glColor4f(rgba[0], rgba[1], rgba[2], 0.0f);
+    }
+
+    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+    glColor4f(rgba[0], rgba[1], rgba[2], 0.0f);
+
+    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
+
+    m_ib.unbind();
+    m_vb.unbind();
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glPopMatrix();
   }
   void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
                                      const Nimble::Rect & texUV)
