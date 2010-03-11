@@ -765,7 +765,7 @@ namespace Luminous
 
     // LOD
     int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/m_data->m_screenSize.x);
-    level = Nimble::Math::Clamp(level, (int)LOD_MINIMUMw, (int)LOD_MAXIMUM);
+    level = Nimble::Math::Clamp(level, (int)LOD_MINIMUM, (int)LOD_MAXIMUM);
 
     //int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
     const int circle_begin_offset = 16;
