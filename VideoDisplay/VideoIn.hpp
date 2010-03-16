@@ -153,6 +153,8 @@ namespace VideoDisplay {
 
     Radiant::Mutex & mutex() { return m_mutex; }
 
+    // todo: static void setDefaultLatency(float seconds) { m_defaultLatency = seconds; }
+
   protected:
 
     VIDEODISPLAY_API virtual void childLoop () ;

@@ -163,7 +163,7 @@ void VideoWindow::keyPressEvent(QKeyEvent * e)
     toggleFullScreen();
   else if(e->key() == Qt::Key_S)
     m_showSteps = !m_showSteps;
-  else if(e->key() == Qt::Key_Escape) {
+  else if(e->key() == Qt::Key_Escape || e->key() == Qt::Key_Q) {
     makeCurrent();
     m_glResources.clear();
     m_movies.clear();

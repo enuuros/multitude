@@ -70,7 +70,9 @@ namespace Valuable
 
       virtual bool set(const VectorType & v);
 
+      /** Returns the internal vector object as a constant reference. */
       const VectorType & asVector() const { return m_value; }
+      /** Returns the internal vector object as a constant reference. */
       const VectorType & operator * () const { return m_value; }
 
       std::string asString(bool * const ok = 0) const;
@@ -80,6 +82,12 @@ namespace Valuable
 
       inline const ElementType & x() const { return m_value[0]; }
       inline const ElementType & y() const { return m_value[1]; }
+
+      inline void normalize(ElementType len = 1.0)
+      {
+        m_value.normalize(len);
+        emitChange();
+      }
     private:
       VectorType m_value;
   };

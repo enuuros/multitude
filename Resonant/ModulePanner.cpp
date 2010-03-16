@@ -7,10 +7,10 @@
  * See file "Resonant.hpp" for authors and more details.
  *
  * This file is licensed under GNU Lesser General Public
- * License (LGPL), version 2.1. The LGPL conditions can be found in 
- * file "LGPL.txt" that is distributed with this source package or obtained 
+ * License (LGPL), version 2.1. The LGPL conditions can be found in
+ * file "LGPL.txt" that is distributed with this source package or obtained
  * from the GNU organization (www.gnu.org).
- * 
+ *
  */
 
 #include "ModulePanner.hpp"
@@ -31,12 +31,12 @@ namespace Resonant {
   using namespace Radiant;
 
   ModulePanner::ModulePanner(Application * a)
-    : Module(a),
+      : Module(a),
       m_outChannels(8),
       m_maxRadius(this, "max-radius", 1500)
   {
     setName("pan2d");
-    
+
   }
 
   ModulePanner::~ModulePanner()
@@ -61,10 +61,10 @@ namespace Resonant {
         return true;
       }
     }
-    
+
     return false;
   }
-    
+
   bool ModulePanner::prepare(int & channelsIn, int & channelsOut)
   {
     (void) channelsIn;
@@ -73,12 +73,12 @@ namespace Resonant {
 
     return true;
   }
-  
+
   void ModulePanner::processMessage(const char * id,
                                     Radiant::BinaryData * data)
   {
     debug("ModulePanner::control # %s", id);
-    
+
     bool ok = true;
 
     if(strcmp(id, "channels") == 0) {
@@ -105,7 +105,7 @@ namespace Resonant {
       Nimble::Vector2 loc = data->readVector2Float32( & ok);
 
       if(ok) {
-	setSourceLocation(id, loc);
+        setSourceLocation(id, loc);
       }
       else {
         error("ModulePanner::control # %s # Could not read source location",
@@ -132,30 +132,30 @@ namespace Resonant {
 
       for(int j = 0; j < PIPES_PER_SOURCE; j++) {
 
-	Pipe & p = s.m_pipes[j];
+        Pipe & p = s.m_pipes[j];
 
         if(p.done())
           continue;
 
-	const float * src = in[i];
+        const float * src = in[i];
 
-      	float * dest = out[p.m_to];
-	float * sentinel = dest + n;
+        float * dest = out[p.m_to];
+        float * sentinel = dest + n;
 
-	if(p.m_ramp.left()) {
+        if(p.m_ramp.left()) {
 
-	  for( ; dest < sentinel; dest++, src++) {
-	    *dest += (*src * p.m_ramp.value());
-	    p.m_ramp.update();
-	  }
-	}
-	else {
-	  float v = p.m_ramp.value();
-	  for( ; dest < sentinel; dest++, src++) {
-	    *dest += (*src * v);
-	  }
-	}
-        
+          for( ; dest < sentinel; dest++, src++) {
+            *dest += (*src * p.m_ramp.value());
+            p.m_ramp.update();
+          }
+        }
+        else {
+          float v = p.m_ramp.value();
+          for( ; dest < sentinel; dest++, src++) {
+            *dest += (*src * v);
+          }
+        }
+
         /* debug("ModulePanner::process # source %d, pipe %d, gain = %f "
               "in = %p %f out = %f",
               i, j, p.m_ramp.value(), in[i], *in[i], out[p.m_to][0]);
@@ -169,12 +169,12 @@ namespace Resonant {
     m_speakers.clear();
 
     LoudSpeaker * ls = new LoudSpeaker;
-   
+
     ls->m_location = Vector2(0, 540);
     m_speakers.push_back(ls);
 
     ls = new LoudSpeaker;
-    
+
     ls->m_location = Vector2(1920, 540);
     m_speakers.push_back(ls);
 
@@ -189,7 +189,7 @@ namespace Resonant {
       m_speakers.resize(i + 1);
 
     LoudSpeaker * ls = new LoudSpeaker;
-   
+
     ls->m_location = location;
     m_speakers[i] = ls;
   }
@@ -203,7 +203,7 @@ namespace Resonant {
                                        Nimble::Vector2 location)
   {
     debug("ModulePanner::setSourceLocation # %s [%f %f]", id.c_str(),
-         location.x, location.y);
+          location.x, location.y);
 
     Source * s = 0;
 
@@ -223,20 +223,6 @@ namespace Resonant {
     s->m_location = location;
 
     int interpSamples = 2000;
-    
-
-    // bool inUse[PIPES_PER_SOURCE];
-    // bzero(inUse, sizeof(inUse));
-
-    // Make all pipes go towards zero:
-    /*
-    for(unsigned i = 0; i < PIPES_PER_SOURCE; i++) {
-      Pipe & p = s->m_pipes[i];
-      debug("PIPE %d done = %d (%u %f %f)",
-           i, (int) p.done(), p.m_ramp.left(), p.m_ramp.value(),
-           p.m_ramp.target());
-    }
-    */
 
     for(unsigned i = 0; i < m_speakers.size(); i++) {
       LoudSpeaker * ls = m_speakers[i].ptr();
@@ -252,69 +238,69 @@ namespace Resonant {
 
       if(gain <= 0.0000001f) {
 
-	// Silence that output:
-	for(unsigned j = 0; j < PIPES_PER_SOURCE; j++) {
-	  Pipe & p = s->m_pipes[j];
-	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
-	    p.m_ramp.setTarget(0.0f, interpSamples);
+        // Silence that output:
+        for(unsigned j = 0; j < PIPES_PER_SOURCE; j++) {
+          Pipe & p = s->m_pipes[j];
+          if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
+            p.m_ramp.setTarget(0.0f, interpSamples);
             debug("ModulePanner::setSourceLocation # Silencing %u", i);
-            
-	  }
-	}
+
+          }
+        }
       }
       else {
-	bool found = false;
+        bool found = false;
 
-	// Find existing pipe:
-	for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
-	  Pipe & p = s->m_pipes[j];
+        // Find existing pipe:
+        for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
+          Pipe & p = s->m_pipes[j];
 
           debug("Checking %u: %u %f -> %f", j, p.m_to,
-               p.m_ramp.value(), p.m_ramp.target());
+                p.m_ramp.value(), p.m_ramp.target());
 
-	  if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
+          if(p.m_to == i && p.m_ramp.target() > 0.0001f) {
             debug("ModulePanner::setSourceLocation # Adjusting %u", j);
-	    p.m_ramp.setTarget(gain, interpSamples);
-	    found = true;
-	  }
-	}
+            p.m_ramp.setTarget(gain, interpSamples);
+            found = true;
+          }
+        }
 
-	if(!found) {
-	  
-	  // Pick up a new pipe:
-	  for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
-	    Pipe & p = s->m_pipes[j];
-	    if(p.done()) {
+        if(!found) {
+
+          // Pick up a new pipe:
+          for(unsigned j = 0; j < PIPES_PER_SOURCE && !found; j++) {
+            Pipe & p = s->m_pipes[j];
+            if(p.done()) {
               debug("ModulePanner::setSourceLocation # "
-                   "Starting %u towards %u", j, i);
-	      p.m_to = i;
-	      p.m_ramp.setTarget(gain, interpSamples);
-	      found = true;
-	    }
-	  }
-	}
+                    "Starting %u towards %u", j, i);
+              p.m_to = i;
+              p.m_ramp.setTarget(gain, interpSamples);
+              found = true;
+            }
+          }
+        }
 
-	if(!found) {
-	  error("Could not allocate pipe for a moving source");
-	}
+        if(!found) {
+          error("Could not allocate pipe for a moving source");
+        }
       }
     }
   }
 
   void ModulePanner::removeSource(const std::string & id)
   {
-    
+
     for(Sources::iterator it = m_sources.begin();
-        it != m_sources.end(); it++) {
+    it != m_sources.end(); it++) {
       Source & s = * (*it);
       if(s.m_id == id) {
         m_sources.erase(it);
         debug("ModulePanner::removeSource # Removed source %s, now %u",
-             id.c_str(), m_sources.size());
+              id.c_str(), m_sources.size());
         return;
       }
     }
-    
+
     error("ModulePanner::removeSource # No such source: \"%s\"", id.c_str());
   }
 

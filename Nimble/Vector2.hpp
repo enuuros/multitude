@@ -122,7 +122,7 @@ namespace Nimble {
     return t1.x * t2.x + t1.y * t2.y;
   }
 
-  /* Note that these overload are NOT redundant, integer math is
+  /* Note that these overloads are NOT redundant, integer math is
      different from floating point math. */
   inline Vector2T<short> operator / (const Vector2T<short>& v, const short s)
   {
