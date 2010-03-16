@@ -1,6 +1,7 @@
 #include "Shader.hpp"
 #include "Utils.hpp"
 
+#include <Radiant/FileUtils.hpp>
 
 #include <Valuable/ValueInt.hpp>
 #include <Valuable/ValueFloat.hpp>
@@ -144,6 +145,19 @@ namespace Luminous {
   {
     m_self->m_fragmentShader = shadercode;
     m_self->m_dirty = true;
+  }
+
+  bool Shader::loadFragmentShader(const char * filename)
+  {
+    char * str = Radiant::FileUtils::loadTextFile(filename);
+
+    if(!str)
+      return false;
+
+    setFragmentShader(str);
+    delete [] str;
+
+    return true;
   }
 
   void Shader::setVertexShader(const char * shadercode)

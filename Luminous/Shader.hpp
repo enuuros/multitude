@@ -50,6 +50,13 @@ namespace Luminous {
         It is safe to call this method without a valid OpenGL context.
     */
     LUMINOUS_API void setFragmentShader(const char * shadercode);
+    /** Loads a fragment shader from a file.
+
+        @return Returns true if the file was read successfully. Note that
+        this does not necessarily mean that the shader works, as the shader is not
+        compiled in this stage.
+    */
+    LUMINOUS_API bool loadFragmentShader(const char * filename);
     /** Sets the source code for the vertex shader. */
     LUMINOUS_API void setVertexShader(const char * shadercode);
     /** Returns a compiled OpenGL shader program. */
