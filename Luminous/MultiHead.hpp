@@ -157,6 +157,7 @@ namespace Luminous {
       void swapGraphicsWidthHeight()
       {
         m_graphicsSize = m_graphicsSize.asVector().shuffle();
+        updateBBox();
       }
 
     private:
