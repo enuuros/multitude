@@ -65,6 +65,11 @@ macx {
     LIB_PATTERNS = -framework,Patterns
   }
 
+  # change architecture to x86_64 if snow leopard
+  system([ `uname -r | cut -d . -f1` -gt 9 ] )  {
+  CONFIG += x86_64
+  }
+
 }
 
 win32 {
