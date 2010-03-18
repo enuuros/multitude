@@ -775,7 +775,7 @@ namespace Luminous
     // => o(n) = 2^n + 2n - (2*LOD_MINIMUM+2^LOD_MINIMUM) + circle_begin_offset
     const int offset = sizeof(GLuint) * ((1 << level) + 2*level
                                          - ((1<<LOD_MINIMUM) + 2*LOD_MINIMUM) + circle_begin_offset);
-    int count = (1 << level) + 2;
+    int count = (1 << level);
 
     m_ib.bind();
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
