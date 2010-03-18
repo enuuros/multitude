@@ -15,6 +15,7 @@
 
 #include "CmdParser.hpp"
 
+#include "Valuable/DOMDocument.hpp"
 #include "Valuable/DOMElement.hpp"
 #include "Valuable/HasValues.hpp"
 #include "Valuable/ValueBool.hpp"
@@ -25,7 +26,9 @@ namespace Valuable
                                                     Valuable::HasValues & opts)
   {
     Radiant::StringUtils::StringList list;
-    Valuable::DOMElement e;
+
+    Radiant::RefPtr<Valuable::DOMDocument> tmpDoc(Valuable::DOMDocument::createDocument());
+    Valuable::DOMElement e = tmpDoc->createElement("useless");
 
     for(int i = 1; i < argc; i++) {
       std::string arg = argv[i];
