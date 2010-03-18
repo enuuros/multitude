@@ -75,6 +75,7 @@ SOURCES += ResourceLocator.cpp
 SOURCES += Size2D.cpp
 SOURCES += Sleep.cpp
 # SOURCES += SleepQT.cpp
+SOURCES += SemaphoreQt.cpp
 
 !win32:SOURCES += SHMDuplexPipe.cpp
 !win32:SOURCES += SHMPipe.cpp
