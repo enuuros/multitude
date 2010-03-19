@@ -171,7 +171,7 @@ namespace Luminous {
         METHOD_MATRIX_TRICK
       };
 
-      void updateBBox();
+      LUMINOUS_API void updateBBox();
 
       Window * m_window;
       GLKeyStone m_keyStone;
