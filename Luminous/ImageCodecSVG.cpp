@@ -2,6 +2,8 @@
 
 #include <Luminous/Image.hpp>
 
+#include <stdint.h>
+
 #include <QSvgRenderer>
 #include <QImageReader>
 #include <QXmlStreamReader>
