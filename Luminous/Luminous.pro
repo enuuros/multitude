@@ -70,7 +70,6 @@ SOURCES += Transformer.cpp
 SOURCES += Utils.cpp
 SOURCES += VertexBuffer.cpp
 LIBS += $$LIB_RADIANT \
-    -lGLEW \
     $$LIB_OPENGL \
     $$LIB_VALUABLE \
     $$LIB_GLU \
