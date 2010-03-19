@@ -16,8 +16,9 @@
 #ifndef POETIC_GPU_TEXTURE_GLYPH_HPP
 #define POETIC_GPU_TEXTURE_GLYPH_HPP
 
-#include <GL/glew.h>
-#include "Glyph.hpp"
+#include <Poetic/Glyph.hpp>
+
+#include <Luminous/Luminous.hpp>
 
 namespace Poetic
 {

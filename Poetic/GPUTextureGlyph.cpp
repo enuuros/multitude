@@ -19,8 +19,6 @@
 
 #include <Nimble/Vector4.hpp>
 
-#include <GL/glew.h>
-
 #include <ft2build.h>
 #include FT_GLYPH_H
 

@@ -15,8 +15,7 @@
 #ifndef POETIC_CPU_BITMAP_GLYPH_HPP
 #define POETIC_CPU_BITMAP_GLYPH_HPP
 
-#include <GL/glew.h>
-#include "Glyph.hpp"
+#include <Poetic/Glyph.hpp>
 
 namespace Poetic
 {

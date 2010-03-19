@@ -20,8 +20,6 @@
 
 #include <Poetic/Export.hpp>
 
-#include <GL/glew.h>
-
 namespace Poetic
 {
 

@@ -38,8 +38,6 @@
 #include <VideoDisplay/SubTitles.hpp>
 #include <VideoDisplay/VideoIn.hpp>
 
-#include <GL/glew.h>
-
 namespace Resonant {
   class DSPNetwork;
 }

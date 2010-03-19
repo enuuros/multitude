@@ -15,10 +15,10 @@
 #ifndef POETIC_GPU_TEXTURE_FONT_HPP
 #define POETIC_GPU_TEXTURE_FONT_HPP
 
-#include <GL/glew.h>
-
 #include <Poetic/Export.hpp>
 #include <Poetic/GPUFontBase.hpp>
+
+#include <Luminous/Luminous.hpp>
 
 #include <vector>
 
