@@ -74,7 +74,8 @@ LIBS += $$LIB_RADIANT \
     $$LIB_VALUABLE \
     $$LIB_GLU \
     $$LIB_NIMBLE \
-    $$LIB_PATTERNS
+    $$LIB_PATTERNS \
+    $$LIB_GLEW
 unix { 
     LIBS += -ljpeg \
         -lpng
