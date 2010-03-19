@@ -120,6 +120,11 @@ namespace Luminous
 
    BGThread * BGThread::instance()
    {
+       if(!m_instance) {
+           m_instance = new BGThread();
+	   m_instance->run();
+	}
+
      return m_instance;
    }
 
