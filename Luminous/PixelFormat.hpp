@@ -16,9 +16,8 @@
 #ifndef LUMINOUS_PIXELFORMAT_HPP
 #define LUMINOUS_PIXELFORMAT_HPP
 
-#include <GL/glew.h>
-
 #include <Luminous/Export.hpp>
+#include <Luminous/Luminous.hpp>
 
 #include <string>
 

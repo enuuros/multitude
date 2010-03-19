@@ -17,8 +17,7 @@
 #define LUMINOUS_VERTEX_BUFFER_HPP
 
 #include <Luminous/Export.hpp>
-
-#include <GL/glew.h>
+#include <Luminous/Luminous.hpp>
 
 #define BUFFER_OFFSET(bytes) ((GLubyte *)0 + (bytes))
 

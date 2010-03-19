@@ -23,8 +23,6 @@
 
 #include <Valuable/DOMElement.hpp>
 
-#include <GL/glew.h>
-
 namespace Luminous {
 
   using namespace Radiant;

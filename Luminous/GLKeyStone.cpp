@@ -18,8 +18,6 @@
 
 #include <Valuable/DOMElement.hpp>
 
-#include <GL/glew.h>
-
 namespace Luminous {
 
   using Nimble::Matrix4;
@@ -176,13 +174,15 @@ namespace Luminous {
     */
     glTranslatef(-1.0, -1.0, 0.0);
     glScalef(2.0, 2.0, 2.0);
-    if(GLEW_ARB_transpose_matrix)
+    //if(GLEW_ARB_transpose_matrix)
       glMultTransposeMatrixf(m_matrix.data());
-    else {
+    /*
+      else {
       Matrix4 tmp(m_matrix);
       tmp.transpose();
       glMultMatrixf(tmp.data());
     }
+    */
     glScalef(0.5, 0.5, 0.5);
     glTranslatef(1.0, 1.0, 0.0);
   }

@@ -16,7 +16,8 @@
 #ifndef ERROR_HPP
 #define ERROR_HPP
 
-#include <GL/glew.h>
+#include <Luminous/Luminous.hpp>
+
 #include <iostream>
 
 namespace Luminous

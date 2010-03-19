@@ -17,7 +17,7 @@
 #ifndef LUMINOUS_MATRIX_STEP_HPP
 #define LUMINOUS_MATRIX_STEP_HPP
 
-#include <GL/glew.h>
+#include <Luminous/Luminous.hpp>
 
 namespace Luminous {
 

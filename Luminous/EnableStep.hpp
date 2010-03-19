@@ -19,7 +19,7 @@
 
 #include <Patterns/NotCopyable.hpp>
 
-#include <GL/glew.h>
+#include <Luminous/Luminous.hpp>
 
 namespace Luminous {
 

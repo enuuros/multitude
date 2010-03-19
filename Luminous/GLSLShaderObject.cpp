@@ -13,13 +13,13 @@
  *
  */
 
+
 #include <Luminous/GLSLShaderObject.hpp>
+#include <Luminous/Luminous.hpp>
 
 #include <Radiant/Trace.hpp>
 
 #include <string.h>
-
-
 
 namespace Luminous
 {

@@ -16,9 +16,7 @@
 #ifndef LUMINOUS_TEXTURE_HPP
 #define LUMINOUS_TEXTURE_HPP
 
-#include <GL/glew.h>
-
-// #include <Luminous/Image.hpp>
+#include <Luminous/Luminous.hpp>
 #include <Luminous/GLResource.hpp>
 #include <Luminous/PixelFormat.hpp>
 

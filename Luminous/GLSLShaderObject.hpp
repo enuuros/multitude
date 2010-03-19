@@ -16,9 +16,9 @@
 #ifndef LUMINOUS_GLSLSHADEROBJECT_HPP
 #define LUMINOUS_GLSLSHADEROBJECT_HPP
 
-#include <GL/glew.h>
-
+#include <Luminous/Luminous.hpp>
 #include <Luminous/GLResource.hpp>
+
 #include <Patterns/NotCopyable.hpp>
 
 namespace Luminous 
