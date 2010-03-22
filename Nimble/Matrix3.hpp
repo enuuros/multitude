@@ -75,11 +75,11 @@ namespace Nimble {
     inline void               rotateY(T a);
     /// Create a rotation matrix, around Z axis
     inline void               rotateZ(T a);
-    /// Assuming that this a rotation matrix, calvulate rotation axis and angle
+    /// Assuming that this a rotation matrix, calculate rotation axis and angle
     inline void               getRotateAroundAxis(Vector3T<T>& axis, T & radians);
     /// Create a rotation axis, based on rotation axis and angle
     inline void               rotateAroundAxis(const Vector3T<T>& axis, T radians);
-    /// Assuming that this a rotation matrix, calvulate rotation around XYZ axis
+    /// Assuming that this a rotation matrix, calculate rotation around XYZ axis
     inline bool               getRotationXYZ (T & xa, T & ya, T & za);
     inline Matrix3T<T>&       operator*=(const Matrix3T<T>& that);
     inline bool               operator==(const Matrix3T<T>& that) const;
