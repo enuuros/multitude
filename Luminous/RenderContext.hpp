@@ -115,7 +115,7 @@ namespace Luminous
 
     /** Draw a line rectangle, with given thickness and color. */
     void drawLineRect(const Nimble::Rectf & rect, float thickness, const float * rgba);
-    /** Draws a solid rectangle, with given thickness and color. */
+    /** Draws a solid rectangle, with given color. */
     void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
     /** Draws a solid circle. */
