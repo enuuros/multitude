@@ -118,7 +118,16 @@ namespace Luminous
     /** Draws a solid rectangle, with given color. */
     void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
-    /** Draws a solid circle. */
+    /** Draws a solid, antialiased circle
+        @arg center Center of the circle
+
+        @arg radius Radius of the circle
+
+        @arg rgba The color of the circle in RGBA format
+
+        @arg segments Number of segments used in the circle. Deprecated, spesifying segments will actually slow rendering.
+
+    */
     void drawCircle(Nimble::Vector2f center, float radius,
                     const float * rgba, int segments = -1);
 
@@ -172,6 +181,8 @@ namespace Luminous
     static const char ** blendFuncNames();
 
   private:
+    void drawCircleWithSegments(Nimble::Vector2f center, float radius, const float *rgba, int segments);
+    void drawCircleImpl(Nimble::Vector2f center, float radius, const float *rgba);
 
     void clearTemporaryFBO(FBOPackage * fbo);
 

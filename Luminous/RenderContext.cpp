@@ -18,6 +18,7 @@
 #include "FramebufferObject.hpp"
 
 #include "Utils.hpp"
+#include "GLSLProgramObject.hpp"
 
 #include <strings.h>
 
@@ -489,6 +490,83 @@ namespace Luminous
 
 
   void RenderContext::drawCircle(Nimble::Vector2f center, float radius,
+                                 const float * rgba, int segments) {
+    if (segments < 0) {
+      drawCircleImpl(center, radius, rgba);
+    } else {
+      drawCircleWithSegments(center, radius, rgba, segments);
+    }
+  }
+
+  void RenderContext::drawCircleImpl(Nimble::Vector2f center, float radius,
+                                 const float * rgba) {
+    const Matrix3f& m = transform();
+    const float tx = center.x;
+    const float ty = center.y;
+
+    // translate(tx, ty) & scale(radius)
+    Matrix4f t(m[0][0]*radius, m[0][1]*radius, 0, m[0][2] + m[0][1]*ty+m[0][0]*tx,
+               m[1][0]*radius, m[1][1]*radius, 0, m[1][2] + m[1][1]*ty+m[1][0]*tx,
+               0         , 0         , 1, 0,
+               m[2][0]*radius, m[2][1]*radius, 0, m[2][2]  + m[2][1]*ty+m[2][0]*tx);
+
+    if(rgba)
+      glColor4fv(rgba);
+
+    static bool shader_inited = false;
+    static Luminous::GLSLProgramObject * program;
+
+    static const GLfloat vertices[] = {
+      -1.0, -1.0,
+      1.0, -1.0,
+      1.0, 1.0,
+      -1.0, 1.0
+    };
+
+    if (!shader_inited) {
+      static const char * vert_shader = ""\
+          "uniform mat4 matrix;"\
+          "varying vec2 pos;"\
+          "void main(void) {"\
+          "  pos = gl_Vertex; "\
+          "  mat4 transform = gl_ProjectionMatrix * matrix;"\
+          "  gl_Position = transform * gl_Vertex;"\
+          "  gl_FrontColor = gl_Color;"\
+          "}";
+      static const char * frag_shader = ""\
+          "varying vec2 pos;"\
+          "uniform float border_start;"\
+          "void main(void) {"\
+          "  float r = length(pos);"\
+          "  gl_FragColor = gl_Color;"\
+          "  gl_FragColor.w *= smoothstep(1.00, border_start, r);"\
+          "}";
+
+      shader_inited = true;
+      program = new GLSLProgramObject();
+      program->loadStrings(vert_shader, frag_shader);
+    }
+
+
+
+    program->bind();
+
+    // uniform scaling assumed, should work fine with "reasonable" non-uniform scaling
+    float totalRadius = m.extractScale() * radius;
+    float border = Nimble::Math::Min(1.0f, totalRadius-2.0f);
+    program->setUniformFloat("border_start", (totalRadius-border)/totalRadius);
+    GLint matrixLoc = program->getUniformLoc("matrix");
+    glUniformMatrix4fv(matrixLoc, 1, GL_TRUE, t.data());
+
+    // using a VBO with 4 vertices is actually slower than this
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    program->unbind();
+  }
+
+  void RenderContext::drawCircleWithSegments(Nimble::Vector2f center, float radius,
                                  const float * rgba, int segments)
   {
     if(segments < 0) {
