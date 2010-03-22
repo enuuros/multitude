@@ -716,7 +716,7 @@ namespace Radiant
 
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
-  std::vector<VideoCamera::CameraInfo> g_cameras;
+  static std::vector<VideoCamera::CameraInfo> g_cameras;
 
   CameraDriverPTGrey::CameraDriverPTGrey()
   {
@@ -725,13 +725,15 @@ namespace Radiant
 	__cmutex.unlock();
   }
 
-  size_t CameraDriverPTGrey::queryCameras(std::vector<VideoCamera::CameraInfo> & cameras)
+  size_t CameraDriverPTGrey::queryCameras(std::vector<VideoCamera::CameraInfo> & suppliedCameras)
   {
     static bool wasRun = false;
     if(wasRun) {
-      cameras = g_cameras;
-      return true;
+      suppliedCameras.insert(suppliedCameras.begin(), g_cameras.begin(), g_cameras.end());
+	  return g_cameras.size();
     }
+
+	std::vector<VideoCamera::CameraInfo> myCameras;
 
     // Clear guid map
     g_guidMap.clear();
@@ -791,10 +793,14 @@ namespace Radiant
       myInfo.m_euid64 = uuid;
       myInfo.m_driver = driverName();
 
-      cameras.push_back(myInfo);
+      myCameras.push_back(myInfo);
     }
-
-    g_cameras = cameras;
+	
+	// Cache the results for later
+	/// @todo caching the results is not so good idea, because you can't hotplug cameras now	
+	g_cameras = myCameras;
+	// Append to the camera vector
+	suppliedCameras.insert(suppliedCameras.end(), myCameras.begin(), myCameras.end());
 
     wasRun = true;
 

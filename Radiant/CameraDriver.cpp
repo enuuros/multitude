@@ -95,7 +95,10 @@ namespace Radiant
 			(*it).c_str(), cd);
       if(cd) {
         // Make sure there is at least one camera available using this driver
-        if(cd->queryCameras(cameras) > 0) return cd;
+		  size_t cameraCount = cd->queryCameras(cameras);
+        
+		if(cameraCount > 0) 
+			return cd;
       }
     }
 
