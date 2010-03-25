@@ -222,106 +222,45 @@ namespace Luminous
 
     static bool once = true;
     if(once) {
-      m_vb.allocate(VBO_VERBUF_SIZE, VertexBuffer::STATIC_DRAW);
-      m_ib.allocate(VBO_INDBUF_SIZE, IndexBuffer::STATIC_DRAW);
-
-      float * pVB = static_cast<float *> (m_vb.map(VertexBuffer::WRITE_ONLY));
-      GLuint * pIB = static_cast<GLuint *> (m_ib.map(IndexBuffer::WRITE_ONLY));
-
-      // rectangle
-      const Vector4d vr[4] = {
-        Vector4d(0, 0, 0, 1),
-        Vector4d(1, 0, 0, 1),
-        Vector4d(1, 1, 0, 1),
-        Vector4d(0, 1, 0, 1)
-      };
-
-      for(int i = 0; i < 4; i++) {
-        // position
-        *(pVB++) = vr[i].x;
-        *(pVB++) = vr[i].y;
-        // texCoord
-        *(pVB++) = vr[i].x;
-        *(pVB++) = vr[i].y;
-      }
-
-      Nimble::Vector4d up(0,1,0,1);
-      Nimble::Vector4d right(1,0,0,1);
-      up *= (10.0/m_data->m_screenSize.y);
-      right *= (10.0/m_data->m_screenSize.x);
-
-      *(pVB++) = vr[0].x - up.x - right.x;
-      *(pVB++) = vr[0].y - up.y - right.y;
-      *(pVB++) = vr[0].x;
-      *(pVB++) = vr[0].y;
-
-      *(pVB++) = vr[1].x - up.x + right.x;
-      *(pVB++) = vr[1].y - up.y + right.y;
-      *(pVB++) = vr[1].x;
-      *(pVB++) = vr[1].y;
-
-      *(pVB++) = vr[2].x + up.x + right.x;
-      *(pVB++) = vr[2].y + up.y + right.y;
-      *(pVB++) = vr[2].x;
-      *(pVB++) = vr[2].y;
-
-      *(pVB++) = vr[3].x + up.x - right.x;
-      *(pVB++) = vr[3].y + up.y - right.y;
-      *(pVB++) = vr[3].x;
-      *(pVB++) = vr[3].y;
-
-      // use indices 0-15 for rectangle
-      *(pIB++) = 0;
-      *(pIB++) = 1;
-      *(pIB++) = 3;
-      *(pIB++) = 2;
-
-      *(pIB++) = 3;
-      *(pIB++) = 2;
-      *(pIB++) = 6;
-      *(pIB++) = 1;
-      *(pIB++) = 5;
-      *(pIB++) = 0;
-      *(pIB++) = 4;
-      *(pIB++) = 3;
-      *(pIB++) = 7;
-      *(pIB++) = 6;
-
-
-
-      // circle
-      // vertex count in level n = 2^n + 2
-      int level = LOD_MAXIMUM;  // level of detail
-      int segments = 1 << LOD_MAXIMUM;
-
-      float delta = Math::TWO_PI / segments;
-      GLuint offset = 16; // 32 floats already in vbo
-      //info("SEGMENTS:%d DELTA:%f", segments, delta);
-
-      *(pVB++) = 0.0f;
-      *(pVB++) = 0.0f;
-
-      for(int i = 0; i <= segments; i++) {
-        float a = i * delta;
-        float sa = sinf(a);
-        float ca = -cosf(a);
-        *(pVB++) = sa;
-        *(pVB++) = ca;
-      }
-
-      int step;
-      for(int i = 2; i <= level; i++) {
-        // every 2^(level-i):th vertex
-        step = 1 << (level-i);
-        *(pIB++) = offset; // for each level, push index for center first
-        for(GLuint ind = offset + 1; ind <= segments + offset + 1; ind += step) {
-          *(pIB++) = ind;
-        }
-      }
-      m_vb.unmap();
-      m_ib.unmap();
-
       once = false;
+      const char * circ_vert_shader = ""\
+          "uniform mat4 matrix;"\
+          "varying vec2 pos;"\
+          "void main(void) {"\
+          "  pos = gl_Vertex; "\
+          "  mat4 transform = gl_ProjectionMatrix * matrix;"\
+          "  gl_Position = transform * gl_Vertex;"\
+          "  gl_FrontColor = gl_Color;"\
+          "}";
+      const char * circ_frag_shader = ""\
+          "varying vec2 pos;"\
+          "uniform float border_start;"\
+          "void main(void) {"\
+          "  float r = length(pos);"\
+          "  gl_FragColor = gl_Color;"\
+          "  gl_FragColor.w *= smoothstep(1.00, border_start, r);"\
+          "}";
+
+      m_circle_shader = new GLSLProgramObject();
+      m_circle_shader->loadStrings(circ_vert_shader, circ_frag_shader);
+
+      m_polyline_shader = new GLSLProgramObject();
+      const char * polyline_frag = ""\
+                          "varying float p;"\
+                          "uniform float border_start;"\
+                          "void main() {"\
+                          "gl_FragColor = gl_Color;"\
+                          "gl_FragColor.w *= smoothstep(1.0, border_start, abs(p));"\
+                          "}";
+      const char * polyline_vert = "attribute float coord;"\
+                          "uniform float border_start;"\
+                          "varying float p;"\
+                          "void main() {"\
+                          "p = coord;"\
+                          "gl_Position = gl_ProjectionMatrix * gl_Vertex;"\
+                          "gl_FrontColor = gl_Color;"\
+                          "}";
+      m_polyline_shader->loadStrings(polyline_vert, polyline_frag);
     }
   }
 
@@ -503,6 +442,13 @@ namespace Luminous
     const Matrix3f& m = transform();
     const float tx = center.x;
     const float ty = center.y;
+		
+    static const GLfloat rect_vertices[] = {
+      -1.0, -1.0,
+      1.0, -1.0,
+      1.0, 1.0,
+      -1.0, 1.0
+    };
 
     // translate(tx, ty) & scale(radius)
     Matrix4f t(m[0][0]*radius, m[0][1]*radius, 0, m[0][2] + m[0][1]*ty+m[0][0]*tx,
@@ -513,57 +459,21 @@ namespace Luminous
     if(rgba)
       glColor4fv(rgba);
 
-    static bool shader_inited = false;
-    static Luminous::GLSLProgramObject * program;
-
-    static const GLfloat vertices[] = {
-      -1.0, -1.0,
-      1.0, -1.0,
-      1.0, 1.0,
-      -1.0, 1.0
-    };
-
-    if (!shader_inited) {
-      static const char * vert_shader = ""\
-          "uniform mat4 matrix;"\
-          "varying vec2 pos;"\
-          "void main(void) {"\
-          "  pos = gl_Vertex; "\
-          "  mat4 transform = gl_ProjectionMatrix * matrix;"\
-          "  gl_Position = transform * gl_Vertex;"\
-          "  gl_FrontColor = gl_Color;"\
-          "}";
-      static const char * frag_shader = ""\
-          "varying vec2 pos;"\
-          "uniform float border_start;"\
-          "void main(void) {"\
-          "  float r = length(pos);"\
-          "  gl_FragColor = gl_Color;"\
-          "  gl_FragColor.w *= smoothstep(1.00, border_start, r);"\
-          "}";
-
-      shader_inited = true;
-      program = new GLSLProgramObject();
-      program->loadStrings(vert_shader, frag_shader);
-    }
-
-
-
-    program->bind();
+    m_circle_shader->bind();
 
     // uniform scaling assumed, should work fine with "reasonable" non-uniform scaling
     float totalRadius = m.extractScale() * radius;
     float border = Nimble::Math::Min(1.0f, totalRadius-2.0f);
-    program->setUniformFloat("border_start", (totalRadius-border)/totalRadius);
-    GLint matrixLoc = program->getUniformLoc("matrix");
+    m_circle_shader->setUniformFloat("border_start", (totalRadius-border)/totalRadius);
+    GLint matrixLoc = m_circle_shader->getUniformLoc("matrix");
     glUniformMatrix4fv(matrixLoc, 1, GL_TRUE, t.data());
 
     // using a VBO with 4 vertices is actually slower than this
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glVertexPointer(2, GL_FLOAT, 0, rect_vertices);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glDisableClientState(GL_VERTEX_ARRAY);
-    program->unbind();
+    m_circle_shader->unbind();
   }
 
   void RenderContext::drawCircleWithSegments(Nimble::Vector2f center, float radius,
@@ -585,156 +495,139 @@ namespace Luminous
     if(n < 2)
       return;
 
-    float r = rgba[0];
-    float g = rgba[1];
-    float b = rgba[2];
-    float a = rgba[3];
-
     width *= scale() * 0.5f;
-    float fullw = width + 1;
+    width += 1; // for antialiasing
 
-    Matrix3 m(transform());
+    const Matrix3 & m = transform();
+    std::vector<Nimble::Vector2> vertexArr;
+    Vector2f cprev;
+    Vector2f cnow = m.project(vertices[0]);
+    Vector2f cnext;
+    Vector2f avg;
+    Vector2f dirNext;
+    Vector2f dirPrev;
 
-    Vector2f cprev = m.project(vertices[0]);
-
-    Vector2f dir0 = m.project(vertices[1]) - cprev;
-
-    Vector2 p01 = dir0.perpendicular();
-
-    float len01 = p01.length();
-
-    if(len01 < 1.0e-5f)
-      p01.make(1,0);
-    else
-      p01.normalize();
-
-    for(int i = 1; i < n; i++) {
-
-      Vector2f cnow  = m.project(vertices[i]);
-
-      if((cnow - cprev).length() < 3.0f && i != (n-1))
-        continue;
-
-      Vector2f cnext;
-
-      if(i < (n - 1))
-        cnext = m.project(vertices[i + 1]);
-      else
-        cnext = 2.0f * cnow - cprev;
-
-      Vector2f dir1 = cnext - cnow;
-      Vector2f dir2 = cnow - cprev;
-
-      float l1 = dir1.length();
-      float l2 = dir2.length();
-
-      if(l1 < 1.0e-5f)
-        dir1.make(1, 0);
-      else
-        dir1 /= l1;
-
-      if(l2 < 1.0e-5f)
-        dir2.make(1, 0);
-      else
-        dir2 /= l2;
-
-      Vector2 q = dir1.perpendicular();
-
-      Vector2 p12 = (dir2 + dir1).perpendicular();
-      p12.normalize();
-
-      float q12 = dot(p12, q);
-      if(q12 > 0.1f)
-        p12 /= q12;
-
-      glBegin(GL_QUAD_STRIP);
-
-      glColor4f(r, g, b, 0.0f);
-      glVertex2fv((cprev + p01 * fullw).data());
-      glVertex2fv((cnow + p12 * fullw).data());
-
-      glColor4f(r, g, b, a);
-      glVertex2fv((cprev + p01 * width).data());
-      glVertex2fv((cnow + p12 * width).data());
-
-      glVertex2fv((cprev - p01 * width).data());
-      glVertex2fv((cnow - p12 * width).data());
-
-      glColor4f(r, g, b, 0.0f);
-      glVertex2fv((cprev - p01 * fullw).data());
-      glVertex2fv((cnow - p12 * fullw).data());
-
-      glEnd();
-
-      p01 = p12;
-
-      cprev = cnow;
+    int nextIdx = 1;
+    while ((vertices[nextIdx]-cprev).length() < 3.0f && nextIdx < n-1) {
+      nextIdx++;
     }
 
+    cnext = m.project(vertices[nextIdx]);
+    dirNext = cnext - cnow;
+    dirNext.normalize();
+    avg = dirNext.perpendicular();    
+
+    if (avg.length() < 1e-5) {
+      avg.make(1,0);
+    } else {
+      avg.normalize();
+    }
+    avg *= width;
+
+
+    vertexArr.push_back(cnow - avg);
+    vertexArr.push_back(cnow + avg);
+
+    for (int i = nextIdx; i < n; ) {
+      nextIdx = i+1;
+      cprev = cnow;      
+      cnow = cnext;
+
+      // at least 3 pixels gap between vertices
+      while (nextIdx < n-1 && (vertices[nextIdx]-cnow).length() < 3.0f) {
+        nextIdx++;
+      }
+      if (nextIdx > n-1) {
+        cnext = (cnow - cprev) + cnow;
+      } else {
+        cnext = m.project(vertices[nextIdx]);
+      }
+
+      dirPrev = dirNext;
+      dirNext = cnext - cnow;
+      
+      float max = Math::Max(1-(dirNext.length()/40.0f), 0.1f);
+      
+      if (dirNext.length() < 1e-5f) {
+        dirNext = dirPrev;
+      } else {
+        dirNext.normalize();
+      }
+
+      Vector2 avg = (dirPrev + dirNext).perpendicular();
+      avg.normalize();
+
+      float dp = dot(avg, dirPrev.perpendicular());
+      /// @todo: use bevel join if angle too small
+      if (dp > 0.1f)
+        avg /= Math::Max(dp, max);
+      avg *= width;
+      vertexArr.push_back(cnow-avg);
+      vertexArr.push_back(cnow+avg);
+
+      i = nextIdx;
+    }
+
+    GLuint loc = m_polyline_shader->getAttribLoc("coord");
+    glEnableVertexAttribArray(loc);
+    m_polyline_shader->bind();
+    m_polyline_shader->setUniformFloat("border_start", 1.0f-1.0f/(width-0.5f));
+
+    GLfloat * attribs = new GLfloat[vertexArr.size()];
+    for (unsigned int i=0; i < vertexArr.size(); i++) {
+      attribs[i] = i%2 == 0 ? 1.0f : -1.0f;
+    }
+    glColor4fv(rgba);    
+    glVertexPointer(2, GL_FLOAT, 0, reinterpret_cast<GLfloat *>(&vertexArr[0]));
+    glVertexAttribPointer(loc, 1, GL_FLOAT, GL_FALSE, 0, attribs);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexArr.size());
+    glDisableClientState(GL_VERTEX_ARRAY);
+    m_polyline_shader->unbind();
+    glDisableVertexAttribArray(loc);
+    delete[] attribs;    
   }
 
+
   void RenderContext::drawTexRect(Nimble::Vector2 size, const float * rgba)
-  {
-    Nimble::Matrix3 m = transform();
-
-    const Vector4 v[4] = {
-      Utils::project(m, Vector2(0,       0)),
-      Utils::project(m, Vector2(size.x,  0)),
-      Utils::project(m, Vector2(size.x,  size.y)),
-      Utils::project(m, Vector2(0,       size.y))
-    };
-
-    if(rgba)
-      glColor4fv(rgba);
-
-    glBegin(GL_QUADS);
-
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex4fv(v[0].data());
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex4fv(v[1].data());
-
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex4fv(v[2].data());
-
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex4fv(v[3].data());
-
-    glEnd();
-
+  {    
+    drawTexRect(size, rgba, Nimble::Rect(0, 0, 1, 1));
   }
 
   void RenderContext::drawTexRect(Nimble::Vector2 size, const float * rgba,
                                   const Nimble::Rect & texUV)
   {
-    Nimble::Matrix3 m = transform();
+    const Nimble::Matrix3 & m = transform();
 
-    const Vector4 v[4] = {
-      Utils::project(m, Vector2(0,       0)),
-      Utils::project(m, Vector2(size.x,  0)),
-      Utils::project(m, Vector2(size.x,  size.y)),
-      Utils::project(m, Vector2(0,       size.y))
+    Nimble::Vector2 v[] = {
+      m.project(0, 0),
+      m.project(size.x, 0),
+      m.project(size.x, size.y),
+      m.project(0, size.y)
     };
 
     if(rgba)
       glColor4fv(rgba);
 
-    glBegin(GL_QUADS);
+    const Vector2 & low = texUV.low();
+    const Vector2 & high = texUV.high();
 
-    glTexCoord2f(texUV.low().x, texUV.low().y);
-    glVertex4fv(v[0].data());
+    const GLfloat texCoords[] = {
+      low.x, low.y,
+      high.x, low.y,
+      high.x, high.y,
+      low.x, high.y
+    };
 
-    glTexCoord2f(texUV.high().x, texUV.low().y);
-    glVertex4fv(v[1].data());
+    glEnable(GL_VERTEX_ARRAY);
+    glEnable(GL_TEXTURE_COORD_ARRAY);
 
-    glTexCoord2f(texUV.high().x, texUV.high().y);
-    glVertex4fv(v[2].data());
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+    glVertexPointer(2, GL_FLOAT, 0, reinterpret_cast<GLfloat*>(v));
+    glDrawArrays(GL_QUADS, 0, 4);
 
-    glTexCoord2f(texUV.low().x, texUV.high().y);
-    glVertex4fv(v[3].data());
-
-    glEnd();
+    glDisable(GL_VERTEX_ARRAY);
+    glDisable(GL_TEXTURE_COORD_ARRAY);
 
   }
 
@@ -742,258 +635,6 @@ namespace Luminous
                                   Nimble::Vector2 texUV)
   {
     drawTexRect(size, rgba, Rect(Vector2(0,0), texUV));
-  }
-
-  void RenderContext::drawLineVBO(Nimble::Vector2f start, Nimble::Vector2f end)
-  {
-    Matrix3f m = transform();
-    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
-               m[1][0], m[1][1], 0, m[1][2],
-                     0,       0, 1,       0,
-               m[2][0], m[2][1], 0, m[2][2]);
-
-    Vector2f v = end - start;
-    float angle = Math::radToDeg(Math::ATan2(v.x, v.y));
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glPushMatrix();
-
-    glTranslatef(start.x, start.y, 0.f);
-    glMultTransposeMatrixf(t.data());
-    glRotatef(angle, 0, 0, 1);
-    glScalef(v.x, v.y, 1.0f);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-
-    m_ib.bind();
-    glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-
-  }
-  void RenderContext::drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba)
-  {
-  }
-
-  void RenderContext::drawRectVBO(const Nimble::Rectf & rect, const float * rgba)
-  {
-    Matrix3f m = transform();
-    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
-               m[1][0], m[1][1], 0, m[1][2],
-                     0,       0, 1,       0,
-               m[2][0], m[2][1], 0, m[2][2]);
-
-    glPushMatrix();
-
-    glTranslatef(rect.low().x, rect.low().y, 0.f);
-    glMultTransposeMatrixf(t.data());
-    glScalef(rect.width(), rect.height(), 1.0f);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-
-    m_ib.bind();
-    if(rgba)
-      glColor4f(rgba[0], rgba[1], rgba[2], 0.1f);
-    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
-    if(rgba)
-      glColor4fv(rgba);
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-  }
-
-  void RenderContext::drawCircleVBO(Nimble::Vector2f center, float radius, const float * rgba)
-  {
-    const Matrix3f& m = transform();
-    const float tx = center.x;
-    const float ty = center.y;
-
-    // translate(tx, ty) & scale(radius)
-    Matrix4f t(m[0][0]*radius, m[0][1]*radius, 0, m[0][2] + m[0][1]*ty+m[0][0]*tx,
-               m[1][0]*radius, m[1][1]*radius, 0, m[1][2] + m[1][1]*ty+m[1][0]*tx,
-               0         , 0         , 1, 0,
-               m[2][0]*radius, m[2][1]*radius, 0, m[2][2] + m[2][1]*ty+m[2][0]*tx);
-
-    if(rgba)
-      glColor4fv(rgba);
-    glPushMatrix();
-
-    glMultTransposeMatrixf(t.data());
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
-
-    // LOD
-    int level = LOD_MAXIMUM + Nimble::Math::Log2(radius*m.extractScale()/m_data->m_screenSize.x);
-    level = Nimble::Math::Clamp(level, (int)LOD_MINIMUM, (int)LOD_MAXIMUM);
-
-    //int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
-    const int circle_begin_offset = 16;
-    // offset o(n) of level n:
-    //  o(LOD_MINIMUM) = circle_begin_offset
-    //  o(n+1) = o(n) + 2^n + 2
-    // => o(n) = 2^n + 2n - (2*LOD_MINIMUM+2^LOD_MINIMUM) + circle_begin_offset
-    const int offset = sizeof(GLuint) * ((1 << level) + 2*level
-                                         - ((1<<LOD_MINIMUM) + 2*LOD_MINIMUM) + circle_begin_offset);
-    int count = (1 << level);
-
-    m_ib.bind();
-    glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-  }
-
-  void RenderContext::drawArcVBO(Nimble::Vector2f center, float radius, float fromRadians, float toRadians, const float * rgba)
-  {
-    Matrix3f m = transform();
-    Matrix4f t(m[0][0], m[0][1], 0, m[0][2],
-               m[1][0], m[1][1], 0, m[1][2],
-                     0,       0, 1,       0,
-               m[2][0], m[2][1], 0, m[2][2]);
-
-    if(rgba)
-      glColor4fv(rgba);
-    glPushMatrix();
-
-    glTranslatef(center.x, center.y, 0.f);
-    glMultTransposeMatrixf(t.data());
-    glScalef(radius, radius, 1.0f);
-    glRotatef(Math::radToDeg(fromRadians), 0.f, 0.f, 1.f);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
-
-    // LOD
-    int level = LOD_MAXIMUM + Math::Log2(radius*m.extractScale()*2/m_data->m_screenSize.x);
-    if (level < LOD_MINIMUM) level = LOD_MINIMUM;
-    int pow2 = Math::Floor(Math::Pow(2.0f,level));
-    int count = pow2 + 2;
-    int offset = sizeof(GLuint)*(6+(pow2-4 + 2*(level-2)));  // 4 * (Sigma i ^ n - 2)
-    count =int(count*(toRadians-fromRadians)/Math::TWO_PI);
-
-    m_ib.bind();
-    glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, BUFFER_OFFSET(offset));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-  }
-
-  void RenderContext::drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
-                                      float width, const float * rgba)
-  {
-  }
-  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba)
-  {
-    const Matrix3f& m = transform();
-    const float sx = size.x;
-    const float sy = size.y;
-
-    Matrix4f t(m[0][0]*sx, m[0][1]*sy, 0, m[0][2],
-               m[1][0]*sx, m[1][1]*sy, 0, m[1][2],
-               0         , 0         , 1, 0,
-               m[2][0]*sx, m[2][1]*sy, 0, m[2][2]);
-
-    if(rgba)
-      glColor4fv(rgba);
-
-    glPushMatrix();
-    glMultTransposeMatrixf(t.data());
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-    m_vb.unbind();
-
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-  }
-
-  void RenderContext::drawTexRectAAVBO(Nimble::Vector2 size, const float * rgba)
-  {
-    const Matrix3f& m = transform();
-    const float sx = size.x;
-    const float sy = size.y;
-
-    Matrix4f t(m[0][0]*sx, m[0][1]*sy, 0, m[0][2],
-               m[1][0]*sx, m[1][1]*sy, 0, m[1][2],
-               0         , 0         , 1, 0,
-               m[2][0]*sx, m[2][1]*sy, 0, m[2][2]);
-
-    if(rgba)
-      glColor4fv(rgba);
-
-    glPushMatrix();
-
-    glMultTransposeMatrixf(t.data());
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    m_vb.bind();
-    glVertexPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-    glTexCoordPointer(2, GL_FLOAT, 4*sizeof(GL_FLOAT), BUFFER_OFFSET(2*sizeof(GL_FLOAT)));
-
-    m_ib.bind();
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-    if (rgba) {
-      glColor4f(rgba[0], rgba[1], rgba[2], 0.0f);
-    }
-
-    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-    glColor4f(rgba[0], rgba[1], rgba[2], 0.0f);
-
-    glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_INT, BUFFER_OFFSET(4*sizeof(GLuint)));
-
-    m_ib.unbind();
-    m_vb.unbind();
-
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
-  }
-  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                                     const Nimble::Rect & texUV)
-  {
-  }
-  void RenderContext::drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                                     Nimble::Vector2 texUV)
-  {
   }
 
   void RenderContext::setBlendFunc(BlendFunc f)

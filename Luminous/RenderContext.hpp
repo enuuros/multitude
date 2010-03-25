@@ -22,7 +22,7 @@
 #include <Luminous/GLResources.hpp>
 #include <Luminous/Export.hpp>
 #include <Luminous/VertexBuffer.hpp>
-
+#include <Luminous/GLSLProgramObject.hpp>
 #include <Nimble/Rectangle.hpp>
 #include <Nimble/Vector2.hpp>
 
@@ -115,7 +115,8 @@ namespace Luminous
 
     /** Draw a line rectangle, with given thickness and color. */
     void drawLineRect(const Nimble::Rectf & rect, float thickness, const float * rgba);
-    /** Draws a solid rectangle, with given color. */
+    /** Draws a solid (antialiased) rectangle, with given color. If textures are active,
+        the rectangle is filled with the current texture */
     void drawRect(const Nimble::Rectf & rect, const float * rgba);
 
     /** Draws a solid, antialiased circle
@@ -156,24 +157,6 @@ namespace Luminous
     void drawTexRect(Nimble::Vector2 size, const float * rgba,
                      Nimble::Vector2 texUV);
 
-    // render function implemented with VBO. Work in progress!!!
-    /// @todo more primitives?
-//    void renderVBO();
-//    void updateVBO();
-    void drawLineVBO(Nimble::Vector2f start, Nimble::Vector2f end);
-    void drawLineRectVBO(const Nimble::Rectf & rect, float thickness, const float * rgba);
-    void drawRectVBO(const Nimble::Rectf & rect, const float * rgba);
-    void drawCircleVBO(Nimble::Vector2f center, float radius, const float * rgba);
-    void drawArcVBO(Nimble::Vector2f center, float radius, float fromRadians, float toRadians, const float * rgba);
-    void drawPolyLineVBO(const Nimble::Vector2f * vertices, int n,
-                      float width, const float * rgba);
-    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba);
-    void drawTexRectAAVBO(Nimble::Vector2 size, const float * rgba);
-    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                     const Nimble::Rect & texUV);
-    void drawTexRectVBO(Nimble::Vector2 size, const float * rgba,
-                     Nimble::Vector2 texUV);
-
     /// Sets the current blend function, and enables blending
     /** If the function is BLEND_NONE, then blending is disabled. */
     void setBlendFunc(BlendFunc f);
@@ -187,13 +170,10 @@ namespace Luminous
     void clearTemporaryFBO(FBOPackage * fbo);
 
     Luminous::GLResources * m_resources;
-
-    Luminous::VertexBuffer m_vb;
-    Luminous::IndexBuffer  m_ib;
-
     class Internal;
     Internal * m_data;
-
+    Luminous::GLSLProgramObject * m_circle_shader;
+    Luminous::GLSLProgramObject * m_polyline_shader;
   };
 
 }
