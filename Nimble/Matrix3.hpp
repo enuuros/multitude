@@ -523,6 +523,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
   return res;
 }
 
+/// Multiply a matrix with a vector by implicitly adding one as the third component of the vector
 template <class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
                    const Nimble::Vector2T<T>& m2)

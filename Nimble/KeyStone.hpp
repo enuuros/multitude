@@ -129,15 +129,20 @@ namespace Nimble {
     /// Moves the closest corner point
     void moveCorner(Nimble::Vector2);
 
+    /// Returns the index of the corner closest to given point
     int closestCorner(Nimble::Vector2) const;
 
+    /// Returns the coordinates of the top-left corner
     Nimble::Vector2 topLeft() const
     { return m_originals[closestCorner(Nimble::Vector2(0.0f, 0.0f))]; }
+    /// Returns the coordinates of the top-right corner
     Nimble::Vector2 topRight() const
     { return m_originals[closestCorner(Nimble::Vector2(float(m_width), 0.0f))]; }
 
+    /// Returns the coordinates of the bottom-left corner
     Nimble::Vector2 bottomLeft() const
     { return m_originals[closestCorner(Nimble::Vector2(0.0f, float(m_height)))]; }
+    /// Returns the coordinates of the bottom-right corner
     Nimble::Vector2 bottomRight() const
     { return m_originals[closestCorner(Nimble::Vector2(float(m_width), float(m_height)))]; }
 
