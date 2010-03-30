@@ -1,8 +1,6 @@
 include(../multitude.pri)
 
 HEADERS += Export.hpp
-HEADERS += Grid.hpp
-HEADERS += GridTmpl.hpp
 HEADERS += Histogram.hpp 
 HEADERS += KeyStone.hpp 
 HEADERS += LensCorrection.hpp 
@@ -28,7 +26,6 @@ HEADERS += Vector2.hpp
 HEADERS += Vector3.hpp 
 HEADERS += Vector4.hpp 
 
-SOURCES += Grid.cpp
 SOURCES += Histogram.cpp
 SOURCES += KeyStone.cpp
 SOURCES += LensCorrection.cpp
