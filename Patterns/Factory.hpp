@@ -53,7 +53,7 @@ namespace Patterns
       }
 
     protected:
-      // Helper for referencing in derived classes
+      /// Helper typedef for referencing in derived classes
       typedef T Product;
 
       /// Automagically register factories
