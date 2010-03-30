@@ -18,8 +18,6 @@ HEADERS += Ramp.hpp
 HEADERS += Random.hpp 
 HEADERS += Rectangle.hpp
 HEADERS += Rect.hpp 
-HEADERS += RingBuffer.hpp 
-HEADERS += RingBufferImpl.hpp 
 HEADERS += Splines.hpp
 HEADERS += SplinesImpl.hpp
 HEADERS += Vector2.hpp 
@@ -35,7 +33,6 @@ SOURCES += Plane.cpp
 SOURCES += Random.cpp
 SOURCES += Rectangle.cpp
 SOURCES += Rect.cpp
-SOURCES += RingBuffer.cpp
 SOURCES += Splines.cpp
 SOURCES += Vector2.cpp
 
