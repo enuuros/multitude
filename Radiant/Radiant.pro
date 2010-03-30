@@ -33,6 +33,8 @@ HEADERS += RGBA.hpp
 HEADERS += RefObj.hpp
 HEADERS += RefPtr.hpp
 HEADERS += ResourceLocator.hpp
+HEADERS += RingBuffer.hpp
+HEADERS += RingBufferImpl.hpp
 HEADERS += Semaphore.hpp
 HEADERS += SerialPort.hpp
 HEADERS += Size2D.hpp
@@ -55,13 +57,12 @@ HEADERS += VideoInput.hpp
 HEADERS += WatchDog.hpp
 HEADERS += ClonablePtr.hpp
 HEADERS += VideoCamera.hpp
-SOURCES += CameraDriver.cpp \
-    CSVDocument.cpp
+SOURCES += CameraDriver.cpp
+SOURCES += CSVDocument.cpp
 SOURCES += BinaryData.cpp
 SOURCES += VideoCamera.cpp
 SOURCES += Color.cpp
 SOURCES += ColorUtils.cpp
-
 SOURCES += ConfigReader.cpp
 SOURCES += DateTime.cpp
 SOURCES += DirectoryCommon.cpp
@@ -70,19 +71,15 @@ SOURCES += FixedStr.cpp
 SOURCES += Grid.cpp
 SOURCES += ImageConversion.cpp
 SOURCES += Log.cpp
-
 SOURCES += ResourceLocator.cpp
+SOURCES += RingBuffer.cpp
 SOURCES += Size2D.cpp
 SOURCES += Sleep.cpp
-# SOURCES += SleepQT.cpp
 SOURCES += SemaphoreQt.cpp
-
 !win32:SOURCES += SHMDuplexPipe.cpp
 !win32:SOURCES += SHMPipe.cpp
 !win32:SOURCES += SMRingBuffer.cpp
 SOURCES += StringUtils.cpp
-
-
 SOURCES += Timer.cpp
 SOURCES += TimeStamp.cpp
 SOURCES += Trace.cpp
