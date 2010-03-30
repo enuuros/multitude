@@ -522,7 +522,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
     res[i] = ::dot(m1.row(i),m2);
   return res;
 }
-/*
+
 template <class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
                    const Nimble::Vector2T<T>& m2)
@@ -532,7 +532,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
     res[i] = ::dot3(m1.row(i),m2);
   return res;
 }
-*/
+
 
 /// Multiply a matrix and a vector
 template <class T>
