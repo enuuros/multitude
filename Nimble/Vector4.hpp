@@ -95,29 +95,29 @@ namespace Nimble {
     void copy3(const S * data) { x = data[0]; y = data[1]; z = data[2]; }
   };
 
+  /// Add two vectors
   template <class T> inline	Vector4T<T>	operator+	(const Vector4T<T>& v1, const Vector4T<T>& v2)	{ Vector4T<T> t(v1); t+=v2; return t; }
+  /// Subtract two vectors
   template <class T> inline	Vector4T<T>	operator-	(const Vector4T<T>& v1, const Vector4T<T>& v2)	{ Vector4T<T> t(v1); t-=v2; return t; }
+  /// Multiply a vector by scalar
   template <class T> inline	Vector4T<T>	operator*	(const Vector4T<T>& v, const double s)		{ Vector4T<T> t(v); t*=s; return t; }
+  /// Multiply a vector by scalar
   template <class T> inline	Vector4T<T>	operator*	(const double s, const Vector4T<T>& v)		{ return v*s; }
+  /// Divide a vector by scalar
   template <class T> inline	Vector4T<T>	operator/	(const Vector4T<T>& v, const double s)		{ double r = 1.0/s; return v*r; }
+  /// Returns the negation of a vector
   template <class T> inline	Vector4T<T>	operator-	(const Vector4T<T>& v)						{ return Vector4T<T>(-v.x, -v.y, -v.z, -v.w); }
 
+  /// Vector of four floats
   typedef Vector4T<float> Vector4;
+  /// Vector of four floats
   typedef Vector4T<float> Vector4f;
+  /// Vector of four unsigned chars
   typedef Vector4T<unsigned char> Vector4ub;
+  /// Vector of four ints
   typedef Vector4T<int> Vector4i;
+  /// Vector of four doubles
   typedef Vector4T<double> Vector4d;
-
-  /// @todo not needed anymore?
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Vector4T<float>;
-  template class Vector4T<unsigned char>;
-  template class Vector4T<int>;
-  template class Vector4T<double>;
-#endif
-#endif
 
 } // namespace
 

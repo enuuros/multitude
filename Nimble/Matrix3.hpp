@@ -222,7 +222,9 @@ namespace Nimble {
     assert(b[i][j] == 0);
   }
 
+  /// 3x3 matrix of floats
   typedef Matrix3T<float> Matrix3;
+  /// 3x3 matrix of floats
   typedef Matrix3T<float> Matrix3f;
 
   template <class T>
@@ -493,6 +495,7 @@ namespace Nimble {
     return res;
   }
 
+  /// Multiply two matrices together
 template <class T>
 inline Nimble::Matrix3T<T> operator * (const Nimble::Matrix3T<T>& m1,
                      const Nimble::Matrix3T<T>& m2)
@@ -509,6 +512,7 @@ inline Nimble::Matrix3T<T> operator * (const Nimble::Matrix3T<T>& m1,
   return res;
 }
 
+/// Multiply a matrix and a vector
 template <class S, class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
                    const Nimble::Vector3T<T>& m2)
@@ -518,7 +522,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<S>& m1,
     res[i] = ::dot(m1.row(i),m2);
   return res;
 }
-
+/*
 template <class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
                    const Nimble::Vector2T<T>& m2)
@@ -528,7 +532,9 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Matrix3T<T>& m1,
     res[i] = ::dot3(m1.row(i),m2);
   return res;
 }
+*/
 
+/// Multiply a matrix and a vector
 template <class T>
 inline Nimble::Vector3T<T> operator*(const Nimble::Vector3T<T>& m2,
                    const Nimble::Matrix3T<T>& m1)
@@ -539,6 +545,7 @@ inline Nimble::Vector3T<T> operator*(const Nimble::Vector3T<T>& m2,
   return res;
 }
 
+/// Insert a 2x2 matrix to the upper-left corner of the 3x3 matrix
 template<class T>
 inline void Matrix3T<T>::insert(const Matrix2T<T>& b)
 {

@@ -185,17 +185,10 @@ namespace Nimble {
     int m_count;
   };
 
+  /// Histogram of unsigned integers
   typedef Histogram<unsigned int,256> Histogramu256;
+  /// Histogram of signed integers
   typedef Histogram<int,256> Histogrami256;
-
-  /// @todo remove this
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Histogram<unsigned int, 256>;
-  template class Histogram<int, 256>;
-#endif
-#endif
 
 } // namespace
 

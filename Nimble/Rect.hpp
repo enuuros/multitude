@@ -358,44 +358,16 @@ namespace Nimble {
     res.m_high = res.m_low + size;
     return res;
   }
- 
+
+  /// Rectangle of floats
   typedef RectT<float> Rect;
+  /// Rectangle of floats
   typedef RectT<float> Rectf;
+  /// Rectangle of ints
   typedef RectT<int> Recti;
+  /// Rectangle of doubles
   typedef RectT<double> Rectd;
 
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated here to be exported
-  template class RectT<float>;
-  template class RectT<int>;
-  template class RectT<double>;
-#endif
-#endif
-
-  /// @todo Remove this?
-  /** Multiplies the location vectors with some matrix. */
-  /*
-    template <class M>
-    inline Rect operator * (const M &m, const Rect &b)
-    {
-    Vector2T<T> tmp, low = b.low(), high = b.high();
-
-    Rect square;
-    square.set(m * low);
-  
-    for(uint x = 0; x < 2; x++) {
-    for(uint y = 0; y < 2; y++) {
-    tmp.x = x ? low.x : high.x;
-    tmp.y = y ? low.y : high.y;
-
-    square.expand(m * tmp);
-    }
-    }
-
-    return square;
-    }
-  */
 }
 
 #endif

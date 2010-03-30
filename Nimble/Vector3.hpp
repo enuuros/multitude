@@ -102,23 +102,18 @@ namespace Nimble {
     Vector2T<T> xy() const { return Vector2T<T>(x, y); }
   };
 
+  /// Vector of three floats
   typedef Vector3T<float> Vector3;
+  /// Vector of three floats
   typedef Vector3T<float> Vector3f;
+  /// Vector of three unsigned chars
   typedef Vector3T<unsigned char> Vector3ub;
+  /// Vector of three ints
   typedef Vector3T<int> Vector3i;
+  /// Vector of three doubles
   typedef Vector3T<double> Vector3d;
 
-  /// @todo not needed anymore?
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Vector3T<float>;
-  template class Vector3T<unsigned char>;
-  template class Vector3T<int>;
-  template class Vector3T<double>;
-#endif
-#endif
-
+  /// Multiply a vector with scalar
   template <class T>
   Nimble::Vector3T<T> operator* (T s, const Nimble::Vector3T<T>& v)
   { return v * s; }

@@ -81,8 +81,10 @@ namespace Nimble {
     T m_target;
     unsigned m_left;
   };
-  
+
+  /// Ramp of floats
   typedef RampT<float> Rampf;
+  /// Ramp of doubles
   typedef RampT<double> Rampd;
 
   /// @todo not needed anymore?

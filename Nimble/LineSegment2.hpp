@@ -30,6 +30,7 @@ template <typename T>
   {
   public:
     inline LineSegment2T() {}
+    /// Constructs a new line segment between two points
     inline LineSegment2T(const Vector2T<T> & p1,
                          const Vector2T<T> & p2)
     {
@@ -78,8 +79,11 @@ template <typename T>
     Vector2T<T> m_points[2];
   };
 
+/// Line segment of floats
   typedef LineSegment2T<float>  LineSegment2;
+  /// Line segment of floats
   typedef LineSegment2T<float>  LineSegment2f;
+  /// Line segment of doubles
   typedef LineSegment2T<double> LineSegment2d;
 
 }

@@ -104,8 +104,6 @@ namespace Nimble {
     NIMBLE_API static Matrix4T<T> translate3D(const Vector3T<T> & v);
     NIMBLE_API static Matrix4T<T> scale3D(const Vector3T<T> & v);
 
-
-
     /** Identity matrix. */
     NIMBLE_API static const Matrix4T<T> IDENTITY;
 
@@ -240,8 +238,11 @@ namespace Nimble {
     return *this;
   }
 
+  /// 4x4 matrix of floats
   typedef Matrix4T<float> Matrix4;
+  /// 4x4 matrix of floats
   typedef Matrix4T<float> Matrix4f;
+  /// 4x4 matrix of doubles
   typedef Matrix4T<double> Matrix4d;
 
 }

@@ -148,6 +148,7 @@ namespace Nimble {
     return inv;
   }
 
+  /// Multiply two matrices together
   template <class T>
   inline Matrix2T<T> operator*(const Matrix2T<T>& m1, const Matrix2T<T>& m2)
   {
@@ -162,6 +163,7 @@ namespace Nimble {
     return res;
   }
 
+  /// Multiply a matrix and a vector
   template <class T>
   inline Vector2T<T> operator*(const Matrix2T<T>& m1,const Vector2T<T>& m2)
   {
@@ -171,6 +173,7 @@ namespace Nimble {
     return res;
   }
 
+  /// Multiply a matrix and a vector
   template <class T>
   inline Vector2T<T> operator*(const Vector2T<T>& m2, const Matrix2T<T>& m1)
   {
@@ -180,19 +183,23 @@ namespace Nimble {
     return res;
   }
 
+  /// Add two matrices together
   template <class T>
   inline Matrix2T<T> operator+(const Matrix2T<T>& m1, const Matrix2T<T>& m2)
   {
     return Matrix2T<T>(m1[0] + m2[0], m1[1] + m2[1]);
   }
 
+  /// Subtract a matrix from another
   template <class T>
   inline Matrix2T<T> operator-(const Matrix2T<T>& m1, const Matrix2T<T>& m2)
   {
     return Matrix2T<T>(m1[0] - m2[0], m1[1] - m2[1]);
   }
 
+  /// 2x2 matrix of floats
   typedef Matrix2T<float> Matrix2;
+  /// 2x2 matrix of floats
   typedef Matrix2T<float> Matrix2f;
 
 }

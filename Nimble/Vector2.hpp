@@ -92,14 +92,22 @@ namespace Nimble {
     void copy(const S * data) { x = data[0]; y = data[1]; }
   };
 
+  /// Add two vectors
   template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, const Vector2T<T>& v2) { return Vector2T<T>(v1.x+v2.x, v1.y+v2.y); }
-  template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, T v2) { return Vector2T<T>(v1.x+v2, v1.y+v2); }
+
+  //template <class T> inline	Vector2T<T>	operator+	(const Vector2T<T>& v1, T v2) { return Vector2T<T>(v1.x+v2, v1.y+v2); }
+  /// Subract two vectors
   template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v1, const Vector2T<T>& v2) { return Vector2T<T>(v1.x-v2.x, v1.y-v2.y); }
-  template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v1, T v2) { return Vector2T<T>(v1.x-v2, v1.y-v2); }
+  //template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v1, T v2) { return Vector2T<T>(v1.x-v2, v1.y-v2); }
+  /// Multiply a vector by scalar
   template <class T> inline	Vector2T<T>	operator*	(const Vector2T<T>& v, const T s) { return Vector2T<T>((T)(v.x*s), (T)(v.y*s)); }
+  /// Multiply a vector by scalar
   template <class T> inline	Vector2T<T>	operator*	(const T s, const Vector2T<T>& v) { return v*s; }
+  /// Divide a vector by scalar
   template <class T> inline	Vector2T<T>	operator/	(const Vector2T<T>& v, const double s) { T r = T(1.0/s); return v*r; }
+  /// Divide a vector by scalar
   template <class T> inline Vector2T<T> operator/ (const Vector2T<T>& v, const T s) { return Vector2T<T>(v.x / s, v.y / s); }
+  /// Returns the negation of a vector
   template <class T> inline	Vector2T<T>	operator-	(const Vector2T<T>& v) { return Vector2T<T>(-v.x, -v.y); }
 
   template <>
@@ -110,12 +118,14 @@ namespace Nimble {
     return *this;
   }
 
+/*
   template <class T>
   inline float abs(Vector2T<T> t)
   {
     return t.length();
   }
-
+*/
+  /// Compute the dot product of two vectors
   template <class T>
   inline float dot(const Vector2T<T> &t1, const Vector2T<T> &t2)
   {
@@ -124,37 +134,38 @@ namespace Nimble {
 
   /* Note that these overloads are NOT redundant, integer math is
      different from floating point math. */
+  /// Divide a vector by scalar
   inline Vector2T<short> operator / (const Vector2T<short>& v, const short s)
   {
     return Vector2T<short>(v.x / s, v.y / s);
   }
-
+  /// Divide a vector by scalar
   inline Vector2T<int> operator / (const Vector2T<int>& v, const int s)
   {
     return Vector2T<int>(v.x / s, v.y / s);
   }
-
+  /// Divide a vector by scalar
   inline Vector2T<long> operator / (const Vector2T<long>& v, const long s)
   {
     return Vector2T<long>(v.x / s, v.y / s);
   }
-
+  /// Multiply a vector by scalar
   inline Vector2T<short> operator * (const Vector2T<short>& v, const short s)
   {
     return Vector2T<short>(v.x * s, v.y * s);
   }
-
+  /// Multiply a vector by scalar
   inline Vector2T<int> operator * (const Vector2T<int>& v, const int s)
   {
     return Vector2T<int>(v.x * s, v.y * s);
   }
-
+  /// Multiply a vector by scalar
   inline Vector2T<long> operator * (const Vector2T<long>& v, const long s)
   {
     return Vector2T<long>(v.x * s, v.y * s);
   }
 
-
+  /// Write a vector into a stream
   template <class T>
   inline std::ostream &operator<<(std::ostream &os, const Nimble::Vector2T<T> &t)
   {
@@ -162,6 +173,7 @@ namespace Nimble {
     return os;
   }
 
+  /// Read a vector from a stream
   template <class T>
   inline std::istream &operator>>(std::istream &is, Nimble::Vector2T<T> &t)
   {
@@ -179,22 +191,16 @@ namespace Nimble {
     }
   }
 
+  /// Vector of two floats
   typedef Vector2T<float> Vector2;
+  /// Vector of two floats
   typedef Vector2T<float> Vector2f;
+  /// Vector of two unsigned chars
   typedef Vector2T<unsigned char> Vector2ub;
+  /// Vector of two ints
   typedef Vector2T<int> Vector2i;
+  /// Vector of two doubles
   typedef Vector2T<double> Vector2d;
-
-  /// @todo not needed anymore?
-#ifdef WIN32
-#ifdef NIMBLE_EXPORT
-  // In WIN32 template classes must be instantiated to be exported
-  template class Vector2T<float>;
-  template class Vector2T<unsigned char>;
-  template class Vector2T<int>;
-  template class Vector2T<double>;
-#endif
-#endif
 
   /// Line slope types.
   enum LineSlopeType
